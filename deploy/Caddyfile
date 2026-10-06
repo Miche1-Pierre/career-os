@@ -1,0 +1,16 @@
+# Career OS behind Caddy: automatic HTTPS (Let's Encrypt) for $DOMAIN.
+{$DOMAIN} {
+	encode zstd gzip
+
+	# Uploads (Quick Import files, document versions) are limited by the app too (MAX_UPLOAD_MB).
+	request_body {
+		max_size 50MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+	}
+
+	reverse_proxy app:3000
+}

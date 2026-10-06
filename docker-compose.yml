@@ -1,0 +1,80 @@
+# Career OS — `docker compose up -d` then open http://localhost:3000
+name: career-os
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-careeros}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-careeros}
+      POSTGRES_DB: ${POSTGRES_DB:-careeros}
+      TZ: ${TZ:-Europe/Paris}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Exposed on localhost only (useful for `npm run dev`, Drizzle Studio or pg_dump from the host).
+    ports:
+      - "127.0.0.1:${DB_PORT:-5433}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  app:
+    build:
+      context: .
+      args:
+        INSTALL_CLAUDE_CLI: ${INSTALL_CLAUDE_CLI:-true}
+    image: career-os:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER:-careeros}:${POSTGRES_PASSWORD:-careeros}@db:5432/${POSTGRES_DB:-careeros}
+      DOCUMENTS_ROOT: /data/documents
+      DOCUMENTS_HOST_PATH: ${DOCUMENTS_DIR:-./documents}
+      APP_DATA_DIR: /data/app
+      BACKUPS_DIR: /data/backups
+      TZ: ${TZ:-Europe/Paris}
+    # 127.0.0.1 = only this computer can reach Career OS. Use APP_BIND=0.0.0.0 at your own risk (set APP_ACCESS_TOKEN).
+    ports:
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3000}:3000"
+    volumes:
+      - ${DOCUMENTS_DIR:-./documents}:/data/documents
+      - ./data:/data/app
+      - ./backups:/data/backups
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # One-shot native PostgreSQL dump: `docker compose run --rm backup`
+  backup:
+    image: postgres:17-alpine
+    profiles: ["tools"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-careeros}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        FILE=/backups/careeros-$$(date +%Y%m%d-%H%M%S).dump &&
+        pg_dump -h db -U ${POSTGRES_USER:-careeros} -d ${POSTGRES_DB:-careeros} -Fc -f $$FILE &&
+        echo "Backup written to backups/$$(basename $$FILE)"
+
+volumes:
+  postgres_data:
