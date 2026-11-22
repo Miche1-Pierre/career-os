@@ -14,8 +14,10 @@ import { addDays, diffDays, dueStatus, formatISODate, instantToZonedParts, today
 import { interviewKindTitle, type OpportunityType, type StageCategory } from "@/lib/constants";
 import { getSettings } from "./settings";
 import { listNotifications } from "./notifications";
+import { listMoves } from "./moves";
+import { parseOffer, reviewProgress } from "@/lib/offer";
 
-export type TodayItemKind = "FOLLOW_UP" | "TASK" | "INTERVIEW" | "DEADLINE" | "OPENS" | "DECISION" | "WAITING" | "DOCUMENTS" | "OUTCOME";
+export type TodayItemKind = "FOLLOW_UP" | "TASK" | "INTERVIEW" | "DEADLINE" | "OPENS" | "DECISION" | "WAITING" | "DOCUMENTS" | "OUTCOME" | "OFFER" | "VISIT" | "HOUSING";
 
 export interface TodayOpportunityRef {
   id: string;
@@ -41,6 +43,22 @@ export interface TodayItem {
   meetingUrl?: string | null;
   contact?: { id: string; fullName: string; email: string | null } | null;
   meta?: Record<string, unknown>;
+  /** Link when the item is not about an application (housing, installation). */
+  href?: string;
+}
+
+/** Installation project shown at the top of Today (countdown and housing progress). */
+export interface TodayMove {
+  id: string;
+  title: string;
+  arrivalDate: ISODate | null;
+  daysUntilArrival: number | null;
+  toContact: number;
+  waitingReply: number;
+  visitsPlanned: number;
+  chosen: string | null;
+  bestSavings: number | null;
+  currency: string;
 }
 
 export interface TodayData {
@@ -50,6 +68,7 @@ export interface TodayData {
   upcoming: TodayItem[];
   waiting: TodayItem[];
   missingDocuments: TodayItem[];
+  moves: TodayMove[];
   suggestions: Awaited<ReturnType<typeof listNotifications>>;
   counts: {
     overdue: number;
@@ -60,6 +79,7 @@ export interface TodayData {
     missingDocuments: number;
     waiting: number;
     inbox: number;
+    housing: number;
   };
 }
 
@@ -222,6 +242,56 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
     });
   }
 
+  // Offers being decided: answer deadline, contract still to review.
+  for (const a of active.filter((x) => x.category === "OFFER")) {
+    const offer = parseOffer(a.opp.details);
+    const who = a.orgName ?? a.opp.title;
+    if (offer?.decisionDeadline && offer.decisionDeadline <= horizon) {
+      items.push({ key: `offer:${a.opp.id}`, kind: "OFFER", date: offer.decisionDeadline, title: `Répondre à l’offre — ${who}`, subtitle: a.opp.title, due: dueStatus(offer.decisionDeadline, today), opportunity: refOf(a), href: `/applications/${a.opp.id}?tab=offer` });
+    } else if (!offer?.signedAt) {
+      const review = reviewProgress(offer?.reviewChecklist);
+      const left = review.total - review.done;
+      items.push({
+        key: `offer:${a.opp.id}`,
+        kind: "OFFER",
+        date: today,
+        title: offer?.contractDocumentVersionId || offer?.contractAnalysis ? `Relire le contrat — ${who}` : `Offre reçue — ${who}`,
+        subtitle: offer?.contractAnalysis || left < review.total ? `${left} point${left > 1 ? "s" : ""} à vérifier${review.warnings ? ` · ${review.warnings} point${review.warnings > 1 ? "s" : ""} d’attention` : ""}` : "Renseigne les conditions et joins le contrat",
+        due: dueStatus(today, today),
+        opportunity: refOf(a),
+        href: `/applications/${a.opp.id}?tab=offer`,
+      });
+    }
+  }
+
+  // Installation projects: visits and housing to contact.
+  const moveViews = (await listMoves()).filter((m) => m.status !== "DONE" && m.status !== "MOVED");
+  const movesCard: TodayMove[] = moveViews.map((m) => ({
+    id: m.id,
+    title: m.title,
+    arrivalDate: m.arrivalDate,
+    daysUntilArrival: m.summary.daysUntilArrival,
+    toContact: m.summary.toContact,
+    waitingReply: m.summary.waitingReply,
+    visitsPlanned: m.summary.visitsPlanned,
+    chosen: m.summary.chosen?.title ?? null,
+    bestSavings: m.summary.bestSavings?.savings ?? null,
+    currency: m.currency,
+  }));
+  let housing = 0;
+  for (const m of moveViews) {
+    for (const l of m.listings) {
+      if (l.status !== "VISIT_PLANNED" || !l.visitDate || l.visitDate < addDays(today, -1) || l.visitDate > horizon) continue;
+      items.push({ key: `visit:${l.id}`, kind: "VISIT", date: l.visitDate, time: l.visitTime, title: `Visite — ${l.title}`, subtitle: [l.address ?? l.district, m.title].filter(Boolean).join(" · "), due: dueStatus(l.visitDate, today), href: `/moves/${m.id}?tab=housing&listing=${l.id}` });
+      housing++;
+    }
+    if (m.summary.toContact > 0 && !m.summary.chosen) {
+      const n = m.summary.toContact;
+      items.push({ key: `housing:${m.id}`, kind: "HOUSING", date: today, title: `${n} logement${n > 1 ? "s" : ""} à contacter — ${m.title}`, subtitle: "Les brouillons de message sont prêts sur chaque fiche", due: dueStatus(today, today), href: `/moves/${m.id}?tab=housing` });
+      housing++;
+    }
+  }
+
   const sortItems = (list: TodayItem[]) =>
     list.sort((x, y) => (x.date === y.date ? (x.time ?? "99:99").localeCompare(y.time ?? "99:99") : x.date.localeCompare(y.date)));
 
@@ -291,6 +361,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
     upcoming,
     waiting,
     missingDocuments,
+    moves: movesCard,
     suggestions,
     counts: {
       overdue: overdue.length,
@@ -301,6 +372,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
       missingDocuments: missingDocuments.reduce((n, i) => n + ((i.meta?.missing as string[])?.length ?? 0), 0),
       waiting: waiting.length,
       inbox: inboxCount?.count ?? 0,
+      housing,
     },
   };
 }

@@ -91,7 +91,7 @@ function suggestionsFor(path: string): string[] {
     return ["Compare mes 3 meilleurs logements", "Cherche d'autres colocs meublées à moins de 800 € près du bureau", "Prépare les messages pour les logements à contacter", "Combien je mets de côté avec le logement le moins cher à pied ?"];
   if (path.startsWith("/moves")) return ["J'ai signé, prépare mon installation", "Où en est ma recherche de logement ?"];
   if (/^\/applications\/[0-9a-f-]{36}/.test(path))
-    return ["Analyse cette offre par rapport à mon profil", "Prépare mon prochain entretien", "Rédige une relance", "Résume où en est cette candidature"];
+    return ["Analyse cette offre par rapport à mon profil", "Prépare mon prochain entretien", "Analyse le contrat de cette offre", "Rédige une relance", "Résume où en est cette candidature"];
   if (path.startsWith("/applications")) return ["Ajoute cette offre : ", "Quelles candidatures n'ont pas de réponse depuis 2 semaines ?", "Lesquelles dois-je relancer cette semaine ?"];
   if (path.startsWith("/companies") || path.startsWith("/institutions")) return ["Trouve des entreprises IA à Bruxelles", "Quelles entreprises ont le plus de candidatures ?"];
   if (path.startsWith("/contacts")) return ["Qui dois-je recontacter ?", "Ajoute ce contact : "];

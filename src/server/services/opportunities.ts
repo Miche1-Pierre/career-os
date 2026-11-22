@@ -38,6 +38,7 @@ import {
   type StageCategory,
 } from "@/lib/constants";
 import { findDuplicateMatches, STRONG_DUPLICATE, type DuplicateMatch } from "@/lib/duplicates";
+import { parseOffer } from "@/lib/offer";
 import { provenanceKeyFor } from "@/lib/capture-schema";
 import { computeNextFollowUp, resolveFollowUpInterval } from "@/lib/followups";
 import { todayISO, type ISODate } from "@/lib/dates";
@@ -326,6 +327,7 @@ export async function getOpportunity(id: string) {
     tasks: taskRows,
     events: eventRows,
     capture,
+    offer: parseOffer(opp.details),
   };
 }
 export type OpportunityDetail = Awaited<ReturnType<typeof getOpportunity>>;
