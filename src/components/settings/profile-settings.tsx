@@ -107,17 +107,17 @@ export function ProfileSettings({ value, icons: initialIcons }: { value: Profile
             </Button>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_180px]">
+        <div className="grid gap-4 @md:grid-cols-[minmax(0,1fr)_160px]">
           <FormField label={PROFILE_FIELD_LABELS.fullName}>
             <Input value={v.fullName} onChange={(e) => setV({ ...v, fullName: e.target.value })} />
           </FormField>
           <FormField label={PROFILE_FIELD_LABELS.yearsOfExperience}>
             <NumberInput value={v.yearsOfExperience} onChange={(n) => setV({ ...v, yearsOfExperience: n })} />
           </FormField>
-          <FormField label={PROFILE_FIELD_LABELS.headline} className="sm:col-span-2">
+          <FormField label={PROFILE_FIELD_LABELS.headline} className="@md:col-span-2">
             <Input value={v.headline} onChange={(e) => setV({ ...v, headline: e.target.value })} placeholder="Ingénieur full-stack — HealthTech et IA" />
           </FormField>
-          <FormField label={PROFILE_FIELD_LABELS.summary} className="sm:col-span-2">
+          <FormField label={PROFILE_FIELD_LABELS.summary} className="@md:col-span-2">
             <Textarea value={v.summary} onChange={(e) => setV({ ...v, summary: e.target.value })} rows={5} />
           </FormField>
         </div>
@@ -137,7 +137,7 @@ export function ProfileSettings({ value, icons: initialIcons }: { value: Profile
       </SettingsCard>
 
       <SettingsCard title="Ce que tu cherches" footer={saveButton}>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 @xl:grid-cols-2">
           {list("targetRoles", "Software Engineer…")}
           {list("targetDomains", "HealthTech…")}
           {list("preferredLocations", "Bruxelles, Remote…")}

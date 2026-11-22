@@ -81,7 +81,7 @@ export function SettingsCard({ title, description, children, footer }: { title: 
         <h2 className="heading-base text-foreground">{title}</h2>
         {description && <p className="mt-0.5 copy-sm text-muted-foreground">{description}</p>}
       </div>
-      <div className="space-y-4 px-5 py-5">{children}</div>
+      <div className="@container space-y-4 px-5 py-5">{children}</div>
       {footer && <div className="flex flex-wrap justify-end gap-2 border-t border-separator px-5 py-3">{footer}</div>}
     </section>
   );
