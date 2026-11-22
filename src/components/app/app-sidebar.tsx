@@ -11,7 +11,6 @@ import {
   GraduationCap,
   Inbox,
   LayoutDashboard,
-  ListChecks,
   Plane,
   Plus,
   Settings,
@@ -42,6 +41,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { useAppData } from "./app-data";
 import { useQuickImport } from "./quick-import";
+import { ClaudeUsage } from "./claude-usage";
 
 interface NavItem {
   href: string;
@@ -125,8 +125,7 @@ export function AppSidebar() {
       <SidebarContent>
         <NavGroup
           items={[
-            { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today },
-            { href: "/tasks", label: "Tâches", icon: ListChecks },
+            { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today, also: ["/tasks"] },
             { href: "/calendar", label: "Calendrier", icon: CalendarDays },
           ]}
         />
@@ -156,6 +155,7 @@ export function AppSidebar() {
         />
       </SidebarContent>
       <SidebarFooter>
+        {ai.available && ai.provider === "claude-code" && <ClaudeUsage />}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Corbeille">

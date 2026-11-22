@@ -21,7 +21,7 @@ const MISS_TTL_MS = 3 * 24 * 3600_000;
 const TIMEOUT_MS = 5_000;
 const MAX_REDIRECTS = 3;
 
-export type LogoContentType = "image/png" | "image/jpeg" | "image/gif" | "image/webp" | "image/x-icon";
+export type LogoContentType = "image/png" | "image/jpeg" | "image/gif" | "image/webp" | "image/x-icon" | "image/svg+xml";
 
 export interface Logo {
   body: Buffer;
@@ -140,11 +140,31 @@ async function readCapped(response: Response, max: number): Promise<Buffer | nul
   return Buffer.concat(chunks);
 }
 
-/** Candidate URLs for a host, best first. */
+/** Candidate URLs for a host, best first (Google's 128 px icon service gives the sharpest results). */
 export function logoSources(host: string): string[] {
   const hosts = [...new Set([host, registrableDomain(host)])];
-  return hosts.flatMap((h) => [`https://icons.duckduckgo.com/ip3/${h}.ico`, `https://${h}/favicon.ico`]);
+  return hosts.flatMap((h) => [
+    `https://www.google.com/s2/favicons?domain=${h}&sz=128`,
+    `https://icons.duckduckgo.com/ip3/${h}.ico`,
+    `https://${h}/apple-touch-icon.png`,
+    `https://${h}/favicon.ico`,
+  ]);
 }
+
+/** Pixel width of a PNG or the largest image of an ICO (0 when unknown). */
+export function imageWidth(logo: Logo): number {
+  const b = logo.body;
+  if (logo.contentType === "image/png" && b.length >= 24) return b.readUInt32BE(16);
+  if (logo.contentType === "image/x-icon" && b.length >= 6) {
+    const count = b.readUInt16LE(4);
+    let max = 0;
+    for (let i = 0; i < count && 6 + i * 16 < b.length; i++) max = Math.max(max, b[6 + i * 16] || 256);
+    return max;
+  }
+  return 0;
+}
+
+const SHARP_PX = 64;
 
 function cachePaths(host: string) {
   const key = createHash("sha256").update(host).digest("hex").slice(0, 40);
@@ -190,10 +210,14 @@ async function resolveLogo(host: string, deps: LogoDeps): Promise<Logo | null> {
   if (imageFresh && cached) return cached;
   if (!cached && (await fresh(files.miss, MISS_TTL_MS, now))) return null;
 
+  // First sharp icon wins; otherwise keep the largest one found.
   let found: Logo | null = null;
   for (const source of logoSources(host)) {
-    found = await fetchImage(source, deps);
-    if (found) break;
+    const logo = await fetchImage(source, deps);
+    if (!logo) continue;
+    const width = imageWidth(logo);
+    if (!found || width > imageWidth(found)) found = logo;
+    if (width >= SHARP_PX || width === 0) break;
   }
   try {
     await fs.mkdir(files.dir, { recursive: true });
@@ -220,4 +244,71 @@ async function readCached(file: string): Promise<Logo | null> {
   } catch {
     return null;
   }
+}
+
+
+// ---------------------------------------------------------------------------
+// SVGL (svgl.app): vector logos of well-known brands, matched by exact name
+// ---------------------------------------------------------------------------
+
+const SVG_MAX_BYTES = 200 * 1024;
+
+const normName = (s: string) =>
+  s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\(.*?\)/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+
+/** A standalone SVG without scripts, event handlers, external references or foreign HTML. */
+export function isSafeSvg(text: string): boolean {
+  const t = text.trim();
+  if (!/^(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*<svg[\s>]/i.test(t)) return false;
+  return !/<script|<foreignobject|\son[a-z]+\s*=|javascript:|<iframe|<embed|<object|xlink:href\s*=\s*["']\s*(https?:|\/\/|data:text)|href\s*=\s*["']\s*(https?:|\/\/|data:text)/i.test(t);
+}
+
+interface SvglItem {
+  title: string;
+  route: string | { light?: string; dark?: string };
+}
+
+/** Logo from SVGL when an entry's title is exactly the organization's name (cached like favicons). */
+export async function getSvglLogo(name: string, deps: LogoDeps = defaultDeps): Promise<Logo | null> {
+  const key = normName(name);
+  if (key.length < 2) return null;
+  const files = cachePaths(`svgl:${key}`);
+  const svgFile = files.image.replace(/\.img$/, ".svg");
+  const now = deps.now();
+  if (await fresh(svgFile, HIT_TTL_MS, now)) {
+    try {
+      return { body: await fs.readFile(svgFile), contentType: "image/svg+xml" };
+    } catch {
+      /* refetch */
+    }
+  }
+  if (await fresh(files.miss, MISS_TTL_MS, now)) return null;
+  let logo: Logo | null = null;
+  try {
+    const res = await deps.fetch(`https://api.svgl.app/?search=${encodeURIComponent(name.replace(/\(.*?\)/g, "").trim())}`, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+    const items = res.ok ? ((await res.json()) as SvglItem[] | { error: string }) : [];
+    const item = Array.isArray(items) ? items.find((i) => normName(i.title) === key) : undefined;
+    const route = item ? (typeof item.route === "string" ? item.route : (item.route.light ?? item.route.dark)) : null;
+    if (route && route.startsWith("https://svgl.app/")) {
+      const svg = await deps.fetch(route, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+      const text = svg.ok ? await svg.text() : "";
+      if (text.length > 0 && text.length <= SVG_MAX_BYTES && isSafeSvg(text)) logo = { body: Buffer.from(text, "utf8"), contentType: "image/svg+xml" };
+    }
+  } catch {
+    logo = null;
+  }
+  try {
+    await fs.mkdir(files.dir, { recursive: true });
+    if (logo) await writeAtomic(svgFile, logo.body);
+    else await writeAtomic(files.miss, new Date(now).toISOString());
+  } catch {
+    /* best effort */
+  }
+  return logo;
 }

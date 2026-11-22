@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { groupOrganizations, isLocationSuffix, locationsLabel, registrableDomain, siblingOrganizations, websiteDomain, websiteHost } from "@/lib/org-grouping";
-import { fetchImage, getLogo, logoSources, sniffImageType, type LogoDeps } from "@/server/services/logos";
+import { fetchImage, getLogo, getSvglLogo, imageWidth, isSafeSvg, logoSources, sniffImageType, type LogoDeps } from "@/server/services/logos";
 import { buildCvProposal, cvProfileExtractionSchema, foundInText, yearsStatedInText, type CvProfileExtraction } from "@/server/services/profile-import";
 import { applyCvChoices, countProfileChanges, initialCvChoices, type CvProposal } from "@/lib/cv-import";
 import { profileSchema, type Profile } from "@/lib/schemas";
@@ -195,40 +195,83 @@ describe("logos", () => {
     expect(sniffImageType(Buffer.from([0, 0, 1, 0, 0, 0]))).toBeNull(); // ICO with no image
   });
 
-  it("tries DuckDuckGo then the site itself, for the host then its registrable domain", () => {
+  it("tries Google (128 px), DuckDuckGo, then the site itself, for the host then its registrable domain", () => {
     expect(logoSources("careers.alten.com")).toEqual([
+      "https://www.google.com/s2/favicons?domain=careers.alten.com&sz=128",
       "https://icons.duckduckgo.com/ip3/careers.alten.com.ico",
+      "https://careers.alten.com/apple-touch-icon.png",
       "https://careers.alten.com/favicon.ico",
+      "https://www.google.com/s2/favicons?domain=alten.com&sz=128",
       "https://icons.duckduckgo.com/ip3/alten.com.ico",
+      "https://alten.com/apple-touch-icon.png",
       "https://alten.com/favicon.ico",
     ]);
-    expect(logoSources("alten.com")).toHaveLength(2);
+    expect(logoSources("alten.com")).toHaveLength(4);
+  });
+
+  it("measures icons and keeps looking until a sharp one is found", async () => {
+    expect(imageWidth({ body: PNG, contentType: "image/png" })).toBe(PNG.readUInt32BE(16));
+    const small = Buffer.from(PNG);
+    small.writeUInt32BE(16, 16);
+    const big = Buffer.from(PNG);
+    big.writeUInt32BE(128, 16);
+    const deps = stubDeps({
+      "https://icons.duckduckgo.com/ip3/sharp.fr.ico": () => new Response(small, { headers: { "content-type": "image/png" } }),
+      "https://sharp.fr/apple-touch-icon.png": () => new Response(big, { headers: { "content-type": "image/png" } }),
+    });
+    const logo = await getLogo("sharp.fr", deps);
+    expect(imageWidth(logo!)).toBe(128);
+    expect(deps.calls).toHaveLength(3); // stops at the first sharp icon
+  });
+
+  it("accepts only safe, standalone SVG from SVGL", async () => {
+    expect(isSafeSvg('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0h1"/></svg>')).toBe(true);
+    expect(isSafeSvg('<?xml version="1.0"?>\n<svg viewBox="0 0 1 1"></svg>')).toBe(true);
+    expect(isSafeSvg('<svg><script>alert(1)</script></svg>')).toBe(false);
+    expect(isSafeSvg('<svg onload="x()"></svg>')).toBe(false);
+    expect(isSafeSvg('<svg><foreignObject><div/></foreignObject></svg>')).toBe(false);
+    expect(isSafeSvg("<html></html>")).toBe(false);
+    const deps = stubDeps({
+      "https://api.svgl.app/?search=Anthropic": () => Response.json([{ title: "Anthropic", route: { light: "https://svgl.app/library/anthropic_black.svg", dark: "https://svgl.app/library/anthropic_white.svg" } }]),
+      "https://svgl.app/library/anthropic_black.svg": () => new Response('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0"/></svg>'),
+    });
+    const logo = await getSvglLogo("Anthropic", deps);
+    expect(logo?.contentType).toBe("image/svg+xml");
+    expect(await getSvglLogo("Anthropic", deps)).not.toBeNull(); // cached
+    expect(deps.calls).toHaveLength(2);
+    const none = stubDeps({ "https://api.svgl.app/?search=ALTEN%20Canada": () => Response.json({ error: "not found" }) });
+    expect(await getSvglLogo("ALTEN Canada", none)).toBeNull();
   });
 
   it("fetches, validates and caches a logo on disk", async () => {
     const deps = stubDeps({ "https://alten.com/favicon.ico": () => new Response(PNG, { headers: { "content-type": "image/png" } }) });
     const first = await getLogo("alten.com", deps);
     expect(first?.contentType).toBe("image/png");
-    expect(deps.calls).toEqual(["https://icons.duckduckgo.com/ip3/alten.com.ico", "https://alten.com/favicon.ico"]);
+    expect(deps.calls).toEqual([
+      "https://www.google.com/s2/favicons?domain=alten.com&sz=128",
+      "https://icons.duckduckgo.com/ip3/alten.com.ico",
+      "https://alten.com/apple-touch-icon.png",
+      "https://alten.com/favicon.ico",
+    ]);
     const again = await getLogo("alten.com", deps);
     expect(again?.body.equals(PNG)).toBe(true);
-    expect(deps.calls).toHaveLength(2); // served from the disk cache
+    expect(deps.calls).toHaveLength(4); // served from the disk cache
     expect(fs.readdirSync(path.join(process.env.APP_DATA_DIR!, "logos")).filter((f) => f.endsWith(".img"))).toHaveLength(1);
   });
 
   it("caches misses too", async () => {
     const deps = stubDeps({});
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(2);
+    expect(deps.calls).toHaveLength(4);
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(2);
+    expect(deps.calls).toHaveLength(4);
   });
 
   it("deduplicates concurrent requests for the same domain", async () => {
     const deps = stubDeps({ "https://icons.duckduckgo.com/ip3/zefir.fr.ico": () => new Response(ICO, { headers: { "content-type": "image/vnd.microsoft.icon" } }) });
     const [a, b, c] = await Promise.all([getLogo("zefir.fr", deps), getLogo("zefir.fr", deps), getLogo("zefir.fr", deps)]);
     expect([a?.contentType, b?.contentType, c?.contentType]).toEqual(["image/x-icon", "image/x-icon", "image/x-icon"]);
-    expect(deps.calls).toHaveLength(1);
+    expect(deps.calls).toHaveLength(4); // one resolution shared by the three requests
   });
 
   it("refuses non-images, SVG, oversized bodies, private hosts and redirects to them", async () => {
