@@ -127,6 +127,22 @@ sont autorisés, système de consignes en français, contexte de la page et ment
 `chat_threads` / `chat_messages`, reprises avec `--resume` (session Claude Code). En conteneur avec jeton, Claude
 appelle le MCP sur `127.0.0.1:3000` ; via le bridge hôte (`/v1/chat`), sur l'adresse du navigateur.
 
+### Offre et contrat
+
+L'offre d'une candidature vit dans `opportunities.details.offer` (`src/lib/offer.ts`) : conditions (net/brut, dates,
+heures, lieu, chèques-repas, préavis…), checklist de relecture (12 points, statut OK / point d'attention / absent / non
+applicable) et dernière analyse de contrat. Elle est gérée par `src/server/services/offers.ts`, à part des champs de
+l'annonce : les outils `create_opportunity` / `update_opportunity` ne changent pas.
+
+L'analyse de contrat (onglet Offre, bouton « Analyser le contrat ») lit le PDF joint, appelle l'IA (`contract_analysis_v1`,
+Opus par défaut avec Claude Code) et vérifie chaque citation dans le texte : un terme dont la citation est introuvable
+n'est pas repris dans l'offre, une clause défavorable non retrouvée est signalée. Les termes vérifiés remplissent les
+champs vides de l'offre ; la checklist n'écrase jamais un point déjà jugé par l'utilisateur. Toujours descriptif.
+
+« Créer le projet d'installation » reprend de l'offre les dates, le lieu de travail, le net mensuel et les chèques-repas
+(× 20 jours) ; sur un projet existant, seuls les champs vides sont complétés. Aujourd'hui agrège les offres en cours, les
+visites et les logements à contacter, avec une carte par installation (compte à rebours).
+
 ### Dictée
 
 Le micro de la barre de chat enregistre (MediaRecorder, niveau affiché en direct), puis le navigateur rééchantillonne
@@ -137,7 +153,7 @@ enregistrement. Variables : `TRANSCRIBE=off`, `TRANSCRIBE_MODEL`, `TRANSCRIBE_LA
 
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
-- `.mcp.json` enregistre le serveur MCP `career-os` → 39 outils (today, search, create_opportunity, set_status, moves/logement/budget,
+- `.mcp.json` enregistre le serveur MCP `career-os` → 42 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget,
   follow_up, add_interview, attach_document, inbox…, save_analysis…).
 - `CLAUDE.md` + skills `.claude/skills/*` décrivent les workflows (importer, traiter l'Inbox, relances, préparation
   d'entretien, analyse). Claude extrait lui-même, avec provenance, et crée les objets via MCP — sans clé API.

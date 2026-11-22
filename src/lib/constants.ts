@@ -273,6 +273,7 @@ export const DOCUMENT_KINDS = [
   "LANGUAGE_CERT",
   "PRESENTATION",
   "ID_DOCUMENT",
+  "CONTRACT",
   "OTHER",
 ] as const;
 export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
@@ -288,6 +289,7 @@ export const DOCUMENT_KIND_META: Record<DocumentKind, { label: string; plural: s
   LANGUAGE_CERT: { label: "Certificat de langue", plural: "Certificats de langue", folder: "Certificates" },
   PRESENTATION: { label: "Présentation", plural: "Présentations", folder: "Presentations" },
   ID_DOCUMENT: { label: "Pièce d’identité", plural: "Pièces d’identité", folder: "Admin" },
+  CONTRACT: { label: "Contrat / convention", plural: "Contrats et conventions", folder: "Contracts" },
   OTHER: { label: "Autre", plural: "Autres documents", folder: "Other" },
 };
 
