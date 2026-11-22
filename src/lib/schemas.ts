@@ -371,6 +371,8 @@ export const profileSchema = z.object({
   summary: trimmed.max(10_000).default(""),
   yearsOfExperience: z.number().min(0).max(60).nullable().default(null),
   skills: stringList(300).default([]),
+  /** How the skills are arranged on the profile page (see lib/skills.ts); `skills` stays the list everyone reads. */
+  skillGroups: z.array(z.object({ name: trimmed.min(1).max(80), skills: stringList(300) })).max(30).default([]),
   languages: stringList(30).default([]),
   education: stringList(30).default([]),
   targetRoles: stringList(50).default([]),

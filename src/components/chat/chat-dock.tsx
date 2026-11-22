@@ -1,10 +1,10 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUp, AtSign, ChevronDown, History, Loader2, MapPin, Mic, MicOff, Plus, Sparkles, Square, Wrench, X } from "lucide-react";
+import { ArrowUp, AtSign, Check, ChevronDown, History, Loader2, MapPin, Mic, Plus, Sparkles, Square, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAppData } from "@/components/app/app-data";
 import { cn } from "@/lib/utils";
+import { useDictation } from "./use-dictation";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -113,32 +114,6 @@ const MENTION_LABEL: Record<string, string> = {
 };
 
 // ---------------------------------------------------------------------------
-// Speech recognition (Web Speech API, Chrome / Edge)
-// ---------------------------------------------------------------------------
-
-interface SpeechResultEvent {
-  resultIndex: number;
-  results: ArrayLike<{ isFinal: boolean; 0: { transcript: string } }>;
-}
-interface SpeechRecognitionLike {
-  lang: string;
-  continuous: boolean;
-  interimResults: boolean;
-  start: () => void;
-  stop: () => void;
-  onresult: ((e: SpeechResultEvent) => void) | null;
-  onend: (() => void) | null;
-  onerror: ((e: { error: string }) => void) | null;
-}
-
-function createRecognition(): SpeechRecognitionLike | null {
-  if (typeof window === "undefined") return null;
-  const w = window as unknown as { SpeechRecognition?: new () => SpeechRecognitionLike; webkitSpeechRecognition?: new () => SpeechRecognitionLike };
-  const Ctor = w.SpeechRecognition ?? w.webkitSpeechRecognition;
-  return Ctor ? new Ctor() : null;
-}
-
-// ---------------------------------------------------------------------------
 // Provider + dock
 // ---------------------------------------------------------------------------
 
@@ -215,8 +190,24 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [mentionHits, setMentionHits] = useState<{ type: string; id: string; title: string; subtitle: string | null; href: string }[]>([]);
   const [mentionIndex, setMentionIndex] = useState(0);
-  const [listening, setListening] = useState(false);
-  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const levelSink = useRef<((level: number) => void) | null>(null);
+  const onDictationText = useCallback(
+    (text: string) => {
+      const current = inputRef.current?.value ?? "";
+      const next = current.trim() ? `${current.trimEnd()} ${text}` : text;
+      setInput(next);
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+        inputRef.current?.setSelectionRange(next.length, next.length);
+      });
+    },
+    [inputRef, setInput],
+  );
+  const onDictationError = useCallback((message: string) => toast.error(message), []);
+  const onDictationLevel = useCallback((level: number) => levelSink.current?.(level), []);
+  const dictation = useDictation({ onText: onDictationText, onError: onDictationError, onLevel: onDictationLevel });
+  const recording = dictation.state === "recording";
+  const transcribing = dictation.state === "transcribing";
   const abortRef = useRef<AbortController | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [pageTitle, setPageTitle] = useState("");
@@ -392,39 +383,36 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
     setMentionQuery(m ? m[1] : null);
   };
 
-  const toggleDictation = () => {
-    if (listening) {
-      recognitionRef.current?.stop();
-      return;
-    }
-    const rec = createRecognition();
-    if (!rec) {
-      toast.error("La dictée n'est pas disponible dans ce navigateur (utilise Chrome ou Edge).");
-      return;
-    }
-    rec.lang = "fr-FR";
-    rec.continuous = true;
-    rec.interimResults = false;
-    const base = input ? `${input.trimEnd()} ` : "";
-    let transcript = "";
-    rec.onresult = (e) => {
-      for (let i = e.resultIndex; i < e.results.length; i++) if (e.results[i].isFinal) transcript += e.results[i][0].transcript;
-      setInput(`${base}${transcript.trim()}`);
+  // While recording: Enter finishes, Escape cancels.
+  useEffect(() => {
+    if (!recording) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        dictation.stop();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        dictation.cancel();
+      }
     };
-    rec.onend = () => setListening(false);
-    rec.onerror = (e) => {
-      setListening(false);
-      if (e.error !== "aborted" && e.error !== "no-speech") toast.error(`Dictée : ${e.error}`);
-    };
-    recognitionRef.current = rec;
-    rec.start();
-    setListening(true);
-  };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [recording, dictation]);
+
+  // The input grows with its content up to 8 lines, then scrolls.
+  useLayoutEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const max = 8 * 20 + 16;
+    el.style.height = `${Math.min(el.scrollHeight, max)}px`;
+    el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
+  }, [input, inputRef, dictation.state]);
 
   const suggestions = suggestionsFor(pathname);
   const last = messages[messages.length - 1];
   const asksConfirmation = !busy && last?.role === "assistant" && !last.error && /\?\s*$/.test(last.content.trim());
-  const showSuggestions = focused && !input && !mentions.length && !open;
+  const showSuggestions = !input.trim() && !mentions.length && !busy && dictation.state === "idle" && !(open && messages.length > 0);
 
   return (
     <div className="pointer-events-none sticky bottom-0 z-30 w-full px-3 pb-3 sm:px-6">
@@ -490,140 +478,235 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
           </div>
         )}
 
-        {showSuggestions && (
-          <div className="mb-2 flex flex-wrap justify-center gap-1.5">
-            {suggestions.map((s) => (
-              <button
-                key={s}
-                type="button"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => (s.endsWith(": ") ? onChange(s) : void send(s))}
-                className="max-w-full truncate rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground shadow-sm transition-colors hover:bg-hover hover:text-foreground"
-              >
-                {s}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="relative isolate">
+          <div aria-hidden className={cn("composer-halo pointer-events-none absolute -inset-[3px] -z-10 rounded-[23px] opacity-45 blur-md transition-opacity duration-300", (focused || dictation.state !== "idle") && "opacity-100")} />
+          <div className={cn("relative rounded-[20px] border bg-background shadow-lg transition-colors", focused || dictation.state !== "idle" ? "border-transparent" : "border-border")}>
+            {mentionQuery !== null && mentionHits.length > 0 && (
+              <div className="absolute inset-x-2 bottom-full mb-3 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
+                {mentionHits.map((h, i) => (
+                  <button
+                    key={`${h.type}:${h.id}`}
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => pickMention(h)}
+                    className={cn("flex w-full items-center gap-2 px-3 py-2 text-left text-sm", i === mentionIndex ? "bg-hover" : "hover:bg-hover")}
+                  >
+                    <Badge size="sm" variant="outline" className="shrink-0">
+                      {MENTION_LABEL[h.type] ?? h.type}
+                    </Badge>
+                    <span className="min-w-0 flex-1 truncate">{h.title}</span>
+                    {h.subtitle && <span className="hidden max-w-[40%] truncate text-xs text-muted-foreground sm:inline">{h.subtitle}</span>}
+                  </button>
+                ))}
+              </div>
+            )}
 
-        <div className={cn("relative rounded-2xl border bg-background shadow-lg transition-colors", focused ? "border-border-form-active" : "border-border")}>
-          {mentionQuery !== null && mentionHits.length > 0 && (
-            <div className="absolute inset-x-2 bottom-full mb-2 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
-              {mentionHits.map((h, i) => (
-                <button
-                  key={`${h.type}:${h.id}`}
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => pickMention(h)}
-                  className={cn("flex w-full items-center gap-2 px-3 py-2 text-left text-sm", i === mentionIndex ? "bg-hover" : "hover:bg-hover")}
-                >
-                  <Badge size="sm" variant="outline" className="shrink-0">
-                    {MENTION_LABEL[h.type] ?? h.type}
+            {(mentions.length > 0 || (includePage && pageTitle && focused)) && (
+              <div className="flex flex-wrap gap-1.5 px-3 pt-3">
+                {includePage && pageTitle && focused && (
+                  <Badge size="sm" variant="outline" className="max-w-56 gap-1">
+                    <MapPin className="shrink-0" />
+                    <span className="truncate">{pageTitle}</span>
+                    <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => setIncludePage(false)} aria-label="Ne pas joindre la page">
+                      <X className="size-3" />
+                    </button>
                   </Badge>
-                  <span className="min-w-0 flex-1 truncate">{h.title}</span>
-                  {h.subtitle && <span className="hidden max-w-[40%] truncate text-xs text-muted-foreground sm:inline">{h.subtitle}</span>}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {(mentions.length > 0 || (includePage && pageTitle && focused)) && (
-            <div className="flex flex-wrap gap-1.5 px-3 pt-2.5">
-              {includePage && pageTitle && focused && (
-                <Badge size="sm" variant="outline" className="max-w-56 gap-1">
-                  <MapPin className="shrink-0" />
-                  <span className="truncate">{pageTitle}</span>
-                  <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => setIncludePage(false)} aria-label="Ne pas joindre la page">
-                    <X className="size-3" />
-                  </button>
-                </Badge>
-              )}
-              {mentions.map((m) => (
-                <Badge key={`${m.type}:${m.id}`} size="sm" variant="highlight" className="max-w-56 gap-1">
-                  <AtSign className="shrink-0" />
-                  <span className="truncate">{m.label}</span>
-                  <button type="button" onClick={() => setMentions((l) => l.filter((x) => x !== m))} aria-label={`Retirer ${m.label}`}>
-                    <X className="size-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          <div className="flex items-end gap-1.5 p-2">
-            <textarea
-              ref={inputRef}
-              value={input}
-              rows={1}
-              onChange={(e) => onChange(e.target.value)}
-              onFocus={() => {
-                setFocused(true);
-                setIncludePage(true);
-              }}
-              onBlur={() => setFocused(false)}
-              onKeyDown={(e) => {
-                if (mentionQuery !== null && mentionHits.length) {
-                  if (e.key === "ArrowDown") {
-                    e.preventDefault();
-                    setMentionIndex((i) => (i + 1) % mentionHits.length);
-                    return;
-                  }
-                  if (e.key === "ArrowUp") {
-                    e.preventDefault();
-                    setMentionIndex((i) => (i - 1 + mentionHits.length) % mentionHits.length);
-                    return;
-                  }
-                  if (e.key === "Enter" || e.key === "Tab") {
-                    e.preventDefault();
-                    pickMention(mentionHits[mentionIndex]);
-                    return;
-                  }
-                }
-                if (e.key === "Escape") {
-                  if (mentionQuery !== null) setMentionQuery(null);
-                  else if (open) setOpen(false);
-                  else (e.target as HTMLTextAreaElement).blur();
-                  return;
-                }
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  void send(input);
-                }
-              }}
-              placeholder={busy ? "Claude travaille…" : "Demande n'importe quoi à Career OS… (@ pour citer une candidature, un logement…)"}
-              className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-2 py-2 text-sm outline-none placeholder:text-faint [field-sizing:content]"
-              aria-label="Message pour Claude"
-            />
-            {messages.length > 0 && !open && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label="Afficher la conversation">
-                    <Sparkles className="text-highlight-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Afficher la conversation (Ctrl J)</TooltipContent>
-              </Tooltip>
+                )}
+                {mentions.map((m) => (
+                  <Badge key={`${m.type}:${m.id}`} size="sm" variant="highlight" className="max-w-56 gap-1">
+                    <AtSign className="shrink-0" />
+                    <span className="truncate">{m.label}</span>
+                    <button type="button" onClick={() => setMentions((l) => l.filter((x) => x !== m))} aria-label={`Retirer ${m.label}`}>
+                      <X className="size-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant={listening ? "destructive" : "ghost"} size="icon-sm" onClick={toggleDictation} aria-label={listening ? "Arrêter la dictée" : "Dicter"}>
-                  {listening ? <MicOff /> : <Mic />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{listening ? "Arrêter la dictée" : "Dicter (français)"}</TooltipContent>
-            </Tooltip>
-            {busy ? (
-              <Button variant="outline" size="icon-sm" onClick={() => abortRef.current?.abort()} aria-label="Arrêter">
-                <Square className="fill-current" />
-              </Button>
+
+            {recording ? (
+              <div className="flex h-11 items-center gap-3 px-4 pt-2" role="status" aria-label="Enregistrement en cours">
+                <span className="size-2 shrink-0 animate-pulse rounded-full bg-destructive" />
+                <VoiceWave sinkRef={levelSink} />
+                <span className="shrink-0 text-xs text-muted-foreground tabular-nums">{formatElapsed(dictation.elapsedMs)}</span>
+              </div>
             ) : (
-              <Button variant="highlight" size="icon-sm" onClick={() => void send(input)} disabled={!input.trim()} aria-label="Envoyer">
-                <ArrowUp />
-              </Button>
+              <textarea
+                ref={inputRef}
+                value={input}
+                rows={1}
+                disabled={transcribing}
+                onChange={(e) => onChange(e.target.value)}
+                onFocus={() => {
+                  setFocused(true);
+                  setIncludePage(true);
+                }}
+                onBlur={() => setFocused(false)}
+                onKeyDown={(e) => {
+                  if (mentionQuery !== null && mentionHits.length) {
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      setMentionIndex((i) => (i + 1) % mentionHits.length);
+                      return;
+                    }
+                    if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      setMentionIndex((i) => (i - 1 + mentionHits.length) % mentionHits.length);
+                      return;
+                    }
+                    if (e.key === "Enter" || e.key === "Tab") {
+                      e.preventDefault();
+                      pickMention(mentionHits[mentionIndex]);
+                      return;
+                    }
+                  }
+                  if (e.key === "Escape") {
+                    if (mentionQuery !== null) setMentionQuery(null);
+                    else if (open) setOpen(false);
+                    else (e.target as HTMLTextAreaElement).blur();
+                    return;
+                  }
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    void send(input);
+                  }
+                }}
+                placeholder={
+                  transcribing
+                    ? dictation.progress !== null
+                      ? `Préparation de la dictée (téléchargement du modèle, une seule fois)… ${dictation.progress} %`
+                      : "Transcription…"
+                    : busy
+                      ? "Claude travaille…"
+                      : "Demande n'importe quoi à Career OS… (@ pour citer une candidature, un logement…)"
+                }
+                className="block min-h-11 w-full resize-none bg-transparent px-4 pt-3 pb-1 text-sm leading-5 outline-none placeholder:text-faint disabled:cursor-wait"
+                aria-label="Message pour Claude"
+              />
             )}
+
+            <div className="flex items-center gap-1.5 px-2 pt-1 pb-2">
+              <div className="min-w-0 flex-1">
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="flex items-center gap-1.5 overflow-x-auto px-1 [mask-image:linear-gradient(to_right,black_88%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <Sparkles className="size-3.5 shrink-0 text-highlight-500" aria-hidden />
+                    {suggestions.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        onMouseDown={(e) => e.preventDefault()}
+                        onClick={() => {
+                          if (s.endsWith(": ")) {
+                            onChange(s);
+                            inputRef.current?.focus();
+                          } else void send(s);
+                        }}
+                        className="shrink-0 rounded-full bg-highlight-50 px-2.5 py-1 text-xs whitespace-nowrap text-highlight-700 transition-colors hover:bg-highlight-100"
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {recording && <p className="truncate px-2 text-xs text-muted-foreground">Parle, puis valide : le texte s’écrit à la fin. Entrée pour valider, Échap pour annuler.</p>}
+              </div>
+              {recording ? (
+                <>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon-sm" onClick={dictation.cancel} aria-label="Annuler l'enregistrement">
+                        <X />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Annuler (Échap)</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="highlight" size="icon-sm" onClick={dictation.stop} aria-label="Terminer et transcrire">
+                        <Check />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Terminer et transcrire (Entrée)</TooltipContent>
+                  </Tooltip>
+                </>
+              ) : (
+                <>
+                  {messages.length > 0 && !open && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button variant="ghost" size="icon-sm" onClick={() => setOpen(true)} aria-label="Afficher la conversation">
+                          <Sparkles className="text-highlight-500" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Afficher la conversation (Ctrl J)</TooltipContent>
+                    </Tooltip>
+                  )}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="icon-sm" onClick={() => void dictation.start()} disabled={transcribing} aria-label="Dicter">
+                        {transcribing ? <Loader2 className="animate-spin" /> : <Mic />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{transcribing ? "Transcription…" : "Dicter"}</TooltipContent>
+                  </Tooltip>
+                  {busy ? (
+                    <Button variant="outline" size="icon-sm" onClick={() => abortRef.current?.abort()} aria-label="Arrêter">
+                      <Square className="fill-current" />
+                    </Button>
+                  ) : (
+                    <Button variant="highlight" size="icon-sm" onClick={() => void send(input)} disabled={!input.trim() || transcribing} aria-label="Envoyer">
+                      <ArrowUp />
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function formatElapsed(ms: number) {
+  const total = Math.floor(ms / 1000);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+}
+
+const WAVE_BARS = 72;
+
+/** Scrolling level meter of the microphone (bars updated directly, outside React renders). */
+function VoiceWave({ sinkRef }: { sinkRef: React.RefObject<((level: number) => void) | null> }) {
+  const bars = useRef<(HTMLSpanElement | null)[]>([]);
+  useEffect(() => {
+    const history = new Array<number>(WAVE_BARS).fill(0);
+    let last = 0;
+    sinkRef.current = (level) => {
+      const now = performance.now();
+      if (now - last < 55) return;
+      last = now;
+      history.shift();
+      history.push(level);
+      history.forEach((v, i) => {
+        const el = bars.current[i];
+        if (el) el.style.transform = `scaleY(${Math.max(0.1, Math.min(1, v))})`;
+      });
+    };
+    return () => {
+      sinkRef.current = null;
+    };
+  }, [sinkRef]);
+  return (
+    <div className="flex h-7 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden" aria-hidden>
+      {Array.from({ length: WAVE_BARS }, (_, i) => (
+        <span
+          key={i}
+          ref={(el) => {
+            bars.current[i] = el;
+          }}
+          className="h-full w-[3px] shrink-0 origin-center scale-y-[0.1] rounded-full bg-foreground/70 transition-transform duration-75"
+        />
+      ))}
     </div>
   );
 }

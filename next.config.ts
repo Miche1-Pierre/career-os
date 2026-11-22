@@ -31,7 +31,15 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
-  serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability"],
+  serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability", "@huggingface/transformers", "onnxruntime-node", "sharp"],
+  // Dictation (local Whisper): transformers.js loads onnxruntime-node through createRequire, which file tracing does not
+  // follow; ship it with the Linux binaries only (the image is Linux; macOS / Windows builds are ~220 MB).
+  outputFileTracingIncludes: {
+    "/api/transcribe": ["./node_modules/onnxruntime-node/package.json", "./node_modules/onnxruntime-node/dist/**/*", "./node_modules/onnxruntime-node/bin/napi-v6/linux/**/*", "./node_modules/onnxruntime-common/**/*"],
+  },
+  outputFileTracingExcludes: {
+    "*": ["./node_modules/onnxruntime-node/bin/napi-v6/darwin/**/*", "./node_modules/onnxruntime-node/bin/napi-v6/win32/**/*", "./node_modules/onnxruntime-web/**/*"],
+  },
   experimental: {
     serverActions: { bodySizeLimit: "4mb" },
     // Uploads go through the proxy (security checks) — allow MAX_UPLOAD_MB + multipart overhead.

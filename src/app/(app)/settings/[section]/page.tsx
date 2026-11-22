@@ -13,7 +13,9 @@ import { libraryStatus, storageConfig } from "@/server/storage";
 import { accessToken } from "@/server/security";
 import { appUrl } from "@/server/mcp/tools";
 import { SettingsShell, SETTINGS_NAV } from "@/components/settings/settings-shell";
-import { GeneralSettings, AppearanceSettings, ProfileSettings, FollowUpSettings } from "@/components/settings/basic-settings";
+import { GeneralSettings, AppearanceSettings, FollowUpSettings } from "@/components/settings/basic-settings";
+import { ProfileSettings } from "@/components/settings/profile-settings";
+import { skillIcons } from "@/server/skill-icons";
 import { PipelineSettings, TagSettings, ViewSettings } from "@/components/settings/pipeline-settings";
 import { TemplateSettings, EmailTemplateSettings, AutomationSettings, GoalSettings } from "@/components/settings/workflow-settings";
 import { AiSettings, DocumentsSettings, DataSettings, IntegrationSettings } from "@/components/settings/system-settings";
@@ -32,7 +34,7 @@ export default async function SettingsSectionPage({ params }: { params: Promise<
       content = <GeneralSettings value={settings.general} />;
       break;
     case "profile":
-      content = <ProfileSettings value={settings.profile} />;
+      content = <ProfileSettings value={settings.profile} icons={await skillIcons(settings.profile.skills)} />;
       break;
     case "follow-ups":
       content = <FollowUpSettings value={settings.followUp} />;

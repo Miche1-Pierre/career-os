@@ -205,3 +205,11 @@ export async function unlockAction(_: unknown, formData: FormData) {
   });
   redirect(next.startsWith("/") && !next.startsWith("//") ? next : "/today");
 }
+
+/** Brand icons of skills typed in the profile editor (looked up server-side, see server/skill-icons). */
+export async function skillIconsAction(skills: string[]) {
+  return runAction(async () => {
+    const { skillIcons } = await import("@/server/skill-icons");
+    return skillIcons(skills.slice(0, 300).map((s) => String(s).slice(0, 200)));
+  }, { revalidate: false });
+}

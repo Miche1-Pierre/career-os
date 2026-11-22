@@ -15,13 +15,18 @@ export type ClaudeUsage =
   | { available: true; fiveHour: UsageWindow | null; sevenDay: UsageWindow | null; plan: string | null; fetchedAt: string }
   | { available: false; reason: string };
 
-const cache = globalThis as unknown as { __careerOsUsage?: { at: number; value: ClaudeUsage } };
-const TTL_MS = 60_000;
+const cache = globalThis as unknown as { __careerOsUsage?: { at: number; value: ClaudeUsage }; __careerOsUsageGood?: { at: number; value: ClaudeUsage } };
+const TTL_MS = 120_000;
+/** A failed refresh (the usage API rate-limits with 429) keeps showing the last good value this long. */
+const STALE_OK_MS = 30 * 60_000;
 
 export async function getClaudeUsage(options: { fresh?: boolean } = {}): Promise<ClaudeUsage> {
   const hit = cache.__careerOsUsage;
   if (!options.fresh && hit && Date.now() - hit.at < TTL_MS) return hit.value;
-  const value = await load();
+  let value = await load();
+  const good = cache.__careerOsUsageGood;
+  if (value.available) cache.__careerOsUsageGood = { at: Date.now(), value };
+  else if (good && Date.now() - good.at < STALE_OK_MS) value = good.value;
   cache.__careerOsUsage = { at: Date.now(), value };
   return value;
 }

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { beforeEach, describe, expect, it } from "vitest";
 import { groupOrganizations, isLocationSuffix, locationsLabel, registrableDomain, siblingOrganizations, websiteDomain, websiteHost } from "@/lib/org-grouping";
-import { fetchImage, getLogo, getSvglLogo, imageWidth, isSafeSvg, logoSources, sniffImageType, type LogoDeps } from "@/server/services/logos";
+import { declaredIcons, fetchImage, getLogo, getSvglLogo, imageWidth, isSafeSvg, logoSources, sniffImageType, type LogoDeps } from "@/server/services/logos";
 import { buildCvProposal, cvProfileExtractionSchema, foundInText, yearsStatedInText, type CvProfileExtraction } from "@/server/services/profile-import";
 import { applyCvChoices, countProfileChanges, initialCvChoices, type CvProposal } from "@/lib/cv-import";
 import { profileSchema, type Profile } from "@/lib/schemas";
@@ -265,19 +265,36 @@ describe("logos", () => {
     expect(fs.readdirSync(path.join(process.env.APP_DATA_DIR!, "logos")).filter((f) => f.endsWith(".img"))).toHaveLength(1);
   });
 
+  it("falls back to the icons the home page declares", async () => {
+    const page = `<html><head><link rel="stylesheet" href="/a.css"><link rel="icon" type="image/svg+xml" href="/logo.svg"><link rel="shortcut icon" href="/static/img/fav-16.png" sizes="16x16"><link rel='apple-touch-icon' href='https://cdn.example.net/touch.png?v=2&amp;x=1'></head></html>`;
+    expect(declaredIcons(page, new URL("https://www.fieldlogs.com/"))).toEqual(["https://cdn.example.net/touch.png?v=2&x=1", "https://www.fieldlogs.com/static/img/fav-16.png"]);
+
+    const deps = stubDeps({
+      "https://fieldlogs.com/": () => new Response(null, { status: 301, headers: { location: "https://www.fieldlogs.com/" } }),
+      "https://www.fieldlogs.com/": () => new Response(page, { headers: { "content-type": "text/html; charset=utf-8" } }),
+      "https://cdn.example.net/touch.png?v=2&x=1": () => new Response(PNG, { headers: { "content-type": "image/png" } }),
+    });
+    const logo = await getLogo("fieldlogs.com", deps);
+    expect(logo?.body.equals(PNG)).toBe(true);
+    // Private hosts stay refused for pages too.
+    const internal = stubDeps({ "https://intranet.example/": () => new Response(page, { headers: { "content-type": "text/html" } }) }, { "intranet.example": ["10.0.0.5"], "www.intranet.example": ["10.0.0.5"] });
+    expect(await getLogo("intranet.example", internal)).toBeNull();
+    expect(internal.calls.filter((c) => c.startsWith("https://intranet.example/"))).toHaveLength(0);
+  });
+
   it("caches misses too", async () => {
     const deps = stubDeps({});
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(8); // apex then www.
+    expect(deps.calls).toHaveLength(10); // 4 sources for the apex and www., then both home pages
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(8);
+    expect(deps.calls).toHaveLength(10);
   });
 
   it("deduplicates concurrent requests for the same domain", async () => {
     const deps = stubDeps({ "https://icons.duckduckgo.com/ip3/zefir.fr.ico": () => new Response(ICO, { headers: { "content-type": "image/vnd.microsoft.icon" } }) });
     const [a, b, c] = await Promise.all([getLogo("zefir.fr", deps), getLogo("zefir.fr", deps), getLogo("zefir.fr", deps)]);
     expect([a?.contentType, b?.contentType, c?.contentType]).toEqual(["image/x-icon", "image/x-icon", "image/x-icon"]);
-    expect(deps.calls).toHaveLength(8); // one resolution shared by the three requests
+    expect(deps.calls).toHaveLength(10); // one resolution shared by the three requests
   });
 
   it("refuses non-images, SVG, oversized bodies, private hosts and redirects to them", async () => {
@@ -315,7 +332,8 @@ const emptyProfile = (): Profile => profileSchema.parse({});
 
 describe("CV import", () => {
   it("uses exactly the keys of the profile", () => {
-    expect(Object.keys(cvProfileExtractionSchema.shape).sort()).toEqual(Object.keys(profileSchema.shape).sort());
+    // skillGroups is only how the profile page arranges the skills, nothing to read in a CV.
+    expect(Object.keys(cvProfileExtractionSchema.shape).sort()).toEqual(Object.keys(profileSchema.shape).filter((k) => k !== "skillGroups").sort());
   });
 
   it("finds values in the CV text and flags the others", () => {
