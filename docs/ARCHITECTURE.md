@@ -127,6 +127,14 @@ sont autorisés, système de consignes en français, contexte de la page et ment
 `chat_threads` / `chat_messages`, reprises avec `--resume` (session Claude Code). En conteneur avec jeton, Claude
 appelle le MCP sur `127.0.0.1:3000` ; via le bridge hôte (`/v1/chat`), sur l'adresse du navigateur.
 
+### Dictée
+
+Le micro de la barre de chat enregistre (MediaRecorder, niveau affiché en direct), puis le navigateur rééchantillonne
+en WAV 16 kHz mono et l'envoie à `POST /api/transcribe`. Le serveur transcrit en local avec Whisper
+(`src/server/ai/transcribe.ts`, transformers.js sur onnxruntime-node) : l'audio ne quitte pas la machine. Le modèle
+(`Xenova/whisper-small`, ≈ 250 Mo) est téléchargé une fois depuis le Hugging Face Hub dans `<data>/models`, au premier
+enregistrement. Variables : `TRANSCRIBE=off`, `TRANSCRIBE_MODEL`, `TRANSCRIBE_LANGUAGE` (`french` par défaut, `auto`).
+
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
 - `.mcp.json` enregistre le serveur MCP `career-os` → 39 outils (today, search, create_opportunity, set_status, moves/logement/budget,

@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { FileUp, Monitor, Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FormField, ListEditor, NumberInput } from "@/components/app/fields";
+import { FormField, NumberInput } from "@/components/app/fields";
 import { useAction } from "@/hooks/use-action";
 import { updateSettingsAction } from "@/app/actions/settings";
 import { OPPORTUNITY_TYPES, OPPORTUNITY_TYPE_META } from "@/lib/constants";
@@ -17,8 +16,6 @@ import type { AppSettings } from "@/lib/settings-schema";
 import { addBusinessDays, addDays, formatISODate } from "@/lib/dates";
 import { useAppData } from "@/components/app/app-data";
 import { SettingsCard } from "./settings-shell";
-import { CvImportDialog } from "./cv-import-dialog";
-import { PROFILE_FIELD_LABELS } from "@/lib/cv-import";
 import { cn } from "@/lib/utils";
 
 function SaveButton({ onClick, pending, dirty }: { onClick: () => void; pending: boolean; dirty: boolean }) {
@@ -110,67 +107,6 @@ export function AppearanceSettings() {
           </button>
         ))}
       </div>
-    </SettingsCard>
-  );
-}
-
-export function ProfileSettings({ value }: { value: AppSettings["profile"] }) {
-  const { run, pending } = useAction();
-  const [v, setV] = useState(value);
-  const [importing, setImporting] = useState(false);
-  const dirty = JSON.stringify(v) !== JSON.stringify(value);
-  const list = (key: keyof AppSettings["profile"], label: string, hint?: string) => (
-    <FormField label={label} hint={hint}>
-      <ListEditor value={(v[key] as string[]) ?? []} onChange={(items) => setV({ ...v, [key]: items })} rows={3} />
-    </FormField>
-  );
-  return (
-    <SettingsCard
-      title="Profil"
-      description="Sert uniquement à comparer les opportunités avec votre parcours (compétences communes et analyse IA)."
-      footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("profile", v), { success: "Profil enregistré" })} />}
-    >
-      <div className="@container">
-        <div className="flex flex-col items-start gap-3 rounded-xl bg-muted-background px-3 py-3 @lg:flex-row @lg:items-center @lg:justify-between">
-          <p className="copy-sm text-muted-foreground">Préremplissez le profil à partir de votre CV, puis vérifiez chaque champ avant d’enregistrer.</p>
-          <Button variant="outline" className="shrink-0 whitespace-nowrap" onClick={() => setImporting(true)}>
-            <FileUp /> Importer depuis un CV
-          </Button>
-        </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label={PROFILE_FIELD_LABELS.fullName}>
-          <Input value={v.fullName} onChange={(e) => setV({ ...v, fullName: e.target.value })} />
-        </FormField>
-        <FormField label={PROFILE_FIELD_LABELS.yearsOfExperience}>
-          <NumberInput value={v.yearsOfExperience} onChange={(n) => setV({ ...v, yearsOfExperience: n })} />
-        </FormField>
-        <FormField label={PROFILE_FIELD_LABELS.headline} className="sm:col-span-2">
-          <Input value={v.headline} onChange={(e) => setV({ ...v, headline: e.target.value })} placeholder="Ingénieur full-stack — HealthTech et IA" />
-        </FormField>
-        <FormField label={PROFILE_FIELD_LABELS.summary} className="sm:col-span-2">
-          <Textarea value={v.summary} onChange={(e) => setV({ ...v, summary: e.target.value })} rows={4} />
-        </FormField>
-        {list("skills", PROFILE_FIELD_LABELS.skills, "Une par ligne — comparées à chaque offre")}
-        {list("languages", PROFILE_FIELD_LABELS.languages, "Par exemple : Anglais — C1")}
-        {list("education", PROFILE_FIELD_LABELS.education)}
-        {list("targetRoles", PROFILE_FIELD_LABELS.targetRoles)}
-        {list("targetDomains", PROFILE_FIELD_LABELS.targetDomains)}
-        {list("preferredLocations", PROFILE_FIELD_LABELS.preferredLocations)}
-        {list("dealBreakers", PROFILE_FIELD_LABELS.dealBreakers)}
-      </div>
-      {importing && (
-        <CvImportDialog
-          open={importing}
-          onOpenChange={setImporting}
-          current={v}
-          saving={pending}
-          onApply={(next) => {
-            setV(next);
-            run(() => updateSettingsAction("profile", next), { success: "Profil mis à jour à partir du CV", onSuccess: () => setImporting(false) });
-          }}
-        />
-      )}
     </SettingsCard>
   );
 }

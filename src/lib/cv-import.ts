@@ -19,6 +19,7 @@ export const PROFILE_FIELD_LABELS: Record<keyof Profile, string> = {
   summary: "Résumé",
   yearsOfExperience: "Années d’expérience",
   skills: "Compétences et technologies",
+  skillGroups: "Catégories de compétences",
   languages: "Langues",
   education: "Formation",
   targetRoles: "Postes visés",
