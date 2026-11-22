@@ -21,9 +21,7 @@ export function AppShell({ data, children, defaultOpen = true }: { data: AppData
           <AskProvider>
             <CommandPaletteProvider>
               <SidebarProvider defaultOpen={defaultOpen}>
-                <Suspense>
-                  <AppSidebar />
-                </Suspense>
+                <AppSidebar />
                 <SidebarInset className="min-w-0">
                   <AppHeader />
                   <div className="flex-1">{children}</div>

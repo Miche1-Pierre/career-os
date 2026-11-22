@@ -176,7 +176,7 @@ function CardView({ row, dragging, showStage }: { row: OpportunityListItem; drag
       )}
     >
       <div className="flex items-start gap-2.5">
-        <OrgAvatar name={row.organization?.name ?? row.title} size="sm" className="mt-0.5" />
+        <OrgAvatar name={row.organization?.name ?? row.title} orgId={row.organization?.id} size="sm" className="mt-0.5" />
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-1.5">
             <Link href={`/applications/${row.id}`} className="line-clamp-2 text-sm leading-snug font-medium text-foreground hover:underline" onClick={(e) => dragging && e.preventDefault()} draggable={false}>

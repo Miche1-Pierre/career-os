@@ -131,7 +131,7 @@ export function OpportunityDetailView({
       {/* Header */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex min-w-0 items-start gap-4">
-          <OrgAvatar name={opp.organization?.name ?? opp.title} size="xl" className="hidden sm:flex" />
+          <OrgAvatar name={opp.organization?.name ?? opp.title} orgId={opp.organization?.id} website={opp.organization?.website} size="xl" className="hidden sm:flex" />
           <div className="min-w-0 space-y-1.5">
             <div className="flex flex-wrap items-center gap-1.5">
               <TypeBadge type={opp.type} />

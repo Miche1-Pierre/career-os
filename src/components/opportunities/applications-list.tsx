@@ -297,7 +297,7 @@ function ApplicationsTable({ rows }: { rows: OpportunityListItem[] }) {
                 <TableRow key={row.id} className="cursor-pointer" onClick={() => router.push(`/applications/${row.id}`)}>
                   <TableCell className="h-16 max-w-0 pl-3">
                     <div className="flex items-center gap-3">
-                      <OrgAvatar name={row.organization?.name ?? row.title} />
+                      <OrgAvatar name={row.organization?.name ?? row.title} orgId={row.organization?.id} />
                       <div className="min-w-0">
                         <div className="flex min-w-0 items-center gap-1.5">
                           <Link href={`/applications/${row.id}`} className="truncate text-sm font-medium text-foreground hover:underline" onClick={(e) => e.stopPropagation()} title={row.title}>
@@ -341,7 +341,7 @@ function ApplicationsTable({ rows }: { rows: OpportunityListItem[] }) {
           <Link key={row.id} href={`/applications/${row.id}`} className="block rounded-2xl border border-border bg-background p-4 transition-colors hover:bg-muted-background active:bg-primary-100">
             <div className="flex items-start justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <OrgAvatar name={row.organization?.name ?? row.title} />
+                <OrgAvatar name={row.organization?.name ?? row.title} orgId={row.organization?.id} />
                 <div className="min-w-0">
                   <div className="flex min-w-0 items-center gap-1.5">
                     <span className="truncate text-sm font-medium text-foreground">{row.title}</span>
