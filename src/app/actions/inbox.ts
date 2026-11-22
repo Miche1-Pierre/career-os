@@ -16,7 +16,7 @@ export async function captureAction(formData: FormData) {
     let upload: { buffer: Buffer; fileName: string; mimeType: string | null } | null = null;
     if (file && typeof file !== "string" && (file as File).size > 0) {
       const f = file as File;
-      if (f.size > storageConfig.maxUploadBytes) throw new AppError("VALIDATION", "File too large");
+      if (f.size > storageConfig.maxUploadBytes) throw new AppError("VALIDATION", "Fichier trop volumineux");
       upload = { buffer: Buffer.from(await f.arrayBuffer()), fileName: f.name, mimeType: f.type || null };
     }
     const result = await inbox.createCapture({ text, url, file: upload }, USER, { analyze });

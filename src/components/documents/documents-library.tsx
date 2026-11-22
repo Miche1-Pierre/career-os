@@ -23,20 +23,20 @@ import { NewDocumentDialog, NewVersionDialog, ScanLibraryDialog } from "./docume
 import { cn } from "@/lib/utils";
 
 export const FILE_STATUS: Record<FileStatus, { label: string; className: string; hint: string }> = {
-  ok: { label: "File OK", className: "text-emerald-700 dark:text-emerald-300", hint: "The file matches the registered version." },
-  modified: { label: "Modified", className: "text-info-800", hint: "The file changed since this version was registered — create a new version to keep both." },
-  missing: { label: "Missing", className: "text-warning-600", hint: "The file is no longer in the folder and no snapshot exists." },
-  external: { label: "Reference only", className: "text-muted-foreground", hint: "Outside the documents folder: Career OS only keeps the path." },
-  snapshot_only: { label: "Snapshot only", className: "text-sky-600 dark:text-sky-400", hint: "The original file moved or was deleted — the frozen copy is still available." },
+  ok: { label: "Fichier OK", className: "text-emerald-700 dark:text-emerald-300", hint: "Le fichier correspond à la version enregistrée." },
+  modified: { label: "Modifié", className: "text-info-800", hint: "Le fichier a changé depuis l’enregistrement de cette version — créez une nouvelle version pour garder les deux." },
+  missing: { label: "Manquant", className: "text-warning-600", hint: "Le fichier n’est plus dans le dossier et aucune copie n’existe." },
+  external: { label: "Référence seule", className: "text-muted-foreground", hint: "Hors du dossier de documents : Career OS ne conserve que le chemin." },
+  snapshot_only: { label: "Copie seule", className: "text-sky-600 dark:text-sky-400", hint: "Le fichier d’origine a été déplacé ou supprimé — la copie figée reste disponible." },
 };
 
 const GROUPS: { title: string; kinds: DocumentKind[] }[] = [
   { title: "CV", kinds: ["CV"] },
-  { title: "Cover & motivation letters", kinds: ["COVER_LETTER"] },
-  { title: "Academic", kinds: ["TRANSCRIPT", "DIPLOMA", "RECOMMENDATION"] },
-  { title: "Certificates", kinds: ["CERTIFICATE", "LANGUAGE_CERT"] },
-  { title: "Portfolio & presentations", kinds: ["PORTFOLIO", "PRESENTATION"] },
-  { title: "Other", kinds: ["ID_DOCUMENT", "OTHER"] },
+  { title: "Lettres de motivation", kinds: ["COVER_LETTER"] },
+  { title: "Parcours académique", kinds: ["TRANSCRIPT", "DIPLOMA", "RECOMMENDATION"] },
+  { title: "Certificats", kinds: ["CERTIFICATE", "LANGUAGE_CERT"] },
+  { title: "Portfolio et présentations", kinds: ["PORTFOLIO", "PRESENTATION"] },
+  { title: "Autres", kinds: ["ID_DOCUMENT", "OTHER"] },
 ];
 
 export function DocumentsLibrary({ docs, library, openNew, showArchived }: { docs: DocumentListItem[]; library: { root: string; hostRoot: string; exists: boolean; writable: boolean }; openNew?: boolean; showArchived: boolean }) {
@@ -56,14 +56,14 @@ export function DocumentsLibrary({ docs, library, openNew, showArchived }: { doc
     <PageContainer>
       <PageHeader
         title="Documents"
-        description="Your CVs, letters and certificates — versioned, with the exact version used for each application."
+        description="Vos CV, lettres et certificats — versionnés, avec la version exacte utilisée pour chaque candidature."
         actions={
           <>
             <Button variant="outline" onClick={() => setScanning(true)} disabled={!library.exists}>
-              <ScanSearch /> Scan folder
+              <ScanSearch /> Analyser le dossier
             </Button>
             <Button onClick={() => setAdding(true)}>
-              <Plus /> Add document
+              <Plus /> Ajouter un document
             </Button>
           </>
         }
@@ -73,27 +73,27 @@ export function DocumentsLibrary({ docs, library, openNew, showArchived }: { doc
         <span className="min-w-0 flex-1 truncate font-mono text-xs">{library.hostRoot}</span>
         <span className={cn("flex items-center gap-1 text-xs", library.exists ? "text-emerald-700 dark:text-emerald-300" : "text-warning-500")}>
           {library.exists ? <CheckCircle2 className="size-3.5" /> : <AlertTriangle className="size-3.5" />}
-          {library.exists ? (library.writable ? "Connected" : "Connected (read-only)") : "Folder not mounted"}
+          {library.exists ? (library.writable ? "Connecté" : "Connecté (lecture seule)") : "Dossier non monté"}
         </span>
       </div>
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter documents…" className="h-8 pl-8" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filtrer les documents…" className="h-8 pl-8" />
         </div>
         <div className="flex items-center gap-2">
           <Switch id="arch" size="sm" checked={showArchived} onCheckedChange={(v) => router.push(v ? "/documents?archived=1" : "/documents")} />
           <Label htmlFor="arch" className="text-xs text-muted-foreground">
-            Show archived
+            Afficher les archivés
           </Label>
         </div>
       </div>
       {docs.length === 0 ? (
-        <EmptyState icon={FileText} title="No document yet" description="Add your CVs and letters, or scan your documents folder to register what is already there.">
+        <EmptyState icon={FileText} title="Aucun document pour l’instant" description="Ajoutez vos CV et lettres, ou analysez votre dossier de documents pour enregistrer ce qui s’y trouve déjà.">
           <div className="flex gap-2">
-            <Button onClick={() => setAdding(true)}>Add document</Button>
+            <Button onClick={() => setAdding(true)}>Ajouter un document</Button>
             <Button variant="outline" onClick={() => setScanning(true)} disabled={!library.exists}>
-              Scan folder
+              Analyser le dossier
             </Button>
           </div>
         </EmptyState>
@@ -117,15 +117,15 @@ export function DocumentsLibrary({ docs, library, openNew, showArchived }: { doc
                               {d.name}
                             </Link>
                             {d.latest && <Badge size="sm" className="tabular-nums">v{d.latest.version}</Badge>}
-                            {d.archivedAt && <span className="text-[10px] text-muted-foreground">archived</span>}
-                            {d.isDemo && <span className="rounded-md bg-info-50 px-1 text-[10px] font-medium text-info-800">demo</span>}
+                            {d.archivedAt && <span className="text-[10px] text-muted-foreground">archivé</span>}
+                            {d.isDemo && <span className="rounded-md bg-info-50 px-1 text-[10px] font-medium text-info-800">démo</span>}
                             <TagList tags={d.tags} max={3} />
                           </div>
                           <p className="truncate text-xs text-muted-foreground">
-                            {d.latest ? `${d.latest.fileName ?? ""} · ${formatISODate(String(d.latest.createdAt).slice(0, 10), "medium", dateLocale)}${d.latest.label ? ` · ${d.latest.label}` : ""}` : "No version"}
+                            {d.latest ? `${d.latest.fileName ?? ""} · ${formatISODate(String(d.latest.createdAt).slice(0, 10), "medium", dateLocale)}${d.latest.label ? ` · ${d.latest.label}` : ""}` : "Aucune version"}
                           </p>
                         </div>
-                        <span className="text-sm text-muted-foreground tabular-nums">{d.usageCount ? `Used by ${d.usageCount} application${d.usageCount > 1 ? "s" : ""}` : "Unused"}</span>
+                        <span className="text-sm text-muted-foreground tabular-nums">{d.usageCount ? `Utilisé par ${d.usageCount} candidature${d.usageCount > 1 ? "s" : ""}` : "Inutilisé"}</span>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <span className={cn("text-xs font-medium", FILE_STATUS[status].className)}>{FILE_STATUS[status].label}</span>
@@ -134,12 +134,12 @@ export function DocumentsLibrary({ docs, library, openNew, showArchived }: { doc
                         </Tooltip>
                         {status === "modified" && d.latest && (
                           <Button size="xs" variant="outline" onClick={() => setVersionFor({ id: d.id, path: d.latest!.relativePath })}>
-                            <RefreshCw /> New version
+                            <RefreshCw /> Nouvelle version
                           </Button>
                         )}
                         {d.latest && d.latest.storage !== "EXTERNAL" && (
                           <Button size="icon-xs" variant="ghost-secondary" asChild>
-                            <a href={`/api/files/versions/${d.latest.id}?source=current`} target="_blank" rel="noopener noreferrer" aria-label="Open">
+                            <a href={`/api/files/versions/${d.latest.id}?source=current`} target="_blank" rel="noopener noreferrer" aria-label="Ouvrir">
                               <Eye />
                             </a>
                           </Button>

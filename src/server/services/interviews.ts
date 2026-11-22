@@ -2,7 +2,7 @@ import { and, asc, eq, gte, isNull, lte } from "drizzle-orm";
 import { db } from "@/server/db";
 import { interviews, opportunities, organizations, pipelineStages, type Interview } from "@/server/db/schema";
 import { interviewInputSchema, interviewPatchSchema, type InterviewInput } from "@/lib/schemas";
-import { INTERVIEW_KIND_LABEL, familyOf, type InterviewKind } from "@/lib/constants";
+import { familyOf, interviewKindTitle, type InterviewKind } from "@/lib/constants";
 import { formatInstant } from "@/lib/dates";
 import { notFound, type Ctx } from "@/server/context";
 import { logAudit } from "./audit";
@@ -13,8 +13,10 @@ import { changeStatus } from "./opportunities";
 import { listStages } from "./stages";
 import { onInterviewCompleted, onInterviewScheduled } from "./rules";
 
+const OUTCOME_FR: Record<string, string> = { PASSED: "réussi", FAILED: "non retenu", UNKNOWN: "résultat inconnu" };
+
 function interviewTitle(kind: InterviewKind, title?: string | null) {
-  return title?.trim() || `${INTERVIEW_KIND_LABEL[kind]} interview`;
+  return title?.trim() || interviewKindTitle(kind);
 }
 
 const JOB_STAGE_FOR_KIND: Record<InterviewKind, string> = {
@@ -45,7 +47,7 @@ async function advanceStageForInterview(opportunityId: string, kind: InterviewKi
   const target = stages.find((s) => s.key === targetKey) ?? stages.find((s) => s.category === "INTERVIEW");
   if (!target || target.id === stage.id) return;
   if (stage.category === "INTERVIEW" && target.position <= stage.position) return;
-  await changeStatus(opportunityId, { status: target.key, note: "Interview scheduled" }, ctx);
+  await changeStatus(opportunityId, { status: target.key, note: "Entretien planifié" }, ctx);
 }
 
 export async function createInterview(raw: InterviewInput, ctx: Ctx, options: { advanceStage?: boolean; isDemo?: boolean } = {}) {
@@ -116,7 +118,7 @@ export async function updateInterview(id: string, raw: Partial<Omit<InterviewInp
           opportunityId: updated.opportunityId,
           interviewId: id,
           type: "INTERVIEW_SCHEDULED",
-          title: `${interviewTitle(updated.kind, updated.title)} ${before.scheduledAt ? "rescheduled" : "scheduled"} — ${formatInstant(updated.scheduledAt, {
+          title: `${interviewTitle(updated.kind, updated.title)} ${before.scheduledAt ? "replanifié" : "planifié"} — ${formatInstant(updated.scheduledAt, {
             timeZone: settings.general.timezone,
             locale: settings.general.dateLocale,
           })}`,
@@ -131,7 +133,7 @@ export async function updateInterview(id: string, raw: Partial<Omit<InterviewInp
           opportunityId: updated.opportunityId,
           interviewId: id,
           type: "INTERVIEW_DONE",
-          title: `${interviewTitle(updated.kind, updated.title)} done${updated.outcome !== "PENDING" ? ` — ${updated.outcome.toLowerCase()}` : ""}`,
+          title: `${interviewTitle(updated.kind, updated.title)} terminé${updated.outcome !== "PENDING" ? ` — ${OUTCOME_FR[updated.outcome] ?? updated.outcome.toLowerCase()}` : ""}`,
           body: updated.feedback ?? null,
         },
         ctx,

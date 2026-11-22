@@ -11,7 +11,7 @@ async function readUpload(formData: FormData) {
   const file = formData.get("file");
   if (!file || typeof file === "string" || (file as File).size === 0) return null;
   const f = file as File;
-  if (f.size > storageConfig.maxUploadBytes) throw new AppError("VALIDATION", `File too large (max ${Math.round(storageConfig.maxUploadBytes / 1048576)} MB)`);
+  if (f.size > storageConfig.maxUploadBytes) throw new AppError("VALIDATION", `Fichier trop volumineux (max. ${Math.round(storageConfig.maxUploadBytes / 1048576)} Mo)`);
   return { buffer: Buffer.from(await f.arrayBuffer()), fileName: f.name, originalPath: (formData.get("originalPath") as string) || null };
 }
 
@@ -43,7 +43,7 @@ export async function addVersionAction(documentId: string, formData: FormData) {
     const path = (formData.get("path") as string) || null;
     if (upload) return { id: (await docs.addVersionFromUpload(documentId, { ...upload, label, notes }, USER)).id };
     if (path) return { id: (await docs.addVersionFromPath(documentId, { path, label, notes }, USER)).id };
-    throw new AppError("VALIDATION", "Choose a file or give a path");
+    throw new AppError("VALIDATION", "Choisissez un fichier ou indiquez un chemin");
   });
 }
 

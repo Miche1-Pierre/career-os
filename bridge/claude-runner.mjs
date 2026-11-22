@@ -166,3 +166,158 @@ export function claudeVersion(bin) {
     }
   });
 }
+
+/**
+ * Agent mode for the in-app chat: Claude Code with ONLY the Career OS MCP tools + WebSearch/WebFetch (no shell,
+ * no file access), streamed as normalized events. Resumes a previous Claude session when `sessionId` is given.
+ *
+ * Events: { type: "session", sessionId } · { type: "text", delta } · { type: "tool", name, input }
+ *         · { type: "done", text, sessionId, model, costUsd, durationMs } · { type: "error", message }
+ *
+ * @param {{ system: string, prompt: string, mcpUrl: string, mcpHeaders?: Record<string, string>, model?: string | null,
+ *           sessionId?: string | null, maxTurns?: number, timeoutMs?: number, bin?: string,
+ *           env?: Record<string, string | undefined>, webTools?: boolean }} options
+ * @param {(event: Record<string, unknown>) => void} onEvent
+ * @returns {{ done: Promise<void>, cancel: () => void }}
+ */
+export function streamClaude(options, onEvent) {
+  const { system, prompt, mcpUrl, mcpHeaders, model, sessionId, maxTurns = 40, timeoutMs = 600_000, bin, env, webTools = true } = options;
+  const cwd = path.join(workDir(), "chat");
+  fs.mkdirSync(cwd, { recursive: true });
+  const systemFile = path.join(cwd, `system-${crypto.randomUUID()}.txt`);
+  fs.writeFileSync(systemFile, system, "utf8");
+  const mcpConfig = JSON.stringify({ mcpServers: { "career-os": { type: "http", url: mcpUrl, ...(mcpHeaders ? { headers: mcpHeaders } : {}) } } });
+  const args = [
+    "-p",
+    "--output-format",
+    "stream-json",
+    "--verbose",
+    "--include-partial-messages",
+    "--setting-sources",
+    "project",
+    "--strict-mcp-config",
+    "--mcp-config",
+    mcpConfig,
+    "--tools",
+    webTools ? "WebSearch,WebFetch" : "",
+    "--allowedTools",
+    webTools ? "mcp__career-os,WebSearch,WebFetch" : "mcp__career-os",
+    "--max-turns",
+    String(maxTurns),
+    "--system-prompt-file",
+    systemFile,
+  ];
+  if (model) args.push("--model", model);
+  if (sessionId) args.push("--resume", sessionId);
+
+  let child;
+  let cancelled = false;
+  const done = new Promise((resolve) => {
+    const started = Date.now();
+    let settled = false;
+    let text = "";
+    let lastSession = sessionId ?? null;
+    let afterTool = false;
+    const finish = (event) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      fs.rm(systemFile, { force: true }, () => {});
+      if (event) onEvent(event);
+      resolve();
+    };
+    child = spawn(/*turbopackIgnore: true*/ bin ?? resolveClaudeBin(), args, {
+      cwd,
+      env: { ...process.env, ...env, CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1", DISABLE_AUTOUPDATER: "1" },
+      stdio: ["pipe", "pipe", "pipe"],
+      windowsHide: true,
+    });
+    const timer = setTimeout(() => {
+      child.kill("SIGKILL");
+      finish({ type: "error", message: `Claude Code timed out after ${Math.round(timeoutMs / 1000)}s` });
+    }, timeoutMs);
+    const err = [];
+    let buffer = "";
+    child.stderr.on("data", (d) => err.push(d));
+    child.stdout.on("data", (d) => {
+      buffer += d.toString("utf8");
+      let nl;
+      while ((nl = buffer.indexOf("\n")) >= 0) {
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if (!line) continue;
+        let msg;
+        try {
+          msg = JSON.parse(line);
+        } catch {
+          continue;
+        }
+        if (msg.session_id && msg.session_id !== lastSession) {
+          lastSession = msg.session_id;
+          onEvent({ type: "session", sessionId: lastSession });
+        }
+        if (msg.type === "stream_event" && msg.event) {
+          const ev = msg.event;
+          if (ev.type === "content_block_start" && ev.content_block?.type === "text" && afterTool && text) {
+            text += "\n\n";
+            onEvent({ type: "text", delta: "\n\n" });
+            afterTool = false;
+          }
+          if (ev.type === "content_block_delta" && ev.delta?.type === "text_delta" && ev.delta.text) {
+            text += ev.delta.text;
+            onEvent({ type: "text", delta: ev.delta.text });
+          }
+        } else if (msg.type === "assistant" && Array.isArray(msg.message?.content)) {
+          for (const block of msg.message.content) {
+            if (block.type === "tool_use") {
+              afterTool = true;
+              onEvent({ type: "tool", name: String(block.name ?? ""), input: block.input ?? null });
+            }
+          }
+        } else if (msg.type === "result") {
+          const ok = msg.subtype === "success" && !msg.is_error;
+          const finalText = typeof msg.result === "string" && msg.result.trim() ? msg.result : text;
+          finish(
+            ok
+              ? {
+                  type: "done",
+                  text: text.trim() ? text : finalText,
+                  sessionId: lastSession,
+                  model: Object.keys(msg.modelUsage ?? {})[0] ?? null,
+                  costUsd: typeof msg.total_cost_usd === "number" ? msg.total_cost_usd : null,
+                  durationMs: typeof msg.duration_ms === "number" ? msg.duration_ms : Date.now() - started,
+                }
+              : { type: "error", message: String(msg.result || msg.subtype || "Claude Code error").slice(0, 600), sessionId: lastSession },
+          );
+        }
+      }
+    });
+    child.on("error", (error) => {
+      finish({
+        type: "error",
+        message:
+          /** @type {NodeJS.ErrnoException} */ (error).code === "ENOENT"
+            ? "Claude Code CLI not found. Install it (npm i -g @anthropic-ai/claude-code) or set CLAUDE_BIN."
+            : `Could not start Claude Code: ${error.message}`,
+      });
+    });
+    child.on("close", (code) => {
+      if (cancelled) return finish({ type: "error", message: "Cancelled" });
+      const stderr = Buffer.concat(err).toString("utf8").trim();
+      finish({ type: "error", message: `Claude Code stopped (exit ${code}) ${stderr.slice(0, 500)}`.trim() });
+    });
+    child.stdin.on("error", () => {});
+    child.stdin.end(prompt, "utf8");
+  });
+  return {
+    done,
+    cancel: () => {
+      cancelled = true;
+      try {
+        child?.kill("SIGKILL");
+      } catch {
+        /* ignore */
+      }
+    },
+  };
+}

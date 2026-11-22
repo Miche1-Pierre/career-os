@@ -67,7 +67,7 @@ export async function markFollowUpDone(
         opportunityId,
         contactId: input.contactId ?? null,
         type: "FOLLOW_UP_SENT",
-        title: `Follow-up #${count} sent`,
+        title: `Relance n°${count} envoyée`,
         body: input.note ?? null,
         channel: input.channel ?? null,
         direction: "OUTBOUND",

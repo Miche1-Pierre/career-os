@@ -54,36 +54,36 @@ export function InboxList({ items, view }: { items: InboxListItem[]; view: "acti
   return (
     <PageContainer className="max-w-4xl">
       <PageHeader
-        title="Inbox"
-        description="Everything you capture lands here first. Review it, then convert it into a job, a formation, a contact or a note."
+        title="À trier"
+        description="Tout ce que vous capturez arrive d’abord ici. Vérifiez, puis transformez en emploi, formation, contact ou note."
         actions={
           <Button onClick={() => quickImport.open()}>
-            <Sparkles /> Quick import
+            <Sparkles /> Import rapide
           </Button>
         }
       />
       <Tabs value={view} onValueChange={(v) => router.push(v === "active" ? "/inbox" : `/inbox?view=${v}`)} className="mb-4">
         <TabsList>
-          <TabsTrigger value="active">To process</TabsTrigger>
-          <TabsTrigger value="converted">Processed</TabsTrigger>
-          <TabsTrigger value="archived">Archived</TabsTrigger>
+          <TabsTrigger value="active">À traiter</TabsTrigger>
+          <TabsTrigger value="converted">Traités</TabsTrigger>
+          <TabsTrigger value="archived">Archivés</TabsTrigger>
         </TabsList>
       </Tabs>
       {view === "active" && !ai.available && items.some((i) => i.status === "NEW") && (
         <div className="mb-4 rounded-2xl bg-highlight-50 p-4 text-sm">
           <p className="flex items-center gap-2 font-medium">
-            <Bot className="size-4 text-highlight-500" /> Let Claude Code process these captures
+            <Bot className="size-4 text-highlight-500" /> Confier ces captures à Claude Code
           </p>
           <p className="mt-1 text-muted-foreground">
-            In-app AI is off. Open Claude Code in <code className="rounded bg-background px-1">C:\Candidature</code> and say <span className="font-medium text-foreground">“traite mon inbox Career OS”</span> — results come back here, ready for review.
+            L’IA intégrée est désactivée. Ouvrez Claude Code dans <code className="rounded bg-background px-1">C:\Candidature</code> et dites <span className="font-medium text-foreground">« traite mon inbox Career OS »</span> — les résultats reviennent ici, prêts à être vérifiés.
           </p>
         </div>
       )}
       {items.length === 0 ? (
-        <EmptyState icon={InboxIcon} title={view === "active" ? "Inbox zero" : "Nothing here"} description={view === "active" ? "Paste a job posting, a program page, an email or notes with Quick import (I)." : undefined}>
+        <EmptyState icon={InboxIcon} title={view === "active" ? "Rien à trier" : "Rien ici"} description={view === "active" ? "Collez une offre, une page de formation, un e-mail ou des notes avec l’import rapide (I)." : undefined}>
           {view === "active" && (
             <Button variant="highlight" onClick={() => quickImport.open()}>
-              Quick import
+              Import rapide
             </Button>
           )}
         </EmptyState>
@@ -97,41 +97,41 @@ export function InboxList({ items, view }: { items: InboxListItem[]; view: "acti
                 <ListIcon icon={Icon} tone={item.status === "READY" ? "success" : item.status === "FAILED" ? "warning" : item.status === "QUEUED" || item.status === "PROCESSING" ? "highlight" : undefined} />
                 <Link href={href} className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="truncate text-sm font-medium text-foreground">{item.title || "Untitled capture"}</span>
+                    <span className="truncate text-sm font-medium text-foreground">{item.title || "Capture sans titre"}</span>
                     <InboxKindBadge kind={item.kind} />
                     <InboxStatusBadge status={item.status} />
-                    {item.isDemo && <span className="rounded-md bg-info-50 px-1 text-[10px] font-medium text-info-800">demo</span>}
+                    {item.isDemo && <span className="rounded-md bg-info-50 px-1 text-[10px] font-medium text-info-800">démo</span>}
                   </div>
                   <p className="mt-1 line-clamp-2 copy-sm text-muted-foreground">{item.status === "FAILED" && item.error ? item.error : item.preview}</p>
                   <p className="mt-1.5 text-xs text-faint">
                     {formatRelativeInstant(item.createdAt)}
                     {item.fileName ? ` · ${item.fileName}` : item.sourceUrl ? ` · ${item.sourceUrl.replace(/^https?:\/\//, "").slice(0, 60)}` : ""}
-                    {item.resultMeta?.by ? ` · analyzed by ${item.resultMeta.by === "CLAUDE" ? "Claude (MCP)" : item.resultMeta.provider}` : ""}
+                    {item.resultMeta?.by ? ` · analysé par ${item.resultMeta.by === "CLAUDE" ? "Claude (MCP)" : item.resultMeta.provider}` : ""}
                   </p>
                 </Link>
                 <div className="flex shrink-0 items-center gap-1">
                   {(item.status === "NEW" || item.status === "FAILED") && ai.available && (
-                    <Button size="xs" variant="outline" onClick={() => run(() => analyzeInboxAction(item.id), { success: "Analysis started" })}>
-                      <Sparkles /> Analyze
+                    <Button size="xs" variant="outline" onClick={() => run(() => analyzeInboxAction(item.id), { success: "Analyse lancée" })}>
+                      <Sparkles /> Analyser
                     </Button>
                   )}
                   {item.status === "READY" && (
                     <Button size="xs" asChild>
-                      <Link href={`/inbox/${item.id}`}>Review</Link>
+                      <Link href={`/inbox/${item.id}`}>Vérifier</Link>
                     </Button>
                   )}
                   {view !== "archived" && (
-                    <Button size="icon-xs" variant="ghost-secondary" aria-label="Archive" onClick={() => run(() => archiveInboxAction(item.id), { success: "Archived" })}>
+                    <Button size="icon-xs" variant="ghost-secondary" aria-label="Archiver" onClick={() => run(() => archiveInboxAction(item.id), { success: "Archivé" })}>
                       <Archive />
                     </Button>
                   )}
                   <Button
                     size="icon-xs"
                     variant="ghost-secondary"
-                    aria-label="Delete"
+                    aria-label="Supprimer"
                     onClick={async () => {
-                      if (await confirm({ title: "Delete this capture permanently?", description: "The raw text will be lost. Opportunities created from it are kept.", destructive: true, confirmLabel: "Delete" }))
-                        run(() => deleteInboxAction(item.id), { success: "Deleted" });
+                      if (await confirm({ title: "Supprimer définitivement cette capture ?", description: "Le texte brut sera perdu. Les opportunités créées à partir d’elle sont conservées.", destructive: true, confirmLabel: "Supprimer" }))
+                        run(() => deleteInboxAction(item.id), { success: "Supprimé" });
                     }}
                   >
                     <Trash2 />

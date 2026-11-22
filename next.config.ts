@@ -6,7 +6,8 @@ const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "same-origin" },
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
-  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+  // Microphone allowed for this origin only (dictation in the chat bar).
+  { key: "Permissions-Policy", value: "camera=(), microphone=(self), geolocation=(), payment=()" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   {
     key: "Content-Security-Policy",
@@ -14,7 +15,8 @@ const securityHeaders = [
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
+      // OpenStreetMap tiles for the housing map.
+      "img-src 'self' data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org",
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-src 'self' blob:",

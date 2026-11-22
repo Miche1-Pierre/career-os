@@ -3,6 +3,7 @@
  * Demo documents are generated as small PDFs inside the app data folder (never in your documents library).
  */
 import fs from "node:fs/promises";
+import { LEGACY_TASK_TITLES } from "@/server/bootstrap";
 import path from "node:path";
 import { and, eq, inArray, sql } from "drizzle-orm";
 import { db } from "@/server/db";
@@ -116,7 +117,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     ["HealthTech"],
   );
   const cvGeneral = await demoDocument("CV General", "CV", [{ fileName: "CV-General.pdf", lines: ["Generalist CV"], daysAgo: 90 }], today);
-  const cvAi = await demoDocument("CV AI Product", "CV", [{ fileName: "CV-AI-Product.pdf", lines: ["AI product engineer"], daysAgo: 40 }], today, ["AI", "Product"]);
+  const cvAi = await demoDocument("CV AI Product", "CV", [{ fileName: "CV-AI-Product.pdf", lines: ["AI product engineer"], daysAgo: 40 }], today, ["IA", "Produit"]);
   const letterZefir = await demoDocument("Cover letter — Zefir", "COVER_LETTER", [{ fileName: "Zefir.pdf", lines: ["Motivation letter for Zefir"], daysAgo: 12 }], today);
   const letterGeneric = await demoDocument("Generic HealthTech letter", "COVER_LETTER", [{ fileName: "Generic-HealthTech.pdf", lines: ["Reusable HealthTech motivation letter"], daysAgo: 45 }], today, ["HealthTech"]);
   const transcript = await demoDocument("Transcript — Master 1", "TRANSCRIPT", [{ fileName: "Transcript-M1.pdf", lines: ["Academic transcript — Master 1"], daysAgo: 120 }], today);
@@ -150,7 +151,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     details: { contractType: "CDI", seniority: "Senior", experienceYears: 5, salaryMin: 70000, salaryMax: 87000, salaryCurrency: "EUR", salaryPeriod: "YEAR", salaryText: "70–87 k€ brut annuel" },
     appliedAt: d(-12),
     discoveredAt: d(-14),
-    tags: ["Startup", "France", "Software"],
+    tags: ["Startup", "France", "Logiciel"],
     contacts: [
       { fullName: "Jean Dupont", role: "Talent Acquisition Manager", email: "jean.dupont@zefir.example", relationship: "RECRUITER", opportunityRole: "Recruiter" },
       { fullName: "Claire Martin", role: "Engineering Manager", relationship: "HIRING_MANAGER", opportunityRole: "Hiring manager" },
@@ -184,7 +185,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     appliedAt: d(-9),
     discoveredAt: d(-11),
     nextFollowUpAt: d(-2),
-    tags: ["HealthTech", "International", "Large company"],
+    tags: ["HealthTech", "International", "Grand groupe"],
     contacts: [{ fullName: "Marc Weber", role: "Talent Acquisition Partner", email: "marc.weber@roche.example", relationship: "RECRUITER", opportunityRole: "Recruiter" }],
   });
 
@@ -204,7 +205,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     skills: ["Product management", "Machine learning", "Stakeholder management", "Roadmapping"],
     deadline: d(6),
     discoveredAt: d(-3),
-    tags: ["AI", "Product", "HealthTech", "International"],
+    tags: ["IA", "Produit", "HealthTech", "International"],
   });
 
   const master = await make("master", {
@@ -238,7 +239,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     deadline: d(4),
     deadlineTime: "23:59",
     discoveredAt: d(-25),
-    tags: ["Bioinformatics", "Master", "France"],
+    tags: ["Bio-informatique", "Master", "France"],
     contacts: [{ fullName: "Dr. Sophie Laurent", role: "Responsable du master", relationship: "PROFESSOR", opportunityRole: "Program director" }],
   });
 
@@ -258,7 +259,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     applicationOpensAt: d(5),
     deadline: d(60),
     discoveredAt: d(-6),
-    tags: ["Bioinformatics", "International", "Master"],
+    tags: ["Bio-informatique", "International", "Master"],
   });
 
   const doctolib = await make("doctolib", {
@@ -290,7 +291,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     appliedAt: d(-45),
     discoveredAt: d(-46),
     nextFollowUpAt: d(4),
-    tags: ["HealthTech", "Remote"],
+    tags: ["HealthTech", "Télétravail"],
   });
 
   const owkin = await make("owkin", {
@@ -306,7 +307,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     details: { contractType: "CDI", salaryMin: 65000, salaryMax: 75000, salaryCurrency: "EUR", salaryPeriod: "YEAR", salaryText: "65–75 k€" },
     appliedAt: d(-30),
     discoveredAt: d(-33),
-    tags: ["AI", "HealthTech", "Bioinformatics"],
+    tags: ["IA", "HealthTech", "Bio-informatique"],
   });
 
   await make("datadog", {
@@ -318,7 +319,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     locationCity: "Paris",
     locationCountry: "France",
     discoveredAt: d(-1),
-    tags: ["Software"],
+    tags: ["Logiciel"],
   });
 
   const sanofi = await make("sanofi", {
@@ -333,7 +334,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
     details: { contractType: "VIE", duration: "24 months", languages: ["English"] },
     deadline: d(20),
     discoveredAt: d(-2),
-    tags: ["Asia", "International", "HealthTech"],
+    tags: ["Asie", "International", "HealthTech"],
   });
 
   // Interviews
@@ -385,7 +386,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
 
   // Checklist progress
   const markDone = async (opportunityId: string, titles: string[]) =>
-    db.update(s.tasks).set({ done: true, doneAt: new Date() }).where(and(eq(s.tasks.opportunityId, opportunityId), inArray(s.tasks.title, titles)));
+    db.update(s.tasks).set({ done: true, doneAt: new Date() }).where(and(eq(s.tasks.opportunityId, opportunityId), inArray(s.tasks.title, titles.map((t) => LEGACY_TASK_TITLES[t] ?? t))));
   await markDone(zefir.id, ["Read the job description", "Research the company", "Prepare interview"]);
   await markDone(roche.id, ["Read the job description", "Research the company"]);
   await markDone(master.id, ["Check eligibility & prerequisites"]);
@@ -536,7 +537,7 @@ export async function seedDemoData(ctx: Ctx = SYSTEM) {
   await db.insert(s.goals).values([
     { title: "20 applications this month", metric: "APPLICATIONS_SENT", target: 20, period: "MONTH", isDemo: true },
     { title: "5 HealthTech applications", metric: "APPLICATIONS_SENT", target: 5, period: "MONTH", filters: { tags: ["HealthTech"] }, isDemo: true },
-    { title: "10 bioinformatics programs researched", metric: "OPPORTUNITIES_ADDED", target: 10, period: "QUARTER", filters: { tags: ["Bioinformatics"] }, isDemo: true },
+    { title: "10 bioinformatics programs researched", metric: "OPPORTUNITIES_ADDED", target: 10, period: "QUARTER", filters: { tags: ["Bio-informatique"] }, isDemo: true },
   ]);
 
   // Everything created since t0 is demo data.

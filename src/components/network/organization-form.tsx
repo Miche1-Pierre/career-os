@@ -46,7 +46,7 @@ export function OrganizationDialog({ open, onOpenChange, initial }: { open: bool
       tags: v.tags ?? [],
     };
     run(() => (v.id ? updateOrganizationAction(v.id, payload) : createOrganizationAction(payload)), {
-      success: v.id ? "Saved" : `${institution ? "Institution" : "Company"} created`,
+      success: v.id ? "Modifications enregistrées" : institution ? "Établissement créé" : "Entreprise créée",
       onSuccess: (d) => {
         onOpenChange(false);
         if (!v.id) router.push(`/${institution ? "institutions" : "companies"}/${d.id}`);
@@ -57,29 +57,29 @@ export function OrganizationDialog({ open, onOpenChange, initial }: { open: bool
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{v.id ? "Edit" : "New"} {institution ? "institution" : "company"}</DialogTitle>
-          <DialogDescription>{institution ? "University, school, lab or program provider." : "Employer, startup, recruiting firm…"}</DialogDescription>
+          <DialogTitle>{v.id ? (institution ? "Modifier l’établissement" : "Modifier l’entreprise") : institution ? "Nouvel établissement" : "Nouvelle entreprise"}</DialogTitle>
+          <DialogDescription>{institution ? "Université, école, laboratoire ou organisme de formation." : "Employeur, startup, cabinet de recrutement…"}</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField label="Name" className="sm:col-span-2" required>
+          <FormField label="Nom" className="sm:col-span-2" required>
             <Input value={v.name} onChange={(e) => set("name", e.target.value)} autoFocus />
           </FormField>
-          <FormField label="Website">
+          <FormField label="Site web" hint="Sert aussi à afficher le logo (seul le domaine est utilisé).">
             <Input value={v.website ?? ""} onChange={(e) => set("website", e.target.value)} placeholder="https://…" />
           </FormField>
           <FormField label="LinkedIn">
             <Input value={v.linkedinUrl ?? ""} onChange={(e) => set("linkedinUrl", e.target.value)} placeholder="https://www.linkedin.com/company/…" />
           </FormField>
-          <FormField label={institution ? "Type / domain" : "Industry"}>
-            <Input value={v.industry ?? ""} onChange={(e) => set("industry", e.target.value)} placeholder={institution ? "University, grande école…" : "HealthTech, SaaS…"} />
+          <FormField label={institution ? "Type / domaine" : "Secteur"}>
+            <Input value={v.industry ?? ""} onChange={(e) => set("industry", e.target.value)} placeholder={institution ? "Université, grande école…" : "HealthTech, SaaS…"} />
           </FormField>
-          <FormField label="Size">
-            <Input value={v.size ?? ""} onChange={(e) => set("size", e.target.value)} placeholder={institution ? "Students…" : "Startup, 50–200, large…"} />
+          <FormField label="Taille">
+            <Input value={v.size ?? ""} onChange={(e) => set("size", e.target.value)} placeholder={institution ? "Nombre d’étudiants…" : "Startup, 50–200, grand groupe…"} />
           </FormField>
-          <FormField label="City">
+          <FormField label="Ville">
             <Input value={v.city ?? ""} onChange={(e) => set("city", e.target.value)} />
           </FormField>
-          <FormField label="Country">
+          <FormField label="Pays">
             <Input value={v.country ?? ""} onChange={(e) => set("country", e.target.value)} />
           </FormField>
           <FormField label="Description" className="sm:col-span-2">
@@ -91,10 +91,10 @@ export function OrganizationDialog({ open, onOpenChange, initial }: { open: bool
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
+            Annuler
           </Button>
           <Button onClick={save} disabled={!v.name.trim() || pending}>
-            Save
+            Enregistrer
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -18,6 +18,7 @@ const LEVEL_CLASS = {
   LOW: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
   UNKNOWN: "bg-muted text-muted-foreground",
 } as const;
+const LEVEL_LABEL: Record<string, string> = { HIGH: "élevé", MEDIUM: "moyen", LOW: "faible", UNKNOWN: "inconnu" };
 
 export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: OpportunityDetail; skillMatch: SkillMatch; profileHasSkills: boolean }) {
   const { ai } = useAppData();
@@ -26,30 +27,30 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
   return (
     <div className="space-y-6">
       <div className="rounded-xl border border-separator bg-muted-background px-3 py-2 text-xs text-muted-foreground">
-        Descriptive analysis only — it highlights matches and gaps; it never decides whether you should apply.
+        Analyse purement descriptive — elle met en évidence correspondances et écarts, sans jamais décider s’il faut postuler.
       </div>
 
       <section className="space-y-3 surface p-4">
         <div className="flex items-center justify-between">
-          <h3 className="heading-sm text-foreground">Skills overlap (instant, no AI)</h3>
-          {skillMatch.coverage != null && <span className="text-sm font-semibold tabular-nums">{skillMatch.coverage}%</span>}
+          <h3 className="heading-sm text-foreground">Compétences en commun (instantané, sans IA)</h3>
+          {skillMatch.coverage != null && <span className="text-sm font-semibold tabular-nums">{skillMatch.coverage} %</span>}
         </div>
         {!profileHasSkills ? (
           <p className="text-sm text-muted-foreground">
-            Add your skills in{" "}
+            Ajoutez vos compétences dans{" "}
             <Link href="/settings/profile" className="text-primary underline underline-offset-2">
-              Settings → Profile
+              Paramètres → Profil
             </Link>{" "}
-            to compare them with each posting.
+            pour les comparer à chaque offre.
           </p>
         ) : skillMatch.coverage == null ? (
-          <p className="text-sm text-muted-foreground">No skills or technologies listed on this opportunity yet.</p>
+          <p className="text-sm text-muted-foreground">Aucune compétence ni technologie indiquée sur cette opportunité pour l’instant.</p>
         ) : (
           <>
             <Progress value={skillMatch.coverage} className="h-1.5" />
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
-                <p className="mb-1 text-xs font-medium text-muted-foreground">Matched ({skillMatch.matched.length})</p>
+                <p className="mb-1 text-xs font-medium text-muted-foreground">En commun ({skillMatch.matched.length})</p>
                 <div className="flex flex-wrap gap-1">
                   {skillMatch.matched.map((s) => (
                     <span key={s} className="rounded-md bg-emerald-50 px-1.5 py-0.5 text-xs text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-300">
@@ -59,7 +60,7 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
                 </div>
               </div>
               <div>
-                <p className="mb-1 text-xs font-medium text-muted-foreground">Not in your profile ({skillMatch.missing.length})</p>
+                <p className="mb-1 text-xs font-medium text-muted-foreground">Absentes de votre profil ({skillMatch.missing.length})</p>
                 <div className="flex flex-wrap gap-1">
                   {skillMatch.missing.map((s) => (
                     <span key={s} className="rounded-lg border border-border px-1.5 py-0.5 text-xs text-muted-foreground">
@@ -76,18 +77,18 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
       <section className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h3 className="flex items-center gap-2 heading-sm text-foreground">
-            <Sparkles className="size-4 text-highlight-500" /> Detailed analysis
+            <Sparkles className="size-4 text-highlight-500" /> Analyse détaillée
           </h3>
           <div className="flex gap-2">
             {analysis && (
-              <Button size="sm" variant="ghost" onClick={() => run(() => clearAnalysisAction(opp.id), { success: "Analysis removed" })}>
-                <Trash2 /> Clear
+              <Button size="sm" variant="ghost" onClick={() => run(() => clearAnalysisAction(opp.id), { success: "Analyse supprimée" })}>
+                <Trash2 /> Effacer
               </Button>
             )}
             {ai.available && (
-              <Button size="sm" onClick={() => run(() => analyzeOpportunityAction(opp.id), { success: "Analysis ready" })} disabled={pending}>
+              <Button size="sm" onClick={() => run(() => analyzeOpportunityAction(opp.id), { success: "Analyse prête" })} disabled={pending}>
                 {pending ? <Loader2 className="animate-spin" /> : analysis ? <RefreshCw /> : <Sparkles />}
-                {pending ? "Analyzing… (up to a minute)" : analysis ? "Re-analyze" : "Analyze with AI"}
+                {pending ? "Analyse… (jusqu’à une minute)" : analysis ? "Réanalyser" : "Analyser avec l’IA"}
               </Button>
             )}
           </div>
@@ -95,10 +96,10 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
         {!analysis ? (
           <div className="rounded-2xl border border-separator bg-muted-background p-6 text-sm text-muted-foreground">
             {ai.available ? (
-              "Run an analysis to compare this opportunity with your profile, dimension by dimension."
+              "Lancez une analyse pour comparer cette opportunité à votre profil, critère par critère."
             ) : (
               <>
-                In-app AI is not configured. From Claude Code (in C:\Candidature), ask:
+                L’IA intégrée n’est pas configurée. Depuis Claude Code (dans C:\Candidature), demandez :
                 <code className="mt-2 block rounded bg-muted px-2 py-1 text-xs">Analyse l&apos;opportunité {opp.organization?.name ?? opp.title} par rapport à mon profil et enregistre l&apos;analyse</code>
               </>
             )}
@@ -112,8 +113,8 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-medium">{d.label}</span>
                     <span className="flex items-center gap-2">
-                      {d.score != null && <span className="text-sm font-semibold tabular-nums">{d.score}%</span>}
-                      <span className={cn("rounded-lg px-1.5 text-xs font-medium font-medium", LEVEL_CLASS[d.level])}>{d.level.toLowerCase()}</span>
+                      {d.score != null && <span className="text-sm font-semibold tabular-nums">{d.score} %</span>}
+                      <span className={cn("rounded-lg px-1.5 text-xs font-medium font-medium", LEVEL_CLASS[d.level])}>{LEVEL_LABEL[d.level] ?? d.level.toLowerCase()}</span>
                     </span>
                   </div>
                   <p className="text-xs leading-relaxed text-muted-foreground">{d.rationale}</p>
@@ -133,14 +134,14 @@ export function DetailAnalysis({ opp, skillMatch, profileHasSkills }: { opp: Opp
               ))}
             </div>
             <div className="grid gap-4 md:grid-cols-2">
-              <ListCard title="Potential gaps" items={analysis.potentialGaps} icon={<TriangleAlert className="size-3.5 text-amber-500" />} />
-              <ListCard title="Questions to clarify" items={analysis.questionsToClarify} icon={<CircleHelp className="size-3.5 text-sky-500" />} />
-              <ListCard title="Talking points" items={analysis.talkingPoints} icon={<CheckCircle2 className="size-3.5 text-emerald-500" />} />
-              <ListCard title="Suggested documents" items={analysis.suggestedDocuments} />
+              <ListCard title="Écarts potentiels" items={analysis.potentialGaps} icon={<TriangleAlert className="size-3.5 text-amber-500" />} />
+              <ListCard title="Questions à clarifier" items={analysis.questionsToClarify} icon={<CircleHelp className="size-3.5 text-sky-500" />} />
+              <ListCard title="Points à mettre en avant" items={analysis.talkingPoints} icon={<CheckCircle2 className="size-3.5 text-emerald-500" />} />
+              <ListCard title="Documents suggérés" items={analysis.suggestedDocuments} />
             </div>
-            {analysis.caveats.length > 0 && <p className="text-xs text-muted-foreground">Limits: {analysis.caveats.join(" ")}</p>}
+            {analysis.caveats.length > 0 && <p className="text-xs text-muted-foreground">Limites : {analysis.caveats.join(" ")}</p>}
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
-              <Bot className="size-3" /> {analysis.by === "CLAUDE" ? "Claude (MCP)" : analysis.by === "DEMO" ? "Demo" : "In-app AI"}
+              <Bot className="size-3" /> {analysis.by === "CLAUDE" ? "Claude (MCP)" : analysis.by === "DEMO" ? "Démo" : "IA intégrée"}
               {analysis.model ? ` · ${analysis.model}` : ""} · {analysis.promptVersion} · {formatRelativeInstant(analysis.generatedAt)}
             </p>
           </div>

@@ -310,7 +310,7 @@ export async function upsertListing(raw: ListingInput, ctx: Ctx) {
       url,
       sources,
       status: input.status ?? "NEW",
-      history: [historyEntry(ctx.actor === "USER" ? "Added" : `Added by ${ctx.actor.toLowerCase()}`, ctx)],
+      history: [historyEntry(ctx.actor === "USER" ? "Ajouté" : `Ajouté par ${ctx.actor === "CLAUDE" ? "Claude" : ctx.actor.toLowerCase()}`, ctx)],
       ...(await locateListing(input, move)),
     })
     .returning();
@@ -329,7 +329,7 @@ export async function updateListing(id: string, raw: ListingPatch, ctx: Ctx) {
     if (patch.status === "CONTACTED" && !before.contactedAt) values.contactedAt = new Date().toISOString().slice(0, 10);
   }
   if (patch.visitDate && patch.visitDate !== before.visitDate) {
-    history.push(historyEntry(`Visit planned ${patch.visitDate}${patch.visitTime ? ` ${patch.visitTime}` : ""}`, ctx));
+    history.push(historyEntry(`Visite prévue le ${patch.visitDate}${patch.visitTime ? ` ${patch.visitTime}` : ""}`, ctx));
     if (!patch.status && ["NEW", "SHORTLISTED", "CONTACTED", "REPLIED"].includes(before.status)) values.status = "VISIT_PLANNED";
   }
   values.history = history.slice(-100);
@@ -349,7 +349,7 @@ export async function updateListing(id: string, raw: ListingPatch, ctx: Ctx) {
 export async function setListingStatus(id: string, status: ListingStatus, ctx: Ctx, reason?: string | null) {
   if (status === "EXCLUDED" && !reason) {
     const l = await getListing(id);
-    if (!l.excludedReason) throw badRequest("Give a reason to exclude a listing (it helps comparing later).");
+    if (!l.excludedReason) throw badRequest("Indique pourquoi tu écartes cette annonce (utile pour comparer plus tard).");
   }
   return updateListing(id, { status, ...(reason ? { excludedReason: reason } : {}) }, ctx);
 }
@@ -395,26 +395,26 @@ export async function draftListingMessage(id: string, language: "fr" | "en" = "f
 export async function exportListingsCsv(moveId: string) {
   const move = await getMove(moveId);
   const cols: [string, (l: ListingView) => unknown][] = [
-    ["Status", (l) => LISTING_STATUS_META[l.status].label],
-    ["Pick", (l) => l.pick ?? ""],
-    ["Title", (l) => l.title],
-    ["Address", (l) => [l.address, l.district].filter(Boolean).join(", ")],
-    ["Total / month", (l) => l.total ?? ""],
-    ["Rent", (l) => l.rent ?? ""],
+    ["Statut", (l) => LISTING_STATUS_META[l.status].label],
+    ["Mon top", (l) => (l.pick === "YES" ? "Oui" : l.pick === "NO" ? "Non" : l.pick === "MAYBE" ? "Peut-être" : "")],
+    ["Logement", (l) => l.title],
+    ["Adresse", (l) => [l.address, l.district].filter(Boolean).join(", ")],
+    ["Total / mois", (l) => l.total ?? ""],
+    ["Loyer", (l) => l.rent ?? ""],
     ["Charges", (l) => l.charges ?? ""],
-    ["Charges cover", (l) => (l.chargesInclude ?? []).join(", ")],
-    ["Deposit", (l) => l.deposit ?? l.depositText ?? ""],
-    ["Available", (l) => l.availableFrom ?? l.availableText ?? ""],
-    ["Min lease (months)", (l) => l.minLeaseMonths ?? l.leaseText ?? ""],
-    ["Furnished", (l) => l.furnished],
+    ["Charges couvrent", (l) => (l.chargesInclude ?? []).join(", ")],
+    ["Garantie", (l) => l.deposit ?? l.depositText ?? ""],
+    ["Disponible", (l) => l.availableFrom ?? l.availableText ?? ""],
+    ["Bail minimum (mois)", (l) => l.minLeaseMonths ?? l.leaseText ?? ""],
+    ["Meublé", (l) => ({ YES: "Oui", SEMI: "Semi", NO: "Non", UNKNOWN: "?" })[l.furnished]],
     ["Distance (km)", (l) => l.commuteKm ?? ""],
-    ["Walk (min)", (l) => l.walkMin ?? ""],
-    ["Savings / month", (l) => l.budget?.savings ?? ""],
-    ["Issues", (l) => l.issues.map((i) => i.label).join(" · ")],
-    ["Website / app", (l) => l.contacts?.app ?? ""],
+    ["À pied (min)", (l) => l.walkMin ?? ""],
+    ["Épargne / mois", (l) => l.budget?.savings ?? ""],
+    ["Points bloquants", (l) => l.issues.map((i) => i.label).join(" · ")],
+    ["Site / app", (l) => l.contacts?.app ?? ""],
     ["Email", (l) => l.contacts?.email ?? ""],
-    ["Phone / WhatsApp", (l) => [l.contacts?.phone, l.contacts?.whatsapp].filter(Boolean).join(" / ")],
-    ["Link", (l) => l.url ?? ""],
+    ["Téléphone / WhatsApp", (l) => [l.contacts?.phone, l.contacts?.whatsapp].filter(Boolean).join(" / ")],
+    ["Lien", (l) => l.url ?? ""],
     ["Notes", (l) => l.notes ?? ""],
   ];
   const esc = (v: unknown) => {
@@ -422,5 +422,5 @@ export async function exportListingsCsv(moveId: string) {
     return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   };
   const lines = [cols.map(([h]) => h).join(";"), ...move.listings.map((l) => cols.map(([, f]) => esc(f(l))).join(";"))];
-  return { fileName: `${move.title.replace(/[^\p{L}\p{N} _-]+/gu, "").trim() || "housing"} - housing.csv`, content: "﻿" + lines.join("\r\n") };
+  return { fileName: `${move.title.replace(/[^\p{L}\p{N} _-]+/gu, "").trim() || "logements"} - logements.csv`, content: "﻿" + lines.join("\r\n") };
 }

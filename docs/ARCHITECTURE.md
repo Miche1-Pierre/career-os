@@ -118,6 +118,15 @@ AIProvider.generateStructured({ task, system, prompt, schema }) → { data, meta
 - **Pré-extraction déterministe** : JSON-LD `JobPosting` des pages d'offres, métadonnées HTML, en-têtes d'email.
 - **File d'analyse en arrière-plan** : capturer puis continuer à travailler ; l'item passe « Ready for review » dans l'Inbox.
 
+### Chat intégré
+
+`POST /api/chat` (`src/server/chat/chat.ts`) lance Claude Code en mode agent (`streamClaude` dans
+`bridge/claude-runner.mjs`) : seuls les outils du serveur MCP de l'app (`mcp__career-os`) et WebSearch / WebFetch
+sont autorisés, système de consignes en français, contexte de la page et mentions ajoutés au message. Les événements
+(texte, outils, fin, erreur) sont renvoyés en NDJSON et affichés en direct par la barre de chat. Conversations dans
+`chat_threads` / `chat_messages`, reprises avec `--resume` (session Claude Code). En conteneur avec jeton, Claude
+appelle le MCP sur `127.0.0.1:3000` ; via le bridge hôte (`/v1/chat`), sur l'adresse du navigateur.
+
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
 - `.mcp.json` enregistre le serveur MCP `career-os` → 39 outils (today, search, create_opportunity, set_status, moves/logement/budget,

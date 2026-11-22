@@ -17,7 +17,7 @@ export function PageHeader({
     <div className={cn("flex flex-col gap-3 pb-6 sm:flex-row sm:items-end sm:justify-between", className)}>
       <div className="min-w-0 space-y-1">
         {eyebrow && <div className="label-xs text-muted-foreground">{eyebrow}</div>}
-        <h1 className="truncate heading-2xl text-foreground">{title}</h1>
+        <h1 className="truncate heading-2xl text-foreground" title={typeof title === "string" ? title : undefined}>{title}</h1>
         {description && <div className="copy-sm text-muted-foreground">{description}</div>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
@@ -25,8 +25,13 @@ export function PageHeader({
   );
 }
 
-export function PageContainer({ children, className, wide = false }: { children: React.ReactNode; className?: string; wide?: boolean }) {
-  return <div className={cn("mx-auto w-full px-4 py-6 sm:px-6 md:py-8", wide ? "max-w-[1600px]" : "max-w-6xl", className)}>{children}</div>;
+/**
+ * Every page uses the same content width so nothing jumps when navigating. Page-specific `max-w-*` classes are
+ * ignored on purpose (`wide` is kept for API compatibility).
+ */
+export function PageContainer({ children, className }: { children: React.ReactNode; className?: string; wide?: boolean }) {
+  const rest = className?.replace(/(^|\s)max-w-\S+/g, " ").trim();
+  return <div className={cn("mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 md:py-8", rest)}>{children}</div>;
 }
 
 export function Section({ title, description, actions, children, className }: { title?: React.ReactNode; description?: React.ReactNode; actions?: React.ReactNode; children: React.ReactNode; className?: string }) {

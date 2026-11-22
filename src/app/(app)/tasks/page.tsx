@@ -3,7 +3,7 @@ import { listTasks } from "@/server/services/tasks";
 import { opportunityOptions } from "@/server/services/opportunities";
 import { TasksView } from "@/components/tasks/tasks-view";
 
-export const metadata: Metadata = { title: "Tasks" };
+export const metadata: Metadata = { title: "Tâches" };
 
 export default async function TasksPage({ searchParams }: { searchParams: Promise<{ show?: string; new?: string }> }) {
   const { show, new: isNew } = await searchParams;

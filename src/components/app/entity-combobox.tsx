@@ -21,8 +21,8 @@ export function EntityCombobox({
   options,
   value,
   onChange,
-  placeholder = "Select…",
-  createLabel = "Create",
+  placeholder = "Sélectionner…",
+  createLabel = "Créer",
   allowCreate = true,
   className,
 }: {
@@ -45,16 +45,16 @@ export function EntityCombobox({
         <Button variant="outline" role="combobox" aria-expanded={open} className={cn("w-full justify-between font-normal", !label && "text-muted-foreground", className)}>
           <span className="truncate">
             {label ?? placeholder}
-            {!value.id && value.name && <span className="ml-1.5 text-xs text-muted-foreground">(new)</span>}
+            {!value.id && value.name && <span className="ml-1.5 text-xs text-muted-foreground">(nouveau)</span>}
           </span>
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-(--radix-popover-trigger-width) min-w-64 p-0" align="start">
         <Command>
-          <CommandInput placeholder="Search or type a new name…" value={search} onValueChange={setSearch} />
+          <CommandInput placeholder="Rechercher ou saisir un nouveau nom…" value={search} onValueChange={setSearch} />
           <CommandList>
-            <CommandEmpty>{allowCreate ? "Type a name to create it." : "No match."}</CommandEmpty>
+            <CommandEmpty>{allowCreate ? "Saisir un nom pour le créer." : "Aucun résultat."}</CommandEmpty>
             {allowCreate && search.trim() && !exact && (
               <CommandGroup>
                 <CommandItem
@@ -65,7 +65,7 @@ export function EntityCombobox({
                     setSearch("");
                   }}
                 >
-                  <Plus /> {createLabel} “{search.trim()}”
+                  <Plus /> {createLabel} « {search.trim()} »
                 </CommandItem>
               </CommandGroup>
             )}
@@ -96,7 +96,7 @@ export function EntityCombobox({
                   }}
                   className="text-muted-foreground"
                 >
-                  Clear
+                  Effacer
                 </CommandItem>
               </CommandGroup>
             )}

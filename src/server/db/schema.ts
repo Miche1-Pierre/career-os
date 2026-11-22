@@ -649,6 +649,51 @@ export const housingListings = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// In-app chat (Claude Code with the Career OS tools)
+// ---------------------------------------------------------------------------
+
+export interface ChatToolCall {
+  name: string;
+  summary: string | null;
+}
+
+export const chatThreads = pgTable(
+  "chat_threads",
+  {
+    id: pk(),
+    title: text("title").notNull(),
+    provider: text("provider").notNull().default("claude-code"),
+    /** Claude Code session id, to resume the conversation with its full context. */
+    sessionId: text("session_id"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("chat_threads_updated_idx").on(t.updatedAt)],
+);
+
+export const chatMessages = pgTable(
+  "chat_messages",
+  {
+    id: pk(),
+    threadId: uuid("thread_id")
+      .notNull()
+      .references(() => chatThreads.id, { onDelete: "cascade" }),
+    role: text("role").$type<"user" | "assistant">().notNull(),
+    content: text("content").notNull(),
+    /** Page context and mentions sent with a user message. */
+    context: jsonb("context").$type<Record<string, unknown> | null>(),
+    tools: jsonList<ChatToolCall>("tools"),
+    model: text("model"),
+    costUsd: doublePrecision("cost_usd"),
+    durationMs: integer("duration_ms"),
+    error: text("error"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("chat_messages_thread_idx").on(t.threadId, t.createdAt)],
+);
+
+// ---------------------------------------------------------------------------
 // Relations (relational query builder)
 // ---------------------------------------------------------------------------
 
@@ -749,3 +794,5 @@ export type Goal = typeof goals.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
 export type Move = typeof moves.$inferSelect;
 export type HousingListing = typeof housingListings.$inferSelect;
+export type ChatThread = typeof chatThreads.$inferSelect;
+export type ChatMessage = typeof chatMessages.$inferSelect;

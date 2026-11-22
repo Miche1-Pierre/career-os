@@ -8,7 +8,7 @@ import { AppError } from "@/server/context";
 import { draftFromCapture } from "@/lib/capture-mapping";
 import { CaptureReview } from "@/components/inbox/capture-review";
 
-export const metadata: Metadata = { title: "Review capture" };
+export const metadata: Metadata = { title: "Vérifier la capture" };
 
 export default async function InboxItemPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -24,7 +24,7 @@ export default async function InboxItemPage({ params }: { params: Promise<{ id: 
       item={JSON.parse(JSON.stringify(item))}
       result={result ? JSON.parse(JSON.stringify(result)) : null}
       draft={draft ? JSON.parse(JSON.stringify(draft)) : null}
-      organizations={orgs.map((o) => ({ id: o.id, label: o.name, hint: o.kind === "INSTITUTION" ? "Institution" : o.city }))}
+      organizations={orgs.map((o) => ({ id: o.id, label: o.name, hint: o.kind === "INSTITUTION" ? "Établissement" : o.city }))}
       opportunities={opps.map((o) => ({ id: o.id, label: o.organizationName ? `${o.organizationName} — ${o.title}` : o.title, hint: o.stageLabel }))}
     />
   );

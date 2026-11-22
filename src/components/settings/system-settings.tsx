@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
-import { Bot, CheckCircle2, Copy, Database, Download, FileArchive, FileJson, FileSpreadsheet, FlaskConical, Loader2, RotateCcw, Save, Trash2, Upload, XCircle } from "lucide-react";
+import { Bot, CheckCircle2, Copy, Database, Download, FileArchive, FileJson, FileSpreadsheet, FileUp, FlaskConical, Loader2, RotateCcw, Save, Trash2, Upload, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,11 +20,13 @@ import { formatRelativeInstant } from "@/lib/dates";
 import { SettingsCard } from "./settings-shell";
 import { cn } from "@/lib/utils";
 
+const BACKUP_KIND_LABEL: Record<string, string> = { auto: "automatique", manual: "manuelle", pre: "avant restauration", "pre-restore": "avant restauration", pg_dump: "pg_dump" };
+
 function CodeBlock({ children }: { children: string }) {
   return (
     <div className="group relative">
       <pre className="overflow-x-auto rounded-lg bg-muted px-3 py-2 font-mono text-xs leading-relaxed">{children}</pre>
-      <button type="button" className="absolute top-1.5 right-1.5 rounded p-1 opacity-0 group-hover:opacity-100 hover:bg-background" onClick={() => (navigator.clipboard.writeText(children), toast.success("Copied"))} aria-label="Copy">
+      <button type="button" className="absolute top-1.5 right-1.5 rounded p-1 opacity-0 group-hover:opacity-100 hover:bg-background" onClick={() => (navigator.clipboard.writeText(children), toast.success("Copié"))} aria-label="Copier">
         <Copy className="size-3.5" />
       </button>
     </div>
@@ -38,24 +40,24 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
   const dirty = JSON.stringify(v) !== JSON.stringify(value);
   return (
     <>
-      <SettingsCard title="In-app AI" description="Used by Quick import, Analyze and Ask. Everything else in Career OS is deterministic and works without AI.">
+      <SettingsCard title="IA intégrée" description="Utilisée par l’import rapide, l’analyse, les questions à l’IA et l’import de CV. Tout le reste de Career OS est déterministe et fonctionne sans IA.">
         <div className={cn("flex items-start gap-3 rounded-lg border p-3", live.available ? "border-transparent bg-emerald-50 dark:bg-emerald-950" : "bg-muted-background")}>
           {live.available ? <CheckCircle2 className="mt-0.5 size-5 text-emerald-700" /> : <XCircle className="mt-0.5 size-5 text-muted-foreground" />}
           <div className="min-w-0 flex-1 text-sm">
             <p className="font-medium">
               {live.provider}
-              {live.mode ? ` · ${live.mode}` : ""} — {live.available ? "available" : "not available"}
+              {live.mode ? ` · ${live.mode}` : ""} — {live.available ? "disponible" : "indisponible"}
             </p>
-            <p className="text-muted-foreground">{live.detail}</p>
-            {live.setup && <p className="mt-1 text-xs">{live.setup}</p>}
-            {live.model && <p className="mt-1 text-xs text-muted-foreground">Model: {live.model}</p>}
+            <p className="break-words text-muted-foreground">{live.detail}</p>
+            {live.setup && <p className="mt-1 text-xs break-words">{live.setup}</p>}
+            {live.model && <p className="mt-1 text-xs text-muted-foreground">Modèle : {live.model}</p>}
           </div>
-          <Button size="sm" variant="outline" onClick={() => run(() => testAiAction(), { onSuccess: (s) => (setLive(s), toast[s.available ? "success" : "error"](s.available ? "AI reachable" : s.detail)) })} disabled={pending}>
-            <FlaskConical /> Test
+          <Button size="sm" variant="outline" onClick={() => run(() => testAiAction(), { onSuccess: (s) => (setLive(s), toast[s.available ? "success" : "error"](s.available ? "IA joignable" : s.detail)) })} disabled={pending} className="shrink-0">
+            <FlaskConical /> Tester
           </Button>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
-          <FormField label="Model override" hint="Empty = AI_MODEL from .env (opus / sonnet / haiku or a full id)">
+          <FormField label="Modèle (remplacement)" hint="Vide = AI_MODEL du fichier .env (opus, sonnet, haiku ou un identifiant complet)">
             <Input value={v.model} onChange={(e) => setV({ ...v, model: e.target.value.trim() })} placeholder="opus" />
           </FormField>
           <FormField label="Effort">
@@ -66,13 +68,13 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
               <SelectContent>
                 {["default", "low", "medium", "high", "xhigh", "max"].map((e) => (
                   <SelectItem key={e} value={e}>
-                    {e}
+                    {e === "default" ? "Par défaut" : e}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label="Language of generated text">
+          <FormField label="Langue des textes générés">
             <Select value={v.outputLanguage} onValueChange={(l) => setV({ ...v, outputLanguage: l as AppSettings["ai"]["outputLanguage"] })}>
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -80,48 +82,48 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
               <SelectContent>
                 <SelectItem value="fr">Français</SelectItem>
                 <SelectItem value="en">English</SelectItem>
-                <SelectItem value="auto">Same as the source</SelectItem>
+                <SelectItem value="auto">Identique à la source</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
         </div>
         <div className="flex items-center gap-2">
           <Switch id="auto" checked={v.autoAnalyzeCaptures} onCheckedChange={(b) => setV({ ...v, autoAnalyzeCaptures: b })} />
-          <Label htmlFor="auto">Analyze captures automatically after Quick import</Label>
+          <Label htmlFor="auto">Analyser automatiquement les captures après un import rapide</Label>
         </div>
         <div className="flex justify-end">
-          <Button disabled={!dirty || pending} onClick={() => run(() => updateSettingsAction("ai", v), { success: "Saved" })}>
-            Save
+          <Button disabled={!dirty || pending} onClick={() => run(() => updateSettingsAction("ai", v), { success: "Paramètres enregistrés" })}>
+            Enregistrer
           </Button>
         </div>
       </SettingsCard>
 
-      <SettingsCard title="Enable in-app AI with your Claude subscription" description="Pick one option, then restart: docker compose up -d">
+      <SettingsCard title="Activer l’IA intégrée avec votre abonnement Claude" description="Choisissez une option, puis redémarrez : docker compose up -d">
         <div className="space-y-4 text-sm">
           <div>
-            <p className="font-medium">Option A — Claude Code inside Docker (recommended)</p>
-            <p className="mb-1.5 text-xs text-muted-foreground">Creates a long-lived token for your subscription, used only by this container.</p>
-            <CodeBlock>{"claude setup-token\n# then in C:\\Candidature\\.env :\nCLAUDE_CODE_OAUTH_TOKEN=<the token>\n\ndocker compose up -d"}</CodeBlock>
+            <p className="font-medium">Option A — Claude Code dans Docker (recommandé)</p>
+            <p className="mb-1.5 text-xs text-muted-foreground">Crée un jeton longue durée pour votre abonnement, utilisé uniquement par ce conteneur.</p>
+            <CodeBlock>{"claude setup-token\n# puis dans C:\\Candidature\\.env :\nCLAUDE_CODE_OAUTH_TOKEN=<le jeton>\n\ndocker compose up -d"}</CodeBlock>
           </div>
           <div>
-            <p className="font-medium">Option B — Host bridge (no token)</p>
-            <p className="mb-1.5 text-xs text-muted-foreground">Uses the Claude Code already logged in on your PC. Keep the window open.</p>
+            <p className="font-medium">Option B — Pont hôte (sans jeton)</p>
+            <p className="mb-1.5 text-xs text-muted-foreground">Utilise le Claude Code déjà connecté sur votre PC. Laissez la fenêtre ouverte.</p>
             <CodeBlock>{"cd C:\\Candidature\nnpm run bridge"}</CodeBlock>
           </div>
           <div>
-            <p className="font-medium">Option C — Anthropic API key</p>
+            <p className="font-medium">Option C — Clé API Anthropic</p>
             <CodeBlock>{"AI_PROVIDER=anthropic\nANTHROPIC_API_KEY=sk-ant-…\nAI_MODEL=claude-opus-5-5"}</CodeBlock>
           </div>
           <div>
-            <p className="font-medium">Option D — OpenAI-compatible or local LLM (Ollama, LM Studio…)</p>
+            <p className="font-medium">Option D — API compatible OpenAI ou LLM local (Ollama, LM Studio…)</p>
             <CodeBlock>{"AI_PROVIDER=openai\nOPENAI_BASE_URL=http://host.docker.internal:11434/v1\nOPENAI_MODEL=qwen3:14b"}</CodeBlock>
           </div>
         </div>
       </SettingsCard>
 
-      <SettingsCard title="Claude Code as your operator (MCP)" description="Works with no configuration at all: Claude Code reads and updates Career OS through ~30 tools.">
+      <SettingsCard title="Claude Code comme opérateur (MCP)" description="Fonctionne sans aucune configuration : Claude Code lit et met à jour Career OS grâce à une quarantaine d’outils.">
         <p className="text-sm">
-          <Bot className="mr-1 inline size-4" /> Open Claude Code in <code className="rounded bg-muted px-1">C:\Candidature</code> (it detects <code className="rounded bg-muted px-1">.mcp.json</code> and asks you to approve the <b>career-os</b> server), then talk naturally:
+          <Bot className="mr-1 inline size-4" /> Ouvrez Claude Code dans <code className="rounded bg-muted px-1">C:\Candidature</code> (il détecte <code className="rounded bg-muted px-1">.mcp.json</code> et vous demande d’approuver le serveur <b>career-os</b>), puis parlez-lui naturellement :
         </p>
         <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
           <li>“Ajoute cette offre : [annonce collée]” · “Importe cette formation : https://…”</li>
@@ -131,10 +133,10 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
           <li>“Prépare mon entretien technique chez Zefir” · “Lis mon CV et remplis mon profil”</li>
         </ul>
         <CodeBlock>{`{\n  "mcpServers": {\n    "career-os": { "type": "http", "url": "${appUrl}/api/mcp" }\n  }\n}`}</CodeBlock>
-        <p className="text-xs text-muted-foreground">Or add it once for all your projects: claude mcp add --transport http career-os {appUrl}/api/mcp</p>
+        <p className="text-xs break-words text-muted-foreground">Ou ajoutez-le une fois pour tous vos projets : claude mcp add --transport http career-os {appUrl}/api/mcp</p>
       </SettingsCard>
 
-      <SettingsCard title="Prompts" description="Versioned internal prompts — the version is stored with every AI result.">
+      <SettingsCard title="Prompts" description="Prompts internes versionnés : la version est enregistrée avec chaque résultat de l’IA.">
         <div className="flex flex-wrap gap-2">
           {prompts.map((p) => (
             <code key={p} className="rounded bg-muted px-2 py-1 text-xs">
@@ -149,22 +151,22 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
 
 export function DocumentsSettings({ library, dataDir, maxUploadMb }: { library: { root: string; hostRoot: string; exists: boolean; writable: boolean }; dataDir: string; maxUploadMb: number }) {
   return (
-    <SettingsCard title="Documents library" description="Browsers cannot open C:\… paths for security reasons: Career OS reads a folder mounted into the app instead — no hack.">
+    <SettingsCard title="Bibliothèque de documents" description="Pour des raisons de sécurité, un navigateur ne peut pas ouvrir les chemins C:\… : Career OS lit à la place un dossier monté dans l’application.">
       <div className="space-y-2 text-sm">
         <p>
-          Folder on your computer: <code className="rounded-md bg-muted px-1 font-mono text-xs break-all">{library.hostRoot}</code>
+          Dossier sur votre ordinateur : <code className="rounded-md bg-muted px-1 font-mono text-xs break-all">{library.hostRoot}</code>
         </p>
         <p className={cn("flex items-center gap-1.5", library.exists ? "text-emerald-700 dark:text-emerald-300" : "text-warning-500")}>
           {library.exists ? <CheckCircle2 className="size-4" /> : <XCircle className="size-4" />}
-          {library.exists ? (library.writable ? "Mounted, read & write" : "Mounted, read-only (uploads go to the app data folder)") : "Not mounted"}
+          {library.exists ? (library.writable ? "Monté, en lecture et écriture" : "Monté en lecture seule (les fichiers déposés vont dans le dossier de données de l’application)") : "Non monté"}
         </p>
         <p className="text-muted-foreground">
-          Frozen copies (snapshots) of every version: <code className="rounded-md bg-muted px-1 font-mono text-xs break-all">{dataDir}</code> — they guarantee you can always open what you actually sent. Max upload: {maxUploadMb} MB.
+          Copies figées (snapshots) de chaque version : <code className="rounded-md bg-muted px-1 font-mono text-xs break-all">{dataDir}</code> — elles garantissent que vous pourrez toujours rouvrir ce que vous avez réellement envoyé. Taille maximale d’un fichier : {maxUploadMb} Mo.
         </p>
       </div>
-      <CodeBlock>{"# .env — change the folder, then: docker compose up -d\nDOCUMENTS_DIR=C:/Users/Pierre/Documents/Candidatures\nMAX_UPLOAD_MB=25"}</CodeBlock>
+      <CodeBlock>{"# .env — changez le dossier, puis : docker compose up -d\nDOCUMENTS_DIR=C:/Users/Pierre/Documents/Candidatures\nMAX_UPLOAD_MB=25"}</CodeBlock>
       <p className="text-xs text-muted-foreground">
-        Suggested layout: CV/, Cover Letters/, Academic/, Certificates/. Use <Link href="/documents" className="underline">Documents → Scan folder</Link> to register files and detect modified ones.
+        Organisation suggérée : CV/, Cover Letters/, Academic/, Certificates/. Utilisez <Link href="/documents" className="underline">Documents → Analyser le dossier</Link> pour enregistrer les fichiers et repérer ceux qui ont changé.
       </p>
     </SettingsCard>
   );
@@ -176,10 +178,19 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
   const [file, setFile] = useState<File | null>(null);
   const [mode, setMode] = useState<"replace" | "merge">("merge");
   const [importing, setImporting] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const doImport = async () => {
     if (!file) return;
-    if (!(await confirm({ title: mode === "replace" ? "Replace ALL your data with this file?" : "Merge this file into your data?", description: "A safety backup of the current data is written to ./backups first.", destructive: mode === "replace", confirmLabel: mode === "replace" ? "Replace everything" : "Merge" }))) return;
+    if (
+      !(await confirm({
+        title: mode === "replace" ? "Remplacer TOUTES vos données par ce fichier ?" : "Fusionner ce fichier avec vos données ?",
+        description: "Une sauvegarde de sécurité des données actuelles est d’abord écrite dans ./backups.",
+        destructive: mode === "replace",
+        confirmLabel: mode === "replace" ? "Tout remplacer" : "Fusionner",
+      }))
+    )
+      return;
     setImporting(true);
     const form = new FormData();
     form.set("file", file);
@@ -188,21 +199,21 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
     setImporting(false);
     if (!r.ok) return void toast.error(r.error);
     const total = Object.values(r.data as Record<string, number>).reduce((a, b) => a + b, 0);
-    toast.success(`Import done — ${total} rows ${mode === "merge" ? "added" : "restored"}`);
+    toast.success(`Import terminé : ${total} ligne${total > 1 ? "s" : ""} ${mode === "merge" ? "ajoutée" : "restaurée"}${total > 1 ? "s" : ""}`);
   };
 
   return (
     <>
-      <SettingsCard title="Export all data" description="Your data is yours: open formats, versioned (schemaVersion), restorable.">
+      <SettingsCard title="Exporter toutes les données" description="Vos données vous appartiennent : formats ouverts, versionnés (schemaVersion), restaurables.">
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
             <a href="/api/v1/export?format=json" download>
-              <FileJson /> JSON (full)
+              <FileJson /> JSON (complet)
             </a>
           </Button>
           <Button variant="outline" asChild>
             <a href="/api/v1/export?format=zip" download>
-              <FileArchive /> ZIP (JSON + CSV + files)
+              <FileArchive /> ZIP (JSON + CSV + fichiers)
             </a>
           </Button>
           {["opportunities", "contacts", "organizations", "interviews", "tasks", "timeline", "document-versions"].map((t) => (
@@ -215,38 +226,46 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
         </div>
       </SettingsCard>
 
-      <SettingsCard title="Import / restore" description="A Career OS JSON export, a .json.gz backup or a ZIP export.">
-        <Input type="file" accept=".json,.gz,.zip" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+      <SettingsCard title="Importer / restaurer" description="Un export JSON de Career OS, une sauvegarde .json.gz ou un export ZIP.">
+        <input ref={fileRef} type="file" accept=".json,.gz,.zip" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <Button variant="outline" onClick={() => fileRef.current?.click()} disabled={importing}>
+            <FileUp /> Choisir un fichier
+          </Button>
+          <span className="min-w-0 truncate text-sm text-muted-foreground" title={file?.name}>
+            {file ? file.name : "Aucun fichier choisi"}
+          </span>
+        </div>
         <RadioGroup value={mode} onValueChange={(m) => setMode(m as "replace" | "merge")} className="gap-2">
           <label className="flex items-center gap-2 text-sm">
-            <RadioGroupItem value="merge" /> Merge — add what is missing, keep existing records
+            <RadioGroupItem value="merge" /> Fusionner : ajouter ce qui manque, conserver les données existantes
           </label>
           <label className="flex items-center gap-2 text-sm">
-            <RadioGroupItem value="replace" /> Replace — restore exactly the file (current data is replaced)
+            <RadioGroupItem value="replace" /> Remplacer : restaurer exactement le fichier (les données actuelles sont remplacées)
           </label>
         </RadioGroup>
         <div className="flex justify-end">
           <Button onClick={doImport} disabled={!file || importing}>
-            {importing ? <Loader2 className="animate-spin" /> : <Upload />} Import
+            {importing ? <Loader2 className="animate-spin" /> : <Upload />} Importer
           </Button>
         </div>
       </SettingsCard>
 
       <SettingsCard
-        title="Backups"
+        title="Sauvegardes"
         description={
           <>
-            Automatic JSON backup every 24 h (configurable with AUTO_BACKUP_HOURS) in <code className="font-mono break-all">{backupsDir}</code>. A native PostgreSQL dump: <code className="font-mono">docker compose run --rm backup</code>
+            Sauvegarde JSON automatique toutes les 24 h (réglable avec AUTO_BACKUP_HOURS) dans <code className="font-mono break-all">{backupsDir}</code>. Pour un dump PostgreSQL natif : <code className="font-mono">docker compose run --rm backup</code>
           </>
         }
         footer={
-          <Button onClick={() => run(() => createBackupAction(), { success: (b) => `Backup written: ${b.name}` })} disabled={pending}>
-            <Save /> Back up now
+          <Button onClick={() => run(() => createBackupAction(), { success: (b) => `Sauvegarde écrite : ${b.name}` })} disabled={pending}>
+            <Save /> Sauvegarder maintenant
           </Button>
         }
       >
         {backups.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No backup yet.</p>
+          <p className="text-sm text-muted-foreground">Aucune sauvegarde pour l’instant.</p>
         ) : (
           <ul className="surface-list rounded-xl">
             {backups.slice(0, 20).map((b) => (
@@ -254,12 +273,12 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
                 <Database className="size-4 text-muted-foreground" />
                 <span className="min-w-0 flex-1 truncate font-mono text-xs">{b.name}</span>
                 <span className="text-xs text-muted-foreground">
-                  {b.kind} · {Math.max(1, Math.round(b.size / 1024))} KB · {formatRelativeInstant(b.createdAt)}
+                  {BACKUP_KIND_LABEL[b.kind] ?? b.kind} · {Math.max(1, Math.round(b.size / 1024))} Ko · {formatRelativeInstant(b.createdAt)}
                 </span>
                 {b.kind !== "pg_dump" && (
                   <>
                     <Button size="icon-xs" variant="ghost" asChild>
-                      <a href={`/api/files/backups/${b.name}`} aria-label="Download">
+                      <a href={`/api/files/backups/${b.name}`} aria-label="Télécharger">
                         <Download />
                       </a>
                     </Button>
@@ -267,11 +286,11 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
                       size="xs"
                       variant="ghost"
                       onClick={async () => {
-                        if (await confirm({ title: `Restore ${b.name}?`, description: "All current data is replaced (a safety backup is written first).", destructive: true, confirmLabel: "Restore" }))
-                          run(() => restoreBackupAction(b.name), { success: "Backup restored" });
+                        if (await confirm({ title: `Restaurer ${b.name} ?`, description: "Toutes les données actuelles sont remplacées (une sauvegarde de sécurité est d’abord écrite).", destructive: true, confirmLabel: "Restaurer" }))
+                          run(() => restoreBackupAction(b.name), { success: "Sauvegarde restaurée" });
                       }}
                     >
-                      <RotateCcw /> Restore
+                      <RotateCcw /> Restaurer
                     </Button>
                   </>
                 )}
@@ -281,27 +300,28 @@ export function DataSettings({ backups, hasDemo, backupsDir }: { backups: { name
         )}
       </SettingsCard>
 
-      <SettingsCard title="Demo data" description="Clearly marked sample data (Zefir, Roche, Siemens Healthineers, a bioinformatics master…). Your own data is never touched.">
+      <SettingsCard title="Données de démonstration" description="Données d’exemple clairement identifiées (Zefir, Roche, Siemens Healthineers, un master de bio-informatique…). Vos propres données ne sont jamais modifiées.">
         <div className="flex flex-wrap gap-2">
           {hasDemo ? (
             <Button
               variant="destructive"
               onClick={async () => {
-                if (await confirm({ title: "Delete all demo data?", description: "Only records flagged as demo are removed.", destructive: true, confirmLabel: "Delete demo data" })) run(() => deleteDemoAction(), { success: "Demo data deleted" });
+                if (await confirm({ title: "Supprimer toutes les données de démonstration ?", description: "Seuls les éléments marqués comme démonstration sont supprimés.", destructive: true, confirmLabel: "Supprimer les données de démo" }))
+                  run(() => deleteDemoAction(), { success: "Données de démonstration supprimées" });
               }}
             >
-              <Trash2 /> Delete demo data
+              <Trash2 /> Supprimer les données de démo
             </Button>
           ) : (
-            <Button variant="outline" onClick={() => run(() => seedDemoAction(), { success: "Demo data loaded" })} disabled={pending}>
-              Load demo data
+            <Button variant="outline" onClick={() => run(() => seedDemoAction(), { success: "Données de démonstration chargées" })} disabled={pending}>
+              Charger les données de démo
             </Button>
           )}
           <Button variant="ghost" asChild>
-            <Link href="/trash">Recently deleted</Link>
+            <Link href="/trash">Corbeille</Link>
           </Button>
           <Button variant="ghost" asChild>
-            <Link href="/welcome?again=1">Replay onboarding</Link>
+            <Link href="/welcome?again=1">Revoir l’accueil</Link>
           </Button>
         </div>
       </SettingsCard>
@@ -313,29 +333,29 @@ export function IntegrationSettings({ appUrl, protectedByToken }: { appUrl: stri
   const auth = protectedByToken ? ' -H "Authorization: Bearer $CAREER_OS_TOKEN"' : "";
   return (
     <>
-      <SettingsCard title="REST API" description="The same services as the UI — for scripts, a CLI, a browser extension or a mobile app.">
+      <SettingsCard title="API REST" description="Les mêmes services que l’interface, pour des scripts, une CLI, une extension de navigateur ou une application mobile.">
         <p className="text-sm">
-          Base URL: <code className="rounded bg-muted px-1 font-mono text-xs">{appUrl}/api/v1</code> — index at{" "}
+          URL de base : <code className="rounded bg-muted px-1 font-mono text-xs break-all">{appUrl}/api/v1</code> — index sur{" "}
           <a href="/api/v1" target="_blank" rel="noreferrer" className="text-primary underline">
             /api/v1
           </a>
           .
         </p>
-        <CodeBlock>{`# Capture anything into the inbox (what a browser extension would call)\ncurl -X POST ${appUrl}/api/v1/capture${auth} \\\n  -H "Content-Type: application/json" \\\n  -d '{"url":"https://…","analyze":true}'\n\n# Today's actions\ncurl ${appUrl}/api/v1/today${auth}`}</CodeBlock>
-        <p className="text-xs text-muted-foreground">{protectedByToken ? "APP_ACCESS_TOKEN is set: clients must send it as a Bearer token." : "No access token: the API is only reachable from this computer (127.0.0.1). Set APP_ACCESS_TOKEN before exposing the app."}</p>
+        <CodeBlock>{`# Capturer n’importe quoi dans « À trier » (ce qu’appellerait une extension de navigateur)\ncurl -X POST ${appUrl}/api/v1/capture${auth} \\\n  -H "Content-Type: application/json" \\\n  -d '{"url":"https://…","analyze":true}'\n\n# Les actions du jour\ncurl ${appUrl}/api/v1/today${auth}`}</CodeBlock>
+        <p className="text-xs text-muted-foreground">{protectedByToken ? "APP_ACCESS_TOKEN est défini : les clients doivent l’envoyer comme jeton Bearer." : "Aucun jeton d’accès : l’API n’est joignable que depuis cet ordinateur (127.0.0.1). Définissez APP_ACCESS_TOKEN avant d’exposer l’application."}</p>
       </SettingsCard>
-      <SettingsCard title="MCP server" description="Streamable HTTP endpoint used by Claude Code (see AI & Claude).">
+      <SettingsCard title="Serveur MCP" description="Point d’accès Streamable HTTP utilisé par Claude Code (voir IA et Claude).">
         <CodeBlock>{`${appUrl}/api/mcp`}</CodeBlock>
       </SettingsCard>
-      <SettingsCard title="Calendar feed" description="Interviews, deadlines and follow-ups as iCalendar. Import the file, or subscribe from Google Calendar / Outlook when the app is reachable online.">
+      <SettingsCard title="Flux calendrier" description="Entretiens, dates limites et relances au format iCalendar. Importez le fichier, ou abonnez-vous depuis Google Agenda / Outlook quand l’application est accessible en ligne.">
         <CodeBlock>{`${appUrl}/api/v1/calendar.ics`}</CodeBlock>
       </SettingsCard>
-      <SettingsCard title="Coming next" description="The architecture is ready for these; none is required.">
+      <SettingsCard title="Prochainement" description="L’architecture est prête pour ces évolutions ; aucune n’est nécessaire.">
         <ul className="list-disc space-y-1 pl-5 text-sm text-muted-foreground">
-          <li>Browser extension “Add to Career OS” → POST /api/v1/capture with the page URL, title and text.</li>
-          <li>Gmail / Outlook import → emails into the inbox, analyzed as proposed actions (always confirmed by you).</li>
-          <li>Notifications by email / Telegram / Discord → notification channels subscribe to the same events.</li>
-          <li>CLI (career today, career add…) → thin wrapper over this REST API.</li>
+          <li>Extension de navigateur « Ajouter à Career OS » → POST /api/v1/capture avec l’URL, le titre et le texte de la page.</li>
+          <li>Import Gmail / Outlook → e-mails dans « À trier », analysés en actions proposées (toujours confirmées par vous).</li>
+          <li>Notifications par e-mail / Telegram / Discord → des canaux abonnés aux mêmes événements.</li>
+          <li>CLI (career today, career add…) → fine surcouche de cette API REST.</li>
         </ul>
       </SettingsCard>
     </>

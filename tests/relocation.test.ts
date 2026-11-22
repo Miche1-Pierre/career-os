@@ -140,8 +140,8 @@ describe("moves and housing (database)", () => {
     await setListingStatus(first.listing.id, "SHORTLISTED", USER);
     const contacted = await setListingStatus(first.listing.id, "CONTACTED", USER);
     expect(contacted.contactedAt).not.toBeNull();
-    expect(contacted.history.map((h) => h.text)).toContain("To contact → Contacted");
-    await expect(setListingStatus(first.listing.id, "EXCLUDED", USER)).rejects.toThrow(/reason/);
+    expect(contacted.history.map((h) => h.text)).toContain("À contacter → Contacté");
+    await expect(setListingStatus(first.listing.id, "EXCLUDED", USER)).rejects.toThrow(/pourquoi/);
   });
 
   it("enriches listings with total, commute, fit and savings", async () => {
@@ -170,7 +170,7 @@ describe("moves and housing (database)", () => {
     const draft = await draftListingMessage(view.listings[0].id, "fr");
     expect(draft.subject).toContain("Cohabs");
     const csv = await exportListingsCsv(moveId);
-    expect(csv.content.startsWith("﻿Status;Pick;Title")).toBe(true);
+    expect(csv.content.startsWith("﻿Statut;Mon top;Logement")).toBe(true);
     expect(csv.content).toContain("Rue Leys");
 
     const res = await dispatch(new Request(`http://localhost/api/v1/moves/${moveId}`), ["moves", moveId]);

@@ -35,7 +35,7 @@ describe("follow-up engine", () => {
 
   it("disables follow-ups with a 0-day interval", () => {
     expect(computeNextFollowUp("2026-09-29", { days: 0, businessDays: false, reason: "custom" })).toBeNull();
-    expect(describeInterval({ days: 0, businessDays: false, reason: "custom" })).toMatch(/No automatic/);
+    expect(describeInterval({ days: 0, businessDays: false, reason: "custom" })).toMatch(/Pas de relance automatique/);
   });
 });
 

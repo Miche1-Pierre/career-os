@@ -18,7 +18,7 @@ import { PipelineSettings, TagSettings, ViewSettings } from "@/components/settin
 import { TemplateSettings, EmailTemplateSettings, AutomationSettings, GoalSettings } from "@/components/settings/workflow-settings";
 import { AiSettings, DocumentsSettings, DataSettings, IntegrationSettings } from "@/components/settings/system-settings";
 
-export const metadata: Metadata = { title: "Settings" };
+export const metadata: Metadata = { title: "Paramètres" };
 
 export default async function SettingsSectionPage({ params }: { params: Promise<{ section: string }> }) {
   const { section } = await params;

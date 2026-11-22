@@ -732,6 +732,8 @@
   html {
     @apply font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Reserve the scrollbar width so pages don't shift sideways when one scrolls and the next doesn't. */
+    scrollbar-gutter: stable;
   }
   body {
     @apply bg-background text-foreground;

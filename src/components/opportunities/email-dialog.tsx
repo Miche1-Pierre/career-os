@@ -55,20 +55,20 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Draft email</DialogTitle>
-          <DialogDescription>Edit, then copy or open it in your mail app. Career OS never sends emails on your behalf.</DialogDescription>
+          <DialogTitle>Brouillon d’e-mail</DialogTitle>
+          <DialogDescription>Modifiez-le, puis copiez-le ou ouvrez-le dans votre messagerie. Career OS n’envoie jamais d’e-mail à votre place.</DialogDescription>
         </DialogHeader>
         {!data ? (
           <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Preparing…
+            <Loader2 className="size-4 animate-spin" /> Préparation…
           </div>
         ) : (
           <div className="space-y-3">
             <div className="grid gap-2 sm:grid-cols-[1fr_220px]">
-              <Input value={to} onChange={(e) => setTo(e.target.value)} placeholder="Recipient email" />
+              <Input value={to} onChange={(e) => setTo(e.target.value)} placeholder="E-mail du destinataire" />
               <Select value={data.templateId ?? undefined} onValueChange={setTemplateId}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Template" />
+                  <SelectValue placeholder="Modèle" />
                 </SelectTrigger>
                 <SelectContent>
                   {data.templates.map((t) => (
@@ -81,13 +81,13 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
             </div>
             <div className="flex gap-2">
               <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
-              <Button variant="outline" size="icon" onClick={() => copy("subject")} aria-label="Copy subject">
+              <Button variant="outline" size="icon" onClick={() => copy("subject")} aria-label="Copier l’objet">
                 {copied === "subject" ? <Check /> : <Copy />}
               </Button>
             </div>
             <div className="relative">
               <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={12} className="text-sm" />
-              <Button variant="outline" size="icon-sm" className="absolute top-2 right-2" onClick={() => copy("body")} aria-label="Copy body">
+              <Button variant="outline" size="icon-sm" className="absolute top-2 right-2" onClick={() => copy("body")} aria-label="Copier le message">
                 {copied === "body" ? <Check /> : <Copy />}
               </Button>
             </div>
@@ -95,11 +95,11 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
         )}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Close
+            Fermer
           </Button>
           <Button variant="outline" asChild>
             <a href={mailto}>
-              <Mail /> Open in mail app
+              <Mail /> Ouvrir dans la messagerie
             </a>
           </Button>
           {onSent && (
@@ -109,7 +109,7 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
                 onOpenChange(false);
               }}
             >
-              <Check /> I sent it — log follow-up
+              <Check /> C’est envoyé — enregistrer la relance
             </Button>
           )}
         </DialogFooter>

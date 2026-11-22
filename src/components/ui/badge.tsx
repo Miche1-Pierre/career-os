@@ -5,7 +5,7 @@ import { Slot } from "radix-ui"
 
 // Sparkle Chip: soft tinted pill, semantic colors that flip in dark mode.
 const badgeVariants = cva(
-  "group/badge inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring [&>svg]:pointer-events-none [&>svg]:size-3.5!",
+  "group/badge inline-flex w-fit max-w-full min-w-0 shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap transition-colors focus-visible:ring-2 focus-visible:ring-ring [&>svg]:pointer-events-none [&>svg]:size-3.5!",
   {
     variants: {
       variant: {
@@ -36,18 +36,25 @@ function Badge({
   variant = "default",
   size = "default",
   asChild = false,
+  children,
+  title,
   ...props
 }: React.ComponentProps<"span"> &
   VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot.Root : "span"
+  // Plain text is wrapped so long labels end with « … » instead of being cut; the full text stays in the tooltip.
+  const isText = typeof children === "string" || typeof children === "number"
 
   return (
     <Comp
       data-slot="badge"
       data-variant={variant}
       className={cn(badgeVariants({ variant, size }), className)}
+      title={title ?? (isText ? String(children) : undefined)}
       {...props}
-    />
+    >
+      {isText && !asChild ? <span className="min-w-0 truncate">{children}</span> : children}
+    </Comp>
   )
 }
 

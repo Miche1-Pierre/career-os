@@ -6,7 +6,7 @@ import { libraryStatus } from "@/server/storage";
 import { aiStatus } from "@/server/ai";
 import { WelcomeWizard } from "@/components/app/welcome-wizard";
 
-export const metadata: Metadata = { title: "Welcome" };
+export const metadata: Metadata = { title: "Bienvenue" };
 export const dynamic = "force-dynamic";
 
 export default async function WelcomePage({ searchParams }: { searchParams: Promise<{ again?: string }> }) {

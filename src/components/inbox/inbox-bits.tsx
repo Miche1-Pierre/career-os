@@ -6,13 +6,13 @@ import { cn } from "@/lib/utils";
 
 export function InboxStatusBadge({ status }: { status: InboxStatus }) {
   const map: Record<InboxStatus, { label: string; className: string; icon: React.ReactNode }> = {
-    NEW: { label: "Not analyzed", className: "bg-muted text-muted-foreground", icon: <CircleDot className="size-3" /> },
-    QUEUED: { label: "Queued", className: "bg-highlight-50 text-highlight-700", icon: <Loader2 className="size-3 animate-spin" /> },
-    PROCESSING: { label: "Analyzing…", className: "bg-highlight-50 text-highlight-700", icon: <Loader2 className="size-3 animate-spin" /> },
-    READY: { label: "Ready for review", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", icon: <Sparkles className="size-3" /> },
-    CONVERTED: { label: "Processed", className: "bg-muted text-muted-foreground", icon: <CheckCircle2 className="size-3" /> },
-    ARCHIVED: { label: "Archived", className: "bg-muted text-muted-foreground", icon: null },
-    FAILED: { label: "Analysis failed", className: "bg-warning-50 text-warning-700", icon: <AlertCircle className="size-3" /> },
+    NEW: { label: "Non analysé", className: "bg-muted text-muted-foreground", icon: <CircleDot className="size-3" /> },
+    QUEUED: { label: "En file d’attente", className: "bg-highlight-50 text-highlight-700", icon: <Loader2 className="size-3 animate-spin" /> },
+    PROCESSING: { label: "Analyse…", className: "bg-highlight-50 text-highlight-700", icon: <Loader2 className="size-3 animate-spin" /> },
+    READY: { label: "Prêt à vérifier", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", icon: <Sparkles className="size-3" /> },
+    CONVERTED: { label: "Traité", className: "bg-muted text-muted-foreground", icon: <CheckCircle2 className="size-3" /> },
+    ARCHIVED: { label: "Archivé", className: "bg-muted text-muted-foreground", icon: null },
+    FAILED: { label: "Échec de l’analyse", className: "bg-warning-50 text-warning-700", icon: <AlertCircle className="size-3" /> },
   };
   const m = map[status];
   return <span className={cn("inline-flex h-5 items-center gap-1 rounded-lg px-1.5 text-xs font-medium whitespace-nowrap", m.className)}>{m.icon}{m.label}</span>;

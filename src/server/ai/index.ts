@@ -64,7 +64,7 @@ interface Provider {
 }
 
 const env = (key: string) => process.env[key]?.trim() || "";
-const inDocker = () => {
+export const inDocker = () => {
   try {
     return fs.existsSync("/.dockerenv");
   } catch {
@@ -78,7 +78,8 @@ const inDocker = () => {
 
 type ClaudeMode = "cli" | "bridge" | null;
 
-function claudeMode(): ClaudeMode {
+/** How Claude Code is reached: CLI in this process' environment (container with token, or host dev) or host bridge. */
+export function claudeMode(): ClaudeMode {
   const forced = env("CLAUDE_CODE_MODE");
   if (forced === "cli" || forced === "bridge") return forced;
   if (env("CLAUDE_CODE_OAUTH_TOKEN") || (env("ANTHROPIC_API_KEY") && env("AI_PROVIDER") === "claude-code" && inDocker())) return "cli";

@@ -8,13 +8,15 @@
 import { and, eq, inArray, isNotNull, isNull, lte, sql } from "drizzle-orm";
 import { db } from "@/server/db";
 import { interviews, opportunities, organizations, pipelineStages, tasks, type Interview, type Opportunity, type PipelineStage } from "@/server/db/schema";
-import { familyOf, INTERVIEW_KIND_LABEL } from "@/lib/constants";
+import { familyOf, interviewKindTitle } from "@/lib/constants";
 import { addDays, diffDays, formatISODate, toISODate, todayISO } from "@/lib/dates";
 import { computeNextFollowUp, resolveFollowUpInterval } from "@/lib/followups";
 import type { AppSettings } from "@/lib/settings-schema";
 import { businessCalendar, getSettings } from "./settings";
 import { ensureRuleTask } from "./tasks";
 import { dismissNotificationsFor, emitNotification } from "./notifications";
+
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 // ---------------------------------------------------------------------------
 // Event triggers
@@ -26,7 +28,7 @@ export async function onStatusChanged(opp: Opportunity, from: PipelineStage, to:
   if (to.category === "OFFER" && rules.offer_decision.enabled) {
     await ensureRuleTask(db, `offer_decision:${opp.id}:${to.key}`, {
       opportunityId: opp.id,
-      title: familyOf(opp.type) === "EDUCATION" ? "Decide on the admission" : "Decide on the offer",
+      title: familyOf(opp.type) === "EDUCATION" ? "Prendre une décision sur l’admission" : "Prendre une décision sur l’offre",
       kind: "TODO",
       dueDate: addDays(today, rules.offer_decision.days || 7),
       isDemo: opp.isDemo,
@@ -54,7 +56,7 @@ export async function onInterviewScheduled(interview: Interview, settings: AppSe
   const created = await ensureRuleTask(db, key, {
     opportunityId: interview.opportunityId,
     interviewId: interview.id,
-    title: `Prepare ${INTERVIEW_KIND_LABEL[interview.kind].toLowerCase()} interview`,
+    title: `Préparer l’${lowerFirst(interviewKindTitle(interview.kind))}`,
     kind: "PREPARATION",
     dueDate: due < today ? today : due,
     isDemo: interview.isDemo,
@@ -78,7 +80,7 @@ export async function onInterviewCompleted(interview: Interview, settings: AppSe
     await ensureRuleTask(db, `thanks:${interview.id}`, {
       opportunityId: interview.opportunityId,
       interviewId: interview.id,
-      title: "Send a thank-you note",
+      title: "Envoyer un mot de remerciement",
       kind: "FOLLOW_UP",
       dueDate: addDays(day > today ? day : today, rule.days),
       isDemo: interview.isDemo,
@@ -110,11 +112,11 @@ export async function maybeSuggestGhosted(opp: Opportunity, settings: AppSetting
   await emitNotification({
     key: `ghost:${opp.id}:${opp.followUpCount}`,
     kind: "ghost_suggestion",
-    title: `No answer after ${opp.followUpCount} follow-ups`,
-    body: `“${opp.title}” — you may want to mark it as ghosted and move on.`,
+    title: `Aucune réponse après ${opp.followUpCount} relances`,
+    body: `« ${opp.title} » : la candidature peut être marquée « Sans réponse ».`,
     entityType: "opportunity",
     entityId: opp.id,
-    action: { type: "SET_STATUS", label: "Mark as ghosted", payload: { opportunityId: opp.id, status: "GHOSTED" } },
+    action: { type: "SET_STATUS", label: "Marquer sans réponse", payload: { opportunityId: opp.id, status: "GHOSTED" } },
   });
 }
 
@@ -161,7 +163,7 @@ export async function evaluatePeriodicRules() {
       const created = await emitNotification({
         key: `deadline:${opp.id}:${opp.deadline}`,
         kind: "deadline_urgent",
-        title: days === 0 ? "Deadline today" : days === 1 ? "Deadline tomorrow" : `Deadline in ${days} days`,
+        title: days === 0 ? "Date limite aujourd’hui" : days === 1 ? "Date limite demain" : `Date limite dans ${days} jours`,
         body: `${opp.title}${orgName ? ` — ${orgName}` : ""}`,
         entityType: "opportunity",
         entityId: opp.id,
@@ -184,8 +186,8 @@ export async function evaluatePeriodicRules() {
         const created = await emitNotification({
           key: `missing_docs:${opp.id}:${opp.deadline}`,
           kind: "missing_documents",
-          title: `${missing.length} document${missing.length > 1 ? "s" : ""} missing — deadline ${formatISODate(opp.deadline, "medium", settings.general.dateLocale)}`,
-          body: `${opp.title}: ${missing.map((m) => m.title).join(", ")}`,
+          title: `${missing.length} document${missing.length > 1 ? "s" : ""} manquant${missing.length > 1 ? "s" : ""} — date limite le ${formatISODate(opp.deadline, "medium", settings.general.dateLocale)}`,
+          body: `${opp.title} : ${missing.map((m) => m.title).join(", ")}`,
           entityType: "opportunity",
           entityId: opp.id,
         });
@@ -229,11 +231,11 @@ export async function evaluatePeriodicRules() {
       const created = await emitNotification({
         key: `stale_interview:${interview.id}`,
         kind: "stale_interview",
-        title: "How did the interview go?",
-        body: `${INTERVIEW_KIND_LABEL[interview.kind]} interview — ${title}. Log notes and outcome.`,
+        title: "Comment s’est passé l’entretien ?",
+        body: `${interviewKindTitle(interview.kind)} — ${title}. Noter le compte rendu et le résultat.`,
         entityType: "interview",
         entityId: interview.id,
-        action: { type: "OPEN_OPPORTUNITY", label: "Log outcome", payload: { opportunityId: interview.opportunityId, interviewId: interview.id } },
+        action: { type: "OPEN_OPPORTUNITY", label: "Noter le résultat", payload: { opportunityId: interview.opportunityId, interviewId: interview.id } },
       });
       if (created) stats.staleInterviews++;
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FileUp, Globe, Loader2, Sparkles, Type, X } from "lucide-react";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ export function useQuickImport() {
 const ACCEPT = ".pdf,.docx,.txt,.md,.html,.htm,.eml";
 
 export function QuickImportProvider({ children }: { children: React.ReactNode }) {
-  const { ai } = useAppData();
+  const { ai, badges } = useAppData();
   const router = useRouter();
   const [isOpen, setOpen] = useState(false);
   const [tab, setTab] = useState<"text" | "url" | "file">("text");
@@ -74,8 +75,8 @@ export function QuickImportProvider({ children }: { children: React.ReactNode })
         return;
       }
       setOpen(false);
-      if (result.data.duplicate) toast.info("Already captured — opening the existing item.");
-      else toast.success(result.data.status === "QUEUED" ? "Captured — Claude is analyzing it…" : "Captured in your Inbox");
+      if (result.data.duplicate) toast.info("Déjà importé : ouverture de l'élément existant.");
+      else toast.success(result.data.status === "QUEUED" ? "Importé : Claude l'analyse…" : "Importé dans « À trier »");
       router.push(`/inbox/${result.data.id}`);
     } finally {
       setSubmitting(false);
@@ -108,27 +109,34 @@ export function QuickImportProvider({ children }: { children: React.ReactNode })
           }}
         >
           <DialogHeader>
-            <DialogTitle>Quick import</DialogTitle>
-            <DialogDescription>Paste anything — a job posting, a program page, a recruiter email, notes. It lands in your Inbox and you review it before anything is created.</DialogDescription>
+            <DialogTitle>Import rapide</DialogTitle>
+            <DialogDescription>
+              Colle n’importe quoi : une offre, une page de formation, un email de recruteur, des notes. Tout arrive dans « À trier » et tu valides avant que quoi que ce soit soit créé.
+              {badges.inbox > 0 && (
+                <Link href="/inbox" onClick={() => setOpen(false)} className="ml-1 text-highlight-600 hover:underline">
+                  {badges.inbox} élément{badges.inbox > 1 ? "s" : ""} à trier
+                </Link>
+              )}
+            </DialogDescription>
           </DialogHeader>
           <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
             <TabsList>
               <TabsTrigger value="text">
-                <Type /> Paste text
+                <Type /> Texte
               </TabsTrigger>
               <TabsTrigger value="url">
                 <Globe /> URL
               </TabsTrigger>
               <TabsTrigger value="file">
-                <FileUp /> File
+                <FileUp /> Fichier
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="text">
+            <TabsContent value="text" className="h-[19.5rem]">
               <Textarea
                 ref={textRef}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Paste job / program description, email, LinkedIn message or notes here…"
+                placeholder="Colle ici une offre, une description de formation, un email, un message LinkedIn ou des notes…"
                 className="h-72 resize-none text-sm leading-relaxed"
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
@@ -137,24 +145,24 @@ export function QuickImportProvider({ children }: { children: React.ReactNode })
                   }
                 }}
               />
-              <p className="mt-1 text-xs text-muted-foreground">{text.length ? `${text.length.toLocaleString()} characters` : "Tip: a bare URL pasted here is fetched automatically."}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{text.length ? `${text.length.toLocaleString("fr-FR")} caractères` : "Astuce : une URL seule collée ici est récupérée automatiquement."}</p>
             </TabsContent>
-            <TabsContent value="url" className="space-y-2">
+            <TabsContent value="url" className="h-[19.5rem] space-y-2">
               <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://…" onKeyDown={(e) => e.key === "Enter" && void submit()} autoFocus />
-              <p className="text-xs text-muted-foreground">Career OS fetches the page (and its structured data when available). Sites behind a login (LinkedIn…) block this: paste the text instead.</p>
+              <p className="text-xs text-muted-foreground">Career OS récupère la page (et ses données structurées quand elles existent). Les sites avec connexion (LinkedIn…) bloquent la récupération : colle plutôt le texte.</p>
             </TabsContent>
-            <TabsContent value="file">
-              <label className={`flex h-40 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-sm ${dragging ? "border-primary bg-primary/5" : "text-muted-foreground"}`}>
+            <TabsContent value="file" className="h-[19.5rem]">
+              <label className={`flex h-72 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed text-sm ${dragging ? "border-primary bg-primary/5" : "text-muted-foreground"}`}>
                 <FileUp className="size-6" />
                 {file ? (
                   <span className="flex items-center gap-2 text-foreground">
                     {file.name} <span className="text-muted-foreground">({Math.round(file.size / 1024)} KB)</span>
-                    <button type="button" onClick={(e) => (e.preventDefault(), setFile(null))} aria-label="Remove file">
+                    <button type="button" onClick={(e) => (e.preventDefault(), setFile(null))} aria-label="Retirer le fichier">
                       <X className="size-4" />
                     </button>
                   </span>
                 ) : (
-                  <span>Drop a file or click — PDF, DOCX, TXT, MD, HTML, EML</span>
+                  <span>Dépose un fichier ou clique : PDF, DOCX, TXT, MD, HTML, EML</span>
                 )}
                 <input type="file" accept={ACCEPT} className="sr-only" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
               </label>
@@ -165,16 +173,16 @@ export function QuickImportProvider({ children }: { children: React.ReactNode })
               <Switch id="qi-analyze" checked={analyze && ai.available} disabled={!ai.available} onCheckedChange={setAnalyze} />
               <Label htmlFor="qi-analyze" className="text-xs">
                 <Sparkles className="size-3.5 text-highlight-500" />
-                {ai.available ? "Analyze with AI now" : "AI not configured — ask Claude Code to process the inbox"}
+                {ai.available ? "Analyser avec l'IA maintenant" : "IA non configurée : demande à Claude de traiter « À trier »"}
               </Label>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="ghost" onClick={() => setOpen(false)}>
-                Cancel
+                Annuler
               </Button>
               <Button onClick={submit} disabled={!canSubmit || submitting}>
                 {submitting ? <Loader2 className="animate-spin" /> : null}
-                Import
+                Importer
                 <Kbd className="ml-1 bg-primary-foreground/15 text-primary-foreground">Ctrl ↵</Kbd>
               </Button>
             </div>

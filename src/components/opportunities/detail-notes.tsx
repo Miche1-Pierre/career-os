@@ -22,17 +22,17 @@ export function DetailNotes({ opp }: { opp: OpportunityDetail }) {
   const dirty = notes !== (opp.notes ?? "");
   return (
     <div className="space-y-3">
-      <MarkdownEditor value={notes} onChange={setNotes} minRows={16} placeholder="Your living notes about this opportunity (Markdown)…" />
+      <MarkdownEditor value={notes} onChange={setNotes} minRows={16} placeholder="Vos notes au fil de l’eau sur cette opportunité (Markdown)…" />
       <div className="flex items-center justify-between gap-2">
         {!notes && (
           <Button variant="ghost" size="sm" onClick={() => setNotes(TEMPLATE)}>
-            Use a template
+            Utiliser un modèle
           </Button>
         )}
         <div className="ml-auto flex items-center gap-2">
-          {dirty && <span className="text-xs text-muted-foreground">Unsaved changes</span>}
-          <Button size="sm" disabled={!dirty || pending} onClick={() => run(() => updateOpportunityAction(opp.id, { notes: notes || null }), { success: "Notes saved" })}>
-            Save notes
+          {dirty && <span className="text-xs text-muted-foreground">Modifications non enregistrées</span>}
+          <Button size="sm" disabled={!dirty || pending} onClick={() => run(() => updateOpportunityAction(opp.id, { notes: notes || null }), { success: "Notes enregistrées" })}>
+            Enregistrer les notes
           </Button>
         </div>
       </div>

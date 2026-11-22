@@ -25,7 +25,7 @@ export function StageSelect({
   return (
     <Select value={value ?? undefined} onValueChange={onChange} disabled={disabled}>
       <SelectTrigger size={size} className={cn("min-w-40", className)}>
-        <SelectValue placeholder="Status">
+        <SelectValue placeholder="Statut">
           {current && (
             <span className="flex items-center gap-2">
               <span className={cn("size-2 rounded-full", STAGE_CATEGORY_META[current.category].dot)} />

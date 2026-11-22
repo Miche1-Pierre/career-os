@@ -65,20 +65,31 @@ const NONE = "__none__";
 function Group({ title, description, children, defaultOpen = true }: { title: string; description?: string; children: React.ReactNode; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <Collapsible open={open} onOpenChange={setOpen} className="surface">
+    <Collapsible open={open} onOpenChange={setOpen} className="surface min-w-0">
       <CollapsibleTrigger className="flex w-full items-center justify-between gap-2 px-4 py-3 text-left">
-        <div>
+        <div className="min-w-0">
           <div className="heading-sm text-foreground">{title}</div>
           {description && <div className="text-xs text-muted-foreground">{description}</div>}
         </div>
-        <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", open && "rotate-180")} />
+        <ChevronDown className={cn("size-4 shrink-0 text-muted-foreground transition-transform", open && "rotate-180")} />
       </CollapsibleTrigger>
-      <CollapsibleContent className="border-t border-separator px-5 py-5">{children}</CollapsibleContent>
+      <CollapsibleContent className="border-t border-separator p-4 @lg/form:p-5">{children}</CollapsibleContent>
     </Collapsible>
   );
 }
 
-function OptionalSelect<T extends string>({ value, onChange, options, labels, placeholder = "Unknown" }: { value: T | null | undefined; onChange: (v: T | null) => void; options: readonly T[]; labels: Record<T, string>; placeholder?: string }) {
+/** Two short fields side by side when there is room, stacked otherwise (sizes against their own width). */
+function Pair({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("@container min-w-0", className)}>
+      <div className="grid gap-4 @xs:grid-cols-2 @xs:gap-2">{children}</div>
+    </div>
+  );
+}
+
+const SALARY_PERIOD_LABEL = { YEAR: "Par an", MONTH: "Par mois", DAY: "Par jour", HOUR: "Par heure" } as const;
+
+function OptionalSelect<T extends string>({ value, onChange, options, labels, placeholder = "Inconnu" }: { value: T | null | undefined; onChange: (v: T | null) => void; options: readonly T[]; labels: Record<T, string>; placeholder?: string }) {
   return (
     <Select value={value ?? NONE} onValueChange={(v) => onChange(v === NONE ? null : (v as T))}>
       <SelectTrigger className="w-full">
@@ -158,7 +169,7 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
   }
 
   async function submit(force = false) {
-    if (!draft.title.trim()) return void toast.error("A title is required");
+    if (!draft.title.trim()) return void toast.error("L’intitulé est obligatoire");
     setSaving(true);
     try {
       if (mode === "edit" && opportunityId) {
@@ -169,7 +180,7 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
         }
         const r = await updateOpportunityAction(opportunityId, patch);
         if (!r.ok) return void toast.error(r.error);
-        toast.success("Saved");
+        toast.success("Modifications enregistrées");
         router.push(`/applications/${opportunityId}`);
         return;
       }
@@ -183,7 +194,7 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
       }
       const r = captureId ? await convertInboxToOpportunityAction(captureId, input, true) : await createOpportunityAction(input, true);
       if (!r.ok) return void toast.error(r.error);
-      toast.success(captureId ? "Opportunity created from the capture" : "Opportunity created");
+      toast.success(captureId ? "Candidature créée à partir de la capture" : "Candidature créée");
       router.push(`/applications/${r.data.id}`);
     } finally {
       setSaving(false);
@@ -194,11 +205,11 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
   const setLink = (index: number, patch: Partial<OpportunityLink>) => set("links", links.map((l, i) => (i === index ? { ...l, ...patch } : l)));
 
   return (
-    <div className="space-y-4">
+    <div className="@container/form min-w-0 space-y-4">
       {(warnings.length > 0 || questionsToClarify.length > 0) && (
         <Alert>
           <Info />
-          <AlertTitle>Review before saving</AlertTitle>
+          <AlertTitle>À vérifier avant d’enregistrer</AlertTitle>
           <AlertDescription>
             <ul className="list-disc space-y-0.5 pl-4">
               {warnings.map((w) => (
@@ -206,7 +217,7 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
               ))}
               {questionsToClarify.map((q) => (
                 <li key={q} className="text-muted-foreground">
-                  To clarify: {q}
+                  À clarifier : {q}
                 </li>
               ))}
             </ul>
@@ -214,8 +225,8 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
         </Alert>
       )}
 
-      <Group title="Basics">
-        <div className="grid gap-4 md:grid-cols-2">
+      <Group title="L’essentiel">
+        <div className="grid gap-4 @xl/form:grid-cols-2">
           <FormField label="Type" htmlFor="type">
             <Select
               value={draft.type}
@@ -238,10 +249,10 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label={family === "EDUCATION" ? "Program name" : "Position"} htmlFor="title" provenance={prov("title")} required>
-            <Input id="title" value={draft.title} onChange={(e) => set("title", e.target.value)} placeholder={family === "EDUCATION" ? "Master Bioinformatics" : "Senior Software Engineer"} />
+          <FormField label={family === "EDUCATION" ? "Intitulé de la formation" : "Poste"} htmlFor="title" provenance={prov("title")} required>
+            <Input id="title" value={draft.title} onChange={(e) => set("title", e.target.value)} placeholder={family === "EDUCATION" ? "Master Bioinformatique" : "Ingénieur logiciel senior"} />
           </FormField>
-          <FormField label={family === "EDUCATION" ? "Institution" : "Company"} provenance={prov("organizationId")}>
+          <FormField label={family === "EDUCATION" ? "Établissement" : "Entreprise"} provenance={prov("organizationId")}>
             <EntityCombobox
               options={organizations}
               value={{ id: draft.organizationId, name: draft.organizationName }}
@@ -249,13 +260,13 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
                 setDraft((d) => ({ ...d, organizationId: v.id, organizationName: v.name }));
                 setTouched((t) => new Set(t).add("organizationId"));
               }}
-              placeholder={family === "EDUCATION" ? "Select or create an institution" : "Select or create a company"}
+              placeholder={family === "EDUCATION" ? "Choisir ou créer un établissement" : "Choisir ou créer une entreprise"}
             />
           </FormField>
-          <FormField label="Status">
+          <FormField label="Statut">
             <StageSelect pipeline={family} value={statusKey} onChange={(v) => set("status", v)} className="w-full" />
           </FormField>
-          <FormField label="Priority">
+          <FormField label="Priorité">
             <Select value={draft.priority ?? "NORMAL"} onValueChange={(v) => set("priority", v as OpportunityInput["priority"])}>
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -269,30 +280,30 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
               </SelectContent>
             </Select>
           </FormField>
-          <div className="grid grid-cols-2 gap-2">
+          <Pair>
             <FormField label="Source" provenance={prov("source")}>
               <OptionalSelect value={draft.source as (typeof SOURCES)[number] | null} onChange={(v) => set("source", v)} options={SOURCES} labels={SOURCE_LABEL as Record<(typeof SOURCES)[number], string>} placeholder="—" />
             </FormField>
-            <FormField label="Source detail">
-              <Input value={draft.sourceDetail ?? ""} onChange={(e) => set("sourceDetail", e.target.value || null)} placeholder="Referred by…" />
+            <FormField label="Précision sur la source">
+              <Input value={draft.sourceDetail ?? ""} onChange={(e) => set("sourceDetail", e.target.value || null)} placeholder="Recommandé par…" />
             </FormField>
-          </div>
-          <FormField label="Tags" className="md:col-span-2">
-            <TagInput value={draft.tags ?? []} onChange={(v) => set("tags", v)} />
+          </Pair>
+          <FormField label="Tags" className="@xl/form:col-span-2">
+            <TagInput value={draft.tags ?? []} onChange={(v) => set("tags", v)} placeholder="Ajouter un tag…" />
           </FormField>
         </div>
       </Group>
 
-      <Group title="Where & when">
-        <div className="grid gap-4 md:grid-cols-3">
-          <FormField label="City" provenance={prov("locationCity")}>
+      <Group title="Lieu et dates">
+        <div className="grid gap-4 @lg/form:grid-cols-2 @3xl/form:grid-cols-3">
+          <FormField label="Ville" provenance={prov("locationCity")}>
             <Input value={draft.locationCity ?? ""} onChange={(e) => set("locationCity", e.target.value || null)} />
           </FormField>
-          <FormField label="Country" provenance={prov("locationCountry")}>
+          <FormField label="Pays" provenance={prov("locationCountry")}>
             <Input value={draft.locationCountry ?? ""} onChange={(e) => set("locationCountry", e.target.value || null)} />
           </FormField>
           {family === "JOB" ? (
-            <FormField label="Remote policy" provenance={prov("remotePolicy")}>
+            <FormField label="Télétravail" provenance={prov("remotePolicy")}>
               <OptionalSelect value={draft.remotePolicy} onChange={(v) => set("remotePolicy", v)} options={REMOTE_POLICIES} labels={REMOTE_LABEL} />
             </FormField>
           ) : (
@@ -300,157 +311,161 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
               <OptionalSelect value={details.format} onChange={(v) => setDetail("format", v)} options={EDUCATION_FORMATS} labels={EDUCATION_FORMAT_LABEL} />
             </FormField>
           )}
-          <FormField label="Application deadline" provenance={prov("deadline")}>
-            <div className="flex gap-2">
-              <DateInput value={draft.deadline} onChange={(v) => set("deadline", v)} />
-              <TimeInput value={draft.deadlineTime} onChange={(v) => set("deadlineTime", v)} className="w-28" />
+          <FormField label="Date limite de candidature" provenance={prov("deadline")}>
+            <div className="@container min-w-0">
+              <div className="flex flex-col gap-2 @2xs:flex-row">
+                <div className="min-w-0 flex-1">
+                  <DateInput value={draft.deadline} onChange={(v) => set("deadline", v)} />
+                </div>
+                <TimeInput value={draft.deadlineTime} onChange={(v) => set("deadlineTime", v)} className="@2xs:w-28 @2xs:shrink-0" />
+              </div>
             </div>
           </FormField>
           {family === "EDUCATION" && (
-            <FormField label="Applications open" provenance={prov("applicationOpensAt")}>
+            <FormField label="Ouverture des candidatures" provenance={prov("applicationOpensAt")}>
               <DateInput value={draft.applicationOpensAt} onChange={(v) => set("applicationOpensAt", v)} />
             </FormField>
           )}
           {(mode !== "review" || isSubmitted) && (
-            <FormField label="Applied on" hint={isSubmitted && !draft.appliedAt ? "Defaults to today" : undefined}>
+            <FormField label="Candidature envoyée le" hint={isSubmitted && !draft.appliedAt ? "Par défaut : aujourd’hui" : undefined}>
               <DateInput value={draft.appliedAt} onChange={(v) => set("appliedAt", v)} />
             </FormField>
           )}
-          <FormField label="Answer expected by" hint="Follow-ups wait until after this date">
+          <FormField label="Réponse attendue avant le" hint="Les relances attendent que cette date soit passée.">
             <DateInput value={draft.expectedResponseAt} onChange={(v) => set("expectedResponseAt", v)} />
           </FormField>
         </div>
       </Group>
 
       {family === "JOB" ? (
-        <Group title="Contract & compensation">
-          <div className="grid gap-4 md:grid-cols-3">
-            <FormField label="Contract" provenance={prov("details.contractType")}>
+        <Group title="Contrat et rémunération">
+          <div className="grid gap-4 @lg/form:grid-cols-2 @3xl/form:grid-cols-3">
+            <FormField label="Contrat" provenance={prov("details.contractType")}>
               <OptionalSelect value={details.contractType} onChange={(v) => setDetail("contractType", v)} options={CONTRACT_TYPES} labels={CONTRACT_LABEL} />
             </FormField>
-            <FormField label="Seniority" provenance={prov("details.seniority")}>
-              <Input value={details.seniority ?? ""} onChange={(e) => setDetail("seniority", e.target.value || null)} placeholder="Junior, Senior, Lead…" />
+            <FormField label="Séniorité" provenance={prov("details.seniority")}>
+              <Input value={details.seniority ?? ""} onChange={(e) => setDetail("seniority", e.target.value || null)} placeholder="Junior, senior, lead…" />
             </FormField>
-            <FormField label="Experience (years)" provenance={prov("details.experienceYears")}>
+            <FormField label="Expérience (années)" provenance={prov("details.experienceYears")}>
               <NumberInput value={details.experienceYears} onChange={(v) => setDetail("experienceYears", v)} />
             </FormField>
-            <FormField label="Salary min" provenance={prov("details.salaryMin")}>
+            <FormField label="Salaire min." provenance={prov("details.salaryMin")}>
               <NumberInput value={details.salaryMin} onChange={(v) => setDetail("salaryMin", v)} placeholder="55000" step={1000} />
             </FormField>
-            <FormField label="Salary max" provenance={prov("details.salaryMax")}>
+            <FormField label="Salaire max." provenance={prov("details.salaryMax")}>
               <NumberInput value={details.salaryMax} onChange={(v) => setDetail("salaryMax", v)} placeholder="68000" step={1000} />
             </FormField>
-            <div className="grid grid-cols-2 gap-2">
-              <FormField label="Currency" provenance={prov("details.salaryCurrency")}>
+            <Pair>
+              <FormField label="Devise" provenance={prov("details.salaryCurrency")}>
                 <Input value={details.salaryCurrency ?? ""} onChange={(e) => setDetail("salaryCurrency", e.target.value.toUpperCase() || null)} placeholder="EUR" />
               </FormField>
-              <FormField label="Per">
-                <OptionalSelect value={details.salaryPeriod} onChange={(v) => setDetail("salaryPeriod", v)} options={SALARY_PERIODS} labels={{ YEAR: "Year", MONTH: "Month", DAY: "Day", HOUR: "Hour" }} placeholder="—" />
+              <FormField label="Période">
+                <OptionalSelect value={details.salaryPeriod} onChange={(v) => setDetail("salaryPeriod", v)} options={SALARY_PERIODS} labels={SALARY_PERIOD_LABEL} placeholder="—" />
               </FormField>
-            </div>
-            <FormField label="Salary (as written)" provenance={prov("details.salaryText")} className="md:col-span-2">
+            </Pair>
+            <FormField label="Salaire (tel qu’indiqué)" provenance={prov("details.salaryText")} className="@lg/form:col-span-2">
               <Input value={details.salaryText ?? ""} onChange={(e) => setDetail("salaryText", e.target.value || null)} />
             </FormField>
-            <FormField label="Team / department" provenance={prov("details.department")}>
+            <FormField label="Équipe / service" provenance={prov("details.department")}>
               <Input value={details.department ?? ""} onChange={(e) => setDetail("department", e.target.value || null)} />
             </FormField>
-            <FormField label="Start date" provenance={prov("details.startDate")}>
-              <Input value={details.startDate ?? ""} onChange={(e) => setDetail("startDate", e.target.value || null)} placeholder="ASAP, January 2027…" />
+            <FormField label="Date de début" provenance={prov("details.startDate")}>
+              <Input value={details.startDate ?? ""} onChange={(e) => setDetail("startDate", e.target.value || null)} placeholder="Dès que possible, janvier 2027…" />
             </FormField>
             {(draft.type === "INTERNSHIP" || draft.type === "VIE" || draft.type === "ALTERNANCE") && (
-              <FormField label="Duration" provenance={prov("details.duration")}>
-                <Input value={details.duration ?? ""} onChange={(e) => setDetail("duration", e.target.value || null)} placeholder="6 months" />
+              <FormField label="Durée" provenance={prov("details.duration")}>
+                <Input value={details.duration ?? ""} onChange={(e) => setDetail("duration", e.target.value || null)} placeholder="6 mois" />
               </FormField>
             )}
           </div>
         </Group>
       ) : (
-        <Group title="Program details">
-          <div className="grid gap-4 md:grid-cols-3">
-            <FormField label="Faculty / department" provenance={prov("details.department")}>
+        <Group title="Détails du programme">
+          <div className="grid gap-4 @lg/form:grid-cols-2 @3xl/form:grid-cols-3">
+            <FormField label="Faculté / département" provenance={prov("details.department")}>
               <Input value={details.department ?? ""} onChange={(e) => setDetail("department", e.target.value || null)} />
             </FormField>
-            <FormField label="Level" provenance={prov("details.level")}>
-              <Input value={details.level ?? ""} onChange={(e) => setDetail("level", e.target.value || null)} placeholder="Master 2, MSc, PhD…" />
+            <FormField label="Niveau" provenance={prov("details.level")}>
+              <Input value={details.level ?? ""} onChange={(e) => setDetail("level", e.target.value || null)} placeholder="Master 2, MSc, doctorat…" />
             </FormField>
-            <FormField label="Intake / entry year" provenance={prov("details.entryYear")}>
-              <Input value={details.entryYear ?? ""} onChange={(e) => setDetail("entryYear", e.target.value || null)} placeholder="September 2027" />
+            <FormField label="Rentrée" provenance={prov("details.entryYear")}>
+              <Input value={details.entryYear ?? ""} onChange={(e) => setDetail("entryYear", e.target.value || null)} placeholder="Septembre 2027" />
             </FormField>
-            <FormField label="Duration" provenance={prov("details.duration")}>
-              <Input value={details.duration ?? ""} onChange={(e) => setDetail("duration", e.target.value || null)} placeholder="2 years" />
+            <FormField label="Durée" provenance={prov("details.duration")}>
+              <Input value={details.duration ?? ""} onChange={(e) => setDetail("duration", e.target.value || null)} placeholder="2 ans" />
             </FormField>
-            <FormField label="Teaching language" provenance={prov("details.teachingLanguage")}>
+            <FormField label="Langue d’enseignement" provenance={prov("details.teachingLanguage")}>
               <Input value={details.teachingLanguage ?? ""} onChange={(e) => setDetail("teachingLanguage", e.target.value || null)} />
             </FormField>
-            <FormField label="Language requirement" provenance={prov("details.languageRequirement")}>
+            <FormField label="Niveau de langue exigé" provenance={prov("details.languageRequirement")}>
               <Input value={details.languageRequirement ?? ""} onChange={(e) => setDetail("languageRequirement", e.target.value || null)} placeholder="IELTS 6.5, B2…" />
             </FormField>
-            <FormField label="Tuition fees" provenance={prov("details.tuitionFees")}>
+            <FormField label="Frais de scolarité" provenance={prov("details.tuitionFees")}>
               <Input value={details.tuitionFees ?? ""} onChange={(e) => setDetail("tuitionFees", e.target.value || null)} />
             </FormField>
-            <FormField label="Application fee" provenance={prov("details.applicationFee")}>
+            <FormField label="Frais de dossier" provenance={prov("details.applicationFee")}>
               <Input value={details.applicationFee ?? ""} onChange={(e) => setDetail("applicationFee", e.target.value || null)} />
             </FormField>
-            <FormField label="Work-study (alternance)" provenance={prov("details.alternance")}>
+            <FormField label="Alternance" provenance={prov("details.alternance")}>
               <Select value={details.alternance == null ? NONE : details.alternance ? "yes" : "no"} onValueChange={(v) => setDetail("alternance", v === NONE ? null : v === "yes")}>
                 <SelectTrigger className="w-full">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={NONE}>Unknown</SelectItem>
+                  <SelectItem value={NONE}>Inconnu</SelectItem>
                   <SelectItem value="yes">Possible</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
+                  <SelectItem value="no">Non</SelectItem>
                 </SelectContent>
               </Select>
             </FormField>
-            <FormField label="Subjects" provenance={prov("details.subjects")} className="md:col-span-3 lg:col-span-1">
+            <FormField label="Matières" provenance={prov("details.subjects")}>
               <ListEditor value={details.subjects ?? []} onChange={(v) => setDetail("subjects", v)} rows={3} />
             </FormField>
-            <FormField label="Career outcomes" provenance={prov("details.careerOutcomes")} className="lg:col-span-2">
+            <FormField label="Débouchés" provenance={prov("details.careerOutcomes")} className="@lg/form:col-span-2">
               <ListEditor value={details.careerOutcomes ?? []} onChange={(v) => setDetail("careerOutcomes", v)} rows={3} />
             </FormField>
           </div>
         </Group>
       )}
 
-      <Group title="Content" description="One item per line — pasting a bulleted list works.">
-        <div className="grid gap-4 md:grid-cols-2">
-          <FormField label="Summary" provenance={prov("summary")} className="md:col-span-2">
+      <Group title="Contenu" description="Un élément par ligne : vous pouvez coller une liste à puces.">
+        <div className="grid gap-4 @xl/form:grid-cols-2">
+          <FormField label="Résumé" provenance={prov("summary")} className="@xl/form:col-span-2">
             <Textarea value={draft.summary ?? ""} onChange={(e) => set("summary", e.target.value || null)} rows={2} />
           </FormField>
-          <FormField label={family === "EDUCATION" ? "Program content / objectives" : "Responsibilities"} provenance={prov("responsibilities")}>
+          <FormField label={family === "EDUCATION" ? "Contenu / objectifs du programme" : "Missions"} provenance={prov("responsibilities")}>
             <ListEditor value={draft.responsibilities ?? []} onChange={(v) => set("responsibilities", v)} />
           </FormField>
-          <FormField label="Requirements / prerequisites" provenance={prov("requirements")}>
+          <FormField label="Profil recherché / prérequis" provenance={prov("requirements")}>
             <ListEditor value={draft.requirements ?? []} onChange={(v) => set("requirements", v)} />
           </FormField>
-          <FormField label="Skills" provenance={prov("skills")}>
+          <FormField label="Compétences" provenance={prov("skills")}>
             <ListEditor value={draft.skills ?? []} onChange={(v) => set("skills", v)} rows={3} />
           </FormField>
           <FormField label="Technologies" provenance={prov("technologies")}>
             <ListEditor value={draft.technologies ?? []} onChange={(v) => set("technologies", v)} rows={3} />
           </FormField>
-          <FormField label="Nice to have" provenance={prov("niceToHave")}>
+          <FormField label="Atouts appréciés" provenance={prov("niceToHave")}>
             <ListEditor value={draft.niceToHave ?? []} onChange={(v) => set("niceToHave", v)} rows={3} />
           </FormField>
-          <FormField label="Benefits" provenance={prov("benefits")}>
+          <FormField label="Avantages" provenance={prov("benefits")}>
             <ListEditor value={draft.benefits ?? []} onChange={(v) => set("benefits", v)} rows={3} />
           </FormField>
-          <FormField label="Documents required for the application" provenance={prov("requiredDocuments")} hint="Each one becomes a checklist item (CV, letters, transcripts…)." className="md:col-span-2">
+          <FormField label="Documents demandés pour la candidature" provenance={prov("requiredDocuments")} hint="Chacun devient un élément de la checklist (CV, lettres, relevés de notes…)." className="@xl/form:col-span-2">
             <ListEditor value={draft.requiredDocuments ?? []} onChange={(v) => set("requiredDocuments", v)} rows={3} />
           </FormField>
         </div>
       </Group>
 
-      <Group title="Links">
+      <Group title="Liens">
         <div className="space-y-3">
-          <FormField label={family === "EDUCATION" ? "Program page" : "Job posting URL"} provenance={prov("url")}>
+          <FormField label={family === "EDUCATION" ? "Page de la formation" : "URL de l’offre"} provenance={prov("url")}>
             <Input value={draft.url ?? ""} onChange={(e) => set("url", e.target.value || null)} placeholder="https://…" />
           </FormField>
           {links.map((link, i) => (
-            <div key={i} className="flex gap-2">
+            <div key={i} className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 @lg/form:grid-cols-[12rem_minmax(0,1fr)_auto]">
               <Select value={link.kind} onValueChange={(v) => setLink(i, { kind: v as OpportunityLink["kind"] })}>
-                <SelectTrigger className="w-48 shrink-0">
+                <SelectTrigger className="w-full" aria-label="Type de lien">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -461,74 +476,76 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
                   ))}
                 </SelectContent>
               </Select>
-              <Input value={link.url} onChange={(e) => setLink(i, { url: e.target.value })} placeholder="https://…" />
-              <Button variant="ghost" size="icon" onClick={() => set("links", links.filter((_, j) => j !== i))} aria-label="Remove link">
+              <Input value={link.url} onChange={(e) => setLink(i, { url: e.target.value })} placeholder="https://…" aria-label="URL du lien" className="order-last col-span-2 @lg/form:order-none @lg/form:col-span-1" />
+              <Button variant="ghost" size="icon" onClick={() => set("links", links.filter((_, j) => j !== i))} aria-label="Supprimer le lien">
                 <Trash2 />
               </Button>
             </div>
           ))}
           <Button variant="outline" size="sm" onClick={() => set("links", [...links, { kind: "APPLICATION", url: "", label: null }])}>
-            <Plus /> Add link
+            <Plus /> Ajouter un lien
           </Button>
         </div>
       </Group>
 
       {mode !== "edit" && (
-        <Group title="Contacts" description={contacts.length ? "Detected people — uncheck those you don't want to save." : "Recruiter, hiring manager, program director…"}>
+        <Group title="Contacts" description={contacts.length ? "Personnes détectées : décochez celles que vous ne voulez pas enregistrer." : "Recruteur, manager, responsable de formation…"}>
           <div className="space-y-2">
             {contacts.map((c, i) => (
-              <div key={i} className="grid items-center gap-2 md:grid-cols-[auto_1fr_1fr_1fr_160px_auto]">
-                <Checkbox checked={c.include} onCheckedChange={(v) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, include: !!v } : x)))} />
-                <Input value={c.fullName ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, fullName: e.target.value } : x)))} placeholder="Full name" />
-                <Input value={c.role ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, role: e.target.value, opportunityRole: e.target.value } : x)))} placeholder="Role" />
-                <Input value={c.email ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, email: e.target.value } : x)))} placeholder="Email" />
-                <Select value={c.relationship ?? NONE} onValueChange={(v) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, relationship: v === NONE ? null : (v as never) } : x)))}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Relationship" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={NONE}>—</SelectItem>
-                    {RELATIONSHIPS.map((r) => (
-                      <SelectItem key={r} value={r}>
-                        {RELATIONSHIP_LABEL[r]}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <Button variant="ghost" size="icon" onClick={() => setContacts((cs) => cs.filter((_, j) => j !== i))} aria-label="Remove contact">
+              <div key={i} className="flex items-start gap-2 rounded-xl border border-separator p-2 @3xl/form:rounded-none @3xl/form:border-0 @3xl/form:p-0">
+                <Checkbox className="mt-2" checked={c.include} onCheckedChange={(v) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, include: !!v } : x)))} aria-label="Enregistrer ce contact" />
+                <div className="grid min-w-0 flex-1 gap-2 @lg/form:grid-cols-2 @3xl/form:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_10rem]">
+                  <Input value={c.fullName ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, fullName: e.target.value } : x)))} placeholder="Nom complet" />
+                  <Input value={c.role ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, role: e.target.value, opportunityRole: e.target.value } : x)))} placeholder="Fonction" />
+                  <Input value={c.email ?? ""} onChange={(e) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, email: e.target.value } : x)))} placeholder="E-mail" />
+                  <Select value={c.relationship ?? NONE} onValueChange={(v) => setContacts((cs) => cs.map((x, j) => (j === i ? { ...x, relationship: v === NONE ? null : (v as never) } : x)))}>
+                    <SelectTrigger className="w-full" aria-label="Relation">
+                      <SelectValue placeholder="Relation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={NONE}>—</SelectItem>
+                      {RELATIONSHIPS.map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {RELATIONSHIP_LABEL[r]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Button variant="ghost" size="icon" onClick={() => setContacts((cs) => cs.filter((_, j) => j !== i))} aria-label="Retirer le contact">
                   <Trash2 />
                 </Button>
               </div>
             ))}
             <Button variant="outline" size="sm" onClick={() => setContacts((cs) => [...cs, { fullName: "", include: true }])}>
-              <UserPlus /> Add contact
+              <UserPlus /> Ajouter un contact
             </Button>
           </div>
         </Group>
       )}
 
-      <Group title="Description" description={mode === "review" ? "Original text of the capture (kept for reference)." : undefined} defaultOpen={mode !== "review"}>
+      <Group title="Description" description={mode === "review" ? "Texte original de la capture (conservé pour référence)." : undefined} defaultOpen={mode !== "review"}>
         <MarkdownEditor value={draft.description ?? ""} onChange={(v) => set("description", v || null)} minRows={10} />
       </Group>
 
-      <Group title="Follow-up rules" defaultOpen={false} description="Leave empty to use your defaults (Settings → Follow-ups).">
-        <div className="grid gap-4 md:grid-cols-3">
-          <FormField label="Follow-up interval (days)" hint="0 disables automatic follow-ups for this one">
-            <NumberInput value={draft.followUpIntervalDays} onChange={(v) => set("followUpIntervalDays", v == null ? null : Math.max(0, Math.round(v)))} placeholder="Default" />
+      <Group title="Règles de relance" defaultOpen={false} description="Laissez vide pour utiliser vos réglages par défaut (Réglages → Relances).">
+        <div className="grid gap-4 @lg/form:grid-cols-2 @3xl/form:grid-cols-3">
+          <FormField label="Intervalle de relance (jours)" hint="0 désactive les relances automatiques pour cette candidature.">
+            <NumberInput value={draft.followUpIntervalDays} onChange={(v) => set("followUpIntervalDays", v == null ? null : Math.max(0, Math.round(v)))} placeholder="Par défaut" />
           </FormField>
-          <FormField label="Count business days only">
+          <FormField label="Jours ouvrés uniquement">
             <Select value={draft.followUpBusinessDays == null ? NONE : draft.followUpBusinessDays ? "yes" : "no"} onValueChange={(v) => set("followUpBusinessDays", v === NONE ? null : v === "yes")}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={NONE}>Default</SelectItem>
-                <SelectItem value="yes">Yes</SelectItem>
-                <SelectItem value="no">No</SelectItem>
+                <SelectItem value={NONE}>Par défaut</SelectItem>
+                <SelectItem value="yes">Oui</SelectItem>
+                <SelectItem value="no">Non</SelectItem>
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label="Next follow-up (manual)">
+          <FormField label="Prochaine relance (manuelle)">
             <DateInput value={draft.nextFollowUpAt} onChange={(v) => set("nextFollowUpAt", v)} />
           </FormField>
         </div>
@@ -537,27 +554,27 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
       {duplicates && duplicates.length > 0 && (
         <Alert variant="destructive" className="border-info-200 bg-info-50 text-info-900">
           <AlertTriangle />
-          <AlertTitle>Possible duplicate found</AlertTitle>
+          <AlertTitle>Doublon possible</AlertTitle>
           <AlertDescription className="text-inherit">
             <ul className="mt-1 space-y-1">
               {duplicates.map((d) => (
-                <li key={d.id} className="flex flex-wrap items-center gap-2">
-                  <Link href={`/applications/${d.id}`} className="font-medium underline underline-offset-2">
+                <li key={d.id} className="flex min-w-0 flex-wrap items-center gap-2">
+                  <Link href={`/applications/${d.id}`} className="min-w-0 font-medium break-words underline underline-offset-2">
                     {d.organizationName ? `${d.organizationName} — ` : ""}
                     {d.title}
                   </Link>
                   <span className="text-xs opacity-80">
-                    {d.reason} · {Math.round(d.score * 100)}% · {d.stageLabel}
+                    {d.reason} · {Math.round(d.score * 100)} % · {d.stageLabel}
                   </span>
                 </li>
               ))}
             </ul>
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex flex-wrap gap-2">
               <Button size="sm" variant="outline" asChild>
-                <Link href={`/applications/${duplicates[0].id}`}>Open existing</Link>
+                <Link href={`/applications/${duplicates[0].id}`}>Ouvrir l’existante</Link>
               </Button>
               <Button size="sm" onClick={() => submit(true)} disabled={saving}>
-                Create anyway
+                Créer quand même
               </Button>
             </div>
           </AlertDescription>
@@ -565,17 +582,19 @@ export function OpportunityForm({ mode, initial, provenance = {}, opportunityId,
       )}
 
       <div className="sticky bottom-0 z-10 -mx-4 flex items-center justify-between gap-2 border-t bg-background/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
-        <div className="hidden items-center gap-2 text-xs text-muted-foreground sm:flex">
+        <div className="hidden min-w-0 items-center gap-2 text-xs text-muted-foreground sm:flex">
           {submittedStage && <StageBadge label={submittedStage.label} category={submittedStage.category} />}
-          {mode === "review" && Object.keys(finalProvenance).length > 0 && <span>{Object.keys(finalProvenance).length} fields filled by AI — edited fields become yours.</span>}
+          {mode === "review" && Object.keys(finalProvenance).length > 0 && (
+            <span className="truncate">{Object.keys(finalProvenance).length} champs remplis par l’IA ; ceux que vous modifiez deviennent les vôtres.</span>
+          )}
         </div>
-        <div className="flex gap-2">
+        <div className="ml-auto flex shrink-0 gap-2">
           <Button variant="ghost" asChild>
-            <Link href={onCancelHref ?? (opportunityId ? `/applications/${opportunityId}` : "/applications")}>Cancel</Link>
+            <Link href={onCancelHref ?? (opportunityId ? `/applications/${opportunityId}` : "/applications")}>Annuler</Link>
           </Button>
           <Button onClick={() => submit(false)} disabled={saving}>
             {saving && <Loader2 className="animate-spin" />}
-            {mode === "edit" ? "Save changes" : mode === "review" ? "Create opportunity" : "Create"}
+            {mode === "edit" ? "Enregistrer" : mode === "review" ? "Créer la candidature" : "Créer"}
           </Button>
         </div>
       </div>

@@ -24,22 +24,22 @@ const GO: Record<string, string> = {
 };
 
 export const SHORTCUTS: { keys: string[]; label: string }[] = [
-  { keys: ["Ctrl", "K"], label: "Command palette / search" },
-  { keys: ["/"], label: "Search" },
-  { keys: ["N"], label: "New opportunity" },
-  { keys: ["I"], label: "Quick import" },
-  { keys: ["T"], label: "Today's actions" },
-  { keys: ["G", "D"], label: "Go to dashboard" },
-  { keys: ["G", "I"], label: "Go to inbox" },
-  { keys: ["G", "A"], label: "Go to applications" },
-  { keys: ["G", "B"], label: "Go to board" },
-  { keys: ["G", "C"], label: "Go to calendar" },
-  { keys: ["G", "K"], label: "Go to tasks" },
-  { keys: ["G", "P"], label: "Go to contacts" },
-  { keys: ["G", "F"], label: "Go to documents" },
-  { keys: ["G", "S"], label: "Go to settings" },
-  { keys: ["Ctrl", "B"], label: "Toggle sidebar" },
-  { keys: ["?"], label: "Show shortcuts" },
+  { keys: ["Ctrl", "K"], label: "Palette de commandes / recherche" },
+  { keys: ["/"], label: "Rechercher" },
+  { keys: ["N"], label: "Nouvelle opportunité" },
+  { keys: ["I"], label: "Import rapide" },
+  { keys: ["T"], label: "Actions du jour" },
+  { keys: ["G", "D"], label: "Aller au tableau de bord" },
+  { keys: ["G", "I"], label: "Aller à « À trier »" },
+  { keys: ["G", "A"], label: "Aller aux candidatures" },
+  { keys: ["G", "B"], label: "Aller au tableau" },
+  { keys: ["G", "C"], label: "Aller au calendrier" },
+  { keys: ["G", "K"], label: "Aller aux tâches" },
+  { keys: ["G", "P"], label: "Aller aux contacts" },
+  { keys: ["G", "F"], label: "Aller aux documents" },
+  { keys: ["G", "S"], label: "Aller aux paramètres" },
+  { keys: ["Ctrl", "B"], label: "Afficher / masquer la barre latérale" },
+  { keys: ["?"], label: "Afficher les raccourcis" },
 ];
 
 function isTyping(target: EventTarget | null) {
@@ -110,8 +110,8 @@ export function GlobalShortcuts() {
     <Dialog open={help} onOpenChange={setHelp}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Keyboard shortcuts</DialogTitle>
-          <DialogDescription>Career OS is keyboard-first. Shortcuts are disabled while typing in a field.</DialogDescription>
+          <DialogTitle>Raccourcis clavier</DialogTitle>
+          <DialogDescription>Career OS se pilote au clavier. Les raccourcis sont désactivés pendant la saisie dans un champ.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-1.5">
           {SHORTCUTS.map((s) => (

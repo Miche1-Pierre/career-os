@@ -50,7 +50,7 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
           body: body || null,
         }),
       {
-        success: "Logged",
+        success: "Interaction enregistrée",
         onSuccess: () => {
           setTitle("");
           setBody("");
@@ -64,10 +64,12 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
         ← Contacts
       </Link>
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-        <div className="flex items-start gap-3">
+        <div className="flex min-w-0 items-start gap-3">
           <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-highlight-50 text-base font-semibold text-highlight-700">{initials(c.fullName)}</span>
-          <div className="space-y-1">
-            <h1 className="heading-2xl text-foreground">{c.fullName}</h1>
+          <div className="min-w-0 space-y-1">
+            <h1 className="truncate heading-2xl text-foreground" title={c.fullName}>
+              {c.fullName}
+            </h1>
             <p className="text-sm text-muted-foreground">
               {[c.role, c.relationship ? RELATIONSHIP_LABEL[c.relationship] : null].filter(Boolean).join(" · ")}
               {c.organization && (
@@ -82,9 +84,9 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
             </p>
             <div className="flex flex-wrap gap-2">
               {c.email && (
-                <Button size="xs" variant="outline" asChild>
-                  <a href={`mailto:${c.email}`}>
-                    <Mail /> {c.email}
+                <Button size="xs" variant="outline" asChild className="max-w-72">
+                  <a href={`mailto:${c.email}`} title={c.email}>
+                    <Mail /> <span className="truncate">{c.email}</span>
                   </a>
                 </Button>
               )}
@@ -106,16 +108,17 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex shrink-0 gap-2">
           <Button variant="outline" onClick={() => setEditing(true)}>
-            <Pencil /> Edit
+            <Pencil /> Modifier
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Delete"
+            aria-label="Supprimer"
             onClick={async () => {
-              if (await confirm({ title: `Move ${c.fullName} to trash?`, destructive: true, confirmLabel: "Move to trash" })) run(() => deleteContactAction(c.id), { success: "Moved to trash", onSuccess: () => router.push("/contacts") });
+              if (await confirm({ title: `Mettre ${c.fullName} à la corbeille ?`, destructive: true, confirmLabel: "Mettre à la corbeille" }))
+                run(() => deleteContactAction(c.id), { success: "Mis à la corbeille", onSuccess: () => router.push("/contacts") });
             }}
           >
             <Trash2 />
@@ -127,7 +130,7 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
         <div className="space-y-4">
           <div className="space-y-2 surface p-3">
             <p className="flex items-center gap-2 text-sm font-medium">
-              <MessageSquarePlus className="size-4" /> Log an interaction
+              <MessageSquarePlus className="size-4" /> Noter une interaction
             </p>
             <div className="grid gap-2 sm:grid-cols-3">
               <Select value={type} onValueChange={(v) => setType(v as EventType)}>
@@ -147,8 +150,8 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="OUTBOUND">I contacted them</SelectItem>
-                  <SelectItem value="INBOUND">They contacted me</SelectItem>
+                  <SelectItem value="OUTBOUND">Je l’ai contacté</SelectItem>
+                  <SelectItem value="INBOUND">Il m’a contacté</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={opportunityId} onValueChange={setOpportunityId}>
@@ -156,7 +159,7 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">No application</SelectItem>
+                  <SelectItem value="none">Aucune candidature</SelectItem>
                   {data.opportunities.map(({ opportunity: o }) => (
                     <SelectItem key={o.id} value={o.id}>
                       {o.title}
@@ -165,21 +168,21 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
                 </SelectContent>
               </Select>
             </div>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Summary" />
-            <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} placeholder="Details, pasted message…" />
+            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Résumé" aria-label="Résumé" />
+            <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} placeholder="Détails, message collé…" aria-label="Détails" />
             <div className="flex justify-end">
               <Button size="sm" onClick={log} disabled={pending || (!title.trim() && !body.trim())}>
-                Log
+                Enregistrer
               </Button>
             </div>
           </div>
           <ol className="space-y-2">
-            {data.events.length === 0 && <li className="text-sm text-muted-foreground">No interaction logged yet.</li>}
+            {data.events.length === 0 && <li className="text-sm text-muted-foreground">Aucune interaction notée pour l’instant.</li>}
             {data.events.map(({ event, opportunityTitle }) => (
               <li key={event.id} className="rounded-xl border border-separator bg-background px-3 py-2">
                 <div className="flex flex-wrap items-baseline gap-x-2 text-sm">
                   <span className="font-medium">{event.title}</span>
-                  {event.direction && <span className="text-xs text-muted-foreground">{event.direction === "INBOUND" ? "received" : "sent"}</span>}
+                  {event.direction && <span className="text-xs text-muted-foreground">{event.direction === "INBOUND" ? "reçu" : "envoyé"}</span>}
                   {opportunityTitle && <span className="text-xs text-muted-foreground">· {opportunityTitle}</span>}
                   <span className="ml-auto text-xs text-muted-foreground tabular-nums">{formatInstant(event.occurredAt, { timeZone: timezone, locale: dateLocale })}</span>
                 </div>
@@ -190,18 +193,20 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
         </div>
         <aside className="space-y-4">
           <div className="surface p-4">
-            <p className="mb-2 text-xs font-medium text-muted-foreground">Applications</p>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">Candidatures</p>
             {data.opportunities.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Not linked to any application.</p>
+              <p className="text-sm text-muted-foreground">Liée à aucune candidature.</p>
             ) : (
               <ul className="space-y-2">
                 {data.opportunities.map(({ opportunity: o, stage, role, organizationName }) => (
                   <li key={o.id}>
                     <Link href={`/applications/${o.id}`} className="block rounded-lg px-2 py-1.5 hover:bg-primary-100">
                       <span className="block truncate text-sm font-medium">{o.title}</span>
-                      <span className="flex items-center gap-2 text-xs text-muted-foreground">
-                        {organizationName}
-                        {role ? ` · ${role}` : ""}
+                      <span className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+                        <span className="truncate">
+                          {organizationName}
+                          {role ? ` · ${role}` : ""}
+                        </span>
                         <StageBadge label={stage.label} category={stage.category} className="h-4 text-[10px]" />
                       </span>
                     </Link>
@@ -216,7 +221,7 @@ export function ContactDetailView({ data }: { data: ContactDetail }) {
               <Markdown>{c.notes}</Markdown>
             </div>
           )}
-          {c.lastContactAt && <p className="text-xs text-muted-foreground">Last contact: {formatISODate(c.lastContactAt, "long", dateLocale)}</p>}
+          {c.lastContactAt && <p className="text-xs text-muted-foreground">Dernier contact : {formatISODate(c.lastContactAt, "long", dateLocale)}</p>}
         </aside>
       </div>
       {editing && (

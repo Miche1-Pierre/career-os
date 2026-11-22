@@ -48,7 +48,7 @@ export function ContactDialog({ open, onOpenChange, initial }: { open: boolean; 
       tags: v.tags ?? [],
     };
     run(() => (v.id ? updateContactAction(v.id, payload) : createContactAction(payload)), {
-      success: v.id ? "Contact saved" : "Contact created",
+      success: v.id ? "Contact enregistré" : "Contact créé",
       onSuccess: (d) => {
         onOpenChange(false);
         if (!v.id) router.push(`/contacts/${d.id}`);
@@ -59,28 +59,28 @@ export function ContactDialog({ open, onOpenChange, initial }: { open: boolean; 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>{v.id ? "Edit contact" : "New contact"}</DialogTitle>
+          <DialogTitle>{v.id ? "Modifier le contact" : "Nouveau contact"}</DialogTitle>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField label="Full name" className="sm:col-span-2" required>
+          <FormField label="Nom complet" className="sm:col-span-2" required>
             <Input value={v.fullName} onChange={(e) => set("fullName", e.target.value)} autoFocus />
           </FormField>
-          <FormField label="Organization" hint={v.organizationId ? undefined : "Created if it doesn't exist"}>
+          <FormField label="Organisation" hint={v.organizationId ? undefined : "Créée si elle n’existe pas encore"}>
             <Input value={v.organizationName ?? ""} onChange={(e) => setV((s) => ({ ...s, organizationName: e.target.value, organizationId: null }))} />
           </FormField>
-          <FormField label="Role">
+          <FormField label="Poste">
             <Input value={v.role ?? ""} onChange={(e) => set("role", e.target.value)} />
           </FormField>
-          <FormField label="Email">
+          <FormField label="E-mail">
             <Input type="email" value={v.email ?? ""} onChange={(e) => set("email", e.target.value)} />
           </FormField>
-          <FormField label="Phone">
+          <FormField label="Téléphone">
             <Input value={v.phone ?? ""} onChange={(e) => set("phone", e.target.value)} />
           </FormField>
           <FormField label="LinkedIn">
             <Input value={v.linkedinUrl ?? ""} onChange={(e) => set("linkedinUrl", e.target.value)} placeholder="https://www.linkedin.com/in/…" />
           </FormField>
-          <FormField label="Relationship">
+          <FormField label="Relation">
             <Select value={v.relationship ?? NONE} onValueChange={(x) => set("relationship", x === NONE ? null : (x as Relationship))}>
               <SelectTrigger className="w-full">
                 <SelectValue />
@@ -96,7 +96,7 @@ export function ContactDialog({ open, onOpenChange, initial }: { open: boolean; 
             </Select>
           </FormField>
           <FormField label="Notes" className="sm:col-span-2">
-            <Textarea value={v.notes ?? ""} onChange={(e) => set("notes", e.target.value)} rows={3} placeholder="Met during…" />
+            <Textarea value={v.notes ?? ""} onChange={(e) => set("notes", e.target.value)} rows={3} placeholder="Rencontré lors de…" />
           </FormField>
           <FormField label="Tags" className="sm:col-span-2">
             <TagInput value={v.tags ?? []} onChange={(t) => set("tags", t)} />
@@ -104,10 +104,10 @@ export function ContactDialog({ open, onOpenChange, initial }: { open: boolean; 
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
+            Annuler
           </Button>
           <Button onClick={save} disabled={!v.fullName.trim() || pending}>
-            Save
+            Enregistrer
           </Button>
         </DialogFooter>
       </DialogContent>

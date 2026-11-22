@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { listInbox } from "@/server/services/inbox";
 import { InboxList } from "@/components/inbox/inbox-list";
 
-export const metadata: Metadata = { title: "Inbox" };
+export const metadata: Metadata = { title: "À trier" };
 
 export default async function InboxPage({ searchParams }: { searchParams: Promise<{ view?: string }> }) {
   const { view } = await searchParams;

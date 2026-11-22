@@ -60,15 +60,14 @@ export function computeNextFollowUp(
 }
 
 export function describeInterval(interval: ResolvedInterval): string {
-  const unit = interval.businessDays ? "business day" : "day";
-  const plural = interval.days === 1 ? unit : `${unit}s`;
+  const plural = interval.businessDays ? (interval.days === 1 ? "jour ouvré" : "jours ouvrés") : interval.days === 1 ? "jour" : "jours";
   const why =
     interval.reason === "custom"
-      ? "custom"
+      ? "personnalisé"
       : interval.reason === "recruiter"
-        ? "recruiter rule"
+        ? "règle recruteur"
         : interval.reason === "post_interview"
-          ? "after interview"
-          : "default";
-  return interval.days <= 0 ? "No automatic follow-up" : `+${interval.days} ${plural} (${why})`;
+          ? "après entretien"
+          : "par défaut";
+  return interval.days <= 0 ? "Pas de relance automatique" : `+${interval.days} ${plural} (${why})`;
 }

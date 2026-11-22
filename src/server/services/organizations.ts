@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { db, type DBOrTx } from "@/server/db";
 import {
   contacts,
@@ -10,8 +10,9 @@ import {
   type Organization,
 } from "@/server/db/schema";
 import { organizationInputSchema, organizationPatchSchema, type OrganizationInput } from "@/lib/schemas";
-import type { OrgKind } from "@/lib/constants";
+import type { OrgKind, StageCategory } from "@/lib/constants";
 import { normalizeOrgName } from "@/lib/text";
+import { siblingOrganizations } from "@/lib/org-grouping";
 import { normalizedContains } from "@/server/db/sql-helpers";
 import { notFound, type Ctx } from "@/server/context";
 import { diffFields, logAudit } from "./audit";
@@ -95,6 +96,63 @@ export async function getOrganization(id: string) {
       .orderBy(desc(interviews.scheduledAt)),
   ]);
   return { organization: org, opportunities: opps, contacts: orgContacts, events, interviews: orgInterviews };
+}
+
+export interface OpportunitySummary {
+  id: string;
+  organizationId: string;
+  title: string;
+  stageLabel: string;
+  stageCategory: StageCategory;
+  appliedAt: string | null;
+}
+
+/** Compact list of the (non-deleted) opportunities of some organizations — used by the grouped brand rows. */
+export async function listOpportunitySummaries(organizationIds: string[]): Promise<OpportunitySummary[]> {
+  if (!organizationIds.length) return [];
+  const rows = await db
+    .select({
+      id: opportunities.id,
+      organizationId: opportunities.organizationId,
+      title: opportunities.title,
+      stageLabel: pipelineStages.label,
+      stageCategory: pipelineStages.category,
+      appliedAt: opportunities.appliedAt,
+    })
+    .from(opportunities)
+    .innerJoin(pipelineStages, eq(pipelineStages.id, opportunities.stageId))
+    .where(and(inArray(opportunities.organizationId, organizationIds), isNull(opportunities.deletedAt)))
+    .orderBy(desc(opportunities.updatedAt));
+  return rows.map((r) => ({ ...r, organizationId: r.organizationId!, appliedAt: r.appliedAt ?? null }));
+}
+
+/** Website of an organization (logo resolution), null when unknown or deleted. */
+export async function getOrganizationWebsite(id: string): Promise<string | null> {
+  const [row] = await db
+    .select({ website: organizations.website })
+    .from(organizations)
+    .where(and(eq(organizations.id, id), isNull(organizations.deletedAt)))
+    .limit(1);
+  return row?.website ?? null;
+}
+
+export interface BrandSibling {
+  id: string;
+  kind: OrgKind;
+  name: string;
+  website: string | null;
+  city: string | null;
+  country: string | null;
+}
+
+/** Other entities of the same brand ("Alten Canada" for "Alten"), same kind, display grouping only. */
+export async function getBrandSiblings(org: Pick<Organization, "id" | "kind">): Promise<{ brand: string; siblings: BrandSibling[] }> {
+  const rows = await db
+    .select({ id: organizations.id, kind: organizations.kind, name: organizations.name, website: organizations.website, city: organizations.city, country: organizations.country })
+    .from(organizations)
+    .where(and(eq(organizations.kind, org.kind), isNull(organizations.deletedAt), or(isNull(organizations.archivedAt), eq(organizations.id, org.id))))
+    .orderBy(asc(organizations.name));
+  return siblingOrganizations(org.id, rows);
 }
 
 export async function createOrganization(raw: OrganizationInput, ctx: Ctx, tx: DBOrTx = db) {

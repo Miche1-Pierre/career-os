@@ -23,7 +23,7 @@ export function useAction() {
             }
             resolve(result);
           } catch (error) {
-            const message = error instanceof Error ? error.message : "Something went wrong";
+            const message = error instanceof Error ? error.message : "Une erreur est survenue";
             toast.error(message);
             options.onError?.(message);
             resolve({ ok: false, error: message });
