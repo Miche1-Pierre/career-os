@@ -51,10 +51,10 @@ export function MarkdownEditor({
             onClick={() => setMode(m)}
             className={cn("rounded px-2 py-0.5 capitalize", mode === m ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:text-foreground")}
           >
-            {m}
+            {m === "write" ? "Écrire" : "Aperçu"}
           </button>
         ))}
-        <span className="ml-auto text-muted-foreground">Markdown supported</span>
+        <span className="ml-auto text-muted-foreground">Markdown pris en charge</span>
       </div>
       {mode === "write" ? (
         <Textarea
@@ -65,7 +65,7 @@ export function MarkdownEditor({
           className="min-h-32 resize-y rounded-none border-0 text-sm leading-relaxed shadow-none focus-visible:ring-0"
         />
       ) : (
-        <div className="min-h-32 p-3">{value.trim() ? <Markdown>{value}</Markdown> : <p className="text-sm text-muted-foreground">Nothing to preview.</p>}</div>
+        <div className="min-h-32 p-3">{value.trim() ? <Markdown>{value}</Markdown> : <p className="text-sm text-muted-foreground">Rien à prévisualiser.</p>}</div>
       )}
     </div>
   );

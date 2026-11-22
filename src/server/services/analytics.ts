@@ -18,6 +18,7 @@ import {
 import {
   CLOSED_CATEGORIES,
   OPPORTUNITY_TYPE_META,
+  REMOTE_LABEL,
   STAGE_CATEGORIES,
   STAGE_CATEGORY_META,
   familyOf,
@@ -170,12 +171,12 @@ function summarize(facts: OppFacts[]) {
 export const SEGMENTS = {
   source: { label: "Source", get: (f: OppFacts) => [sourceLabel(f.source)] },
   type: { label: "Type", get: (f: OppFacts) => [OPPORTUNITY_TYPE_META[f.type as keyof typeof OPPORTUNITY_TYPE_META]?.label ?? f.type] },
-  industry: { label: "Industry", get: (f: OppFacts) => [f.industry ?? "Unknown"] },
-  country: { label: "Location", get: (f: OppFacts) => [f.country ?? "Unknown"] },
-  remote: { label: "Remote policy", get: (f: OppFacts) => [f.remotePolicy ?? "Unknown"] },
-  cv: { label: "CV version", get: (f: OppFacts) => [f.cvDocument ?? "No CV attached"] },
-  size: { label: "Company size", get: (f: OppFacts) => [f.companySize ?? "Unknown"] },
-  tag: { label: "Tag", get: (f: OppFacts) => (f.tags.length ? f.tags : ["No tag"]) },
+  industry: { label: "Secteur", get: (f: OppFacts) => [f.industry ?? "Inconnu"] },
+  country: { label: "Lieu", get: (f: OppFacts) => [f.country ?? "Inconnu"] },
+  remote: { label: "Télétravail", get: (f: OppFacts) => [f.remotePolicy ? (REMOTE_LABEL[f.remotePolicy as keyof typeof REMOTE_LABEL] ?? f.remotePolicy) : "Inconnu"] },
+  cv: { label: "Version du CV", get: (f: OppFacts) => [f.cvDocument ?? "Aucun CV joint"] },
+  size: { label: "Taille de l’entreprise", get: (f: OppFacts) => [f.companySize ?? "Inconnue"] },
+  tag: { label: "Tag", get: (f: OppFacts) => (f.tags.length ? f.tags : ["Sans tag"]) },
 } as const;
 export type SegmentKey = keyof typeof SEGMENTS;
 
@@ -195,7 +196,7 @@ export async function getAnalytics(options: { family?: OpportunityFamily | "ALL"
     const m = addMonths(firstMonth, i).slice(0, 7);
     months.push({
       month: m,
-      label: new Intl.DateTimeFormat("en-GB", { month: "short", year: "2-digit", timeZone: "UTC" }).format(new Date(`${m}-01T00:00:00Z`)),
+      label: new Intl.DateTimeFormat(settings.general.dateLocale, { month: "short", year: "2-digit", timeZone: "UTC" }).format(new Date(`${m}-01T00:00:00Z`)),
       applications: facts.filter((f) => f.appliedAt?.startsWith(m)).length,
       added: facts.filter((f) => f.createdDay.startsWith(m)).length,
     });
@@ -231,11 +232,11 @@ export async function getAnalytics(options: { family?: OpportunityFamily | "ALL"
     byCategory,
     education: educationStats,
     funnel: [
-      { key: "applications", label: "Applications sent" },
-      { key: "responses", label: "Responses" },
-      { key: "interviews", label: "Interviews" },
-      { key: "offers", label: "Offers / admissions" },
-      { key: "accepted", label: "Accepted" },
+      { key: "applications", label: "Candidatures envoyées" },
+      { key: "responses", label: "Réponses" },
+      { key: "interviews", label: "Entretiens" },
+      { key: "offers", label: "Offres / admissions" },
+      { key: "accepted", label: "Acceptées" },
     ],
     totalTracked: facts.length,
   };
@@ -315,10 +316,10 @@ export async function getDashboard() {
 // ---------------------------------------------------------------------------
 
 export const GOAL_METRICS = {
-  APPLICATIONS_SENT: "Applications sent",
-  OPPORTUNITIES_ADDED: "Opportunities added",
-  INTERVIEWS: "Interviews",
-  FOLLOW_UPS: "Follow-ups sent",
+  APPLICATIONS_SENT: "Candidatures envoyées",
+  OPPORTUNITIES_ADDED: "Opportunités ajoutées",
+  INTERVIEWS: "Entretiens",
+  FOLLOW_UPS: "Relances envoyées",
 } as const;
 export type GoalMetric = keyof typeof GOAL_METRICS;
 

@@ -153,7 +153,7 @@ export async function runNotificationAction(id: string, action: { type: string; 
   return runAction(async () => {
     if (action.type === "SET_STATUS") {
       const { opportunityId, status } = (action.payload ?? {}) as { opportunityId?: string; status?: string };
-      if (!opportunityId || !status) throw new AppError("VALIDATION", "Invalid action");
+      if (!opportunityId || !status) throw new AppError("VALIDATION", "Action invalide");
       await changeStatus(opportunityId, { status }, USER);
     }
     await notif.dismissNotification(id);
@@ -172,7 +172,7 @@ export async function importDataAction(formData: FormData) {
   return runAction(async () => {
     const file = formData.get("file");
     const mode = formData.get("mode") === "merge" ? "merge" : "replace";
-    if (!file || typeof file === "string") throw new AppError("VALIDATION", "Choose a file");
+    if (!file || typeof file === "string") throw new AppError("VALIDATION", "Choisissez un fichier");
     const f = file as File;
     const buffer = new Uint8Array(await f.arrayBuffer());
     await data.createBackup("pre-restore");
@@ -193,7 +193,7 @@ export async function unlockAction(_: unknown, formData: FormData) {
   if (!token) redirect("/today");
   if (!safeEqual(given, token)) {
     await new Promise((resolve) => setTimeout(resolve, 750)); // slows down guessing
-    return { error: "Invalid access token" };
+    return { error: "Jeton d’accès invalide" };
   }
   const jar = await cookies();
   jar.set(SESSION_COOKIE, sessionValue(token), {

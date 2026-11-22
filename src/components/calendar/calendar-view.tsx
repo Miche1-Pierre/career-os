@@ -12,15 +12,15 @@ import type { CalendarEvent, CalendarEventKind } from "@/server/services/calenda
 import { cn } from "@/lib/utils";
 
 const KIND_STYLE: Record<CalendarEventKind, { label: string; className: string; dot: string }> = {
-  INTERVIEW: { label: "Interview", className: "bg-info-50 text-info-900", dot: "bg-info-500" },
-  DEADLINE: { label: "Deadline", className: "bg-warning-50 text-warning-700", dot: "bg-warning-500" },
-  FOLLOW_UP: { label: "Follow-up", className: "bg-highlight-50 text-highlight-700", dot: "bg-highlight-500" },
-  TASK: { label: "Task", className: "bg-primary-100 text-primary-700 dark:bg-stone-800 dark:text-stone-300", dot: "bg-stone-400" },
-  OPENS: { label: "Applications open", className: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300", dot: "bg-violet-500" },
-  DECISION: { label: "Answer expected", className: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300", dot: "bg-pink-500" },
-  APPLIED: { label: "Applied", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", dot: "bg-emerald-500" },
-  VISIT: { label: "Housing visit", className: "bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-300", dot: "bg-teal-500" },
-  MOVE: { label: "Move", className: "bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-300", dot: "bg-sky-500" },
+  INTERVIEW: { label: "Entretien", className: "bg-info-50 text-info-900", dot: "bg-info-500" },
+  DEADLINE: { label: "Date limite", className: "bg-warning-50 text-warning-700", dot: "bg-warning-500" },
+  FOLLOW_UP: { label: "Relance", className: "bg-highlight-50 text-highlight-700", dot: "bg-highlight-500" },
+  TASK: { label: "Tâche", className: "bg-primary-100 text-primary-700 dark:bg-stone-800 dark:text-stone-300", dot: "bg-stone-400" },
+  OPENS: { label: "Ouverture des candidatures", className: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300", dot: "bg-violet-500" },
+  DECISION: { label: "Réponse attendue", className: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300", dot: "bg-pink-500" },
+  APPLIED: { label: "Postulé", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", dot: "bg-emerald-500" },
+  VISIT: { label: "Visite de logement", className: "bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-300", dot: "bg-teal-500" },
+  MOVE: { label: "Installation", className: "bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-300", dot: "bg-sky-500" },
 };
 
 export function CalendarView({ month, events }: { month: string; events: CalendarEvent[] }) {
@@ -43,28 +43,28 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
   return (
     <PageContainer wide>
       <PageHeader
-        title={new Intl.DateTimeFormat(dateLocale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${month}T00:00:00Z`))}
-        description="Interviews, deadlines, follow-ups and tasks."
+        title={new Intl.DateTimeFormat(dateLocale, { month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(`${month}T00:00:00Z`)).replace(/^./, (c) => c.toUpperCase())}
+        description="Entretiens, dates limites, relances et tâches."
         actions={
           <>
             <ToggleGroup type="single" value={mode} onValueChange={(v) => v && setMode(v as "month" | "agenda")} variant="outline" size="sm">
-              <ToggleGroupItem value="month" aria-label="Month view">
+              <ToggleGroupItem value="month" aria-label="Vue mois">
                 <CalendarDays />
               </ToggleGroupItem>
-              <ToggleGroupItem value="agenda" aria-label="Agenda view">
+              <ToggleGroupItem value="agenda" aria-label="Vue agenda">
                 <List />
               </ToggleGroupItem>
             </ToggleGroup>
             <Button variant="outline" size="icon-sm" asChild>
-              <Link href={`/calendar?month=${prev}`} aria-label="Previous month">
+              <Link href={`/calendar?month=${prev}`} aria-label="Mois précédent">
                 <ChevronLeft />
               </Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/calendar">Today</Link>
+              <Link href="/calendar">Aujourd’hui</Link>
             </Button>
             <Button variant="outline" size="icon-sm" asChild>
-              <Link href={`/calendar?month=${next}`} aria-label="Next month">
+              <Link href={`/calendar?month=${next}`} aria-label="Mois suivant">
                 <ChevronRight />
               </Link>
             </Button>
@@ -118,7 +118,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
                           {e.title}
                         </Link>
                       ))}
-                      {items.length > 4 && <div className="px-1 text-xs text-muted-foreground">+{items.length - 4} more</div>}
+                      {items.length > 4 && <div className="px-1 text-xs text-muted-foreground">+{items.length - 4} autre{items.length - 4 > 1 ? "s" : ""}</div>}
                     </div>
                   </div>
                 );
@@ -128,7 +128,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
         </div>
       ) : (
         <div className="space-y-4">
-          {agenda.length === 0 && <p className="text-sm text-muted-foreground">Nothing upcoming.</p>}
+          {agenda.length === 0 && <p className="text-sm text-muted-foreground">Rien à venir.</p>}
           {Object.entries(
             agenda.reduce<Record<string, CalendarEvent[]>>((acc, e) => {
               (acc[e.date] ??= []).push(e);
@@ -153,7 +153,7 @@ export function CalendarView({ month, events }: { month: string; events: Calenda
           ))}
         </div>
       )}
-      <p className="mt-4 text-xs text-faint">Subscribe from Google Calendar / Outlook with the .ics feed (requires the app to be reachable, e.g. on your VPS with an access token).</p>
+      <p className="mt-4 text-xs text-faint">Abonnez-vous depuis Google Agenda / Outlook avec le flux .ics (l’application doit être joignable, par exemple sur votre VPS avec un jeton d’accès).</p>
     </PageContainer>
   );
 }

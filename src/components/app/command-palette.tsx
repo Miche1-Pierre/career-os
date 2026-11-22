@@ -59,12 +59,12 @@ const HIT_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
   event: MessageSquare,
 };
 const HIT_GROUP: Record<string, string> = {
-  opportunity: "Opportunities",
-  organization: "Companies & institutions",
+  opportunity: "Opportunités",
+  organization: "Entreprises et établissements",
   contact: "Contacts",
   document: "Documents",
-  interview: "Interviews",
-  event: "Notes & messages",
+  interview: "Entretiens",
+  event: "Notes et messages",
 };
 
 export function CommandPaletteProvider({ children }: { children: React.ReactNode }) {
@@ -116,32 +116,32 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
 
   const actions = useMemo(
     () => [
-      { label: "Quick import", icon: Plus, shortcut: "I", run: () => run(() => quickImport.open()) },
-      { label: "New opportunity", icon: Briefcase, shortcut: "N", run: () => go("/applications/new") },
-      { label: "New formation / program", icon: GraduationCap, run: () => go("/applications/new?type=FORMATION") },
-      { label: "New company", icon: Building2, run: () => go("/companies?new=1") },
-      { label: "New institution", icon: GraduationCap, run: () => go("/institutions?new=1") },
-      { label: "New contact", icon: Users, run: () => go("/contacts?new=1") },
-      { label: "New task", icon: ListChecks, run: () => go("/tasks?new=1") },
-      { label: "Add document", icon: FileText, run: () => go("/documents?new=1") },
+      { label: "Import rapide", icon: Plus, shortcut: "I", run: () => run(() => quickImport.open()) },
+      { label: "Nouvelle opportunité", icon: Briefcase, shortcut: "N", run: () => go("/applications/new") },
+      { label: "Nouvelle formation / programme", icon: GraduationCap, run: () => go("/applications/new?type=FORMATION") },
+      { label: "Nouvelle entreprise", icon: Building2, run: () => go("/companies?new=1") },
+      { label: "Nouvel établissement", icon: GraduationCap, run: () => go("/institutions?new=1") },
+      { label: "Nouveau contact", icon: Users, run: () => go("/contacts?new=1") },
+      { label: "Nouvelle tâche", icon: ListChecks, run: () => go("/tasks?new=1") },
+      { label: "Ajouter un document", icon: FileText, run: () => go("/documents?new=1") },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [quickImport],
   );
   const navigation = [
-    { label: "Today's actions", icon: Sun, shortcut: "T", href: "/today" },
-    { label: "Inbox", icon: Inbox, shortcut: "G I", href: "/inbox" },
-    { label: "Dashboard", icon: LayoutDashboard, shortcut: "G D", href: "/dashboard" },
-    { label: "Applications", icon: Briefcase, shortcut: "G A", href: "/applications" },
-    { label: "Board", icon: SquareKanban, shortcut: "G B", href: "/applications/board" },
-    { label: "Calendar", icon: CalendarDays, shortcut: "G C", href: "/calendar" },
-    { label: "Tasks", icon: ListChecks, shortcut: "G K", href: "/tasks" },
-    { label: "Companies", icon: Building2, href: "/companies" },
-    { label: "Institutions", icon: GraduationCap, href: "/institutions" },
+    { label: "Actions du jour", icon: Sun, shortcut: "T", href: "/today" },
+    { label: "À trier", icon: Inbox, shortcut: "G I", href: "/inbox" },
+    { label: "Tableau de bord", icon: LayoutDashboard, shortcut: "G D", href: "/dashboard" },
+    { label: "Candidatures", icon: Briefcase, shortcut: "G A", href: "/applications" },
+    { label: "Tableau", icon: SquareKanban, shortcut: "G B", href: "/applications/board" },
+    { label: "Calendrier", icon: CalendarDays, shortcut: "G C", href: "/calendar" },
+    { label: "Tâches", icon: ListChecks, shortcut: "G K", href: "/tasks" },
+    { label: "Entreprises", icon: Building2, href: "/companies" },
+    { label: "Établissements", icon: GraduationCap, href: "/institutions" },
     { label: "Contacts", icon: Users, shortcut: "G P", href: "/contacts" },
     { label: "Documents", icon: FileText, shortcut: "G F", href: "/documents" },
-    { label: "Analytics", icon: BarChart3, href: "/analytics" },
-    { label: "Settings", icon: Settings, shortcut: "G S", href: "/settings/general" },
+    { label: "Statistiques", icon: BarChart3, href: "/analytics" },
+    { label: "Paramètres", icon: Settings, shortcut: "G S", href: "/settings/general" },
   ];
   const q = query.trim().toLowerCase();
   const matches = (label: string) => !q || label.toLowerCase().includes(q);
@@ -153,17 +153,17 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
   return (
     <PaletteContext.Provider value={{ open: openPalette }}>
       {children}
-      <CommandDialog open={open} onOpenChange={setOpen} title="Command palette" description="Search or run a command">
+      <CommandDialog open={open} onOpenChange={setOpen} title="Palette de commandes" description="Rechercher ou lancer une commande">
         <Command shouldFilter={false} className="[&_[cmdk-group-heading]]:text-xs">
-          <CommandInput value={query} onValueChange={setQuery} placeholder="Search anything or type a command…" />
+          <CommandInput value={query} onValueChange={setQuery} placeholder="Rechercher ou taper une commande…" />
           <CommandList className="max-h-[60vh]">
-            <CommandEmpty>{loading ? "Searching…" : "No results."}</CommandEmpty>
+            <CommandEmpty>{loading ? "Recherche…" : "Aucun résultat."}</CommandEmpty>
             {q && ai.available && (
               <CommandGroup heading="Assistant">
                 <CommandItem value={`ask ${q}`} onSelect={() => run(() => ask.open(query))}>
                   <Sparkles className="text-highlight-500" />
                   <span className="truncate">
-                    Ask Career OS: <span className="text-muted-foreground">“{query}”</span>
+                    Demander à Career OS : <span className="text-muted-foreground">“{query}”</span>
                   </span>
                 </CommandItem>
               </CommandGroup>
@@ -184,7 +184,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             ))}
             {loading && !grouped.length && q && (
               <div className="flex items-center gap-2 px-3 py-2 text-xs text-muted-foreground">
-                <Loader2 className="size-3 animate-spin" /> Searching…
+                <Loader2 className="size-3 animate-spin" /> Recherche…
               </div>
             )}
             {actions.some((a) => matches(a.label)) && (
@@ -201,7 +201,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
             {navigation.some((n) => matches(n.label)) && (
               <>
                 <CommandSeparator />
-                <CommandGroup heading="Go to">
+                <CommandGroup heading="Aller à">
                   {navigation.filter((n) => matches(n.label)).map((n) => (
                     <CommandItem key={n.href} value={n.label} onSelect={() => go(n.href)}>
                       <n.icon />
@@ -213,7 +213,7 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
               </>
             )}
             {views.some((v) => matches(v.name)) && (
-              <CommandGroup heading="Saved views">
+              <CommandGroup heading="Vues enregistrées">
                 {views.filter((v) => matches(v.name)).map((v) => (
                   <CommandItem key={v.id} value={`view ${v.name}`} onSelect={() => go(`/applications?view=${v.id}`)}>
                     <Bookmark />
@@ -222,16 +222,16 @@ export function CommandPaletteProvider({ children }: { children: React.ReactNode
                 ))}
               </CommandGroup>
             )}
-            {["theme light", "theme dark", "theme system"].some((t) => matches(t)) && (
-              <CommandGroup heading="Theme">
-                <CommandItem value="theme light" onSelect={() => run(() => setTheme("light"))}>
-                  <Sun /> Light
+            {["thème clair", "thème sombre", "thème système"].some((t) => matches(t)) && (
+              <CommandGroup heading="Thème">
+                <CommandItem value="thème clair" onSelect={() => run(() => setTheme("light"))}>
+                  <Sun /> Clair
                 </CommandItem>
-                <CommandItem value="theme dark" onSelect={() => run(() => setTheme("dark"))}>
-                  <Moon /> Dark
+                <CommandItem value="thème sombre" onSelect={() => run(() => setTheme("dark"))}>
+                  <Moon /> Sombre
                 </CommandItem>
-                <CommandItem value="theme system" onSelect={() => run(() => setTheme("system"))}>
-                  <SunMoon /> System
+                <CommandItem value="thème système" onSelect={() => run(() => setTheme("system"))}>
+                  <SunMoon /> Système
                 </CommandItem>
               </CommandGroup>
             )}

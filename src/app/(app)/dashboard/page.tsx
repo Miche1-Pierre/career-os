@@ -3,7 +3,7 @@ import { getDashboard } from "@/server/services/analytics";
 import { getToday } from "@/server/services/today";
 import { DashboardView } from "@/components/dashboard/dashboard-view";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export const metadata: Metadata = { title: "Tableau de bord" };
 
 export default async function DashboardPage() {
   const [dashboard, today] = await Promise.all([getDashboard(), getToday({ horizonDays: 14 })]);

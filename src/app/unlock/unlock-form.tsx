@@ -11,10 +11,10 @@ export function UnlockForm({ next }: { next: string }) {
   return (
     <form action={formAction} className="space-y-3">
       <input type="hidden" name="next" value={next} />
-      <Input name="token" type="password" placeholder="Access token" autoFocus required autoComplete="current-password" />
+      <Input name="token" type="password" placeholder="Jeton d’accès" autoFocus required autoComplete="current-password" />
       {state?.error && <p className="text-sm text-destructive">{state.error}</p>}
       <Button type="submit" className="w-full" disabled={pending}>
-        {pending && <Loader2 className="animate-spin" />} Unlock
+        {pending && <Loader2 className="animate-spin" />} Déverrouiller
       </Button>
     </form>
   );

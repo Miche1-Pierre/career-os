@@ -11,7 +11,7 @@ const days = (value: number) => z.number().int().min(0).max(365).default(value);
 export const generalSettingsSchema = z.object({
   userName: z.string().trim().max(100).default(""),
   timezone: z.string().max(60).default("Europe/Paris"),
-  dateLocale: z.string().max(20).default("en-GB"),
+  dateLocale: z.string().max(20).default("fr-FR"),
   weekStartsOn: z.number().int().min(0).max(6).default(1),
   currency: z.string().max(10).default("EUR"),
 });
@@ -68,32 +68,32 @@ export type RuleKey = (typeof RULE_KEYS)[number];
 
 export const RULE_META: Record<RuleKey, { title: string; description: string }> = {
   interview_prep_task: {
-    title: "Interview scheduled → preparation task",
-    description: "Creates a preparation task due N days before each scheduled interview.",
+    title: "Entretien planifié → tâche de préparation",
+    description: "Crée une tâche de préparation à échéance N jours avant chaque entretien planifié.",
   },
   post_interview_thanks: {
-    title: "Interview done → thank-you note",
-    description: "Creates a task to send a thank-you note the day after an interview is marked as done.",
+    title: "Entretien passé → mot de remerciement",
+    description: "Crée une tâche pour envoyer un mot de remerciement le lendemain d’un entretien marqué comme passé.",
   },
   deadline_urgent: {
-    title: "Deadline approaching → urgent",
-    description: "Flags opportunities whose application deadline is within N days (notification + Today).",
+    title: "Date limite proche → urgent",
+    description: "Signale les opportunités dont la date limite de candidature tombe dans les N jours (notification + Aujourd’hui).",
   },
   missing_documents: {
-    title: "Missing documents before deadline",
-    description: "Warns when required documents are still missing N days before the deadline.",
+    title: "Documents manquants avant la date limite",
+    description: "Avertit lorsque des documents requis manquent encore N jours avant la date limite.",
   },
   ghost_suggestion: {
-    title: "No response after follow-ups → suggest “Ghosted”",
-    description: "After the maximum number of follow-ups without answer, suggests closing the application.",
+    title: "Aucune réponse après les relances → proposer « Sans réponse »",
+    description: "Après le nombre maximal de relances sans réponse, propose de clôturer la candidature.",
   },
   offer_decision: {
-    title: "Offer / admission → decision task",
-    description: "Creates a “Decide on the offer” task due N days after an offer or admission.",
+    title: "Offre / admission → tâche de décision",
+    description: "Crée une tâche « Prendre une décision sur l’offre » à échéance N jours après une offre ou une admission.",
   },
   stale_interview: {
-    title: "Past interview without outcome",
-    description: "Reminds you to log notes and outcome of interviews that took place.",
+    title: "Entretien passé sans résultat",
+    description: "Rappelle de noter le compte rendu et le résultat des entretiens qui ont eu lieu.",
   },
 };
 
@@ -128,42 +128,42 @@ const item = (title: string, kind: z.infer<typeof checklistTemplateItemSchema>["
 });
 
 const JOB_CHECKLIST = [
-  item("Read the job description", "CHECKLIST"),
-  item("Research the company", "CHECKLIST"),
-  item("Select CV", "DOCUMENT", "doc:CV"),
-  item("Write cover letter", "DOCUMENT", "doc:COVER_LETTER"),
-  item("Submit application", "CHECKLIST", "status:APPLIED"),
-  item("Follow up", "FOLLOW_UP", "followup"),
-  item("Prepare interview", "PREPARATION", "interview"),
+  item("Lire la fiche de poste", "CHECKLIST"),
+  item("Se renseigner sur l’entreprise", "CHECKLIST"),
+  item("Choisir le CV", "DOCUMENT", "doc:CV"),
+  item("Rédiger la lettre de motivation", "DOCUMENT", "doc:COVER_LETTER"),
+  item("Envoyer la candidature", "CHECKLIST", "status:APPLIED"),
+  item("Relancer", "FOLLOW_UP", "followup"),
+  item("Préparer l’entretien", "PREPARATION", "interview"),
 ];
 
 const EDUCATION_CHECKLIST = [
-  item("Check eligibility & prerequisites", "CHECKLIST"),
-  item("Select CV", "DOCUMENT", "doc:CV"),
-  item("Motivation letter", "DOCUMENT", "doc:COVER_LETTER"),
-  item("Transcripts", "DOCUMENT", "doc:TRANSCRIPT"),
-  item("Recommendation letter", "DOCUMENT", "doc:RECOMMENDATION"),
-  item("Language certificate", "DOCUMENT", "doc:LANGUAGE_CERT", "details.languageRequirement"),
-  item("Submit application", "CHECKLIST", "status:APPLIED"),
+  item("Vérifier l’éligibilité et les prérequis", "CHECKLIST"),
+  item("Choisir le CV", "DOCUMENT", "doc:CV"),
+  item("Lettre de motivation", "DOCUMENT", "doc:COVER_LETTER"),
+  item("Relevés de notes", "DOCUMENT", "doc:TRANSCRIPT"),
+  item("Lettre de recommandation", "DOCUMENT", "doc:RECOMMENDATION"),
+  item("Certificat de langue", "DOCUMENT", "doc:LANGUAGE_CERT", "details.languageRequirement"),
+  item("Envoyer la candidature", "CHECKLIST", "status:APPLIED"),
 ];
 
 export const DEFAULT_CHECKLISTS: Record<OpportunityType, ChecklistTemplateItem[]> = {
   JOB: JOB_CHECKLIST,
   INTERNSHIP: JOB_CHECKLIST,
-  ALTERNANCE: [...JOB_CHECKLIST.slice(0, 4), item("Check school / rhythm compatibility", "CHECKLIST"), ...JOB_CHECKLIST.slice(4)],
-  VIE: [...JOB_CHECKLIST.slice(0, 4), item("Check Business France VIE eligibility", "CHECKLIST"), ...JOB_CHECKLIST.slice(4)],
+  ALTERNANCE: [...JOB_CHECKLIST.slice(0, 4), item("Vérifier la compatibilité avec l’école et le rythme", "CHECKLIST"), ...JOB_CHECKLIST.slice(4)],
+  VIE: [...JOB_CHECKLIST.slice(0, 4), item("Vérifier l’éligibilité au VIE (Business France)", "CHECKLIST"), ...JOB_CHECKLIST.slice(4)],
   FORMATION: EDUCATION_CHECKLIST,
   PHD: [
-    item("Read the research topic & lab publications", "CHECKLIST"),
-    item("Contact the supervisor", "CHECKLIST"),
-    item("Select CV", "DOCUMENT", "doc:CV"),
-    item("Research statement / motivation letter", "DOCUMENT", "doc:COVER_LETTER"),
-    item("Transcripts", "DOCUMENT", "doc:TRANSCRIPT"),
-    item("Recommendation letters", "DOCUMENT", "doc:RECOMMENDATION"),
-    item("Submit application", "CHECKLIST", "status:APPLIED"),
+    item("Lire le sujet de recherche et les publications du labo", "CHECKLIST"),
+    item("Contacter le directeur de thèse", "CHECKLIST"),
+    item("Choisir le CV", "DOCUMENT", "doc:CV"),
+    item("Projet de recherche / lettre de motivation", "DOCUMENT", "doc:COVER_LETTER"),
+    item("Relevés de notes", "DOCUMENT", "doc:TRANSCRIPT"),
+    item("Lettres de recommandation", "DOCUMENT", "doc:RECOMMENDATION"),
+    item("Envoyer la candidature", "CHECKLIST", "status:APPLIED"),
   ],
   PROGRAM: EDUCATION_CHECKLIST,
-  OTHER: [item("Select CV", "DOCUMENT", "doc:CV"), item("Submit application", "CHECKLIST", "status:APPLIED")],
+  OTHER: [item("Choisir le CV", "DOCUMENT", "doc:CV"), item("Envoyer la candidature", "CHECKLIST", "status:APPLIED")],
 };
 
 export const templatesSettingsSchema = z.object(
@@ -194,7 +194,7 @@ export const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
   },
   {
     id: "follow-up-en",
-    name: "Application follow-up (EN)",
+    name: "Relance candidature (EN)",
     language: "en",
     purpose: "FOLLOW_UP",
     subject: "Following up on my application — {{title}}",

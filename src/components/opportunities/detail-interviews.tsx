@@ -15,7 +15,7 @@ import { useAppData } from "@/components/app/app-data";
 import { useConfirm } from "@/components/app/confirm";
 import { useAction } from "@/hooks/use-action";
 import { createInterviewAction, deleteInterviewAction, updateInterviewAction } from "@/app/actions/opportunities";
-import { INTERVIEW_KINDS, INTERVIEW_KIND_LABEL, INTERVIEW_OUTCOMES, INTERVIEW_STATUSES, INTERVIEW_STATUS_LABEL, type InterviewKind, type InterviewOutcome, type InterviewStatus } from "@/lib/constants";
+import { INTERVIEW_KINDS, INTERVIEW_KIND_LABEL, INTERVIEW_OUTCOMES, INTERVIEW_STATUSES, INTERVIEW_STATUS_LABEL, interviewKindTitle, type InterviewKind, type InterviewOutcome, type InterviewStatus } from "@/lib/constants";
 import { formatInstant, instantToZonedParts, zonedTimeToInstant } from "@/lib/dates";
 import type { InterviewQuestion } from "@/lib/schemas";
 import type { OpportunityDetail } from "@/server/services/opportunities";
@@ -23,7 +23,8 @@ import { cn } from "@/lib/utils";
 
 type InterviewRow = OpportunityDetail["interviews"][number];
 
-const OUTCOME_LABEL: Record<InterviewOutcome, string> = { PENDING: "Pending", PASSED: "Passed", FAILED: "Not selected", UNKNOWN: "Unknown" };
+const OUTCOME_LABEL: Record<InterviewOutcome, string> = { PENDING: "En attente", PASSED: "Réussi", FAILED: "Non retenu", UNKNOWN: "Inconnu" };
+const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 export function DetailInterviews({ opp }: { opp: OpportunityDetail }) {
   const { timezone, dateLocale } = useAppData();
@@ -33,9 +34,9 @@ export function DetailInterviews({ opp }: { opp: OpportunityDetail }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{opp.interviews.length ? `${opp.interviews.length} interview${opp.interviews.length > 1 ? "s" : ""}` : "No interview yet."}</p>
+        <p className="text-sm text-muted-foreground">{opp.interviews.length ? `${opp.interviews.length} entretien${opp.interviews.length > 1 ? "s" : ""}` : "Aucun entretien pour l’instant."}</p>
         <Button size="sm" onClick={() => setEditing("new")}>
-          <Plus /> Add interview
+          <Plus /> Ajouter un entretien
         </Button>
       </div>
       {[...upcoming, ...past].map((iv) => (
@@ -43,7 +44,7 @@ export function DetailInterviews({ opp }: { opp: OpportunityDetail }) {
           <div className="flex flex-wrap items-start justify-between gap-2">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="font-medium">{iv.title || `${INTERVIEW_KIND_LABEL[iv.kind]} interview`}</span>
+                <span className="font-medium">{iv.title || interviewKindTitle(iv.kind)}</span>
                 <span className={cn("rounded-lg px-1.5 text-xs font-medium", iv.status === "COMPLETED" ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" : iv.status === "CANCELLED" ? "bg-muted text-muted-foreground line-through" : "bg-info-50 text-info-800")}>
                   {INTERVIEW_STATUS_LABEL[iv.status]}
                 </span>
@@ -52,7 +53,7 @@ export function DetailInterviews({ opp }: { opp: OpportunityDetail }) {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <CalendarClock className="size-3.5" />
-                  {iv.scheduledAt ? formatInstant(iv.scheduledAt, { timeZone: timezone, locale: dateLocale, style: "weekday" }) : "Date to be scheduled"}
+                  {iv.scheduledAt ? formatInstant(iv.scheduledAt, { timeZone: timezone, locale: dateLocale, style: "weekday" }) : "Date à planifier"}
                 </span>
                 {iv.durationMinutes && (
                   <span className="flex items-center gap-1">
@@ -77,14 +78,14 @@ export function DetailInterviews({ opp }: { opp: OpportunityDetail }) {
             {iv.meetingUrl && iv.status === "SCHEDULED" && (
               <Button size="sm" variant="outline" asChild onClick={(e) => e.stopPropagation()}>
                 <a href={iv.meetingUrl} target="_blank" rel="noopener noreferrer">
-                  <Video /> Join
+                  <Video /> Rejoindre
                 </a>
               </Button>
             )}
           </div>
           {(iv.preparation || iv.questions.length > 0) && (
             <p className="mt-2 text-xs text-muted-foreground">
-              Preparation: {iv.questions.length} question{iv.questions.length === 1 ? "" : "s"}
+              Préparation : {iv.questions.length} question{iv.questions.length > 1 ? "s" : ""}
               {iv.preparation ? " · notes" : ""}
             </p>
           )}
@@ -139,7 +140,7 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
 
   const save = () =>
     run(() => (interview ? updateInterviewAction(interview.id, payload()) : createInterviewAction({ opportunityId: opp.id, ...payload() })), {
-      success: interview ? "Interview updated" : "Interview added — preparation task created",
+      success: interview ? "Entretien mis à jour" : "Entretien ajouté — tâche de préparation créée",
       onSuccess: onClose,
     });
 
@@ -149,7 +150,7 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{interview ? "Interview" : "New interview"}</DialogTitle>
+          <DialogTitle>{interview ? "Entretien" : "Nouvel entretien"}</DialogTitle>
           <DialogDescription>
             {opp.title}
             {opp.organization ? ` — ${opp.organization.name}` : ""}
@@ -157,9 +158,9 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
         </DialogHeader>
         <Tabs defaultValue={interview?.status === "COMPLETED" ? "debrief" : "details"}>
           <TabsList>
-            <TabsTrigger value="details">Details</TabsTrigger>
-            <TabsTrigger value="prep">Preparation</TabsTrigger>
-            <TabsTrigger value="debrief">Notes & outcome</TabsTrigger>
+            <TabsTrigger value="details">Détails</TabsTrigger>
+            <TabsTrigger value="prep">Préparation</TabsTrigger>
+            <TabsTrigger value="debrief">Notes et résultat</TabsTrigger>
           </TabsList>
           <TabsContent value="details" className="space-y-4 pt-3">
             <div className="grid gap-3 sm:grid-cols-2">
@@ -177,28 +178,28 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
                   </SelectContent>
                 </Select>
               </FormField>
-              <FormField label="Title (optional)">
-                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`${INTERVIEW_KIND_LABEL[kind]} interview`} />
+              <FormField label="Titre (facultatif)">
+                <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={interviewKindTitle(kind)} />
               </FormField>
-              <FormField label="Date" hint={`Times are in ${timezone}`}>
+              <FormField label="Date" hint={`Heures exprimées en ${timezone}`}>
                 <div className="flex gap-2">
                   <DateInput value={date} onChange={setDate} />
                   <TimeInput value={time} onChange={setTime} className="w-28" />
                 </div>
               </FormField>
-              <FormField label="Duration (minutes)">
+              <FormField label="Durée (minutes)">
                 <NumberInput value={duration} onChange={setDuration} step={15} />
               </FormField>
-              <FormField label="Meeting link">
+              <FormField label="Lien de la réunion">
                 <Input value={meetingUrl} onChange={(e) => setMeetingUrl(e.target.value)} placeholder="https://meet.google.com/…" />
               </FormField>
-              <FormField label="Location">
-                <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Office address, phone…" />
+              <FormField label="Lieu">
+                <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Adresse du bureau, téléphone…" />
               </FormField>
-              <FormField label="Participants" hint="One per line — “Name (role)”" className="sm:col-span-2">
+              <FormField label="Participants" hint="Un par ligne — « Nom (fonction) »" className="sm:col-span-2">
                 <Textarea value={participants} onChange={(e) => setParticipants(e.target.value)} rows={2} />
               </FormField>
-              <FormField label="Status">
+              <FormField label="Statut">
                 <Select value={status} onValueChange={(v) => setStatus(v as InterviewStatus)}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -217,7 +218,7 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
           <TabsContent value="prep" className="space-y-4 pt-3">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground">Likely questions & prepared answers</Label>
+                <Label className="text-xs text-muted-foreground">Questions probables et réponses préparées</Label>
                 <Button size="xs" variant="outline" onClick={() => addQuestion("EXPECTED")}>
                   <Plus /> Question
                 </Button>
@@ -229,17 +230,17 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
                   <div key={q.id} className="space-y-1.5 rounded-lg border p-2">
                     <div className="flex gap-2">
                       <Input value={q.question} onChange={(e) => setQuestions((qs) => qs.map((x, i) => (i === index ? { ...x, question: e.target.value } : x)))} placeholder="Question" />
-                      <Button variant="ghost" size="icon" onClick={() => setQuestions((qs) => qs.filter((_, i) => i !== index))} aria-label="Remove">
+                      <Button variant="ghost" size="icon" onClick={() => setQuestions((qs) => qs.filter((_, i) => i !== index))} aria-label="Retirer">
                         <Trash2 />
                       </Button>
                     </div>
-                    <Textarea value={q.answer ?? ""} onChange={(e) => setQuestions((qs) => qs.map((x, i) => (i === index ? { ...x, answer: e.target.value } : x)))} rows={2} placeholder="Your answer (STAR: situation, task, action, result)…" />
+                    <Textarea value={q.answer ?? ""} onChange={(e) => setQuestions((qs) => qs.map((x, i) => (i === index ? { ...x, answer: e.target.value } : x)))} rows={2} placeholder="Votre réponse (STAR : situation, tâche, action, résultat)…" />
                   </div>
                 ))}
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label className="text-xs text-muted-foreground">Questions to ask</Label>
+                <Label className="text-xs text-muted-foreground">Questions à poser</Label>
                 <Button size="xs" variant="outline" onClick={() => addQuestion("TO_ASK")}>
                   <Plus /> Question
                 </Button>
@@ -249,27 +250,27 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
                 .filter(({ q }) => q.kind === "TO_ASK")
                 .map(({ q, index }) => (
                   <div key={q.id} className="flex gap-2">
-                    <Input value={q.question} onChange={(e) => setQuestions((qs) => qs.map((x, i) => (i === index ? { ...x, question: e.target.value } : x)))} placeholder="What would you like to know?" />
-                    <Button variant="ghost" size="icon" onClick={() => setQuestions((qs) => qs.filter((_, i) => i !== index))} aria-label="Remove">
+                    <Input value={q.question} onChange={(e) => setQuestions((qs) => qs.map((x, i) => (i === index ? { ...x, question: e.target.value } : x)))} placeholder="Que souhaitez-vous savoir ?" />
+                    <Button variant="ghost" size="icon" onClick={() => setQuestions((qs) => qs.filter((_, i) => i !== index))} aria-label="Retirer">
                       <Trash2 />
                     </Button>
                   </div>
                 ))}
             </div>
-            <FormField label="Preparation notes — projects to present, company & interviewer notes">
-              <MarkdownEditor value={preparation} onChange={setPreparation} minRows={8} placeholder={"## Projects to present\n\n## About the company\n\n## About the interviewer"} />
+            <FormField label="Notes de préparation — projets à présenter, notes sur l’entreprise et le recruteur">
+              <MarkdownEditor value={preparation} onChange={setPreparation} minRows={8} placeholder={"## Projets à présenter\n\n## À propos de l’entreprise\n\n## À propos du recruteur"} />
             </FormField>
-            <p className="text-xs text-muted-foreground">Tip: ask Claude Code “prépare mon entretien {INTERVIEW_KIND_LABEL[kind].toLowerCase()} chez {opp.organization?.name ?? "…"}” — it fills this section through MCP.</p>
+            <p className="text-xs text-muted-foreground">Astuce : demandez à Claude Code « prépare mon {lowerFirst(interviewKindTitle(kind))} chez {opp.organization?.name ?? "…"} » — il remplit cette section via MCP.</p>
           </TabsContent>
           <TabsContent value="debrief" className="space-y-4 pt-3">
-            <FormField label="Notes taken during the interview">
+            <FormField label="Notes prises pendant l’entretien">
               <MarkdownEditor value={notes} onChange={setNotes} minRows={5} />
             </FormField>
-            <FormField label="Feedback received">
+            <FormField label="Retour reçu">
               <Textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} rows={3} />
             </FormField>
             <div className="grid gap-3 sm:grid-cols-2">
-              <FormField label="Outcome">
+              <FormField label="Résultat">
                 <Select value={outcome} onValueChange={(v) => setOutcome(v as InterviewOutcome)}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -286,14 +287,14 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
               <div className="flex items-end">
                 {status !== "COMPLETED" && (
                   <Button variant="outline" className="w-full" onClick={() => setStatus("COMPLETED")}>
-                    <CheckCircle2 /> Mark as done
+                    <CheckCircle2 /> Marquer comme passé
                   </Button>
                 )}
               </div>
             </div>
             {interview?.preparation && (
               <details className="rounded-lg border p-3 text-sm">
-                <summary className="cursor-pointer text-xs text-muted-foreground">Preparation (read-only)</summary>
+                <summary className="cursor-pointer text-xs text-muted-foreground">Préparation (lecture seule)</summary>
                 <Markdown className="mt-2">{interview.preparation}</Markdown>
               </details>
             )}
@@ -305,10 +306,10 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
               variant="ghost"
               className="text-destructive"
               onClick={async () => {
-                if (await confirm({ title: "Delete this interview?", destructive: true, confirmLabel: "Delete" })) run(() => deleteInterviewAction(interview.id), { success: "Interview deleted", onSuccess: onClose });
+                if (await confirm({ title: "Supprimer cet entretien ?", destructive: true, confirmLabel: "Supprimer" })) run(() => deleteInterviewAction(interview.id), { success: "Entretien supprimé", onSuccess: onClose });
               }}
             >
-              <Trash2 /> Delete
+              <Trash2 /> Supprimer
             </Button>
           ) : (
             <span />
@@ -317,12 +318,12 @@ function InterviewDialog({ opp, interview, onClose, timezone }: { opp: Opportuni
             {interview?.meetingUrl && (
               <Button variant="outline" asChild>
                 <a href={interview.meetingUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink /> Join
+                  <ExternalLink /> Rejoindre
                 </a>
               </Button>
             )}
             <Button onClick={save} disabled={pending}>
-              Save
+              Enregistrer
             </Button>
           </div>
         </DialogFooter>

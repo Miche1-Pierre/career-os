@@ -27,12 +27,12 @@ export function DetailSidebar({ opp, contactOptions }: { opp: OpportunityDetail;
     <aside className="space-y-4">
       {org && (
         <div className="surface p-4">
-          <div className="mb-2 text-xs font-medium text-muted-foreground">{org.kind === "INSTITUTION" ? "Institution" : "Company"}</div>
+          <div className="mb-2 text-xs font-medium text-muted-foreground">{org.kind === "INSTITUTION" ? "Établissement" : "Entreprise"}</div>
           <Link href={`/${org.kind === "INSTITUTION" ? "institutions" : "companies"}/${org.id}`} className="flex items-center gap-2 font-medium hover:underline">
             {org.kind === "INSTITUTION" ? <GraduationCap className="size-4 text-muted-foreground" /> : <Building2 className="size-4 text-muted-foreground" />}
             {org.name}
           </Link>
-          <p className="mt-1 text-xs text-muted-foreground">{[org.industry, org.city, org.country].filter(Boolean).join(" · ") || "No details yet"}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{[org.industry, org.city, org.country].filter(Boolean).join(" · ") || "Aucun détail pour l’instant"}</p>
           {org.website && (
             <a href={org.website} target="_blank" rel="noopener noreferrer" className="mt-1 block truncate text-xs text-primary hover:underline">
               {org.website.replace(/^https?:\/\//, "")}
@@ -44,13 +44,13 @@ export function DetailSidebar({ opp, contactOptions }: { opp: OpportunityDetail;
       <div className="surface p-4">
         <div className="mb-2 flex items-center justify-between">
           <span className="text-xs font-medium text-muted-foreground">Contacts</span>
-          <Button size="icon-xs" variant="ghost" onClick={() => setAddOpen(true)} aria-label="Add contact">
+          <Button size="icon-xs" variant="ghost" onClick={() => setAddOpen(true)} aria-label="Ajouter un contact">
             <UserPlus />
           </Button>
         </div>
         {opp.contacts.length === 0 ? (
           <button type="button" onClick={() => setAddOpen(true)} className="text-sm text-muted-foreground hover:text-foreground">
-            + Add the recruiter or program contact
+            + Ajouter le recruteur ou le contact du programme
           </button>
         ) : (
           <ul className="space-y-3">
@@ -65,14 +65,14 @@ export function DetailSidebar({ opp, contactOptions }: { opp: OpportunityDetail;
                   <div className="mt-1 flex gap-1">
                     {c.email && (
                       <Button size="icon-xs" variant="ghost" asChild>
-                        <a href={`mailto:${c.email}`} aria-label={`Email ${c.fullName}`}>
+                        <a href={`mailto:${c.email}`} aria-label={`Écrire à ${c.fullName}`}>
                           <Mail />
                         </a>
                       </Button>
                     )}
                     {c.phone && (
                       <Button size="icon-xs" variant="ghost" asChild>
-                        <a href={`tel:${c.phone}`} aria-label={`Call ${c.fullName}`}>
+                        <a href={`tel:${c.phone}`} aria-label={`Appeler ${c.fullName}`}>
                           <Phone />
                         </a>
                       </Button>
@@ -86,7 +86,7 @@ export function DetailSidebar({ opp, contactOptions }: { opp: OpportunityDetail;
                     )}
                   </div>
                 </div>
-                <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => unlinkContactAction(opp.id, c.id), { success: "Contact unlinked" })} aria-label="Unlink contact">
+                <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => unlinkContactAction(opp.id, c.id), { success: "Contact délié" })} aria-label="Délier le contact">
                   <X className="size-3.5 text-muted-foreground" />
                 </button>
               </li>
@@ -101,20 +101,20 @@ export function DetailSidebar({ opp, contactOptions }: { opp: OpportunityDetail;
             <Tags className="size-3.5" /> Tags
           </span>
           <Button size="xs" variant="ghost" onClick={() => setEditTags((v) => !v)}>
-            {editTags ? "Done" : "Edit"}
+            {editTags ? "Terminé" : "Modifier"}
           </Button>
         </div>
         {editTags ? (
           <div className="space-y-2">
             <TagInput value={tags} onChange={setTags} />
-            <Button size="xs" onClick={() => run(() => updateOpportunityAction(opp.id, { tags }), { success: "Tags saved", onSuccess: () => setEditTags(false) })}>
-              Save tags
+            <Button size="xs" onClick={() => run(() => updateOpportunityAction(opp.id, { tags }), { success: "Tags enregistrés", onSuccess: () => setEditTags(false) })}>
+              Enregistrer les tags
             </Button>
           </div>
         ) : opp.tags.length ? (
           <TagList tags={opp.tags} max={20} />
         ) : (
-          <p className="text-sm text-muted-foreground">No tag</p>
+          <p className="text-sm text-muted-foreground">Aucun tag</p>
         )}
       </div>
       {addOpen && <AddContactDialog opportunityId={opp.id} contactOptions={contactOptions} onClose={() => setAddOpen(false)} />}
@@ -134,24 +134,24 @@ function AddContactDialog({ opportunityId, contactOptions, onClose }: { opportun
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Add a contact</DialogTitle>
+          <DialogTitle>Ajouter un contact</DialogTitle>
         </DialogHeader>
         <Tabs defaultValue="new">
           <TabsList>
             <TabsTrigger value="new">
-              <Plus /> New
+              <Plus /> Nouveau
             </TabsTrigger>
-            <TabsTrigger value="existing">Existing</TabsTrigger>
+            <TabsTrigger value="existing">Existant</TabsTrigger>
           </TabsList>
           <TabsContent value="new" className="space-y-3 pt-2">
-            <FormField label="Full name">
+            <FormField label="Nom complet">
               <Input value={fullName} onChange={(e) => setFullName(e.target.value)} autoFocus />
             </FormField>
             <div className="grid grid-cols-2 gap-2">
-              <FormField label="Role">
+              <FormField label="Fonction">
                 <Input value={role} onChange={(e) => setRole(e.target.value)} placeholder="Talent acquisition" />
               </FormField>
-              <FormField label="Relationship">
+              <FormField label="Relation">
                 <Select value={relationship} onValueChange={(v) => setRelationship(v as Relationship)}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
@@ -166,7 +166,7 @@ function AddContactDialog({ opportunityId, contactOptions, onClose }: { opportun
                 </Select>
               </FormField>
             </div>
-            <FormField label="Email">
+            <FormField label="E-mail">
               <Input value={email} onChange={(e) => setEmail(e.target.value)} type="email" />
             </FormField>
             <FormField label="LinkedIn">
@@ -177,20 +177,20 @@ function AddContactDialog({ opportunityId, contactOptions, onClose }: { opportun
                 disabled={!fullName.trim() || pending}
                 onClick={() =>
                   run(() => addContactAction(opportunityId, { fullName: fullName.trim(), role: role || null, opportunityRole: role || null, email: email || null, linkedinUrl: linkedinUrl || null, relationship }), {
-                    success: "Contact added",
+                    success: "Contact ajouté",
                     onSuccess: onClose,
                   })
                 }
               >
-                Add
+                Ajouter
               </Button>
             </DialogFooter>
           </TabsContent>
           <TabsContent value="existing" className="space-y-3 pt-2">
-            <EntityCombobox options={contactOptions} value={existing} onChange={setExisting} placeholder="Choose a contact" allowCreate={false} />
+            <EntityCombobox options={contactOptions} value={existing} onChange={setExisting} placeholder="Choisir un contact" allowCreate={false} />
             <DialogFooter>
-              <Button disabled={!existing.id || pending} onClick={() => existing.id && run(() => addContactAction(opportunityId, { contactId: existing.id }), { success: "Contact linked", onSuccess: onClose })}>
-                Link
+              <Button disabled={!existing.id || pending} onClick={() => existing.id && run(() => addContactAction(opportunityId, { contactId: existing.id }), { success: "Contact lié", onSuccess: onClose })}>
+                Lier
               </Button>
             </DialogFooter>
           </TabsContent>

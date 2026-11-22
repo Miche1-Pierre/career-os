@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     const o = await getOpportunity(id);
     return { title: o.organization ? `${o.title} — ${o.organization.name}` : o.title };
   } catch {
-    return { title: "Opportunity" };
+    return { title: "Opportunité" };
   }
 }
 

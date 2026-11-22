@@ -4,7 +4,7 @@ import { evaluateRulesThrottled } from "@/server/services/rules";
 import { getSettings } from "@/server/services/settings";
 import { TodayView } from "@/components/today/today-view";
 
-export const metadata: Metadata = { title: "Today" };
+export const metadata: Metadata = { title: "Aujourd’hui" };
 
 export default async function TodayPage() {
   await evaluateRulesThrottled();

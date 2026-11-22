@@ -61,6 +61,8 @@ import { DetailAnalysis } from "./detail-analysis";
 import { DetailHistory } from "./detail-history";
 import { DetailSidebar } from "./detail-sidebar";
 
+const PERIOD_LABEL: Record<string, string> = { YEAR: "an", MONTH: "mois", DAY: "jour", HOUR: "heure" };
+
 export function OpportunityDetailView({
   opp,
   versions,
@@ -100,13 +102,13 @@ export function OpportunityDetailView({
 
   const setStatus = async (key: string) => {
     const closing = ["REJECTED", "WITHDRAWN", "GHOSTED", "DECLINED", "CLOSED"].includes(key);
-    if (closing && !(await confirm({ title: "Close this application?", description: "Follow-ups stop and the application moves to Closed. You can reopen it anytime by changing the status.", confirmLabel: "Close it" }))) return;
-    run(() => changeStatusAction(opp.id, key), { success: (d) => (d.changed ? `${d.from} → ${d.to}` : "No change") });
+    if (closing && !(await confirm({ title: "Clôturer cette candidature ?", description: "Les relances s’arrêtent et la candidature passe en Clôturé. Elle peut être rouverte à tout moment en changeant le statut.", confirmLabel: "Clôturer" }))) return;
+    run(() => changeStatusAction(opp.id, key), { success: (d) => (d.changed ? `${d.from} → ${d.to}` : "Aucun changement") });
   };
 
   const salary =
     details.salaryMin || details.salaryMax
-      ? `${details.salaryMin ? Math.round(details.salaryMin / 1000) + "k" : "?"}–${details.salaryMax ? Math.round(details.salaryMax / 1000) + "k" : "?"} ${details.salaryCurrency ?? ""}${details.salaryPeriod && details.salaryPeriod !== "YEAR" ? `/${details.salaryPeriod.toLowerCase()}` : ""}`
+      ? `${details.salaryMin ? Math.round(details.salaryMin / 1000) + "k" : "?"}–${details.salaryMax ? Math.round(details.salaryMax / 1000) + "k" : "?"} ${details.salaryCurrency ?? ""}${details.salaryPeriod && details.salaryPeriod !== "YEAR" ? `/${PERIOD_LABEL[details.salaryPeriod] ?? details.salaryPeriod.toLowerCase()}` : ""}`
       : details.salaryText ?? null;
 
   return (
@@ -114,7 +116,7 @@ export function OpportunityDetailView({
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-sm text-muted-foreground">
         <Link href="/applications" className="hover:text-foreground">
-          Applications
+          Candidatures
         </Link>
         <ChevronRight className="size-3.5 text-faint" />
         {opp.organization ? (
@@ -122,7 +124,7 @@ export function OpportunityDetailView({
             {opp.organization.name}
           </Link>
         ) : (
-          <span>No organization</span>
+          <span>Sans organisation</span>
         )}
       </nav>
 
@@ -134,15 +136,15 @@ export function OpportunityDetailView({
             <div className="flex flex-wrap items-center gap-1.5">
               <TypeBadge type={opp.type} />
               <StageBadge label={opp.stage.label} category={opp.stage.category} />
-              {opp.archivedAt && <Badge size="sm">Archived</Badge>}
+              {opp.archivedAt && <Badge size="sm">Archivée</Badge>}
               {opp.deletedAt && (
                 <Badge size="sm" variant="destructive">
-                  In trash
+                  À la corbeille
                 </Badge>
               )}
               {opp.isDemo && (
                 <Badge size="sm" variant="info">
-                  Demo
+                  Démo
                 </Badge>
               )}
             </div>
@@ -151,7 +153,7 @@ export function OpportunityDetailView({
               <ProvenanceMark provenance={opp.provenance?.title} />
             </h1>
             <p className="copy-sm text-muted-foreground">
-              {opp.organization?.name ?? "No organization"}
+              {opp.organization?.name ?? "Sans organisation"}
               {opp.locationCity || opp.locationCountry ? ` · ${[opp.locationCity, opp.locationCountry].filter(Boolean).join(", ")}` : ""}
               {opp.remotePolicy ? ` · ${REMOTE_LABEL[opp.remotePolicy]}` : ""}
             </p>
@@ -159,7 +161,7 @@ export function OpportunityDetailView({
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <StageSelect pipeline={family} value={opp.stage.key} onChange={setStatus} />
-          <Select value={opp.priority} onValueChange={(v) => run(() => updateOpportunityAction(opp.id, { priority: v as Priority }), { success: "Priority updated" })}>
+          <Select value={opp.priority} onValueChange={(v) => run(() => updateOpportunityAction(opp.id, { priority: v as Priority }), { success: "Priorité mise à jour" })}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
@@ -174,22 +176,22 @@ export function OpportunityDetailView({
           </Select>
           {preSubmit && (
             <Button onClick={() => setStatus(family === "EDUCATION" ? "APPLICATION_SUBMITTED" : "APPLIED")}>
-              <Send /> Mark as applied
+              <Send /> Marquer comme postulé
             </Button>
           )}
           {(opp.stage.category === "OFFER" || opp.stage.category === "WON") && (
             <Button variant="outline" onClick={() => run(() => createMoveFromOpportunityAction(opp.id), { onSuccess: (d) => router.push(`/moves/${d.id}`) })}>
-              <Plane /> Plan the move
+              <Plane /> Préparer l’installation
             </Button>
           )}
           <Button variant="outline" asChild>
             <Link href={`/applications/${opp.id}/edit`}>
-              <Pencil /> Edit
+              <Pencil /> Modifier
             </Link>
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost-secondary" size="icon" aria-label="More actions">
+              <Button variant="ghost-secondary" size="icon" aria-label="Plus d’actions">
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
@@ -197,30 +199,30 @@ export function OpportunityDetailView({
               {opp.url && (
                 <DropdownMenuItem asChild>
                   <a href={opp.url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink /> Open posting
+                    <ExternalLink /> Ouvrir l’offre
                   </a>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={() => run(() => duplicateOpportunityAction(opp.id), { success: "Duplicated", onSuccess: (d) => router.push(`/applications/${d.id}`) })}>
-                <Copy /> Duplicate
+              <DropdownMenuItem onClick={() => run(() => duplicateOpportunityAction(opp.id), { success: "Dupliquée", onSuccess: (d) => router.push(`/applications/${d.id}`) })}>
+                <Copy /> Dupliquer
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <a href={`/api/v1/opportunities/${opp.id}`} target="_blank" rel="noopener noreferrer">
-                  <Download /> View as JSON
+                  <Download /> Voir en JSON
                 </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => run(() => setOpportunityArchivedAction(opp.id, !opp.archivedAt), { success: opp.archivedAt ? "Unarchived" : "Archived" })}>
-                {opp.archivedAt ? <ArchiveRestore /> : <Archive />} {opp.archivedAt ? "Unarchive" : "Archive"}
+              <DropdownMenuItem onClick={() => run(() => setOpportunityArchivedAction(opp.id, !opp.archivedAt), { success: opp.archivedAt ? "Désarchivée" : "Archivée" })}>
+                {opp.archivedAt ? <ArchiveRestore /> : <Archive />} {opp.archivedAt ? "Désarchiver" : "Archiver"}
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
                 onClick={async () => {
-                  if (await confirm({ title: "Move to trash?", description: "You can restore it from “Recently deleted”. Documents and files are never deleted.", destructive: true, confirmLabel: "Move to trash" }))
-                    run(() => deleteOpportunityAction(opp.id), { success: "Moved to trash", onSuccess: () => router.push("/applications") });
+                  if (await confirm({ title: "Mettre à la corbeille ?", description: "Elle reste restaurable depuis la Corbeille. Les documents et fichiers ne sont jamais supprimés.", destructive: true, confirmLabel: "Mettre à la corbeille" }))
+                    run(() => deleteOpportunityAction(opp.id), { success: "Mise à la corbeille", onSuccess: () => router.push("/applications") });
                 }}
               >
-                <Trash2 /> Delete
+                <Trash2 /> Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -229,18 +231,18 @@ export function OpportunityDetailView({
 
       {/* Key facts */}
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <Fact label="Applied">
+        <Fact label="Candidature">
           {opp.appliedAt ? (
             <span title={formatISODate(opp.appliedAt, "long", dateLocale)}>
               {formatISODate(opp.appliedAt, "medium", dateLocale)} <span className="text-xs text-muted-foreground">({relativeDayLabel(opp.appliedAt, today)})</span>
             </span>
           ) : (
-            <span className="text-muted-foreground">Not yet</span>
+            <span className="text-muted-foreground">Pas encore</span>
           )}
-          {opp.firstResponseAt && <div className="text-xs text-muted-foreground">First answer {formatISODate(opp.firstResponseAt, "dayMonth", dateLocale)}</div>}
+          {opp.firstResponseAt && <div className="text-xs text-muted-foreground">Première réponse le {formatISODate(opp.firstResponseAt, "dayMonth", dateLocale)}</div>}
         </Fact>
         <FollowUpCard opp={opp} closed={closed} intervalLabel={intervalLabel} />
-        <Fact label={family === "EDUCATION" ? "Deadline" : "Deadline"} provenance={opp.provenance?.deadline}>
+        <Fact label="Date limite" provenance={opp.provenance?.deadline}>
           {opp.deadline ? (
             <div className="flex flex-wrap items-center gap-2">
               {formatISODate(opp.deadline, "medium", dateLocale)}
@@ -248,11 +250,11 @@ export function OpportunityDetailView({
               {preSubmit && <DueBadge date={opp.deadline} time={opp.deadlineTime} />}
             </div>
           ) : (
-            <UnknownValue label="No deadline" />
+            <UnknownValue label="Aucune date limite" />
           )}
-          {opp.applicationOpensAt && <div className="text-xs text-muted-foreground">Opens {formatISODate(opp.applicationOpensAt, "medium", dateLocale)}</div>}
+          {opp.applicationOpensAt && <div className="text-xs text-muted-foreground">Ouverture le {formatISODate(opp.applicationOpensAt, "medium", dateLocale)}</div>}
         </Fact>
-        <Fact label={family === "EDUCATION" ? "Fees" : "Compensation"} provenance={family === "EDUCATION" ? opp.provenance?.["details.tuitionFees"] : opp.provenance?.["details.salaryMin"]}>
+        <Fact label={family === "EDUCATION" ? "Frais de scolarité" : "Rémunération"} provenance={family === "EDUCATION" ? opp.provenance?.["details.tuitionFees"] : opp.provenance?.["details.salaryMin"]}>
           {family === "EDUCATION" ? details.tuitionFees ?? <UnknownValue /> : salary ?? <UnknownValue />}
           <div className="text-xs text-muted-foreground">
             {family === "EDUCATION" ? [details.level, details.entryYear].filter(Boolean).join(" · ") : [details.contractType, details.seniority].filter(Boolean).join(" · ")}
@@ -266,13 +268,13 @@ export function OpportunityDetailView({
           <div className="-mx-4 overflow-x-auto px-4 pb-1.5 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
             <TabsList className="w-max min-w-full justify-start" variant="line">
               <TabsTrigger value="overview">
-                <ScrollText /> Overview
+                <ScrollText /> Aperçu
               </TabsTrigger>
               <TabsTrigger value="timeline">
-                <History /> Timeline <Count n={opp.events.length} />
+                <History /> Historique <Count n={opp.events.length} />
               </TabsTrigger>
               <TabsTrigger value="interviews">
-                <CalendarDays /> Interviews <Count n={opp.interviews.length} highlight={upcomingInterviews > 0} />
+                <CalendarDays /> Entretiens <Count n={opp.interviews.length} highlight={upcomingInterviews > 0} />
               </TabsTrigger>
               <TabsTrigger value="checklist">
                 <CheckSquare /> Checklist <Count n={openTasks} />
@@ -284,10 +286,10 @@ export function OpportunityDetailView({
                 <NotebookPen /> Notes
               </TabsTrigger>
               <TabsTrigger value="analysis">
-                <Sparkles /> Analysis
+                <Sparkles /> Analyse
               </TabsTrigger>
               <TabsTrigger value="history">
-                <History /> Changes
+                <History /> Modifications
               </TabsTrigger>
             </TabsList>
           </div>
@@ -319,7 +321,7 @@ export function OpportunityDetailView({
         <DetailSidebar opp={opp} contactOptions={contactOptions} />
       </div>
       <p className="text-xs text-faint">
-        {OPPORTUNITY_TYPE_META[opp.type].label} · added {formatISODate(opp.discoveredAt ?? String(opp.createdAt).slice(0, 10), "medium", dateLocale)} · updated {relativeDayLabel(String(opp.updatedAt).slice(0, 10), today).toLowerCase()}
+        {OPPORTUNITY_TYPE_META[opp.type].label} · ajoutée le {formatISODate(opp.discoveredAt ?? String(opp.createdAt).slice(0, 10), "medium", dateLocale)} · mise à jour {relativeDayLabel(String(opp.updatedAt).slice(0, 10), today).toLowerCase()}
       </p>
     </PageContainer>
   );

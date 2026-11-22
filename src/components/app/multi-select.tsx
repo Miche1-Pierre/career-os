@@ -30,7 +30,7 @@ export function MultiSelect({
   className?: string;
 }) {
   const selected = new Set(value);
-  const summary = value.length === 0 ? null : value.length === 1 ? options.find((o) => o.value === value[0])?.label ?? value[0] : `${value.length} selected`;
+  const summary = value.length === 0 ? null : value.length === 1 ? options.find((o) => o.value === value[0])?.label ?? value[0] : `${value.length} sélectionnés`;
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -42,9 +42,9 @@ export function MultiSelect({
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0" align="start">
         <Command>
-          {searchable && options.length > 7 && <CommandInput placeholder={`Filter ${label.toLowerCase()}…`} />}
+          {searchable && options.length > 7 && <CommandInput placeholder={`Filtrer (${label.toLowerCase()})…`} />}
           <CommandList>
-            <CommandEmpty>No match.</CommandEmpty>
+            <CommandEmpty>Aucun résultat.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selected.has(option.value);
@@ -69,7 +69,7 @@ export function MultiSelect({
                 <CommandSeparator />
                 <CommandGroup>
                   <CommandItem onSelect={() => onChange([])} className="justify-center text-xs text-muted-foreground">
-                    Clear
+                    Effacer
                   </CommandItem>
                 </CommandGroup>
               </>

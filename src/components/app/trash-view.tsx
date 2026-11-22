@@ -14,6 +14,7 @@ import { formatRelativeInstant } from "@/lib/dates";
 type Item = { type: "opportunity" | "organization" | "contact" | "document"; id: string; title: string; subtitle: string | null; deletedAt: string | null };
 
 const ICON = { opportunity: Briefcase, organization: Building2, contact: User, document: FileText };
+const TYPE_LABEL = { opportunity: "Opportunité", organization: "Organisation", contact: "Contact", document: "Document" };
 const RESTORE = { opportunity: restoreOpportunityAction, organization: restoreOrganizationAction, contact: restoreContactAction, document: restoreDocumentAction };
 const PURGE = { opportunity: purgeOpportunityAction, organization: purgeOrganizationAction, contact: purgeContactAction, document: purgeDocumentAction };
 
@@ -22,9 +23,9 @@ export function TrashView({ items }: { items: Item[] }) {
   const confirm = useConfirm();
   return (
     <PageContainer className="max-w-4xl">
-      <PageHeader title="Recently deleted" description="Deleted items stay here until you delete them permanently. Document files on disk are never deleted." />
+      <PageHeader title="Corbeille" description="Les éléments supprimés restent ici jusqu’à leur suppression définitive. Les fichiers des documents sur le disque ne sont jamais supprimés." />
       {items.length === 0 ? (
-        <EmptyState icon={Trash2} title="Trash is empty" />
+        <EmptyState icon={Trash2} title="La corbeille est vide" />
       ) : (
         <ul className="surface-list">
           {items.map((item) => {
@@ -35,24 +36,24 @@ export function TrashView({ items }: { items: Item[] }) {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">{item.title}</p>
                   <p className="text-xs text-muted-foreground">
-                    {item.type}
+                    {TYPE_LABEL[item.type]}
                     {item.subtitle ? ` · ${item.subtitle}` : ""}
-                    {item.deletedAt ? ` · deleted ${formatRelativeInstant(item.deletedAt)}` : ""}
+                    {item.deletedAt ? ` · supprimé ${formatRelativeInstant(item.deletedAt)}` : ""}
                   </p>
                 </div>
-                <Button size="xs" variant="outline" onClick={() => run(() => RESTORE[item.type](item.id), { success: "Restored" })}>
-                  <RotateCcw /> Restore
+                <Button size="xs" variant="outline" onClick={() => run(() => RESTORE[item.type](item.id), { success: "Restauré" })}>
+                  <RotateCcw /> Restaurer
                 </Button>
                 <Button
                   size="xs"
                   variant="ghost"
                   className="text-destructive"
                   onClick={async () => {
-                    if (await confirm({ title: `Delete “${item.title}” permanently?`, description: "This cannot be undone (your exports and backups still contain it).", destructive: true, confirmLabel: "Delete permanently" }))
-                      run(() => PURGE[item.type](item.id), { success: "Deleted permanently" });
+                    if (await confirm({ title: `Supprimer définitivement « ${item.title} » ?`, description: "Action irréversible (vos exports et sauvegardes le contiennent encore).", destructive: true, confirmLabel: "Supprimer définitivement" }))
+                      run(() => PURGE[item.type](item.id), { success: "Supprimé définitivement" });
                   }}
                 >
-                  <Trash2 /> Delete forever
+                  <Trash2 /> Supprimer définitivement
                 </Button>
               </li>
             );

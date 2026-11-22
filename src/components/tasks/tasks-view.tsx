@@ -34,19 +34,19 @@ export function TasksView({ tasks, showDone, opportunities, autoFocus }: { tasks
 
   const visible = tasks.filter((t) => (includeClosed || !t.opportunityClosed) && (includeChecklists || t.dueDate || !t.opportunityId || showDone));
   const groups: { key: string; title: string; items: TaskListItem[]; tone?: string }[] = showDone
-    ? [{ key: "done", title: "Completed", items: visible }]
+    ? [{ key: "done", title: "Terminées", items: visible }]
     : [
-        { key: "overdue", title: "Overdue", items: visible.filter((t) => t.dueDate && t.dueDate < today), tone: "text-warning-600" },
-        { key: "today", title: "Today", items: visible.filter((t) => t.dueDate === today) },
-        { key: "week", title: "Next 7 days", items: visible.filter((t) => t.dueDate && t.dueDate > today && t.dueDate <= addDays(today, 7)) },
-        { key: "later", title: "Later", items: visible.filter((t) => t.dueDate && t.dueDate > addDays(today, 7)) },
-        { key: "nodate", title: "No date", items: visible.filter((t) => !t.dueDate) },
+        { key: "overdue", title: "En retard", items: visible.filter((t) => t.dueDate && t.dueDate < today), tone: "text-warning-600" },
+        { key: "today", title: "Aujourd’hui", items: visible.filter((t) => t.dueDate === today) },
+        { key: "week", title: "7 prochains jours", items: visible.filter((t) => t.dueDate && t.dueDate > today && t.dueDate <= addDays(today, 7)) },
+        { key: "later", title: "Plus tard", items: visible.filter((t) => t.dueDate && t.dueDate > addDays(today, 7)) },
+        { key: "nodate", title: "Sans date", items: visible.filter((t) => !t.dueDate) },
       ];
 
   const add = () => {
     if (!title.trim()) return;
     run(() => createTaskAction({ title: title.trim(), dueDate: due, opportunityId: opp.id, kind: "TODO" }), {
-      success: "Task added",
+      success: "Tâche ajoutée",
       onSuccess: () => {
         setTitle("");
         setDue(null);
@@ -56,24 +56,24 @@ export function TasksView({ tasks, showDone, opportunities, autoFocus }: { tasks
 
   return (
     <PageContainer className="max-w-4xl">
-      <PageHeader title="Tasks" description="Dated tasks across all your applications. Checklist steps without a date stay on each application." />
+      <PageHeader title="Tâches" description="Les tâches datées de toutes vos candidatures. Les étapes de checklist sans date restent sur chaque candidature." />
       <div className="mb-4 surface p-3">
         <div className="flex flex-col gap-2 md:flex-row">
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="New task…" autoFocus={autoFocus} />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Nouvelle tâche…" autoFocus={autoFocus} />
           <DateInput value={due} onChange={setDue} className="md:w-40" />
           <div className="md:w-72">
-            <EntityCombobox options={opportunities} value={opp} onChange={setOpp} placeholder="Link to an application" allowCreate={false} />
+            <EntityCombobox options={opportunities} value={opp} onChange={setOpp} placeholder="Lier à une candidature" allowCreate={false} />
           </div>
           <Button onClick={add} disabled={!title.trim()}>
-            <Plus /> Add
+            <Plus /> Ajouter
           </Button>
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
           {[
-            ["Today", today],
-            ["Tomorrow", addDays(today, 1)],
-            ["In 3 days", addDays(today, 3)],
-            ["Next week", addDays(today, 7)],
+            ["Aujourd’hui", today],
+            ["Demain", addDays(today, 1)],
+            ["Dans 3 jours", addDays(today, 3)],
+            ["Semaine prochaine", addDays(today, 7)],
           ].map(([label, value]) => (
             <Button key={label} size="xs" variant={due === value ? "secondary" : "ghost"} onClick={() => setDue(value)}>
               {label}
@@ -84,27 +84,27 @@ export function TasksView({ tasks, showDone, opportunities, autoFocus }: { tasks
       <div className="mb-4 flex flex-wrap items-center gap-4">
         <Tabs value={showDone ? "done" : "open"} onValueChange={(v) => router.push(v === "done" ? "/tasks?show=done" : "/tasks")}>
           <TabsList>
-            <TabsTrigger value="open">Open</TabsTrigger>
-            <TabsTrigger value="done">Completed</TabsTrigger>
+            <TabsTrigger value="open">À faire</TabsTrigger>
+            <TabsTrigger value="done">Terminées</TabsTrigger>
           </TabsList>
         </Tabs>
         {!showDone && (
           <div className="flex items-center gap-2">
             <Switch id="chk" size="sm" checked={includeChecklists} onCheckedChange={setIncludeChecklists} />
             <Label htmlFor="chk" className="text-xs text-muted-foreground">
-              Include undated checklist steps
+              Inclure les étapes de checklist sans date
             </Label>
           </div>
         )}
         <div className="flex items-center gap-2">
           <Switch id="closed-t" size="sm" checked={includeClosed} onCheckedChange={setIncludeClosed} />
           <Label htmlFor="closed-t" className="text-xs text-muted-foreground">
-            Include closed applications
+            Inclure les candidatures clôturées
           </Label>
         </div>
       </div>
       {visible.length === 0 ? (
-        <EmptyState icon={ListChecks} title={showDone ? "Nothing completed yet" : "No open task"} description="Tasks are also created automatically: interview preparation, thank-you notes, offer decisions…" />
+        <EmptyState icon={ListChecks} title={showDone ? "Aucune tâche terminée pour l’instant" : "Aucune tâche à faire"} description="Des tâches sont aussi créées automatiquement : préparation d’entretien, mot de remerciement, décision sur une offre…" />
       ) : (
         <div className="space-y-5">
           {groups
@@ -129,7 +129,7 @@ export function TasksView({ tasks, showDone, opportunities, autoFocus }: { tasks
                       </div>
                       {t.origin === "RULE" && <span className="hidden text-[10px] text-muted-foreground sm:inline">auto</span>}
                       {t.dueDate && !t.done && <DueBadge date={t.dueDate} />}
-                      <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => deleteTaskAction(t.id), { success: "Task deleted" })} aria-label="Delete task">
+                      <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => deleteTaskAction(t.id), { success: "Tâche supprimée" })} aria-label="Supprimer la tâche">
                         <Trash2 className="size-3.5 text-muted-foreground hover:text-destructive" />
                       </button>
                     </li>

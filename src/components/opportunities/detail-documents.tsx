@@ -36,15 +36,15 @@ export function DetailDocuments({ opp, versions }: { opp: OpportunityDetail; ver
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Exact versions used for this application — kept even if the files change later.</p>
+        <p className="text-sm text-muted-foreground">Versions exactes utilisées pour cette candidature — conservées même si les fichiers changent ensuite.</p>
         <Button size="sm" onClick={() => setOpen(true)}>
-          <Paperclip /> Attach
+          <Paperclip /> Joindre
         </Button>
       </div>
       {opp.documents.length === 0 ? (
-        <EmptyState icon={FileText} title="No document attached" description="Pick the CV and letter you send: Career OS remembers the exact version.">
+        <EmptyState icon={FileText} title="Aucun document joint" description="Choisissez le CV et la lettre envoyés : Career OS retient la version exacte.">
           <Button size="sm" onClick={() => setOpen(true)}>
-            <Plus /> Attach a document
+            <Plus /> Joindre un document
           </Button>
         </EmptyState>
       ) : (
@@ -62,18 +62,18 @@ export function DetailDocuments({ opp, versions }: { opp: OpportunityDetail; ver
                   {link.version.label && <span className="ml-1 text-xs text-muted-foreground">— {link.version.label}</span>}
                 </div>
                 <div className="truncate text-xs text-muted-foreground">
-                  {link.version.displayPath ?? link.version.fileName} · attached {formatISODate(String(link.attachedAt).slice(0, 10), "medium", dateLocale)}
+                  {link.version.displayPath ?? link.version.fileName} · joint le {formatISODate(String(link.attachedAt).slice(0, 10), "medium", dateLocale)}
                 </div>
               </div>
               {link.version.storage !== "EXTERNAL" && (
                 <>
                   <Button size="xs" variant="outline" asChild>
                     <a href={`/api/files/versions/${link.version.id}`} target="_blank" rel="noopener noreferrer">
-                      <Eye /> Open
+                      <Eye /> Ouvrir
                     </a>
                   </Button>
                   <Button size="icon-xs" variant="ghost" asChild>
-                    <a href={`/api/files/versions/${link.version.id}?download=1`} aria-label="Download">
+                    <a href={`/api/files/versions/${link.version.id}?download=1`} aria-label="Télécharger">
                       <Download />
                     </a>
                   </Button>
@@ -82,9 +82,9 @@ export function DetailDocuments({ opp, versions }: { opp: OpportunityDetail; ver
               <Button
                 size="icon-xs"
                 variant="ghost"
-                aria-label="Detach"
+                aria-label="Retirer"
                 onClick={async () => {
-                  if (await confirm({ title: "Detach this document?", description: "The document itself is kept in your library." })) run(() => detachDocumentAction(link.id), { success: "Detached" });
+                  if (await confirm({ title: "Retirer ce document ?", description: "Le document lui-même reste dans votre bibliothèque." })) run(() => detachDocumentAction(link.id), { success: "Document retiré" });
                 }}
               >
                 <X />
@@ -95,7 +95,7 @@ export function DetailDocuments({ opp, versions }: { opp: OpportunityDetail; ver
       )}
       {required.length > 0 && (
         <div className="rounded-2xl border border-separator bg-muted-background p-3">
-          <p className="mb-1 text-xs font-medium text-muted-foreground">Still missing</p>
+          <p className="mb-1 text-xs font-medium text-muted-foreground">Encore manquants</p>
           <ul className="list-disc pl-5 text-sm">
             {required.map((t) => (
               <li key={t.id}>{t.title}</li>
@@ -124,11 +124,11 @@ function AttachDialog({ opp, versions, onClose }: { opp: OpportunityDetail; vers
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Attach a document</DialogTitle>
-          <DialogDescription>Choose which document — and which exact version — you use for this application.</DialogDescription>
+          <DialogTitle>Joindre un document</DialogTitle>
+          <DialogDescription>Choisissez le document — et la version exacte — utilisé pour cette candidature.</DialogDescription>
         </DialogHeader>
         <div className="space-y-3">
-          <FormField label="Used as">
+          <FormField label="Utilisé comme">
             <Select
               value={role}
               onValueChange={(v) => {
@@ -144,16 +144,16 @@ function AttachDialog({ opp, versions, onClose }: { opp: OpportunityDetail; vers
                 {DOCUMENT_KINDS.map((k) => (
                   <SelectItem key={k} value={k}>
                     {DOCUMENT_KIND_META[k].label}
-                    {missingRoles.includes(k) && <span className="text-xs text-info-800"> · missing</span>}
+                    {missingRoles.includes(k) && <span className="text-xs text-info-800"> · manquant</span>}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </FormField>
-          <FormField label="Document version">
+          <FormField label="Version du document">
             <Select value={versionId ?? undefined} onValueChange={setVersionId}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder={versions.length ? "Choose a version" : "Your library is empty"} />
+                <SelectValue placeholder={versions.length ? "Choisir une version" : "Votre bibliothèque est vide"} />
               </SelectTrigger>
               <SelectContent>
                 {[...byDoc.entries()]
@@ -176,9 +176,9 @@ function AttachDialog({ opp, versions, onClose }: { opp: OpportunityDetail; vers
           </FormField>
           {candidates.length === 0 && (
             <p className="text-xs text-muted-foreground">
-              No {DOCUMENT_KIND_META[role].label.toLowerCase()} in your library yet.{" "}
+              Aucun document « {DOCUMENT_KIND_META[role].label} » dans votre bibliothèque pour l’instant.{" "}
               <Link href="/documents?new=1" className="text-primary underline underline-offset-2">
-                Add one
+                En ajouter un
               </Link>
               .
             </p>
@@ -186,10 +186,10 @@ function AttachDialog({ opp, versions, onClose }: { opp: OpportunityDetail; vers
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={onClose}>
-            Cancel
+            Annuler
           </Button>
-          <Button disabled={!versionId || pending} onClick={() => versionId && run(() => attachDocumentAction({ opportunityId: opp.id, documentVersionId: versionId, role }), { success: "Document attached", onSuccess: onClose })}>
-            Attach
+          <Button disabled={!versionId || pending} onClick={() => versionId && run(() => attachDocumentAction({ opportunityId: opp.id, documentVersionId: versionId, role }), { success: "Document joint", onSuccess: onClose })}>
+            Joindre
           </Button>
         </DialogFooter>
       </DialogContent>

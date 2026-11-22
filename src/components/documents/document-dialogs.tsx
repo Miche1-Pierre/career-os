@@ -41,10 +41,10 @@ function FilePicker({ file, onChange }: { file: File | null; onChange: (f: File 
       <FileUp className="size-5" />
       {file ? (
         <span className="text-foreground">
-          {file.name} <span className="text-muted-foreground">({Math.round(file.size / 1024)} KB)</span>
+          {file.name} <span className="text-muted-foreground">({Math.round(file.size / 1024)} Ko)</span>
         </span>
       ) : (
-        <span>Choose a file (PDF, DOCX, images…)</span>
+        <span>Choisir un fichier (PDF, DOCX, images…)</span>
       )}
       <input type="file" className="sr-only" onChange={(e) => onChange(e.target.files?.[0] ?? null)} />
     </label>
@@ -81,7 +81,7 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
     const r = await createDocumentAction(form);
     setSaving(false);
     if (!r.ok) return void toast.error(r.error);
-    toast.success("Document added");
+    toast.success("Document ajouté");
     onOpenChange(false);
     router.push(`/documents/${r.data.id}`);
   }
@@ -91,19 +91,19 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>Add a document</DialogTitle>
-          <DialogDescription>Career OS keeps a frozen copy of each version — what you sent stays retrievable even if the file changes.</DialogDescription>
+          <DialogTitle>Ajouter un document</DialogTitle>
+          <DialogDescription>Career OS garde une copie figée de chaque version — ce que vous avez envoyé reste accessible même si le fichier change.</DialogDescription>
         </DialogHeader>
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
           <TabsList>
             <TabsTrigger value="upload">
-              <FileUp /> Upload
+              <FileUp /> Téléverser
             </TabsTrigger>
             <TabsTrigger value="library">
-              <FolderOpen /> From my folder
+              <FolderOpen /> Depuis mon dossier
             </TabsTrigger>
             <TabsTrigger value="path">
-              <Link2 /> Path
+              <Link2 /> Chemin
             </TabsTrigger>
           </TabsList>
           <TabsContent value="upload" className="pt-2">
@@ -114,15 +114,15 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
                 if (f && !name) setName(f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "));
               }}
             />
-            <p className="mt-1 text-xs text-muted-foreground">Saved into your documents folder ({libraryHostRoot}) — existing files are never overwritten.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Enregistré dans votre dossier de documents ({libraryHostRoot}) — les fichiers existants ne sont jamais écrasés.</p>
           </TabsContent>
           <TabsContent value="library" className="pt-2">
             {!libraryFiles ? (
               <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" /> Scanning {libraryHostRoot}…
+                <Loader2 className="size-4 animate-spin" /> Analyse de {libraryHostRoot}…
               </p>
             ) : libraryFiles.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No unregistered file in {libraryHostRoot}. Drop files there, or use Upload.</p>
+              <p className="text-sm text-muted-foreground">Aucun fichier non enregistré dans {libraryHostRoot}. Déposez-y des fichiers ou utilisez Téléverser.</p>
             ) : (
               <Select
                 value={path || undefined}
@@ -136,7 +136,7 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
                 }}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choose a file of your folder" />
+                  <SelectValue placeholder="Choisir un fichier de votre dossier" />
                 </SelectTrigger>
                 <SelectContent>
                   {libraryFiles.map((f) => (
@@ -150,18 +150,18 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
           </TabsContent>
           <TabsContent value="path" className="space-y-1 pt-2">
             <Input value={path} onChange={(e) => setPath(e.target.value)} placeholder={`${libraryHostRoot}\\CV\\CV-HealthTech.pdf`} />
-            <p className="text-xs text-muted-foreground">Inside your documents folder → tracked and snapshotted. Elsewhere → kept as a reference only (Career OS cannot read it).</p>
+            <p className="text-xs text-muted-foreground">Dans votre dossier de documents → suivi et copié. Ailleurs → conservé comme simple référence (Career OS ne peut pas le lire).</p>
           </TabsContent>
         </Tabs>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField label="Name">
+          <FormField label="Nom">
             <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="CV HealthTech" />
           </FormField>
           <FormField label="Type">
             <KindSelect value={kind} onChange={setKind} />
           </FormField>
-          <FormField label="Version label (optional)">
-            <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Added AWS project" />
+          <FormField label="Libellé de version (facultatif)">
+            <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="ex. Ajout du projet AWS" />
           </FormField>
           <FormField label="Tags">
             <TagInput value={tags} onChange={setTags} />
@@ -169,10 +169,10 @@ export function NewDocumentDialog({ open, onOpenChange, libraryHostRoot }: { ope
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
+            Annuler
           </Button>
           <Button onClick={save} disabled={!canSave || saving}>
-            {saving && <Loader2 className="animate-spin" />} Add document
+            {saving && <Loader2 className="animate-spin" />} Ajouter le document
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -194,40 +194,40 @@ export function NewVersionDialog({ documentId, defaultPath, open, onOpenChange }
     if (tab === "path") form.set("path", path);
     if (label) form.set("label", label);
     if (notes) form.set("notes", notes);
-    run(() => addVersionAction(documentId, form), { success: "New version saved", onSuccess: () => onOpenChange(false) });
+    run(() => addVersionAction(documentId, form), { success: "Nouvelle version enregistrée", onSuccess: () => onOpenChange(false) });
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>New version</DialogTitle>
-          <DialogDescription>Previous versions stay attached to the applications that used them.</DialogDescription>
+          <DialogTitle>Nouvelle version</DialogTitle>
+          <DialogDescription>Les versions précédentes restent rattachées aux candidatures qui les ont utilisées.</DialogDescription>
         </DialogHeader>
         <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
           <TabsList>
-            <TabsTrigger value="upload">Upload</TabsTrigger>
-            <TabsTrigger value="path">File of my folder</TabsTrigger>
+            <TabsTrigger value="upload">Téléverser</TabsTrigger>
+            <TabsTrigger value="path">Fichier de mon dossier</TabsTrigger>
           </TabsList>
           <TabsContent value="upload" className="pt-2">
             <FilePicker file={file} onChange={setFile} />
           </TabsContent>
           <TabsContent value="path" className="pt-2">
             <Input value={path} onChange={(e) => setPath(e.target.value)} placeholder="CV/CV-HealthTech.pdf" />
-            <p className="mt-1 text-xs text-muted-foreground">Same file modified in place? Keep its path: the new content becomes the next version.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Même fichier modifié sur place ? Gardez son chemin : le nouveau contenu devient la version suivante.</p>
           </TabsContent>
         </Tabs>
-        <FormField label="What changed?">
-          <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Rewrote summary for AI roles" />
+        <FormField label="Qu’est-ce qui change ?">
+          <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="ex. Résumé réécrit pour les postes IA" />
         </FormField>
         <FormField label="Notes">
           <Input value={notes} onChange={(e) => setNotes(e.target.value)} />
         </FormField>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Cancel
+            Annuler
           </Button>
           <Button onClick={save} disabled={pending || (tab === "upload" ? !file : !path.trim())}>
-            Save version
+            Enregistrer la version
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -262,47 +262,47 @@ export function ScanLibraryDialog({ open, onOpenChange }: { open: boolean; onOpe
             .filter(([, v]) => v.enabled)
             .map(([relativePath, v]) => ({ relativePath, name: v.name, kind: v.kind })),
         ),
-      { success: (d) => `${d.length} document${d.length > 1 ? "s" : ""} registered`, onSuccess: () => onOpenChange(false) },
+      { success: (d) => `${d.length} document${d.length > 1 ? "s" : ""} enregistré${d.length > 1 ? "s" : ""}`, onSuccess: () => onOpenChange(false) },
     );
   const versionUp = (documentId: string, relativePath: string) => {
     const form = new FormData();
     form.set("path", relativePath);
-    form.set("label", "Updated file");
-    run(() => addVersionAction(documentId, form), { success: "New version created", onSuccess: () => setScan((s) => (s ? { ...s, modified: s.modified.filter((m) => m.documentId !== documentId) } : s)) });
+    form.set("label", "Fichier mis à jour");
+    run(() => addVersionAction(documentId, form), { success: "Nouvelle version créée", onSuccess: () => setScan((s) => (s ? { ...s, modified: s.modified.filter((m) => m.documentId !== documentId) } : s)) });
   };
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ScanSearch className="size-5" /> Scan documents folder
+            <ScanSearch className="size-5" /> Analyser le dossier de documents
           </DialogTitle>
         </DialogHeader>
         {!scan ? (
           <p className="flex items-center gap-2 py-6 text-sm text-muted-foreground">
-            <Loader2 className="size-4 animate-spin" /> Scanning…
+            <Loader2 className="size-4 animate-spin" /> Analyse en cours…
           </p>
         ) : (
           <div className="space-y-5">
-            <p className="text-sm text-muted-foreground">{pluralize(scan.totalFiles, "file")} found.</p>
+            <p className="text-sm text-muted-foreground">{pluralize(scan.totalFiles, "fichier")} trouvé{scan.totalFiles > 1 ? "s" : ""}.</p>
             {scan.modified.length > 0 && (
               <section className="space-y-2">
-                <h3 className="heading-sm text-foreground">Modified since their last version</h3>
+                <h3 className="heading-sm text-foreground">Modifiés depuis leur dernière version</h3>
                 {scan.modified.map((m) => (
                   <div key={m.documentId} className="flex items-center justify-between gap-2 rounded-lg border p-2 text-sm">
                     <span className="min-w-0 truncate">
                       {m.documentName} <span className="text-muted-foreground">(v{m.version}) — {m.relativePath}</span>
                     </span>
                     <Button size="xs" onClick={() => versionUp(m.documentId, m.relativePath)} disabled={pending}>
-                      Create v{m.version + 1}
+                      Créer la v{m.version + 1}
                     </Button>
                   </div>
                 ))}
               </section>
             )}
             <section className="space-y-2">
-              <h3 className="heading-sm text-foreground">New files ({scan.newFiles.length})</h3>
-              {scan.newFiles.length === 0 && <p className="text-sm text-muted-foreground">Everything in the folder is already registered.</p>}
+              <h3 className="heading-sm text-foreground">Nouveaux fichiers ({scan.newFiles.length})</h3>
+              {scan.newFiles.length === 0 && <p className="text-sm text-muted-foreground">Tout le contenu du dossier est déjà enregistré.</p>}
               {scan.newFiles.map((f) => {
                 const s = selected[f.relativePath];
                 return (
@@ -319,10 +319,10 @@ export function ScanLibraryDialog({ open, onOpenChange }: { open: boolean; onOpe
             </section>
             {scan.missing.length > 0 && (
               <section className="space-y-1">
-                <h3 className="heading-sm text-foreground">Missing from the folder</h3>
+                <h3 className="heading-sm text-foreground">Absents du dossier</h3>
                 {scan.missing.map((m) => (
                   <p key={m.relativePath} className="text-xs text-muted-foreground">
-                    {m.documentName} v{m.version} — {m.relativePath} {m.hasSnapshot ? "(snapshot kept ✓)" : "(no snapshot)"}
+                    {m.documentName} v{m.version} — {m.relativePath} {m.hasSnapshot ? "(copie conservée ✓)" : "(aucune copie)"}
                   </p>
                 ))}
               </section>
@@ -331,10 +331,10 @@ export function ScanLibraryDialog({ open, onOpenChange }: { open: boolean; onOpe
         )}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            Close
+            Fermer
           </Button>
           <Button onClick={register} disabled={pending || !scan || !Object.values(selected).some((v) => v.enabled)}>
-            Register selected
+            Enregistrer la sélection
           </Button>
         </DialogFooter>
       </DialogContent>

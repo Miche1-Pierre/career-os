@@ -30,7 +30,7 @@ type DocDetail = Awaited<ReturnType<typeof getDocument>>;
 
 function size(bytes: number | null) {
   if (!bytes) return "";
-  return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`;
+  return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1).replace(".", ",")} Mo` : `${Math.round(bytes / 1024)} Ko`;
 }
 
 export function DocumentDetailView({ data }: { data: DocDetail }) {
@@ -58,40 +58,40 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
           <p className="text-sm">
             {data.usages.length ? (
               <span>
-                This {DOCUMENT_KIND_META[doc.kind].label.toLowerCase()} is used by <span className="font-semibold">{new Set(data.usages.map((u) => u.opportunityId)).size}</span> application
+                Document utilisé par <span className="font-semibold">{new Set(data.usages.map((u) => u.opportunityId)).size}</span> candidature
                 {new Set(data.usages.map((u) => u.opportunityId)).size > 1 ? "s" : ""}.
               </span>
             ) : (
-              <span className="text-muted-foreground">Not used by any application yet.</span>
+              <span className="text-muted-foreground">Utilisé par aucune candidature pour l’instant.</span>
             )}
           </p>
         </div>
         <div className="flex gap-2">
           <Button onClick={() => setNewVersion(true)}>
-            <Plus /> New version
+            <Plus /> Nouvelle version
           </Button>
           <Button variant="outline" onClick={() => setEditing(true)}>
-            <Pencil /> Edit
+            <Pencil /> Modifier
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="More">
+              <Button variant="ghost" size="icon" aria-label="Plus d’actions">
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => run(() => archiveDocumentAction(doc.id, !doc.archivedAt), { success: doc.archivedAt ? "Unarchived" : "Archived" })}>
-                {doc.archivedAt ? <ArchiveRestore /> : <Archive />} {doc.archivedAt ? "Unarchive" : "Archive"}
+              <DropdownMenuItem onClick={() => run(() => archiveDocumentAction(doc.id, !doc.archivedAt), { success: doc.archivedAt ? "Désarchivé" : "Archivé" })}>
+                {doc.archivedAt ? <ArchiveRestore /> : <Archive />} {doc.archivedAt ? "Désarchiver" : "Archiver"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={async () => {
-                  if (await confirm({ title: "Move this document to trash?", description: "Versions used by applications are always kept. Your files on disk are never deleted.", destructive: true, confirmLabel: "Move to trash" }))
-                    run(() => deleteDocumentAction(doc.id), { success: "Moved to trash", onSuccess: () => router.push("/documents") });
+                  if (await confirm({ title: "Mettre ce document à la corbeille ?", description: "Les versions utilisées par des candidatures sont toujours conservées. Vos fichiers sur le disque ne sont jamais supprimés.", destructive: true, confirmLabel: "Mettre à la corbeille" }))
+                    run(() => deleteDocumentAction(doc.id), { success: "Mis à la corbeille", onSuccess: () => router.push("/documents") });
                 }}
               >
-                <Trash2 /> Delete
+                <Trash2 /> Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -107,7 +107,7 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
                 <li key={v.id} className="space-y-1 px-3 py-2.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded bg-muted px-1.5 text-xs font-semibold tabular-nums">v{v.version}</span>
-                    <span className="text-sm">{v.label ?? <span className="text-muted-foreground">No label</span>}</span>
+                    <span className="text-sm">{v.label ?? <span className="text-muted-foreground">Sans libellé</span>}</span>
                     <span className="text-xs text-muted-foreground">{formatInstant(v.createdAt, { timeZone: timezone, locale: dateLocale, withTime: false })}</span>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -121,13 +121,13 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
                       {v.displayPath ?? v.fileName}
                     </span>
                     {v.displayPath && (
-                      <button type="button" onClick={() => (navigator.clipboard.writeText(v.displayPath!), toast.success("Path copied"))} aria-label="Copy path">
+                      <button type="button" onClick={() => (navigator.clipboard.writeText(v.displayPath!), toast.success("Chemin copié"))} aria-label="Copier le chemin">
                         <Copy className="size-3" />
                       </button>
                     )}
                     <span>{size(v.sizeBytes)}</span>
                     {v.checksum && <span className="font-mono">sha256:{v.checksum.slice(0, 10)}</span>}
-                    <span>{v.usageCount ? `used by ${v.usageCount}` : "unused"}</span>
+                    <span>{v.usageCount ? `utilisée ${v.usageCount} fois` : "inutilisée"}</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {v.snapshotKey && (
@@ -135,24 +135,24 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
                         <TooltipTrigger asChild>
                           <Button size="xs" variant="outline" asChild>
                             <a href={`/api/files/versions/${v.id}?source=snapshot`} target="_blank" rel="noopener noreferrer">
-                              <FileClock /> As sent
+                              <FileClock /> Telle qu’envoyée
                             </a>
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>The frozen copy taken when this version was registered</TooltipContent>
+                        <TooltipContent>La copie figée prise à l’enregistrement de cette version</TooltipContent>
                       </Tooltip>
                     )}
                     {v.storage !== "EXTERNAL" && (
                       <Button size="xs" variant="ghost" asChild>
                         <a href={`/api/files/versions/${v.id}?source=current`} target="_blank" rel="noopener noreferrer">
-                          <Eye /> Current file
+                          <Eye /> Fichier actuel
                         </a>
                       </Button>
                     )}
                     {v.storage !== "EXTERNAL" && (
                       <Button size="xs" variant="ghost" asChild>
                         <a href={`/api/files/versions/${v.id}?download=1`}>
-                          <Download /> Download
+                          <Download /> Télécharger
                         </a>
                       </Button>
                     )}
@@ -163,11 +163,11 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
                         variant="ghost"
                         className="text-destructive"
                         onClick={async () => {
-                          if (await confirm({ title: `Delete v${v.version}?`, description: "Only this unused version record is deleted; the file on disk is kept.", destructive: true, confirmLabel: "Delete" }))
-                            run(() => deleteVersionAction(v.id), { success: "Version deleted" });
+                          if (await confirm({ title: `Supprimer la v${v.version} ?`, description: "Seul l’enregistrement de cette version inutilisée est supprimé ; le fichier sur le disque est conservé.", destructive: true, confirmLabel: "Supprimer" }))
+                            run(() => deleteVersionAction(v.id), { success: "Version supprimée" });
                         }}
                       >
-                        <Trash2 /> Delete
+                        <Trash2 /> Supprimer
                       </Button>
                     )}
                   </div>
@@ -176,9 +176,9 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
             </ul>
           </section>
           <section className="space-y-2">
-            <h2 className="heading-sm text-foreground">Used in</h2>
+            <h2 className="heading-sm text-foreground">Utilisé dans</h2>
             {data.usages.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Attach it from an application → Documents tab.</p>
+              <p className="text-sm text-muted-foreground">À joindre depuis une candidature → onglet Documents.</p>
             ) : (
               <ul className="surface-list">
                 {data.usages.map((u) => {
@@ -192,7 +192,7 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
                         </span>
                         <span className="rounded bg-muted px-1 text-xs tabular-nums">v{version?.version}</span>
                         <StageBadge label={u.stageLabel} category={u.stageCategory} />
-                        {u.appliedAt && <span className="text-xs text-muted-foreground">applied {formatISODate(u.appliedAt, "dayMonth", dateLocale)}</span>}
+                        {u.appliedAt && <span className="text-xs text-muted-foreground">postulé le {formatISODate(u.appliedAt, "dayMonth", dateLocale)}</span>}
                       </Link>
                     </li>
                   );
@@ -203,10 +203,10 @@ export function DocumentDetailView({ data }: { data: DocDetail }) {
         </div>
         <div className="min-h-96 overflow-hidden surface">
           {inline ? (
-            <iframe title={`Preview of ${doc.name}`} src={`/api/files/versions/${latest!.id}?source=current`} className="h-[75vh] w-full" />
+            <iframe title={`Aperçu de ${doc.name}`} src={`/api/files/versions/${latest!.id}?source=current`} className="h-[75vh] w-full" />
           ) : (
             <div className="flex h-full min-h-96 items-center justify-center p-6 text-center text-sm text-muted-foreground">
-              {latest ? (latest.storage === "EXTERNAL" ? "This version is a path reference outside your documents folder — no preview." : "Preview available for PDF files. Use Download for other formats.") : "No version yet."}
+              {latest ? (latest.storage === "EXTERNAL" ? "Cette version est une référence vers un chemin hors de votre dossier de documents — pas d’aperçu." : "Aperçu disponible pour les fichiers PDF. Utilisez Télécharger pour les autres formats.") : "Aucune version pour l’instant."}
             </div>
           )}
         </div>
@@ -225,18 +225,18 @@ function VersionLabelButton({ id, label, notes }: { id: string; label: string | 
   return (
     <>
       <Button size="xs" variant="ghost" onClick={() => setOpen(true)}>
-        <Pencil /> Label
+        <Pencil /> Libellé
       </Button>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Version label</DialogTitle>
+            <DialogTitle>Libellé de la version</DialogTitle>
           </DialogHeader>
-          <Input value={l} onChange={(e) => setL(e.target.value)} placeholder="What changed in this version?" />
+          <Input value={l} onChange={(e) => setL(e.target.value)} placeholder="Qu’est-ce qui change dans cette version ?" />
           <Textarea value={n} onChange={(e) => setN(e.target.value)} rows={3} placeholder="Notes" />
           <DialogFooter>
-            <Button disabled={pending} onClick={() => run(() => updateVersionAction(id, { label: l || null, notes: n || null }), { success: "Saved", onSuccess: () => setOpen(false) })}>
-              Save
+            <Button disabled={pending} onClick={() => run(() => updateVersionAction(id, { label: l || null, notes: n || null }), { success: "Enregistré", onSuccess: () => setOpen(false) })}>
+              Enregistrer
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -255,9 +255,9 @@ function EditDocumentDialog({ doc, onClose }: { doc: DocDetail["document"]; onCl
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Edit document</DialogTitle>
+          <DialogTitle>Modifier le document</DialogTitle>
         </DialogHeader>
-        <FormField label="Name">
+        <FormField label="Nom">
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </FormField>
         <FormField label="Type">
@@ -281,8 +281,8 @@ function EditDocumentDialog({ doc, onClose }: { doc: DocDetail["document"]; onCl
           <TagInput value={tags} onChange={setTags} />
         </FormField>
         <DialogFooter>
-          <Button disabled={pending || !name.trim()} onClick={() => run(() => updateDocumentAction(doc.id, { name: name.trim(), kind, description: description || null, tags }), { success: "Saved", onSuccess: onClose })}>
-            Save
+          <Button disabled={pending || !name.trim()} onClick={() => run(() => updateDocumentAction(doc.id, { name: name.trim(), kind, description: description || null, tags }), { success: "Enregistré", onSuccess: onClose })}>
+            Enregistrer
           </Button>
         </DialogFooter>
       </DialogContent>

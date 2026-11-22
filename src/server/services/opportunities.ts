@@ -526,7 +526,7 @@ export async function createOpportunity(
       {
         opportunityId: row.id,
         type: input.captureId ? "IMPORTED" : "CREATED",
-        title: input.captureId ? `Imported (${ctx.actor === "CLAUDE" ? "Claude" : ctx.actor === "AI" ? "AI extraction" : "capture"})` : "Opportunity created",
+        title: input.captureId ? `Importée (${ctx.actor === "CLAUDE" ? "Claude" : ctx.actor === "AI" ? "extraction IA" : "capture"})` : "Opportunité créée",
         metadata: { stage: stage.key, captureId: input.captureId ?? null },
         isDemo: options.isDemo,
       },
@@ -535,7 +535,7 @@ export async function createOpportunity(
     if (appliedAt) {
       await addEvent(
         tx,
-        { opportunityId: row.id, type: "APPLIED", title: "Application submitted", occurredAt: new Date(`${appliedAt}T12:00:00Z`), isDemo: options.isDemo },
+        { opportunityId: row.id, type: "APPLIED", title: "Candidature envoyée", occurredAt: new Date(`${appliedAt}T12:00:00Z`), isDemo: options.isDemo },
         ctx,
       );
     }
@@ -655,7 +655,7 @@ export async function updateOpportunity(id: string, raw: OpportunityPatch, ctx: 
         {
           opportunityId: id,
           type: "DEADLINE_CHANGED",
-          title: patch.deadline ? `Deadline set to ${patch.deadline}` : "Deadline removed",
+          title: patch.deadline ? `Date limite fixée au ${patch.deadline}` : "Date limite supprimée",
           metadata: { from: before.deadline, to: patch.deadline },
         },
         ctx,
@@ -742,12 +742,12 @@ export async function changeStatus(
       ctx,
     );
     if (submittedNow && !opp.appliedAt) {
-      await addEvent(tx, { opportunityId: id, type: "APPLIED", title: "Application submitted", occurredAt }, ctx);
+      await addEvent(tx, { opportunityId: id, type: "APPLIED", title: "Candidature envoyée", occurredAt }, ctx);
     }
     if (to.category === "OFFER") {
-      await addEvent(tx, { opportunityId: id, type: "OFFER_RECEIVED", title: familyOf(opp.type) === "EDUCATION" ? "Admission received" : "Offer received", occurredAt }, ctx);
+      await addEvent(tx, { opportunityId: id, type: "OFFER_RECEIVED", title: familyOf(opp.type) === "EDUCATION" ? "Admission reçue" : "Offre reçue", occurredAt }, ctx);
     }
-    if (to.key === "REJECTED") await addEvent(tx, { opportunityId: id, type: "REJECTED", title: "Rejected", occurredAt }, ctx);
+    if (to.key === "REJECTED") await addEvent(tx, { opportunityId: id, type: "REJECTED", title: "Refus", occurredAt }, ctx);
     if (submittedNow) await completeAutoRule(tx, id, "status:APPLIED");
     await logAudit(
       tx,
@@ -799,7 +799,7 @@ export async function duplicateOpportunity(id: string, ctx: Ctx) {
   const result = await createOpportunity(
     {
       type: source.type,
-      title: `${source.title} (copy)`,
+      title: `${source.title} (copie)`,
       organizationId: source.organizationId,
       priority: source.priority,
       source: source.source,

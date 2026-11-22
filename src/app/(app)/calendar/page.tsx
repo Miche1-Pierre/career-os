@@ -4,7 +4,7 @@ import { getSettings } from "@/server/services/settings";
 import { addDays, endOfMonth, isISODate, startOfMonth, startOfWeek, todayISO } from "@/lib/dates";
 import { CalendarView } from "@/components/calendar/calendar-view";
 
-export const metadata: Metadata = { title: "Calendar" };
+export const metadata: Metadata = { title: "Calendrier" };
 
 export default async function CalendarPage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
   const { month } = await searchParams;

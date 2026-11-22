@@ -11,7 +11,7 @@ import {
   tasks,
 } from "@/server/db/schema";
 import { addDays, diffDays, dueStatus, formatISODate, instantToZonedParts, todayISO, type DueStatus, type ISODate } from "@/lib/dates";
-import { INTERVIEW_KIND_LABEL, type OpportunityType, type StageCategory } from "@/lib/constants";
+import { interviewKindTitle, type OpportunityType, type StageCategory } from "@/lib/constants";
 import { getSettings } from "./settings";
 import { listNotifications } from "./notifications";
 
@@ -119,8 +119,8 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
         key: `followup:${o.id}`,
         kind: "FOLLOW_UP",
         date: o.nextFollowUpAt,
-        title: `Follow up — ${a.orgName ?? o.title}`,
-        subtitle: `${o.title}${o.followUpCount ? ` · ${o.followUpCount} follow-up${o.followUpCount > 1 ? "s" : ""} sent` : ""}${o.appliedAt ? ` · applied ${diffDays(today, o.appliedAt)} days ago` : ""}`,
+        title: `Relance — ${a.orgName ?? o.title}`,
+        subtitle: `${o.title}${o.followUpCount ? ` · ${o.followUpCount} relance${o.followUpCount > 1 ? "s" : ""} envoyée${o.followUpCount > 1 ? "s" : ""}` : ""}${o.appliedAt ? ` · postulé il y a ${diffDays(today, o.appliedAt)} jour${diffDays(today, o.appliedAt) > 1 ? "s" : ""}` : ""}`,
         due: dueStatus(o.nextFollowUpAt, today),
         opportunity: refOf(a),
         contact: contactFor.get(o.id) ?? null,
@@ -133,7 +133,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
         kind: "DEADLINE",
         date: o.deadline,
         time: o.deadlineTime,
-        title: `Deadline — ${o.title}`,
+        title: `Date limite — ${o.title}`,
         subtitle: [a.orgName, a.stageLabel].filter(Boolean).join(" · "), // the time is shown next to the title
         due: dueStatus(o.deadline, today),
         opportunity: refOf(a),
@@ -145,7 +145,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
         key: `opens:${o.id}`,
         kind: "OPENS",
         date: o.applicationOpensAt,
-        title: `Applications open — ${o.title}`,
+        title: `Ouverture des candidatures — ${o.title}`,
         subtitle: a.orgName,
         due: dueStatus(o.applicationOpensAt, today),
         opportunity: refOf(a),
@@ -157,7 +157,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
         key: `decision:${o.id}`,
         kind: "DECISION",
         date: o.expectedResponseAt,
-        title: `Answer expected — ${a.orgName ?? o.title}`,
+        title: `Réponse attendue — ${a.orgName ?? o.title}`,
         subtitle: o.title,
         due: dueStatus(o.expectedResponseAt, today),
         opportunity: refOf(a),
@@ -189,7 +189,7 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
       kind: ended ? "OUTCOME" : "INTERVIEW",
       date: parts.date,
       time: parts.time,
-      title: ended ? `Log outcome — ${INTERVIEW_KIND_LABEL[interview.kind]} interview, ${a.orgName ?? a.opp.title}` : `${INTERVIEW_KIND_LABEL[interview.kind]} interview — ${a.orgName ?? a.opp.title}`,
+      title: ended ? `Noter le résultat — ${interviewKindTitle(interview.kind)}, ${a.orgName ?? a.opp.title}` : `${interviewKindTitle(interview.kind)} — ${a.orgName ?? a.opp.title}`,
       subtitle: `${a.opp.title}${interview.location ? ` · ${interview.location}` : ""}`,
       due: dueStatus(parts.date, today),
       opportunity: refOf(a),
@@ -238,8 +238,8 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
         key: `waiting:${a.opp.id}`,
         kind: "WAITING" as const,
         date: a.opp.appliedAt!,
-        title: `${a.orgName ?? a.opp.title} — applied ${since === 0 ? "today" : since === 1 ? "yesterday" : `${since} days ago`}`,
-        subtitle: `${a.opp.title}${a.opp.nextFollowUpAt ? ` · next follow-up ${formatISODate(a.opp.nextFollowUpAt, "medium", settings.general.dateLocale)}` : ""}`,
+        title: `${a.orgName ?? a.opp.title} — postulé ${since === 0 ? "aujourd’hui" : since === 1 ? "hier" : `il y a ${since} jours`}`,
+        subtitle: `${a.opp.title}${a.opp.nextFollowUpAt ? ` · prochaine relance le ${formatISODate(a.opp.nextFollowUpAt, "medium", settings.general.dateLocale)}` : ""}`,
         due: dueStatus(a.opp.appliedAt!, today),
         opportunity: refOf(a),
         meta: { days: since, followUps: a.opp.followUpCount, nextFollowUpAt: a.opp.nextFollowUpAt, overThreshold: since >= settings.followUp.waitingThresholdDays },

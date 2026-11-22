@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getAnalytics, SEGMENTS, type SegmentKey } from "@/server/services/analytics";
 import { AnalyticsView } from "@/components/analytics/analytics-view";
 
-export const metadata: Metadata = { title: "Analytics" };
+export const metadata: Metadata = { title: "Statistiques" };
 
 export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<{ family?: string; segment?: string }> }) {
   const sp = await searchParams;

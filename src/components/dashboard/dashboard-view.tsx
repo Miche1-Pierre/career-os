@@ -18,8 +18,8 @@ import type { TodayItem } from "@/server/services/today";
 type Dashboard = Awaited<ReturnType<typeof getDashboard>>;
 
 const chartConfig = {
-  jobs: { label: "Jobs", color: "var(--chart-1)" },
-  education: { label: "Education", color: "var(--chart-2)" },
+  jobs: { label: "Emplois", color: "var(--chart-1)" },
+  education: { label: "Études", color: "var(--chart-2)" },
 } satisfies ChartConfig;
 
 export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; upcoming: TodayItem[]; overdue: number }) {
@@ -29,47 +29,47 @@ export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; up
   return (
     <PageContainer wide>
       <PageHeader
-        title="Dashboard"
-        description="Where you stand — signal, not noise."
+        title="Tableau de bord"
+        description="Où vous en êtes — l’essentiel, sans le bruit."
         actions={
           <Button variant="outline" asChild>
             <Link href="/analytics">
-              Detailed analytics <ArrowRight />
+              Statistiques détaillées <ArrowRight />
             </Link>
           </Button>
         }
       />
 
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <ValueCard title="Active" value={k.active} icon={Briefcase} href="/applications?closed=0" subtitle={`${k.jobsActive} jobs · ${k.educationActive} education`} />
+        <ValueCard title="Actives" value={k.active} icon={Briefcase} href="/applications?closed=0" subtitle={`${k.jobsActive} emploi${k.jobsActive > 1 ? "s" : ""} · ${k.educationActive} études`} />
         <ValueCard
-          title="Applied this month"
+          title="Candidatures ce mois-ci"
           value={k.appliedThisMonth}
           icon={delta >= 0 ? ArrowUpRight : ArrowDownRight}
-          subtitle={`${k.appliedLastMonth} last month`}
+          subtitle={`${k.appliedLastMonth} le mois dernier`}
         />
-        <ValueCard title="Interviews ahead" value={k.interviewsUpcoming} icon={CalendarClock} href="/calendar" variant={k.interviewsUpcoming ? "highlight" : "default"} />
-        <ValueCard title="Follow-ups due" value={k.followUpsDue} icon={MessageSquareReply} href="/today" variant={k.followUpsDue ? "warning" : "default"} />
+        <ValueCard title="Entretiens à venir" value={k.interviewsUpcoming} icon={CalendarClock} href="/calendar" variant={k.interviewsUpcoming ? "highlight" : "default"} />
+        <ValueCard title="Relances à faire" value={k.followUpsDue} icon={MessageSquareReply} href="/today" variant={k.followUpsDue ? "warning" : "default"} />
       </div>
       <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-4">
-        <ValueCard title="Waiting for an answer" value={k.pending} icon={Hourglass} href="/applications?categories=APPLIED" variant="white" />
+        <ValueCard title="En attente de réponse" value={k.pending} icon={Hourglass} href="/applications?categories=APPLIED" variant="white" />
         <ValueCard
-          title="Deadlines ≤ 7 days"
+          title="Dates limites ≤ 7 jours"
           value={k.deadlinesSoon}
           icon={Flag}
           href="/applications?sort=deadline&closed=0"
           variant={k.deadlinesSoon ? "info" : "white"}
-          subtitle={k.overdueDeadlines ? `${k.overdueDeadlines} already passed` : undefined}
+          subtitle={k.overdueDeadlines ? `${k.overdueDeadlines} déjà passée${k.overdueDeadlines > 1 ? "s" : ""}` : undefined}
         />
-        <ValueCard title="Offers" value={k.offers} icon={PartyPopper} href="/applications?categories=OFFER,WON" variant="white" />
-        <ValueCard title="Rejections" value={k.rejections} icon={ThumbsDown} href="/applications?stages=REJECTED" variant="white" />
+        <ValueCard title="Offres" value={k.offers} icon={PartyPopper} href="/applications?categories=OFFER,WON" variant="white" />
+        <ValueCard title="Refus" value={k.rejections} icon={ThumbsDown} href="/applications?stages=REJECTED" variant="white" />
       </div>
 
       <div className="mt-8 grid gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-2">
           <CardHeader>
             <CardTitle>Pipeline</CardTitle>
-            <CardDescription>Opportunities per stage category</CardDescription>
+            <CardDescription>Opportunités par catégorie d’étape</CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig} className="h-64 w-full">
@@ -87,11 +87,11 @@ export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; up
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Coming up</CardTitle>
-            <CardDescription>Interviews and deadlines, next 14 days{overdue ? ` · ${overdue} overdue in Today` : ""}</CardDescription>
+            <CardTitle>À venir</CardTitle>
+            <CardDescription>Entretiens et dates limites, 14 prochains jours{overdue ? ` · ${overdue} en retard dans Aujourd’hui` : ""}</CardDescription>
           </CardHeader>
           <CardContent className="px-2">
-            {upcoming.length === 0 && <p className="px-3 text-sm text-muted-foreground">Nothing scheduled.</p>}
+            {upcoming.length === 0 && <p className="px-3 text-sm text-muted-foreground">Rien de prévu.</p>}
             <div className="flex flex-col gap-0.5">
               {upcoming.map((i) => (
                 <Link
@@ -118,16 +118,16 @@ export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; up
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="size-4 text-muted-foreground" /> Goals
+              <Target className="size-4 text-muted-foreground" /> Objectifs
             </CardTitle>
             <CardAction>
               <Button variant="ghost-secondary" size="xs" asChild>
-                <Link href="/settings/goals">Manage</Link>
+                <Link href="/settings/goals">Gérer</Link>
               </Button>
             </CardAction>
           </CardHeader>
           <CardContent className="space-y-5">
-            {data.goals.length === 0 && <p className="text-sm text-muted-foreground">No goal yet — e.g. “20 applications this month”.</p>}
+            {data.goals.length === 0 && <p className="text-sm text-muted-foreground">Aucun objectif pour l’instant — par exemple « 20 candidatures ce mois-ci ».</p>}
             {data.goals.map((g) => (
               <div key={g.goal.id} className="space-y-2">
                 <div className="flex items-center justify-between gap-3 text-sm">
@@ -143,10 +143,10 @@ export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; up
         </Card>
         <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>Recent activity</CardTitle>
+            <CardTitle>Activité récente</CardTitle>
           </CardHeader>
           <CardContent className="px-2">
-            {data.recent.length === 0 && <p className="px-3 text-sm text-muted-foreground">No activity yet.</p>}
+            {data.recent.length === 0 && <p className="px-3 text-sm text-muted-foreground">Aucune activité pour l’instant.</p>}
             <ul className="flex flex-col gap-0.5">
               {data.recent.map(({ event, opportunityTitle, organizationName }) => (
                 <li key={event.id}>
@@ -175,11 +175,11 @@ export function DashboardView({ data, upcoming, overdue }: { data: Dashboard; up
       </div>
       {data.total === 0 && (
         <div className="mt-6 flex items-center gap-2 rounded-2xl border border-separator bg-muted-background p-4 text-sm text-muted-foreground">
-          <TimerOff className="size-4" /> No data yet — your dashboard fills up as you capture opportunities.
+          <TimerOff className="size-4" /> Aucune donnée pour l’instant — le tableau de bord se remplit au fil des opportunités capturées.
         </div>
       )}
       <p className="mt-6 flex items-center gap-1.5 text-xs text-faint">
-        <GraduationCap className="size-3.5" /> Education and jobs are counted together unless filtered.
+        <GraduationCap className="size-3.5" /> Études et emplois sont comptés ensemble, sauf filtre.
       </p>
     </PageContainer>
   );

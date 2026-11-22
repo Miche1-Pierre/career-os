@@ -15,9 +15,9 @@ import type { OpportunityDetail } from "@/server/services/opportunities";
 import { cn } from "@/lib/utils";
 
 const AUTO_LABEL: Record<string, string> = {
-  "status:APPLIED": "Checked automatically when the application is submitted",
-  followup: "Checked automatically at the first follow-up",
-  interview: "Checked automatically when an interview is marked as done",
+  "status:APPLIED": "Cochée automatiquement à l’envoi de la candidature",
+  followup: "Cochée automatiquement à la première relance",
+  interview: "Cochée automatiquement quand un entretien est marqué comme passé",
 };
 
 export function DetailChecklist({ opp }: { opp: OpportunityDetail }) {
@@ -47,7 +47,7 @@ export function DetailChecklist({ opp }: { opp: OpportunityDetail }) {
       )}
       <ul className="surface-list">
         {tasks.map((task) => {
-          const auto = task.autoRule ? (task.autoRule.startsWith("doc:") ? "Checked automatically when a matching document is attached" : AUTO_LABEL[task.autoRule]) : null;
+          const auto = task.autoRule ? (task.autoRule.startsWith("doc:") ? "Cochée automatiquement quand un document correspondant est joint" : AUTO_LABEL[task.autoRule]) : null;
           return (
             <li key={task.id} className="group flex items-center gap-3 px-3 py-2">
               <Checkbox checked={task.done} onCheckedChange={(v) => run(() => updateTaskAction(task.id, { done: !!v }))} aria-label={task.title} />
@@ -66,11 +66,11 @@ export function DetailChecklist({ opp }: { opp: OpportunityDetail }) {
                   <TooltipTrigger asChild>
                     <Bot className="size-3.5 text-muted-foreground" />
                   </TooltipTrigger>
-                  <TooltipContent>Created by an automation rule</TooltipContent>
+                  <TooltipContent>Créée par une règle d’automatisation</TooltipContent>
                 </Tooltip>
               )}
               {task.dueDate && !task.done && <DueBadge date={task.dueDate} />}
-              <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => deleteTaskAction(task.id))} aria-label="Delete task">
+              <button type="button" className="opacity-0 group-hover:opacity-100" onClick={() => run(() => deleteTaskAction(task.id))} aria-label="Supprimer la tâche">
                 <Trash2 className="size-3.5 text-muted-foreground hover:text-destructive" />
               </button>
             </li>
@@ -78,14 +78,14 @@ export function DetailChecklist({ opp }: { opp: OpportunityDetail }) {
         })}
         <li className="flex flex-wrap items-center gap-2 px-3 py-2">
           <Plus className="size-4 text-muted-foreground" />
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Add a step…" className="h-7 min-w-40 flex-1 border-0 px-1 shadow-none focus-visible:ring-0" />
+          <Input value={title} onChange={(e) => setTitle(e.target.value)} onKeyDown={(e) => e.key === "Enter" && add()} placeholder="Ajouter une étape…" className="h-7 min-w-40 flex-1 border-0 px-1 shadow-none focus-visible:ring-0" />
           <DateInput value={due} onChange={setDue} className="h-7 w-36" />
           <Button size="xs" onClick={add} disabled={!title.trim()}>
-            Add
+            Ajouter
           </Button>
         </li>
       </ul>
-      <p className="text-xs text-muted-foreground">Checklist items come from the template of this type (Settings → Templates) and from the documents required by the posting.</p>
+      <p className="text-xs text-muted-foreground">Les étapes viennent du modèle de ce type (Paramètres → Modèles) et des documents demandés par l’offre.</p>
     </div>
   );
 }

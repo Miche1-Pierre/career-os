@@ -42,9 +42,9 @@ export function PriorityDot({ priority, className }: { priority: Priority; class
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <span className={cn("inline-block size-2 shrink-0 rounded-full", PRIORITY_META[priority].dot, className)} aria-label={`${PRIORITY_META[priority].label} priority`} />
+        <span className={cn("inline-block size-2 shrink-0 rounded-full", PRIORITY_META[priority].dot, className)} aria-label={`Priorité ${PRIORITY_META[priority].label.toLowerCase()}`} />
       </TooltipTrigger>
-      <TooltipContent>{PRIORITY_META[priority].label} priority</TooltipContent>
+      <TooltipContent>Priorité {PRIORITY_META[priority].label.toLowerCase()}</TooltipContent>
     </Tooltip>
   );
 }
@@ -126,7 +126,7 @@ export function TagBadge({ name, className, onRemove }: { name: string; classNam
     <span className={cn("inline-flex h-5 items-center gap-1 rounded-lg px-1.5 text-xs font-medium whitespace-nowrap", tagColorClass(color), className)}>
       {name}
       {onRemove && (
-        <button type="button" onClick={onRemove} className="-mr-0.5 rounded-md opacity-60 hover:opacity-100" aria-label={`Remove ${name}`}>
+        <button type="button" onClick={onRemove} className="-mr-0.5 rounded-md opacity-60 hover:opacity-100" aria-label={`Retirer ${name}`}>
           ×
         </button>
       )}
@@ -147,12 +147,14 @@ export function TagList({ tags, max = 4, className }: { tags: string[]; max?: nu
   );
 }
 
+const CONFIDENCE_LABEL: Record<string, string> = { HIGH: "élevée", MEDIUM: "moyenne", LOW: "faible" };
+
 /** Small marker telling where a value comes from (AI extraction, inference, user). */
 export function ProvenanceMark({ provenance, className }: { provenance?: FieldProvenance | null; className?: string }) {
   if (!provenance || provenance.source === "USER_ENTERED") return null;
   const inferred = provenance.source === "INFERRED";
   const unverified = provenance.verified === false;
-  const who = provenance.by === "CLAUDE" ? "Claude" : provenance.by === "AI" ? "AI" : provenance.by === "DEMO" ? "Demo" : "Import";
+  const who = provenance.by === "CLAUDE" ? "Claude" : provenance.by === "AI" ? "l’IA" : provenance.by === "DEMO" ? "la démo" : "l’import";
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -162,7 +164,7 @@ export function ProvenanceMark({ provenance, className }: { provenance?: FieldPr
             inferred ? "text-golden-700 dark:text-golden-400" : unverified ? "text-orange-600 dark:text-orange-400" : "text-highlight-500",
             className,
           )}
-          aria-label={inferred ? "Inferred value" : "Extracted value"}
+          aria-label={inferred ? "Valeur déduite" : "Valeur extraite"}
         >
           {inferred ? <Wand2 className="size-3" /> : <Sparkles className="size-3" />}
         </span>
@@ -170,19 +172,19 @@ export function ProvenanceMark({ provenance, className }: { provenance?: FieldPr
       <TooltipContent className="max-w-80">
         <div className="space-y-1 text-xs">
           <div className="font-medium">
-            {inferred ? "Inferred" : "Extracted"} by {who}
-            {provenance.confidence ? ` · ${provenance.confidence.toLowerCase()} confidence` : ""}
+            {inferred ? "Déduit" : "Extrait"} par {who}
+            {provenance.confidence ? ` · confiance ${CONFIDENCE_LABEL[provenance.confidence] ?? provenance.confidence.toLowerCase()}` : ""}
           </div>
           {provenance.evidence && <div className="italic opacity-90">“{provenance.evidence}”</div>}
-          {unverified && <div className="text-golden-300 dark:text-golden-800">Not found verbatim in the source — double-check.</div>}
-          {inferred && <div className="opacity-80">Deduced, not stated explicitly. Edit it to confirm.</div>}
+          {unverified && <div className="text-golden-300 dark:text-golden-800">Introuvable tel quel dans la source — à vérifier.</div>}
+          {inferred && <div className="opacity-80">Déduit, non indiqué explicitement. Modifier la valeur pour la confirmer.</div>}
         </div>
       </TooltipContent>
     </Tooltip>
   );
 }
 
-export function UnknownValue({ label = "Unknown" }: { label?: string }) {
+export function UnknownValue({ label = "Inconnu" }: { label?: string }) {
   return (
     <span className="inline-flex items-center gap-1 text-faint italic">
       <CircleDashed className="size-3" />

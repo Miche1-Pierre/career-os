@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { UnlockForm } from "./unlock-form";
 
-export const metadata: Metadata = { title: "Unlock" };
+export const metadata: Metadata = { title: "Déverrouiller" };
 
 
 export default async function UnlockPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
@@ -13,7 +13,7 @@ export default async function UnlockPage({ searchParams }: { searchParams: Promi
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">C</span>
           <span className="font-semibold">Career OS</span>
         </div>
-        <p className="mb-4 text-sm text-muted-foreground">This instance is protected. Enter your access token (APP_ACCESS_TOKEN).</p>
+        <p className="mb-4 text-sm text-muted-foreground">Cette instance est protégée. Saisissez votre jeton d’accès (APP_ACCESS_TOKEN).</p>
         <UnlockForm next={next ?? "/today"} />
       </div>
     </div>

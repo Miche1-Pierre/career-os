@@ -50,7 +50,7 @@ describe("opportunity lifecycle", () => {
     expect(o.organization?.name).toBe("Zefir");
     expect(o.stage.key).toBe("TO_APPLY");
     expect(o.tags).toEqual(["Startup", "HealthTech"]); // canonical casing of existing tags
-    expect(o.tasks.map((t) => t.title)).toContain("Select CV");
+    expect(o.tasks.map((t) => t.title)).toContain("Choisir le CV");
     expect(o.tasks.some((t) => t.autoRule === "doc:PORTFOLIO")).toBe(true); // required document not in the template
     expect(o.provenance["details.salaryMin"]).toBeDefined(); // key normalized
     expect(o.events.map((e) => e.type)).toContain("CREATED");
