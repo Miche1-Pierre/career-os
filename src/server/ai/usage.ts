@@ -25,9 +25,12 @@ export async function getClaudeUsage(options: { fresh?: boolean } = {}): Promise
   if (!options.fresh && hit && Date.now() - hit.at < TTL_MS) return hit.value;
   let value = await load();
   const good = cache.__careerOsUsageGood;
+  const rateLimited = !value.available && /\b429\b/.test(value.reason);
+  if (rateLimited) value = { available: false, reason: "Limite d'appels du service de quota atteinte : nouvel essai dans quelques minutes." };
   if (value.available) cache.__careerOsUsageGood = { at: Date.now(), value };
   else if (good && Date.now() - good.at < STALE_OK_MS) value = good.value;
-  cache.__careerOsUsage = { at: Date.now(), value };
+  // Rate-limited: wait 10 minutes before asking again.
+  cache.__careerOsUsage = { at: rateLimited ? Date.now() + 10 * 60_000 - TTL_MS : Date.now(), value };
   return value;
 }
 
