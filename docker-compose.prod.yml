@@ -1,0 +1,39 @@
+# Career OS — production overlay (VPS, HTTPS through Caddy).
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# Requires Docker Compose ≥ 2.24 (`!reset`). See docs/DEPLOYMENT.md.
+services:
+  db:
+    # The database is only reachable from the app container.
+    ports: !reset []
+
+  app:
+    # No published port: only Caddy talks to the app.
+    ports: !reset []
+    expose:
+      - "3000"
+    environment:
+      APP_URL: https://${DOMAIN:?Set DOMAIN in .env}
+      ALLOWED_HOSTS: ${DOMAIN}
+      APP_ACCESS_TOKEN: ${APP_ACCESS_TOKEN:?Set APP_ACCESS_TOKEN in .env — required when Career OS is reachable from the internet}
+      # No host bridge on a server: use CLAUDE_CODE_OAUTH_TOKEN (claude setup-token) or AI_PROVIDER=anthropic.
+      CLAUDE_BRIDGE_URL: ""
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
