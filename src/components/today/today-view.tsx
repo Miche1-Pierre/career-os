@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { TasksPanel } from "./tasks-panel";
+import type { TaskListItem } from "@/server/services/tasks";
 import Link from "next/link";
 import {
   AlarmClock,
@@ -56,7 +58,7 @@ function greeting() {
   return h < 5 ? "Bonsoir" : h < 18 ? "Bonjour" : "Bonsoir";
 }
 
-export function TodayView({ data, userName }: { data: TodayData; userName: string }) {
+export function TodayView({ data, tasks, userName }: { data: TodayData; tasks: TaskListItem[]; userName: string }) {
   const { dateLocale } = useAppData();
   const quickImport = useQuickImport();
   const c = data.counts;
@@ -72,7 +74,9 @@ export function TodayView({ data, userName }: { data: TodayData; userName: strin
   const nothing = !data.overdue.length && !data.dueToday.length && !data.upcoming.length && !data.waiting.length && !data.missingDocuments.length && !data.suggestions.length;
 
   return (
-    <PageContainer className="max-w-4xl">
+    <PageContainer>
+      <div className="grid gap-10 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="min-w-0">
       <div className="mb-8 space-y-1.5">
         <p className="label-sm text-muted-foreground">{formatISODate(data.today, "long", dateLocale)}</p>
         <h1 className="heading-3xl text-foreground">
@@ -105,6 +109,11 @@ export function TodayView({ data, userName }: { data: TodayData; userName: strin
         <TodaySection id="upcoming" title="7 prochains jours" items={data.upcoming} />
         <TodaySection id="waiting" title="En attente de réponse" items={data.waiting} compact />
         <TodaySection id="documents" title="Documents manquants" items={data.missingDocuments} compact />
+      </div>
+        </div>
+        <aside className="min-w-0 xl:sticky xl:top-20 xl:self-start">
+          <TasksPanel tasks={tasks} />
+        </aside>
       </div>
     </PageContainer>
   );

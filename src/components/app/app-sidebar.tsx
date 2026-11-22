@@ -11,7 +11,6 @@ import {
   GraduationCap,
   Inbox,
   LayoutDashboard,
-  ListChecks,
   Plane,
   Plus,
   Settings,
@@ -126,8 +125,7 @@ export function AppSidebar() {
       <SidebarContent>
         <NavGroup
           items={[
-            { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today },
-            { href: "/tasks", label: "Tâches", icon: ListChecks },
+            { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today, also: ["/tasks"] },
             { href: "/calendar", label: "Calendrier", icon: CalendarDays },
           ]}
         />
