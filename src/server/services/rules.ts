@@ -226,7 +226,17 @@ export async function evaluatePeriodicRules() {
       .select({ interview: interviews, title: opportunities.title })
       .from(interviews)
       .innerJoin(opportunities, eq(opportunities.id, interviews.opportunityId))
-      .where(and(eq(interviews.status, "SCHEDULED"), isNotNull(interviews.scheduledAt), lte(interviews.scheduledAt, cutoff), isNull(opportunities.deletedAt)));
+      .innerJoin(pipelineStages, eq(pipelineStages.id, opportunities.stageId))
+      .where(
+        and(
+          eq(interviews.status, "SCHEDULED"),
+          isNotNull(interviews.scheduledAt),
+          lte(interviews.scheduledAt, cutoff),
+          isNull(opportunities.deletedAt),
+          isNull(opportunities.archivedAt),
+          sql`${pipelineStages.category} not in ('WON','LOST')`,
+        ),
+      );
     for (const { interview, title } of stale) {
       const created = await emitNotification({
         key: `stale_interview:${interview.id}`,
