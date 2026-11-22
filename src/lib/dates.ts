@@ -239,21 +239,21 @@ export interface DueStatus {
 
 export function dueStatus(due: ISODate, today: ISODate): DueStatus {
   const days = diffDays(due, today);
-  if (days < 0) return { kind: "overdue", days, label: days === -1 ? "Overdue by 1 day" : `Overdue by ${-days} days` };
-  if (days === 0) return { kind: "today", days, label: "Today" };
-  if (days === 1) return { kind: "tomorrow", days, label: "Tomorrow" };
-  if (days <= 3) return { kind: "soon", days, label: `In ${days} days` };
-  if (days <= 7) return { kind: "week", days, label: `In ${days} days` };
-  return { kind: "later", days, label: `In ${days} days` };
+  if (days < 0) return { kind: "overdue", days, label: days === -1 ? "En retard d'1 jour" : `En retard de ${-days} jours` };
+  if (days === 0) return { kind: "today", days, label: "Aujourd'hui" };
+  if (days === 1) return { kind: "tomorrow", days, label: "Demain" };
+  if (days <= 3) return { kind: "soon", days, label: `Dans ${days} jours` };
+  if (days <= 7) return { kind: "week", days, label: `Dans ${days} jours` };
+  return { kind: "later", days, label: `Dans ${days} jours` };
 }
 
 export function relativeDayLabel(date: ISODate, today: ISODate): string {
   const days = diffDays(date, today);
-  if (days === 0) return "Today";
-  if (days === 1) return "Tomorrow";
-  if (days === -1) return "Yesterday";
-  if (days > 1) return `In ${days} days`;
-  return `${-days} days ago`;
+  if (days === 0) return "Aujourd'hui";
+  if (days === 1) return "Demain";
+  if (days === -1) return "Hier";
+  if (days > 1) return `Dans ${days} jours`;
+  return `Il y a ${-days} jours`;
 }
 
 // ---------------------------------------------------------------------------
@@ -313,13 +313,16 @@ export function formatRelativeInstant(instant: Date | string, now: Date = new Da
   const seconds = Math.round((now.getTime() - d.getTime()) / 1000);
   const abs = Math.abs(seconds);
   const future = seconds < 0;
-  const fmt = (n: number, unit: string) => (future ? `in ${n} ${unit}${n > 1 ? "s" : ""}` : `${n} ${unit}${n > 1 ? "s" : ""} ago`);
-  if (abs < 45) return future ? "in a few seconds" : "just now";
+  const fmt = (n: number, unit: string) => {
+    const u = n > 1 && !unit.endsWith("s") ? `${unit}s` : unit;
+    return future ? `dans ${n} ${u}` : `il y a ${n} ${u}`;
+  };
+  if (abs < 45) return future ? "dans quelques secondes" : "à l'instant";
   if (abs < 3600) return fmt(Math.round(abs / 60), "minute");
-  if (abs < 86_400) return fmt(Math.round(abs / 3600), "hour");
-  if (abs < 86_400 * 30) return fmt(Math.round(abs / 86_400), "day");
-  if (abs < 86_400 * 365) return fmt(Math.round(abs / (86_400 * 30)), "month");
-  return fmt(Math.round(abs / (86_400 * 365)), "year");
+  if (abs < 86_400) return fmt(Math.round(abs / 3600), "heure");
+  if (abs < 86_400 * 30) return fmt(Math.round(abs / 86_400), "jour");
+  if (abs < 86_400 * 365) return fmt(Math.round(abs / (86_400 * 30)), "mois");
+  return fmt(Math.round(abs / (86_400 * 365)), "an");
 }
 
 // ---------------------------------------------------------------------------

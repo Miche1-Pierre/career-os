@@ -52,10 +52,10 @@ describe("calendar arithmetic", () => {
 
   it("computes differences and due status", () => {
     expect(diffDays("2026-10-06", "2026-09-29")).toBe(7);
-    expect(dueStatus("2026-09-27", "2026-09-29")).toMatchObject({ kind: "overdue", days: -2, label: "Overdue by 2 days" });
+    expect(dueStatus("2026-09-27", "2026-09-29")).toMatchObject({ kind: "overdue", days: -2, label: "En retard de 2 jours" });
     expect(dueStatus("2026-09-29", "2026-09-29").kind).toBe("today");
     expect(dueStatus("2026-09-30", "2026-09-29").kind).toBe("tomorrow");
-    expect(dueStatus("2026-10-02", "2026-09-29")).toMatchObject({ kind: "soon", label: "In 3 days" });
+    expect(dueStatus("2026-10-02", "2026-09-29")).toMatchObject({ kind: "soon", label: "Dans 3 jours" });
     expect(dueStatus("2026-10-06", "2026-09-29").kind).toBe("week");
     expect(dueStatus("2026-11-06", "2026-09-29").kind).toBe("later");
   });

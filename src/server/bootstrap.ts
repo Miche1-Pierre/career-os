@@ -96,7 +96,7 @@ const LEGACY_STAGE_LABELS: Record<string, string> = {
   CLOSED: "Closed",
 };
 
-const LEGACY_TAGS: Record<string, string> = {
+export const LEGACY_TAGS: Record<string, string> = {
   AI: "IA",
   Product: "Produit",
   Asia: "Asie",
@@ -125,7 +125,7 @@ const LEGACY_INTERVIEW_KINDS: Record<string, string> = {
 const lowerFirst = (s: string) => s.charAt(0).toLowerCase() + s.slice(1);
 
 /** Checklist template items and automation tasks: former English title → French title. */
-const LEGACY_TASK_TITLES: Record<string, string> = {
+export const LEGACY_TASK_TITLES: Record<string, string> = {
   "Read the job description": "Lire la fiche de poste",
   "Research the company": "Se renseigner sur l’entreprise",
   "Select CV": "Choisir le CV",
