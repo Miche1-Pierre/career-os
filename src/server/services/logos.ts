@@ -118,7 +118,7 @@ export async function fetchImage(raw: string, deps: LogoDeps = defaultDeps): Pro
   return null;
 }
 
-async function readCapped(response: Response, max: number): Promise<Buffer | null> {
+async function readCapped(response: Response, max: number, options: { truncate?: boolean } = {}): Promise<Buffer | null> {
   const reader = response.body?.getReader();
   if (!reader) return null;
   const chunks: Uint8Array[] = [];
@@ -130,7 +130,9 @@ async function readCapped(response: Response, max: number): Promise<Buffer | nul
       total += value.byteLength;
       if (total > max) {
         await reader.cancel().catch(() => undefined);
-        return null;
+        if (!options.truncate) return null;
+        chunks.push(value.subarray(0, value.byteLength - (total - max)));
+        break;
       }
       chunks.push(value);
     }
@@ -138,6 +140,72 @@ async function readCapped(response: Response, max: number): Promise<Buffer | nul
     return null;
   }
   return Buffer.concat(chunks);
+}
+
+const PAGE_MAX_BYTES = 512 * 1024;
+
+/** A site's home page HTML (https, public hosts only, redirects re-checked, first 512 KB), to read its icon links. */
+async function fetchPage(raw: string, deps: LogoDeps): Promise<{ html: string; url: URL } | null> {
+  let url = new URL(raw);
+  for (let redirects = 0; redirects <= MAX_REDIRECTS; redirects++) {
+    if (url.protocol !== "https:" || url.username || url.password) return null;
+    try {
+      await assertPublicHost(url.hostname, deps);
+    } catch {
+      return null;
+    }
+    let response: Response;
+    try {
+      response = await deps.fetch(url, { redirect: "manual", signal: AbortSignal.timeout(TIMEOUT_MS), headers: { accept: "text/html", "user-agent": "CareerOS/1.0 (favicon)" } });
+    } catch {
+      return null;
+    }
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      await response.body?.cancel().catch(() => undefined);
+      if (!location) return null;
+      url = new URL(location, url);
+      continue;
+    }
+    if (response.status < 200 || response.status >= 300 || !/text\/html|application\/xhtml/i.test(response.headers.get("content-type") ?? "")) {
+      await response.body?.cancel().catch(() => undefined);
+      return null;
+    }
+    const body = await readCapped(response, PAGE_MAX_BYTES, { truncate: true });
+    return body ? { html: body.toString("utf8"), url } : null;
+  }
+  return null;
+}
+
+/**
+ * Icons a page declares (<link rel="icon"> / "apple-touch-icon"), largest first, https only, SVG left out (it can carry
+ * scripts). Pure.
+ */
+export function declaredIcons(html: string, base: URL): string[] {
+  const found: { href: string; size: number }[] = [];
+  for (const tag of html.slice(0, 300_000).match(/<link\b[^>]*>/gi) ?? []) {
+    const attr = (name: string) => {
+      const m = tag.match(new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))`, "i"));
+      return m ? (m[1] ?? m[2] ?? m[3] ?? null) : null;
+    };
+    const rel = (attr("rel") ?? "").toLowerCase();
+    if (!/(^|\s)(icon|apple-touch-icon|apple-touch-icon-precomposed)(\s|$)/.test(rel)) continue;
+    const href = attr("href")?.replace(/&amp;/g, "&").trim();
+    if (!href || href.startsWith("data:")) continue;
+    if ((attr("type") ?? "").toLowerCase().includes("svg") || /\.svg($|[?#])/i.test(href)) continue;
+    let url: URL;
+    try {
+      url = new URL(href, base);
+    } catch {
+      continue;
+    }
+    if (url.protocol !== "https:") continue;
+    const sizes = (attr("sizes") ?? "").split(/\s+/).map((v) => Number.parseInt(v, 10) || 0);
+    found.push({ href: url.toString(), size: Math.max(0, ...sizes, rel.includes("apple-touch") ? 180 : 0) });
+  }
+  const unique = new Map<string, number>();
+  for (const f of found.sort((a, b) => b.size - a.size)) if (!unique.has(f.href)) unique.set(f.href, f.size);
+  return [...unique.keys()].slice(0, 4);
 }
 
 /** Candidate URLs for a host, best first (Google's 128 px icon service gives the sharpest results). */
@@ -214,12 +282,28 @@ async function resolveLogo(host: string, deps: LogoDeps): Promise<Logo | null> {
 
   // First sharp icon wins; otherwise keep the largest one found.
   let found: Logo | null = null;
-  for (const source of logoSources(host)) {
-    const logo = await fetchImage(source, deps);
-    if (!logo) continue;
+  let sharp = false;
+  const consider = (logo: Logo | null) => {
+    if (!logo) return;
     const width = imageWidth(logo);
     if (!found || width > imageWidth(found)) found = logo;
-    if (width >= SHARP_PX || width === 0) break;
+    if (width >= SHARP_PX || width === 0) sharp = true;
+  };
+  for (const source of logoSources(host)) {
+    consider(await fetchImage(source, deps));
+    if (sharp) break;
+  }
+  // Last resort: the icons the home page declares (sites that keep theirs at a non-standard path).
+  if (!sharp) {
+    for (const page of [...new Set([host, `www.${registrableDomain(host)}`])]) {
+      const home = await fetchPage(`https://${page}/`, deps);
+      if (!home) continue;
+      for (const icon of declaredIcons(home.html, home.url)) {
+        consider(await fetchImage(icon, deps));
+        if (sharp) break;
+      }
+      if (found) break;
+    }
   }
   try {
     await fs.mkdir(files.dir, { recursive: true });
