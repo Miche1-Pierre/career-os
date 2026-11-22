@@ -3,7 +3,7 @@ import { db, type DBOrTx } from "@/server/db";
 import { auditLogs, type AuditChange } from "@/server/db/schema";
 import type { Ctx } from "@/server/context";
 
-export type AuditEntity = "opportunity" | "organization" | "contact" | "document" | "interview" | "task" | "inbox" | "settings" | "stage" | "tag";
+export type AuditEntity = "opportunity" | "organization" | "contact" | "document" | "interview" | "task" | "inbox" | "settings" | "stage" | "tag" | "move" | "listing";
 
 export async function logAudit(
   tx: DBOrTx,

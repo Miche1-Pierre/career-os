@@ -30,6 +30,8 @@ const TABLES: [string, Table][] = [
   ["savedViews", s.savedViews],
   ["goals", s.goals],
   ["notifications", s.notifications],
+  ["moves", s.moves],
+  ["housingListings", s.housingListings],
 ];
 
 export interface ExportFile {
@@ -72,7 +74,12 @@ function upgradeExport(file: ExportFile): ExportFile {
   if (file.schemaVersion > EXPORT_SCHEMA_VERSION) {
     throw new AppError("VALIDATION", `This export was made by a newer Career OS (schema v${file.schemaVersion}). Update the app first.`);
   }
-  // v1 is the first format — future migrations go here (e.g. if (file.schemaVersion === 1) { … file.schemaVersion = 2 }).
+  // v1 → v2: relocation tables (moves, housingListings) added; older exports simply have none.
+  if (file.schemaVersion === 1) {
+    file.data.moves ??= [];
+    file.data.housingListings ??= [];
+    file.schemaVersion = 2;
+  }
   return file;
 }
 
