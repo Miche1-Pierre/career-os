@@ -123,7 +123,7 @@ export function ApplicationsList({
   }, [rows]);
 
   return (
-    <PageContainer wide className={cn(isBoard && "flex flex-col md:h-[calc(100svh-3.5rem)]")}>
+    <PageContainer wide className={cn(isBoard && "flex flex-col md:h-[calc(100svh-3.5rem-4.5rem)]")}>
       <PageHeader
         eyebrow={view ? "Vue enregistrée" : undefined}
         title={
