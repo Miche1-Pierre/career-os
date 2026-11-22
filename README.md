@@ -62,7 +62,18 @@ Claude extrait les informations avec leur **provenance** (citation exacte de la 
 les doublons, crée les fiches et vous donne leur lien. Il demande confirmation avant toute action irréversible et
 n'envoie jamais d'email à votre place.
 
-### 2. Dans l'application (Quick Import, Inbox, analyse d'offre, commandes en langage naturel)
+### 2. Dans l'application : la barre de chat
+
+Une barre de chat est visible en bas de chaque page (`Ctrl+J`). Elle lance Claude Code avec **les mêmes outils que
+le serveur MCP** + la recherche et la lecture web, sans shell ni accès aux fichiers. Elle connaît la page ouverte,
+propose des suggestions selon l'écran, accepte les mentions `@` (une candidature, un logement, une entreprise…) et la
+dictée en français (Chrome / Edge). Pour toute modification qu'on ne lui a pas explicitement demandée, Claude décrit
+ce qu'il va faire et attend ton accord ; il n'envoie jamais de message lui-même. Les conversations sont conservées.
+
+Modèle par défaut : `sonnet` (variable `CHAT_MODEL`). Il faut le fournisseur `claude-code` (options A ou B ci-dessous).
+Avec le bridge, Claude Code joint l'app à l'adresse vue par ton navigateur ; `CHAT_MCP_URL` force une autre adresse.
+
+### 3. Dans l'application : Quick Import, Inbox, analyse d'offre
 
 Choisissez **une** option dans `.env`, puis `docker compose up -d`. Vérifiez dans *Settings → AI → Test*.
 
