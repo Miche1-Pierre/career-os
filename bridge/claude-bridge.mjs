@@ -11,7 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { claudeVersion, resolveClaudeBin, runClaude } from "./claude-runner.mjs";
+import { claudeVersion, resolveClaudeBin, runClaude, streamClaude } from "./claude-runner.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -63,7 +63,7 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, { ok: true, authorized, claude: version, busy: running });
   }
   if (!authorized) return send(res, 401, { ok: false, error: "Unauthorized" });
-  if (req.method !== "POST" || req.url !== "/v1/run") return send(res, 404, { ok: false, error: "Not found" });
+  if (req.method !== "POST" || (req.url !== "/v1/run" && req.url !== "/v1/chat")) return send(res, 404, { ok: false, error: "Not found" });
   if (running >= MAX_CONCURRENT) return send(res, 429, { ok: false, error: "Bridge busy, retry shortly" });
 
   let size = 0;
@@ -81,6 +81,35 @@ const server = http.createServer(async (req, res) => {
   }
   if (typeof body.prompt !== "string" || !body.prompt) return send(res, 400, { ok: false, error: "prompt required" });
   const pick = (v, re) => (typeof v === "string" && re.test(v) ? v : null);
+
+  if (req.url === "/v1/chat") {
+    // In-app chat: Claude Code with the Career OS MCP tools (+ web search/fetch), streamed as NDJSON events.
+    const mcpUrl = pick(body.mcpUrl, /^https?:\/\/[^\s]+$/i);
+    if (!mcpUrl || typeof body.system !== "string") return send(res, 400, { ok: false, error: "system and mcpUrl required" });
+    running++;
+    res.writeHead(200, { "content-type": "application/x-ndjson", "cache-control": "no-store" });
+    const headers = body.mcpHeaders && typeof body.mcpHeaders === "object" ? Object.fromEntries(Object.entries(body.mcpHeaders).filter(([k, v]) => typeof k === "string" && typeof v === "string")) : undefined;
+    const run = streamClaude(
+      {
+        system: body.system,
+        prompt: body.prompt,
+        mcpUrl,
+        mcpHeaders: headers,
+        model: pick(body.model, /^[a-z0-9.\-[\]]{1,60}$/i),
+        sessionId: pick(body.sessionId, /^[a-f0-9-]{8,64}$/i),
+        webTools: body.webTools !== false,
+        bin: BIN,
+      },
+      (event) => res.write(`${JSON.stringify(event)}\n`),
+    );
+    req.on("close", () => {
+      if (!res.writableEnded) run.cancel();
+    });
+    await run.done;
+    running--;
+    console.log(`[bridge] ${new Date().toISOString()} chat done`);
+    return res.end();
+  }
 
   running++;
   const started = Date.now();

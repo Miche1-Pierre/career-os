@@ -1,12 +1,12 @@
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { db } from "@/server/db";
-import { contacts, documents, interviews, opportunities, organizations, pipelineStages, timelineEvents } from "@/server/db/schema";
+import { contacts, documents, housingListings, interviews, moves, opportunities, organizations, pipelineStages, timelineEvents } from "@/server/db/schema";
 import { normalizedContains } from "@/server/db/sql-helpers";
 import { INTERVIEW_KIND_LABEL } from "@/lib/constants";
 import { normalizeText } from "@/lib/text";
 
 export interface SearchHit {
-  type: "opportunity" | "organization" | "contact" | "document" | "interview" | "event";
+  type: "opportunity" | "organization" | "contact" | "document" | "interview" | "event" | "move" | "listing";
   id: string;
   title: string;
   subtitle: string | null;
@@ -29,7 +29,7 @@ function score(text: string | null | undefined, q: string): number {
 export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> {
   const q = query.trim();
   if (q.length < 1) return [];
-  const [opps, orgs, people, docs, ivs, events] = await Promise.all([
+  const [opps, orgs, people, docs, ivs, events, moveRows, listingRows] = await Promise.all([
     db
       .select({ id: opportunities.id, title: opportunities.title, org: organizations.name, stage: pipelineStages.label, type: opportunities.type })
       .from(opportunities)
@@ -88,6 +88,23 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
       .where(sql`(${timelineEvents.type} in ('NOTE','EMAIL','MESSAGE','CALL','MEETING')) and (${normalizedContains(timelineEvents.title, q)} or ${normalizedContains(timelineEvents.body, q)})`)
       .orderBy(desc(timelineEvents.occurredAt))
       .limit(limit),
+    db
+      .select({ id: moves.id, title: moves.title, city: moves.city, country: moves.country })
+      .from(moves)
+      .where(and(isNull(moves.deletedAt), sql`(${normalizedContains(moves.title, q)} or ${normalizedContains(moves.city, q)})`))
+      .limit(limit),
+    db
+      .select({ id: housingListings.id, moveId: housingListings.moveId, title: housingListings.title, district: housingListings.district, address: housingListings.address, moveTitle: moves.title })
+      .from(housingListings)
+      .innerJoin(moves, eq(moves.id, housingListings.moveId))
+      .where(
+        and(
+          isNull(housingListings.deletedAt),
+          isNull(moves.deletedAt),
+          sql`(${normalizedContains(housingListings.title, q)} or ${normalizedContains(housingListings.address, q)} or ${normalizedContains(housingListings.district, q)})`,
+        ),
+      )
+      .limit(limit),
   ]);
 
   const hits: SearchHit[] = [
@@ -103,7 +120,7 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
       type: "organization" as const,
       id: o.id,
       title: o.name,
-      subtitle: [o.kind === "INSTITUTION" ? "Institution" : "Company", o.industry, o.city].filter(Boolean).join(" · "),
+      subtitle: [o.kind === "INSTITUTION" ? "Établissement" : "Entreprise", o.industry, o.city].filter(Boolean).join(" · "),
       href: `/${o.kind === "INSTITUTION" ? "institutions" : "companies"}/${o.id}`,
       score: score(o.name, q) + 4,
     })),
@@ -119,7 +136,7 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
     ...ivs.map((i) => ({
       type: "interview" as const,
       id: i.id,
-      title: `${INTERVIEW_KIND_LABEL[i.kind]} interview — ${i.org ?? i.oppTitle}`,
+      title: `Entretien ${INTERVIEW_KIND_LABEL[i.kind]} · ${i.org ?? i.oppTitle}`,
       subtitle: i.oppTitle,
       href: `/applications/${i.oppId}?tab=interviews`,
       score: score(i.org, q) + 1,
@@ -131,6 +148,22 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
       subtitle: e.body ? e.body.slice(0, 120) : null,
       href: e.oppId ? `/applications/${e.oppId}?tab=timeline` : e.contactId ? `/contacts/${e.contactId}` : "/today",
       score: Math.max(score(e.title, q), score(e.body, q)),
+    })),
+    ...moveRows.map((m) => ({
+      type: "move" as const,
+      id: m.id,
+      title: m.title,
+      subtitle: ["Installation", m.city, m.country].filter(Boolean).join(" · "),
+      href: `/moves/${m.id}`,
+      score: Math.max(score(m.title, q), score(m.city, q)) + 3,
+    })),
+    ...listingRows.map((l) => ({
+      type: "listing" as const,
+      id: l.id,
+      title: l.title,
+      subtitle: ["Logement", l.district ?? l.address, l.moveTitle].filter(Boolean).join(" · "),
+      href: `/moves/${l.moveId}?tab=housing&listing=${l.id}`,
+      score: Math.max(score(l.title, q), score(l.district, q)) + 2,
     })),
   ];
   return hits.sort((a, b) => b.score - a.score).slice(0, limit * 4);
