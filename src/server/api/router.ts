@@ -30,6 +30,7 @@ import { getToday } from "@/server/services/today";
 import { searchAll } from "@/server/services/search";
 import { eventsToICS, getCalendarEvents } from "@/server/services/calendar";
 import { aiStatus } from "@/server/ai";
+import { getClaudeUsage } from "@/server/ai/usage";
 import { storageConfig } from "@/server/storage";
 import { SETTINGS_SECTIONS, type SettingsSection } from "@/lib/settings-schema";
 import { appUrl } from "@/server/mcp/tools";
@@ -95,6 +96,7 @@ route("GET", "/calendar", async ({ query }) => {
   return getCalendarEvents(from, to);
 });
 route("GET", "/ai/status", async () => aiStatus({ fresh: true }));
+route("GET", "/ai/usage", async ({ query }) => getClaudeUsage({ fresh: bool(query, "fresh") }), "Claude subscription usage (5-hour and weekly windows)");
 
 // Opportunities
 route("GET", "/opportunities", async ({ query }) =>

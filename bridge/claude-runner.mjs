@@ -321,3 +321,31 @@ export function streamClaude(options, onEvent) {
     },
   };
 }
+
+/**
+ * Claude subscription usage (5-hour window and 7-day window), read with the Claude Code login of this computer
+ * (~/.claude/.credentials.json, same source as Claude Code's /usage). Long-lived `claude setup-token` tokens lack
+ * the required `user:profile` scope, so this only works where the interactive login lives (host / bridge).
+ * Returns utilization percentages only — never the token.
+ *
+ * @returns {Promise<{ fiveHour: { utilization: number, resetsAt: string | null } | null, sevenDay: { utilization: number, resetsAt: string | null } | null, plan: string | null }>}
+ */
+export async function readClaudeUsage() {
+  const file = path.join(os.homedir(), ".claude", ".credentials.json");
+  let creds;
+  try {
+    creds = JSON.parse(fs.readFileSync(/*turbopackIgnore: true*/ file, "utf8"))?.claudeAiOauth;
+  } catch {
+    throw new Error("Claude Code login not found on this computer (run `claude` once and sign in).");
+  }
+  if (!creds?.accessToken) throw new Error("Claude Code login not found on this computer.");
+  if (creds.expiresAt && creds.expiresAt < Date.now()) throw new Error("Claude Code login expired: open Claude Code once to refresh it.");
+  const res = await fetch("https://api.anthropic.com/api/oauth/usage", {
+    headers: { Authorization: `Bearer ${creds.accessToken}`, "anthropic-beta": "oauth-2025-04-20" },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) throw new Error(`Usage API error ${res.status}`);
+  const body = await res.json();
+  const win = (w) => (w && typeof w.utilization === "number" ? { utilization: w.utilization, resetsAt: w.resets_at ?? null } : null);
+  return { fiveHour: win(body.five_hour), sevenDay: win(body.seven_day), plan: creds.subscriptionType ?? null };
+}

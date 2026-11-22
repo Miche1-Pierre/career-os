@@ -1,5 +1,5 @@
-import { getOrganizationWebsite } from "@/server/services/organizations";
-import { getLogo, logosEnabled } from "@/server/services/logos";
+import { getOrganizationLogoInfo } from "@/server/services/organizations";
+import { getLogo, getSvglLogo, logosEnabled } from "@/server/services/logos";
 import { websiteHost } from "@/lib/org-grouping";
 
 export const dynamic = "force-dynamic";
@@ -20,10 +20,12 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const { id } = await params;
   if (!UUID.test(id) || !logosEnabled()) return miss(300);
   try {
-    const host = websiteHost(await getOrganizationWebsite(id));
-    if (!host) return miss(3600);
-    const logo = await getLogo(host);
-    if (!logo) return miss(86_400);
+    const org = await getOrganizationLogoInfo(id);
+    if (!org) return miss(3600);
+    // Vector logo from SVGL when the brand is listed there, else the website's icon.
+    const host = websiteHost(org.website);
+    const logo = (await getSvglLogo(org.name)) ?? (host ? await getLogo(host) : null);
+    if (!logo) return miss(host ? 86_400 : 3600);
     return new Response(new Uint8Array(logo.body), {
       headers: {
         "content-type": logo.contentType,
