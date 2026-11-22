@@ -240,7 +240,8 @@ describe("rules engine", () => {
 describe("export / import", () => {
   it("round-trips all data through the versioned JSON format", async () => {
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(1);
+    expect(file.schemaVersion).toBe(2);
+    expect(file.counts.moves).toBe(0);
     expect(file.counts.opportunities).toBeGreaterThan(0);
     const serialized = JSON.parse(JSON.stringify(file));
 
@@ -257,6 +258,13 @@ describe("export / import", () => {
     const merged = await importAll(serialized, "merge", USER);
     expect(merged.opportunities).toBe(0);
     expect((await other.select().from(s.opportunities)).length).toBe(file.counts.opportunities);
+  });
+
+  it("upgrades v1 exports (no relocation tables)", async () => {
+    const file = await exportAll();
+    const v1 = JSON.parse(JSON.stringify({ ...file, schemaVersion: 1, data: { ...file.data, moves: undefined, housingListings: undefined } }));
+    const counts = await importAll(v1, "merge", USER);
+    expect(counts.moves).toBe(0);
   });
 
   it("rejects foreign or future files", async () => {

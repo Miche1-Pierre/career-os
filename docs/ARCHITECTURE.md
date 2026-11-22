@@ -59,7 +59,7 @@ Trois principes structurent toutes les décisions :
 
 ## 3. Modèle de données
 
-18 tables, séparation logique nette, sans sur-normalisation.
+20 tables, séparation logique nette, sans sur-normalisation.
 
 ```
 organizations (kind: COMPANY | INSTITUTION)          ← Company et Institution = même entité
@@ -82,7 +82,12 @@ documents 1─n document_versions (chemin hôte, chemin relatif bibliothèque, S
 inbox_items    (capture brute + résultat IA + méta : provider, modèle, prompt, durée)
 audit_logs     (qui a changé quoi : champ, avant, après)
 tags · settings (clé → JSONB) · saved_views · goals · notifications
+moves (projet d'installation : destination, dates, lieu de travail géocodé, budget JSONB)
+   └── 1─n housing_listings (loyer/charges/garantie, bail, meublé, contacts, statut, visite, historique)
 ```
+
+La logique de relocalisation (coût total, trajet, compatibilité, épargne, brouillon de message) est pure et testée
+dans `src/lib/relocation.ts`. Géocodage OpenStreetMap Nominatim (best effort, 1 req/s, cache, `GEOCODING=off`).
 
 Décisions notables :
 
@@ -115,7 +120,7 @@ AIProvider.generateStructured({ task, system, prompt, schema }) → { data, meta
 
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
-- `.mcp.json` enregistre le serveur MCP `career-os` → 31 outils (today, search, create_opportunity, set_status,
+- `.mcp.json` enregistre le serveur MCP `career-os` → 39 outils (today, search, create_opportunity, set_status, moves/logement/budget,
   follow_up, add_interview, attach_document, inbox…, save_analysis…).
 - `CLAUDE.md` + skills `.claude/skills/*` décrivent les workflows (importer, traiter l'Inbox, relances, préparation
   d'entretien, analyse). Claude extrait lui-même, avec provenance, et crée les objets via MCP — sans clé API.
