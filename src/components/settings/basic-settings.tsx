@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTheme } from "next-themes";
-import { Monitor, Moon, Sun } from "lucide-react";
+import { FileUp, Monitor, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,12 +17,14 @@ import type { AppSettings } from "@/lib/settings-schema";
 import { addBusinessDays, addDays, formatISODate } from "@/lib/dates";
 import { useAppData } from "@/components/app/app-data";
 import { SettingsCard } from "./settings-shell";
+import { CvImportDialog } from "./cv-import-dialog";
+import { PROFILE_FIELD_LABELS } from "@/lib/cv-import";
 import { cn } from "@/lib/utils";
 
 function SaveButton({ onClick, pending, dirty }: { onClick: () => void; pending: boolean; dirty: boolean }) {
   return (
     <Button onClick={onClick} disabled={pending || !dirty}>
-      Save
+      Enregistrer
     </Button>
   );
 }
@@ -34,12 +36,12 @@ export function GeneralSettings({ value }: { value: AppSettings["general"] }) {
   const [v, setV] = useState(value);
   const dirty = JSON.stringify(v) !== JSON.stringify(value);
   return (
-    <SettingsCard title="General" footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("general", v), { success: "Saved" })} />}>
+    <SettingsCard title="Général" footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("general", v), { success: "Paramètres enregistrés" })} />}>
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Your name" hint="Greetings and email templates">
+        <FormField label="Votre nom" hint="Utilisé dans les salutations et les modèles d’e-mails">
           <Input value={v.userName} onChange={(e) => setV({ ...v, userName: e.target.value })} />
         </FormField>
-        <FormField label="Timezone" hint="“Today”, deadlines and interview times use it">
+        <FormField label="Fuseau horaire" hint="Sert pour « Aujourd’hui », les dates limites et les heures d’entretien">
           <Select value={v.timezone} onValueChange={(tz) => setV({ ...v, timezone: tz })}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -53,7 +55,7 @@ export function GeneralSettings({ value }: { value: AppSettings["general"] }) {
             </SelectContent>
           </Select>
         </FormField>
-        <FormField label="Date format">
+        <FormField label="Format des dates">
           <Select value={v.dateLocale} onValueChange={(l) => setV({ ...v, dateLocale: l })}>
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -72,18 +74,18 @@ export function GeneralSettings({ value }: { value: AppSettings["general"] }) {
             </SelectContent>
           </Select>
         </FormField>
-        <FormField label="Week starts on">
+        <FormField label="Premier jour de la semaine">
           <Select value={String(v.weekStartsOn)} onValueChange={(d) => setV({ ...v, weekStartsOn: Number(d) })}>
             <SelectTrigger className="w-full">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="1">Monday</SelectItem>
-              <SelectItem value="0">Sunday</SelectItem>
+              <SelectItem value="1">Lundi</SelectItem>
+              <SelectItem value="0">Dimanche</SelectItem>
             </SelectContent>
           </Select>
         </FormField>
-        <FormField label="Default currency">
+        <FormField label="Devise par défaut">
           <Input value={v.currency} onChange={(e) => setV({ ...v, currency: e.target.value.toUpperCase() })} />
         </FormField>
       </div>
@@ -94,15 +96,15 @@ export function GeneralSettings({ value }: { value: AppSettings["general"] }) {
 export function AppearanceSettings() {
   const { theme, setTheme } = useTheme();
   const options = [
-    { key: "light", label: "Light", icon: Sun },
-    { key: "dark", label: "Dark", icon: Moon },
-    { key: "system", label: "System", icon: Monitor },
+    { key: "light", label: "Clair", icon: Sun },
+    { key: "dark", label: "Sombre", icon: Moon },
+    { key: "system", label: "Système", icon: Monitor },
   ];
   return (
-    <SettingsCard title="Appearance" description="Stored in this browser.">
+    <SettingsCard title="Apparence" description="Enregistrée dans ce navigateur.">
       <div className="grid grid-cols-3 gap-3">
         {options.map((o) => (
-          <button key={o.key} type="button" onClick={() => setTheme(o.key)} className={cn("flex flex-col items-center gap-2 rounded-xl border p-4 text-sm", theme === o.key && "border-primary bg-primary/5")}>
+          <button key={o.key} type="button" aria-pressed={theme === o.key} onClick={() => setTheme(o.key)} className={cn("flex flex-col items-center gap-2 rounded-xl border p-4 text-sm whitespace-nowrap", theme === o.key && "border-primary bg-primary/5")}>
             <o.icon className="size-5" />
             {o.label}
           </button>
@@ -115,6 +117,7 @@ export function AppearanceSettings() {
 export function ProfileSettings({ value }: { value: AppSettings["profile"] }) {
   const { run, pending } = useAction();
   const [v, setV] = useState(value);
+  const [importing, setImporting] = useState(false);
   const dirty = JSON.stringify(v) !== JSON.stringify(value);
   const list = (key: keyof AppSettings["profile"], label: string, hint?: string) => (
     <FormField label={label} hint={hint}>
@@ -123,49 +126,69 @@ export function ProfileSettings({ value }: { value: AppSettings["profile"] }) {
   );
   return (
     <SettingsCard
-      title="Profile"
-      description="Used only to compare opportunities with your background (skills overlap and AI analysis). Tip: ask Claude Code “lis mon CV et remplis mon profil Career OS”."
-      footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("profile", v), { success: "Profile saved" })} />}
+      title="Profil"
+      description="Sert uniquement à comparer les opportunités avec votre parcours (compétences communes et analyse IA)."
+      footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("profile", v), { success: "Profil enregistré" })} />}
     >
+      <div className="@container">
+        <div className="flex flex-col items-start gap-3 rounded-xl bg-muted-background px-3 py-3 @lg:flex-row @lg:items-center @lg:justify-between">
+          <p className="copy-sm text-muted-foreground">Préremplissez le profil à partir de votre CV, puis vérifiez chaque champ avant d’enregistrer.</p>
+          <Button variant="outline" className="shrink-0 whitespace-nowrap" onClick={() => setImporting(true)}>
+            <FileUp /> Importer depuis un CV
+          </Button>
+        </div>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="Full name">
+        <FormField label={PROFILE_FIELD_LABELS.fullName}>
           <Input value={v.fullName} onChange={(e) => setV({ ...v, fullName: e.target.value })} />
         </FormField>
-        <FormField label="Years of experience">
+        <FormField label={PROFILE_FIELD_LABELS.yearsOfExperience}>
           <NumberInput value={v.yearsOfExperience} onChange={(n) => setV({ ...v, yearsOfExperience: n })} />
         </FormField>
-        <FormField label="Headline" className="sm:col-span-2">
-          <Input value={v.headline} onChange={(e) => setV({ ...v, headline: e.target.value })} placeholder="Full-stack engineer — HealthTech & AI" />
+        <FormField label={PROFILE_FIELD_LABELS.headline} className="sm:col-span-2">
+          <Input value={v.headline} onChange={(e) => setV({ ...v, headline: e.target.value })} placeholder="Ingénieur full-stack — HealthTech et IA" />
         </FormField>
-        <FormField label="Summary" className="sm:col-span-2">
+        <FormField label={PROFILE_FIELD_LABELS.summary} className="sm:col-span-2">
           <Textarea value={v.summary} onChange={(e) => setV({ ...v, summary: e.target.value })} rows={4} />
         </FormField>
-        {list("skills", "Skills & technologies", "One per line — compared with each posting")}
-        {list("languages", "Languages", "e.g. English — C1")}
-        {list("education", "Education")}
-        {list("targetRoles", "Target roles")}
-        {list("targetDomains", "Target domains")}
-        {list("preferredLocations", "Preferred locations")}
-        {list("dealBreakers", "Deal-breakers")}
+        {list("skills", PROFILE_FIELD_LABELS.skills, "Une par ligne — comparées à chaque offre")}
+        {list("languages", PROFILE_FIELD_LABELS.languages, "Par exemple : Anglais — C1")}
+        {list("education", PROFILE_FIELD_LABELS.education)}
+        {list("targetRoles", PROFILE_FIELD_LABELS.targetRoles)}
+        {list("targetDomains", PROFILE_FIELD_LABELS.targetDomains)}
+        {list("preferredLocations", PROFILE_FIELD_LABELS.preferredLocations)}
+        {list("dealBreakers", PROFILE_FIELD_LABELS.dealBreakers)}
       </div>
+      {importing && (
+        <CvImportDialog
+          open={importing}
+          onOpenChange={setImporting}
+          current={v}
+          saving={pending}
+          onApply={(next) => {
+            setV(next);
+            run(() => updateSettingsAction("profile", next), { success: "Profil mis à jour à partir du CV", onSuccess: () => setImporting(false) });
+          }}
+        />
+      )}
     </SettingsCard>
   );
 }
 
 export function FollowUpSettings({ value }: { value: AppSettings["followUp"] }) {
   const { run, pending } = useAction();
-  const { today } = useAppData();
+  const { today, dateLocale } = useAppData();
   const [v, setV] = useState(value);
   const dirty = JSON.stringify(v) !== JSON.stringify(value);
   const example = v.businessDays ? addBusinessDays(today, v.defaultDays.JOB, { holidays: v.holidays }) : addDays(today, v.defaultDays.JOB);
   return (
     <SettingsCard
-      title="Follow-ups"
-      description="Deterministic rules — no AI involved."
-      footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("followUp", v), { success: "Saved" })} />}
+      title="Relances"
+      description="Règles déterministes, sans IA."
+      footer={<SaveButton pending={pending} dirty={dirty} onClick={() => run(() => updateSettingsAction("followUp", v), { success: "Paramètres enregistrés" })} />}
     >
       <div>
-        <Label className="mb-2 block text-xs text-muted-foreground">Delay after applying, per type (days — 0 disables)</Label>
+        <Label className="mb-2 block text-xs text-muted-foreground">Délai après la candidature, par type (en jours — 0 désactive la relance)</Label>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {OPPORTUNITY_TYPES.map((t) => (
             <FormField key={t} label={OPPORTUNITY_TYPE_META[t].label}>
@@ -174,47 +197,47 @@ export function FollowUpSettings({ value }: { value: AppSettings["followUp"] }) 
           ))}
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Switch id="biz" checked={v.businessDays} onCheckedChange={(b) => setV({ ...v, businessDays: b })} />
-        <Label htmlFor="biz">Count business days only</Label>
+        <Label htmlFor="biz">Compter uniquement les jours ouvrés</Label>
         <Select value={v.holidays} onValueChange={(h) => setV({ ...v, holidays: h as "FR" | "NONE" })}>
-          <SelectTrigger size="sm" className="ml-2 w-52">
+          <SelectTrigger size="sm" className="w-full sm:ml-2 sm:w-60">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="FR">Skip French public holidays</SelectItem>
-            <SelectItem value="NONE">No public holidays</SelectItem>
+            <SelectItem value="FR">Hors jours fériés français</SelectItem>
+            <SelectItem value="NONE">Sans jours fériés</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <p className="rounded-lg bg-muted-background px-3 py-2 text-xs text-muted-foreground">
-        Example: a job applied today → follow-up on <span className="font-medium text-foreground">{formatISODate(example, "long")}</span>.
+        Exemple : pour un emploi postulé aujourd’hui, relance le <span className="font-medium text-foreground">{formatISODate(example, "long", dateLocale)}</span>.
       </p>
       <div className="grid gap-4 sm:grid-cols-3">
-        <FormField label="When a recruiter contacted you" hint="Source = Recruiter">
+        <FormField label="Quand un recruteur vous a contacté" hint="Source = Recruteur">
           <NumberInput value={v.recruiterDays} onChange={(n) => setV({ ...v, recruiterDays: Math.max(0, n ?? 0) })} />
         </FormField>
-        <FormField label="After an interview" hint="Days after it is marked as done">
+        <FormField label="Après un entretien" hint="Jours après qu’il est marqué comme passé">
           <NumberInput value={v.postInterviewDays} onChange={(n) => setV({ ...v, postInterviewDays: Math.max(0, n ?? 0) })} />
         </FormField>
-        <FormField label="“Waiting” after" hint="Days without answer">
+        <FormField label="« En attente » après" hint="Jours sans réponse">
           <NumberInput value={v.waitingThresholdDays} onChange={(n) => setV({ ...v, waitingThresholdDays: Math.max(0, n ?? 0) })} />
         </FormField>
-        <FormField label="Suggest “Ghosted” after" hint="Follow-ups without answer">
+        <FormField label="Proposer « Sans réponse » après" hint="Relances restées sans réponse">
           <NumberInput value={v.maxFollowUps} onChange={(n) => setV({ ...v, maxFollowUps: Math.max(1, n ?? 3) })} />
         </FormField>
-        <FormField label="…and days since last contact">
+        <FormField label="… et jours depuis le dernier contact">
           <NumberInput value={v.ghostAfterDays} onChange={(n) => setV({ ...v, ghostAfterDays: Math.max(0, n ?? 30) })} />
         </FormField>
       </div>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <Switch id="auto" checked={v.autoScheduleOnApply} onCheckedChange={(b) => setV({ ...v, autoScheduleOnApply: b })} />
-          <Label htmlFor="auto">Schedule the first follow-up automatically when an application is submitted</Label>
+          <Label htmlFor="auto">Planifier automatiquement la première relance à l’envoi d’une candidature</Label>
         </div>
         <div className="flex items-center gap-2">
           <Switch id="stage" checked={v.moveToFollowUpStage} onCheckedChange={(b) => setV({ ...v, moveToFollowUpStage: b })} />
-          <Label htmlFor="stage">Move job applications to “Followed up” when a follow-up is logged</Label>
+          <Label htmlFor="stage">Passer les candidatures au statut « Relancé » quand une relance est notée</Label>
         </div>
       </div>
     </SettingsCard>

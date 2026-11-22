@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getOrganization } from "@/server/services/organizations";
+import { getBrandSiblings, getOrganization } from "@/server/services/organizations";
 import { AppError } from "@/server/context";
 import { OrganizationDetailView } from "@/components/network/organization-detail";
 
-export const metadata: Metadata = { title: "Institution" };
+export const metadata: Metadata = { title: "Établissement" };
 
 export default async function OrganizationPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -12,5 +12,6 @@ export default async function OrganizationPage({ params }: { params: Promise<{ i
     if (e instanceof AppError && e.code === "NOT_FOUND") notFound();
     throw e;
   });
-  return <OrganizationDetailView data={JSON.parse(JSON.stringify(data))} />;
+  const brand = await getBrandSiblings(data.organization);
+  return <OrganizationDetailView data={JSON.parse(JSON.stringify(data))} brand={brand} />;
 }

@@ -41,40 +41,40 @@ export function ContactsList({ rows, openNew }: { rows: ContactListItem[]; openN
             Contacts <Counter value={rows.length} size="sm" />
           </span>
         }
-        description="Recruiters, hiring managers, professors, referrals — your personal CRM."
+        description="Recruteurs, managers, professeurs, cooptations : votre carnet d’adresses professionnel."
         actions={
-          <Button onClick={() => setCreating(true)}>
-            <Plus /> New contact
+          <Button onClick={() => setCreating(true)} className="whitespace-nowrap">
+            <Plus /> Nouveau contact
           </Button>
         }
       />
       <div className="mb-4 flex flex-wrap gap-2">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-faint" />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Name, company, email…" className="pl-9" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Nom, entreprise, e-mail…" aria-label="Filtrer les contacts" className="pl-9" />
         </div>
-        <MultiSelect label="Relationship" value={relationships} onChange={setRelationships} options={RELATIONSHIPS.map((r) => ({ value: r, label: RELATIONSHIP_LABEL[r] }))} />
+        <MultiSelect label="Relation" value={relationships} onChange={setRelationships} options={RELATIONSHIPS.map((r) => ({ value: r, label: RELATIONSHIP_LABEL[r] }))} />
       </div>
       {filtered.length === 0 ? (
-        <EmptyState icon={Users} title={rows.length ? "No match" : "No contact yet"} description="Contacts are also created from imported postings and emails." />
+        <EmptyState icon={Users} title={rows.length ? "Aucun résultat" : "Aucun contact pour l’instant"} description="Des contacts sont aussi créés à partir des offres et des e-mails importés." />
       ) : (
-        <div className="overflow-hidden">
+        <div className="@container min-w-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-3">Name</TableHead>
-                <TableHead>Organization</TableHead>
-                <TableHead>Relationship</TableHead>
-                <TableHead className="hidden md:table-cell">Email</TableHead>
-                <TableHead className="text-right">Applications</TableHead>
-                <TableHead className="hidden lg:table-cell">Last contact</TableHead>
+                <TableHead className="pl-3">Nom</TableHead>
+                <TableHead className="hidden @xl:table-cell">Organisation</TableHead>
+                <TableHead className="hidden @3xl:table-cell">Relation</TableHead>
+                <TableHead className="hidden @5xl:table-cell">E-mail</TableHead>
+                <TableHead className="text-right">Candidatures</TableHead>
+                <TableHead className="hidden @5xl:table-cell">Dernier contact</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map((c) => (
                 <TableRow key={c.id} className="cursor-pointer" onClick={() => router.push(`/contacts/${c.id}`)}>
                   <TableCell className="h-16 pl-3">
-                    <div className="flex items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-3 max-w-[min(22rem,calc(100cqw-140px))] @xl:max-w-[min(22rem,calc(100cqw-320px))] @3xl:max-w-[min(22rem,calc(100cqw-480px))] @5xl:max-w-[min(22rem,calc(100cqw-880px))]">
                       <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-highlight-50 text-xs font-semibold text-highlight-700">{initials(c.fullName)}</span>
                       <div className="min-w-0">
                         <Link href={`/contacts/${c.id}`} className="block truncate text-sm font-medium text-foreground hover:underline" onClick={(e) => e.stopPropagation()}>
@@ -84,19 +84,23 @@ export function ContactsList({ rows, openNew }: { rows: ContactListItem[]; openN
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="text-sm">{c.organizationName ?? "—"}</TableCell>
-                  <TableCell>{c.relationship ? <Badge size="sm">{RELATIONSHIP_LABEL[c.relationship]}</Badge> : <span className="text-faint">—</span>}</TableCell>
-                  <TableCell className="hidden md:table-cell">
+                  <TableCell className="hidden text-sm @xl:table-cell">
+                    <span className="block max-w-40 truncate" title={c.organizationName ?? undefined}>
+                      {c.organizationName ?? <span className="text-faint">—</span>}
+                    </span>
+                  </TableCell>
+                  <TableCell className="hidden @3xl:table-cell">{c.relationship ? <Badge size="sm">{RELATIONSHIP_LABEL[c.relationship]}</Badge> : <span className="text-faint">—</span>}</TableCell>
+                  <TableCell className="hidden @5xl:table-cell">
                     {c.email ? (
-                      <a href={`mailto:${c.email}`} onClick={(e) => e.stopPropagation()} className="inline-flex items-center gap-1 text-sm text-highlight-600 hover:underline">
-                        <Mail className="size-3" /> {c.email}
+                      <a href={`mailto:${c.email}`} onClick={(e) => e.stopPropagation()} className="inline-flex max-w-56 min-w-0 items-center gap-1 text-sm text-highlight-600 hover:underline" title={c.email}>
+                        <Mail className="size-3 shrink-0" /> <span className="truncate">{c.email}</span>
                       </a>
                     ) : (
                       "—"
                     )}
                   </TableCell>
                   <TableCell className="text-right text-sm tabular-nums">{c.opportunityCount}</TableCell>
-                  <TableCell className="hidden text-sm text-muted-foreground lg:table-cell">{c.lastContactAt ? formatISODate(c.lastContactAt, "medium", dateLocale) : "—"}</TableCell>
+                  <TableCell className="hidden text-sm text-muted-foreground @5xl:table-cell">{c.lastContactAt ? formatISODate(c.lastContactAt, "medium", dateLocale) : "—"}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
