@@ -127,6 +127,15 @@ export async function listOpportunitySummaries(organizationIds: string[]): Promi
 }
 
 /** Website of an organization (logo resolution), null when unknown or deleted. */
+export async function getOrganizationLogoInfo(id: string): Promise<{ name: string; website: string | null } | null> {
+  const [row] = await db
+    .select({ name: organizations.name, website: organizations.website })
+    .from(organizations)
+    .where(and(eq(organizations.id, id), isNull(organizations.deletedAt)))
+    .limit(1);
+  return row ?? null;
+}
+
 export async function getOrganizationWebsite(id: string): Promise<string | null> {
   const [row] = await db
     .select({ website: organizations.website })

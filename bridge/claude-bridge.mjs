@@ -11,7 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { claudeVersion, resolveClaudeBin, runClaude, streamClaude } from "./claude-runner.mjs";
+import { claudeVersion, readClaudeUsage, resolveClaudeBin, runClaude, streamClaude } from "./claude-runner.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -63,6 +63,13 @@ const server = http.createServer(async (req, res) => {
     return send(res, 200, { ok: true, authorized, claude: version, busy: running });
   }
   if (!authorized) return send(res, 401, { ok: false, error: "Unauthorized" });
+  if (req.method === "GET" && req.url === "/v1/usage") {
+    try {
+      return send(res, 200, { ok: true, ...(await readClaudeUsage()) });
+    } catch (error) {
+      return send(res, 200, { ok: false, error: error.message });
+    }
+  }
   if (req.method !== "POST" || (req.url !== "/v1/run" && req.url !== "/v1/chat")) return send(res, 404, { ok: false, error: "Not found" });
   if (running >= MAX_CONCURRENT) return send(res, 429, { ok: false, error: "Bridge busy, retry shortly" });
 

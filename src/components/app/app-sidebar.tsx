@@ -42,6 +42,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { useAppData } from "./app-data";
 import { useQuickImport } from "./quick-import";
+import { ClaudeUsage } from "./claude-usage";
 
 interface NavItem {
   href: string;
@@ -156,6 +157,7 @@ export function AppSidebar() {
         />
       </SidebarContent>
       <SidebarFooter>
+        {ai.available && ai.provider === "claude-code" && <ClaudeUsage />}
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Corbeille">
