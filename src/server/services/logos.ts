@@ -142,7 +142,9 @@ async function readCapped(response: Response, max: number): Promise<Buffer | nul
 
 /** Candidate URLs for a host, best first (Google's 128 px icon service gives the sharpest results). */
 export function logoSources(host: string): string[] {
-  const hosts = [...new Set([host, registrableDomain(host)])];
+  // websiteHost drops "www.", but some sites (and Google/DuckDuckGo's index of them) only answer on www.<domain>.
+  const base = registrableDomain(host);
+  const hosts = [...new Set([host, base, `www.${base}`])];
   return hosts.flatMap((h) => [
     `https://www.google.com/s2/favicons?domain=${h}&sz=128`,
     `https://icons.duckduckgo.com/ip3/${h}.ico`,
