@@ -49,6 +49,7 @@ Typical requests and the tools to use:
 | “Voici un email reçu : …” | `search` → `apply_actions` (LOG_EVENT, SET_STATUS, ADD_INTERVIEW…) |
 | “Lis mon CV et remplis mon profil” | read the file → `update_profile` |
 | Statistics | `get_analytics` (report numbers, no conclusions) |
+| “J'ai signé, prépare mon installation” / “ajoute cette coloc” / “compare les logements” | `list_moves` / `create_move` → `upsert_housing_listing` → `get_move` → `draft_listing_message` (skill `career-housing`) |
 
 ## Development
 

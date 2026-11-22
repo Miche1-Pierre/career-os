@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   List,
   ListChecks,
+  Plane,
   Plus,
   Settings,
   SquareKanban,
@@ -138,6 +139,7 @@ export function AppSidebar() {
             { href: "/tasks", label: "Tasks", icon: ListChecks },
           ]}
         />
+        <NavGroup label="Relocation" items={[{ href: "/moves", label: "Moves", icon: Plane }]} />
         <NavGroup
           label="Network"
           items={[

@@ -56,6 +56,7 @@ skills (`.claude/skills/`). Lancez Claude Code dans `C:\Candidature` (`claude`, 
 - « Voici l'email reçu de Siemens : … » → Claude propose les mises à jour (statut, entretien, contact) et les applique
 - « Ajoute un entretien technique avec Zefir mardi 14h » · « Prépare mon entretien chez Owkin »
 - « Lis mon CV (`documents/CV/CV.pdf`) et remplis mon profil »
+- « J'ai signé chez BlackFin, prépare mon installation » · « Ajoute cette coloc : *(lien)* » · « Compare les logements »
 
 Claude extrait les informations avec leur **provenance** (citation exacte de la source, ou « déduit »), vérifie
 les doublons, crée les fiches et vous donne leur lien. Il demande confirmation avant toute action irréversible et
@@ -96,6 +97,9 @@ statistiques sont calculés par du code testé, sans IA.
 - **Relances** : planifiées automatiquement à la candidature (ex. candidature le 29/09 + 7 jours → 06/10),
   intervalle par type, jours ouvrés et fériés français optionnels (*Settings → Follow-ups*).
 - **Kanban** (glisser-déposer), liste filtrable avec vues enregistrées, calendrier (export ICS), tâches, statistiques.
+- **Installation** (*Moves*) : après une offre, un projet par destination avec logement (annonces, coût total détaillé,
+  trajet à pied calculé, critères bloquants, brouillon de premier message, visites dans le calendrier, export Excel)
+  et budget (épargne mensuelle par logement, chèques-repas fléchés sur l'alimentation, coûts avant l'arrivée).
 
 ## Documents
 
@@ -133,7 +137,7 @@ docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 
 - REST : `http://localhost:3000/api/v1/*` (ex. `GET /api/v1/today`, `POST /api/v1/capture`, `GET /api/v1/export?format=json`),
   réponses `{ data }` / `{ error }`. Base pour une future extension navigateur ou une CLI.
-- MCP : `http://localhost:3000/api/mcp` (Streamable HTTP, 31 outils).
+- MCP : `http://localhost:3000/api/mcp` (Streamable HTTP, 39 outils).
 - Calendrier : `http://localhost:3000/api/v1/calendar.ics`.
 - Si `APP_ACCESS_TOKEN` est défini, les clients envoient `Authorization: Bearer <jeton>` ; pour Claude Code, ajoutez
   `"headers": { "Authorization": "Bearer <jeton>" }` au serveur `career-os` de `.mcp.json`.

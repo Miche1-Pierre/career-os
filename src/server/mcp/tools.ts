@@ -54,6 +54,20 @@ import { listTags } from "@/server/services/tags";
 import { getCalendarEvents } from "@/server/services/calendar";
 import { getAnalytics, SEGMENTS, type SegmentKey } from "@/server/services/analytics";
 import { db } from "@/server/db";
+import { budgetPlanSchema, listingInputSchema, LISTING_STATUSES, moveInputSchema, movePatchSchema, type MoveInput } from "@/lib/relocation";
+import {
+  createMove,
+  createMoveFromOpportunity,
+  draftListingMessage,
+  getListing,
+  getMove,
+  listMoves,
+  setListingStatus,
+  updateBudget,
+  updateListing,
+  updateMove,
+  upsertListing,
+} from "@/server/services/moves";
 
 export interface McpTool {
   name: string;
@@ -67,6 +81,8 @@ export interface McpTool {
 
 export const appUrl = () => (process.env.APP_URL || "http://localhost:3000").replace(/\/$/, "");
 const oppUrl = (id: string) => `${appUrl()}/applications/${id}`;
+const moveUrl = (id: string) => `${appUrl()}/moves/${id}`;
+const listingUrl = (moveId: string, id: string) => `${appUrl()}/moves/${moveId}?tab=housing&listing=${id}`;
 
 function tool<S extends z.ZodType>(def: { name: string; title: string; description: string; input: S; readOnly?: boolean; destructive?: boolean; handler: (args: z.infer<S>, ctx: Ctx) => Promise<unknown> }): McpTool {
   return def as unknown as McpTool;
@@ -602,6 +618,122 @@ export const TOOLS: McpTool[] = [
     readOnly: true,
     handler: async ({ family, segment }) => getAnalytics({ family, segment }),
   }),
+
+  // -------------------------------------------------------------------------
+  // Relocation: moves (installation projects), housing listings, budget
+  // -------------------------------------------------------------------------
+  tool({
+    name: "list_moves",
+    title: "Installation projects",
+    description: "Relocation projects (« moves »): destination, dates, workplace, housing summary (listings, to contact, visits, chosen) and best monthly savings.",
+    input: z.object({ includeArchived: z.boolean().optional() }),
+    readOnly: true,
+    handler: async ({ includeArchived }) =>
+      (await listMoves({ includeArchived })).map((m) => ({
+        id: m.id,
+        title: m.title,
+        city: m.city,
+        country: m.country,
+        arrivalDate: m.arrivalDate,
+        departureDate: m.departureDate,
+        workAddress: m.workAddress,
+        status: m.status,
+        opportunity: m.opportunityTitle,
+        summary: m.summary,
+        url: moveUrl(m.id),
+      })),
+  }),
+  tool({
+    name: "get_move",
+    title: "Installation project details",
+    description:
+      "One move with its budget plan and every housing listing: total monthly cost, commute (km, walking minutes), fit issues (dates, lease, furnished, budget, suspicious price) and the monthly savings if that listing is chosen.",
+    input: z.object({ moveId: z.string().uuid() }),
+    readOnly: true,
+    handler: async ({ moveId }) => {
+      const m = await getMove(moveId);
+      return {
+        ...m,
+        listings: m.listings.map((l) => ({ ...l, history: undefined, provenance: undefined })),
+        url: moveUrl(m.id),
+      };
+    },
+  }),
+  tool({
+    name: "create_move",
+    title: "Create an installation project",
+    description:
+      "Create a relocation project. With opportunityId only, it is pre-filled from the opportunity (and returns the existing project if there is one). Set workAddress so commutes can be computed.",
+    input: moveInputSchema.partial().extend({ title: z.string().trim().min(1).max(200).optional(), fromOpportunityOnly: z.boolean().optional() }),
+    handler: async ({ fromOpportunityOnly, ...input }, ctx) => {
+      if (input.opportunityId && (fromOpportunityOnly || !input.title)) {
+        const m = await createMoveFromOpportunity(input.opportunityId, ctx);
+        const rest = Object.fromEntries(Object.entries(input).filter(([k, v]) => k !== "opportunityId" && v !== undefined));
+        const updated = Object.keys(rest).length ? await updateMove(m.id, rest, ctx) : m;
+        return { id: updated.id, title: updated.title, url: moveUrl(updated.id) };
+      }
+      if (!input.title) throw new AppError("VALIDATION", "title is required (or pass opportunityId)");
+      const m = await createMove(input as MoveInput, ctx);
+      return { id: m.id, title: m.title, url: moveUrl(m.id) };
+    },
+  }),
+  tool({
+    name: "update_move",
+    title: "Update an installation project",
+    description: "Update a move (dates, city, workplace address, status, notes). For the budget use update_budget.",
+    input: movePatchSchema.omit({ budget: true }).extend({ moveId: z.string().uuid() }),
+    handler: async ({ moveId, ...patch }, ctx) => {
+      const m = await updateMove(moveId, patch, ctx);
+      return { id: m.id, url: moveUrl(m.id) };
+    },
+  }),
+  tool({
+    name: "update_budget",
+    title: "Update the budget plan",
+    description:
+      "Partial update of a move's monthly budget: income (net, the amount the user is SURE to get), food and foodAllowance (meal vouchers, food only), lines (phone, sport, leisure…), transitMonthly (only counted when housing is farther than walkThresholdKm), housingTarget, savingsTarget, oneOff costs. Amounts in whole currency units. Use numbers given by the user or by a source; never invent.",
+    input: budgetPlanSchema.partial().extend({ moveId: z.string().uuid() }),
+    handler: async ({ moveId, ...plan }, ctx) => {
+      await updateBudget(moveId, plan, ctx);
+      return { ok: true, url: `${moveUrl(moveId)}?tab=budget` };
+    },
+  }),
+  tool({
+    name: "upsert_housing_listing",
+    title: "Add or update a housing listing",
+    description:
+      "Add a housing listing to a move, or update it when the same URL is already tracked (dedup). Read the FULL listing first: separate rent, charges (and what they cover), deposit, fees, availability, minimum lease, furnished, room size, housemates and contacts (app/site, email, phone, WhatsApp). The price shown on search pages is often the rent alone. Unknown = omit. Fill provenance per field (EXTRACTED + short quote, or INFERRED). Never pay, apply or send anything.",
+    input: listingInputSchema.extend({ listingId: z.string().uuid().optional().describe("Update this listing instead of matching by URL") }),
+    handler: async ({ listingId, ...input }, ctx) => {
+      if (listingId) {
+        const l = await updateListing(listingId, { ...input, moveId: undefined } as Parameters<typeof updateListing>[1], ctx);
+        return { id: l.id, created: false, url: listingUrl(l.moveId, l.id) };
+      }
+      const r = await upsertListing(input, ctx);
+      return { id: r.listing.id, created: r.created, url: listingUrl(r.listing.moveId, r.listing.id) };
+    },
+  }),
+  tool({
+    name: "set_listing_status",
+    title: "Move a listing in the housing pipeline",
+    description: `Change a listing status (${LISTING_STATUSES.join(", ")}). EXCLUDED needs a reason. Ask the user before CHOSEN or DECLINED.`,
+    input: z.object({ listingId: z.string().uuid(), status: z.enum(LISTING_STATUSES), reason: z.string().max(500).optional() }),
+    handler: async ({ listingId, status, reason }, ctx) => {
+      const l = await setListingStatus(listingId, status, ctx, reason);
+      return { id: l.id, status: l.status, url: listingUrl(l.moveId, l.id) };
+    },
+  }),
+  tool({
+    name: "draft_listing_message",
+    title: "Draft a first message to a landlord",
+    description: "First-contact message for a listing (fr or en) that only asks what the listing does not already say. The user sends it themselves.",
+    input: z.object({ listingId: z.string().uuid(), language: z.enum(["fr", "en"]).optional() }),
+    readOnly: true,
+    handler: async ({ listingId, language }) => {
+      const l = await getListing(listingId);
+      return { ...(await draftListingMessage(listingId, language ?? "fr")), contacts: l.contacts };
+    },
+  }),
 ];
 
 export const MCP_INSTRUCTIONS = `Career OS is the user's personal career and application tracker (jobs, internships, VIE, masters/formations, PhDs). You operate it on the user's behalf.
@@ -612,4 +744,5 @@ Conventions:
 - Ask for explicit confirmation before irreversible or closing actions (REJECTED/WITHDRAWN/GHOSTED, archiving, bulk changes).
 - Never send emails or messages yourself: draft them (render_email_template) for the user.
 - Always give the user the record url returned by the tools.
-- Matching analyses are descriptive; the user decides whether to apply.`;
+- Matching analyses are descriptive; the user decides whether to apply.
+- Relocation: a « move » is the installation project after an offer (housing, budget). For housing listings, read the full listing and split rent / charges / deposit / lease; dedup is by URL. Never contact landlords or pay anything: draft messages (draft_listing_message) for the user.`;

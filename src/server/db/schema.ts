@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   date,
+  doublePrecision,
   index,
   integer,
   jsonb,
@@ -39,6 +40,7 @@ import type {
   ProvenanceMap,
   StoredAnalysis,
 } from "@/lib/schemas";
+import type { BudgetPlan, Furnished, HousingType, ListingContacts, ListingSource, ListingStatus, MoveStatus, ListingPick } from "@/lib/relocation";
 
 // ---------------------------------------------------------------------------
 // Column helpers
@@ -557,8 +559,107 @@ export const notifications = pgTable(
 );
 
 // ---------------------------------------------------------------------------
+// Relocation: moves (installation projects) + housing listings
+// ---------------------------------------------------------------------------
+
+export const moves = pgTable(
+  "moves",
+  {
+    id: pk(),
+    title: text("title").notNull(),
+    opportunityId: uuid("opportunity_id").references(() => opportunities.id, { onDelete: "set null" }),
+    city: text("city"),
+    country: text("country"),
+    currency: text("currency").notNull().default("EUR"),
+    arrivalDate: day("arrival_date"),
+    departureDate: day("departure_date"),
+    workAddress: text("work_address"),
+    workLat: doublePrecision("work_lat"),
+    workLng: doublePrecision("work_lng"),
+    status: text("status").$type<MoveStatus>().notNull().default("PLANNING"),
+    budget: jsonObject<Partial<BudgetPlan>>("budget"),
+    notes: text("notes"),
+    isDemo: isDemo(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    archivedAt: ts("archived_at"),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("moves_opportunity_idx").on(t.opportunityId)],
+);
+
+export interface ListingHistoryEntry {
+  at: string;
+  actor: Actor;
+  text: string;
+}
+
+export const housingListings = pgTable(
+  "housing_listings",
+  {
+    id: pk(),
+    moveId: uuid("move_id")
+      .notNull()
+      .references(() => moves.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    url: text("url"),
+    sources: jsonList<ListingSource>("sources"),
+    type: text("type").$type<HousingType>(),
+    address: text("address"),
+    district: text("district"),
+    lat: doublePrecision("lat"),
+    lng: doublePrecision("lng"),
+    distanceKm: doublePrecision("distance_km"),
+    distanceEstimated: boolean("distance_estimated").notNull().default(false),
+    rent: integer("rent"),
+    charges: integer("charges"),
+    chargesInclude: textArray("charges_include"),
+    allInclusive: boolean("all_inclusive").notNull().default(false),
+    deposit: integer("deposit"),
+    depositText: text("deposit_text"),
+    fees: jsonList<{ label: string; amount: number }>("fees"),
+    availableFrom: day("available_from"),
+    availableText: text("available_text"),
+    minLeaseMonths: integer("min_lease_months"),
+    leaseText: text("lease_text"),
+    furnished: text("furnished").$type<Furnished>().notNull().default("UNKNOWN"),
+    roomSizeM2: integer("room_size_m2"),
+    privateBathroom: boolean("private_bathroom"),
+    housemates: integer("housemates"),
+    housemateProfile: text("housemate_profile"),
+    contacts: jsonObject<ListingContacts>("contacts"),
+    photos: textArray("photos"),
+    status: text("status").$type<ListingStatus>().notNull().default("NEW"),
+    excludedReason: text("excluded_reason"),
+    pick: text("pick").$type<ListingPick>(),
+    rating: integer("rating"),
+    familyApproved: boolean("family_approved").notNull().default(false),
+    visitDate: day("visit_date"),
+    visitTime: text("visit_time"),
+    contactedAt: day("contacted_at"),
+    notes: text("notes"),
+    history: jsonList<ListingHistoryEntry>("history"),
+    provenance: jsonObject<Record<string, unknown>>("provenance"),
+    isDemo: isDemo(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("housing_move_idx").on(t.moveId, t.status), index("housing_url_idx").on(t.url)],
+);
+
+// ---------------------------------------------------------------------------
 // Relations (relational query builder)
 // ---------------------------------------------------------------------------
+
+export const movesRelations = relations(moves, ({ one, many }) => ({
+  opportunity: one(opportunities, { fields: [moves.opportunityId], references: [opportunities.id] }),
+  listings: many(housingListings),
+}));
+
+export const housingListingsRelations = relations(housingListings, ({ one }) => ({
+  move: one(moves, { fields: [housingListings.moveId], references: [moves.id] }),
+}));
 
 export const organizationsRelations = relations(organizations, ({ many }) => ({
   contacts: many(contacts),
@@ -646,3 +747,5 @@ export type Tag = typeof tags.$inferSelect;
 export type SavedView = typeof savedViews.$inferSelect;
 export type Goal = typeof goals.$inferSelect;
 export type Notification = typeof notifications.$inferSelect;
+export type Move = typeof moves.$inferSelect;
+export type HousingListing = typeof housingListings.$inferSelect;
