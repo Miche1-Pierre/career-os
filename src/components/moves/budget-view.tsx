@@ -53,36 +53,36 @@ export function BudgetView({ move }: { move: MoveView }) {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <div className="space-y-6">
         <section className="space-y-3">
-          <SectionHeader title="Income" description="What you are sure to receive each month, after taxes." />
+          <SectionHeader title="Revenus" description="Ce que tu es sûr de toucher chaque mois, après impôts." />
           <div className="grid gap-3 sm:grid-cols-3">
-            <FormField label="Net income / month" htmlFor="b-income">
+            <FormField label="Revenu net / mois" htmlFor="b-income">
               <NumberInput id="b-income" value={plan.income} onChange={(v) => set("income", v ?? 0)} />
             </FormField>
             <FormField label="Note" htmlFor="b-inote" className="sm:col-span-2">
-              <Input id="b-inote" value={plan.incomeNote ?? ""} onChange={(e) => set("incomeNote", e.target.value || null)} placeholder="1 600 € announced, 1 500 € to be safe" />
+              <Input id="b-inote" value={plan.incomeNote ?? ""} onChange={(e) => set("incomeNote", e.target.value || null)} placeholder="1 600 € annoncés, 1 500 € par prudence" />
             </FormField>
           </div>
         </section>
 
         <section className="space-y-3">
-          <SectionHeader title="Food" description="Meal vouchers only pay for food: they lower the groceries line instead of counting as income." />
+          <SectionHeader title="Alimentation" description="Les chèques-repas ne paient que la nourriture : ils réduisent les courses au lieu de compter comme revenu." />
           <div className="grid gap-3 sm:grid-cols-2">
-            <FormField label="Groceries / month" htmlFor="b-food">
+            <FormField label="Courses / mois" htmlFor="b-food">
               <NumberInput id="b-food" value={plan.food} onChange={(v) => set("food", v ?? 0)} />
             </FormField>
-            <FormField label="Meal vouchers / month" htmlFor="b-fa">
+            <FormField label="Chèques-repas / mois" htmlFor="b-fa">
               <NumberInput id="b-fa" value={plan.foodAllowance} onChange={(v) => set("foodAllowance", v ?? 0)} />
             </FormField>
           </div>
         </section>
 
         <section className="space-y-3">
-          <SectionHeader title="Transport" description="The subscription is only counted when the home is farther than the walking distance." />
+          <SectionHeader title="Transport" description="L'abonnement ne compte que si le logement est plus loin que ta distance à pied." />
           <div className="grid gap-3 sm:grid-cols-2">
-            <FormField label="Public transport / month" htmlFor="b-tr">
+            <FormField label="Transports en commun / mois" htmlFor="b-tr">
               <NumberInput id="b-tr" value={plan.transitMonthly} onChange={(v) => set("transitMonthly", v ?? 0)} />
             </FormField>
-            <FormField label="I walk up to (km)" htmlFor="b-walk">
+            <FormField label="Je marche jusqu'à (km)" htmlFor="b-walk">
               <NumberInput id="b-walk" value={plan.walkThresholdKm} onChange={(v) => set("walkThresholdKm", v ?? 0)} step={0.1} />
             </FormField>
           </div>
@@ -90,19 +90,19 @@ export function BudgetView({ move }: { move: MoveView }) {
 
         <section className="space-y-3">
           <SectionHeader
-            title="Other monthly expenses"
+            title="Autres dépenses mensuelles"
             action={
-              <Button variant="ghost" size="sm" onClick={() => set("lines", [...plan.lines, { id: uid(), label: "New expense", amount: 0, kind: "EXPENSE", note: null }])}>
-                <Plus /> Add
+              <Button variant="ghost" size="sm" onClick={() => set("lines", [...plan.lines, { id: uid(), label: "Nouvelle dépense", amount: 0, kind: "EXPENSE", note: null }])}>
+                <Plus /> Ajouter
               </Button>
             }
           />
           <div className="space-y-2">
             {plan.lines.map((line, i) => (
               <div key={line.id} className="grid grid-cols-[minmax(0,1fr)_120px_32px] items-center gap-2">
-                <Input value={line.label} aria-label="Expense" onChange={(e) => set("lines", plan.lines.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                <Input value={line.label} aria-label="Dépense" onChange={(e) => set("lines", plan.lines.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
                 <NumberInput value={line.amount} onChange={(v) => set("lines", plan.lines.map((x, j) => (j === i ? { ...x, amount: v ?? 0 } : x)))} />
-                <Button variant="ghost" size="icon-sm" aria-label="Remove" onClick={() => set("lines", plan.lines.filter((_, j) => j !== i))}>
+                <Button variant="ghost" size="icon-sm" aria-label="Retirer" onClick={() => set("lines", plan.lines.filter((_, j) => j !== i))}>
                   <Trash2 />
                 </Button>
               </div>
@@ -111,12 +111,12 @@ export function BudgetView({ move }: { move: MoveView }) {
         </section>
 
         <section className="space-y-3">
-          <SectionHeader title="Goals" />
+          <SectionHeader title="Objectifs" />
           <div className="grid gap-3 sm:grid-cols-2">
-            <FormField label="Housing budget (all inclusive)" htmlFor="b-ht">
+            <FormField label="Budget logement (tout compris)" htmlFor="b-ht">
               <NumberInput id="b-ht" value={plan.housingTarget} onChange={(v) => set("housingTarget", v)} />
             </FormField>
-            <FormField label="Savings goal / month" htmlFor="b-st">
+            <FormField label="Objectif d'épargne / mois" htmlFor="b-st">
               <NumberInput id="b-st" value={plan.savingsTarget} onChange={(v) => set("savingsTarget", v)} />
             </FormField>
           </div>
@@ -124,20 +124,20 @@ export function BudgetView({ move }: { move: MoveView }) {
 
         <section className="space-y-3">
           <SectionHeader
-            title="One-off costs"
-            description="Paid once: travel, setting up… The deposit and first month of the selected home are added automatically."
+            title="Coûts ponctuels"
+            description="Payés une fois : voyage, installation… La garantie et le premier mois du logement sélectionné sont ajoutés automatiquement."
             action={
-              <Button variant="ghost" size="sm" onClick={() => set("oneOff", [...plan.oneOff, { id: uid(), label: "New cost", amount: 0 }])}>
-                <Plus /> Add
+              <Button variant="ghost" size="sm" onClick={() => set("oneOff", [...plan.oneOff, { id: uid(), label: "Nouveau coût", amount: 0 }])}>
+                <Plus /> Ajouter
               </Button>
             }
           />
           <div className="space-y-2">
             {plan.oneOff.map((o, i) => (
               <div key={o.id} className="grid grid-cols-[minmax(0,1fr)_120px_32px] items-center gap-2">
-                <Input value={o.label} aria-label="Cost" onChange={(e) => set("oneOff", plan.oneOff.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
+                <Input value={o.label} aria-label="Coût" onChange={(e) => set("oneOff", plan.oneOff.map((x, j) => (j === i ? { ...x, label: e.target.value } : x)))} />
                 <NumberInput value={o.amount} onChange={(v) => set("oneOff", plan.oneOff.map((x, j) => (j === i ? { ...x, amount: v ?? 0 } : x)))} />
-                <Button variant="ghost" size="icon-sm" aria-label="Remove" onClick={() => set("oneOff", plan.oneOff.filter((_, j) => j !== i))}>
+                <Button variant="ghost" size="icon-sm" aria-label="Retirer" onClick={() => set("oneOff", plan.oneOff.filter((_, j) => j !== i))}>
                   <Trash2 />
                 </Button>
               </div>
@@ -146,12 +146,12 @@ export function BudgetView({ move }: { move: MoveView }) {
         </section>
 
         <div className="sticky bottom-0 flex items-center justify-end gap-2 border-t border-separator bg-background/90 py-3 backdrop-blur">
-          {dirty && <span className="mr-auto text-xs text-muted-foreground">Unsaved changes</span>}
+          {dirty && <span className="mr-auto text-xs text-muted-foreground">Modifications non enregistrées</span>}
           <Button variant="outline" disabled={!dirty} onClick={() => setPlan(move.budgetPlan)}>
-            Reset
+            Réinitialiser
           </Button>
-          <Button variant="highlight" disabled={!dirty || pending} onClick={() => run(() => updateBudgetAction(move.id, plan), { success: "Budget saved" })}>
-            Save budget
+          <Button variant="highlight" disabled={!dirty || pending} onClick={() => run(() => updateBudgetAction(move.id, plan), { success: "Budget enregistré" })}>
+            Enregistrer le budget
           </Button>
         </div>
       </div>
@@ -159,13 +159,13 @@ export function BudgetView({ move }: { move: MoveView }) {
       <aside className="space-y-4 lg:sticky lg:top-4 lg:self-start">
         <div className="space-y-3 rounded-2xl border border-border bg-background p-4">
           <div className="space-y-1.5">
-            <span className="text-xs text-muted-foreground">Housing used for the calculation</span>
+            <span className="text-xs text-muted-foreground">Logement utilisé pour le calcul</span>
             <Select value={choice} onValueChange={setChoice}>
               <SelectTrigger className="w-full">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="target">My housing budget ({money(plan.housingTarget, cur)})</SelectItem>
+                <SelectItem value="target">Mon budget logement ({money(plan.housingTarget, cur)})</SelectItem>
                 {priced.map((l) => (
                   <SelectItem key={l.id} value={l.id}>
                     {l.title} · {money(l.total, cur)}
@@ -175,37 +175,37 @@ export function BudgetView({ move }: { move: MoveView }) {
             </Select>
           </div>
           <dl className="divide-y divide-separator text-sm">
-            <Line label="Net income" value={money(result.income, cur)} />
-            <Line label="Housing (rent + charges)" value={`− ${money(result.housing, cur)}`} />
-            <Line label={`Groceries not covered by vouchers`} value={`− ${money(result.foodOutOfPocket, cur)}`} />
-            <Line label={result.walkable ? "Transport (you walk)" : "Transport"} value={`− ${money(result.transport, cur)}`} />
+            <Line label="Revenu net" value={money(result.income, cur)} />
+            <Line label="Logement (loyer + charges)" value={`− ${money(result.housing, cur)}`} />
+            <Line label="Courses non couvertes par les chèques-repas" value={`− ${money(result.foodOutOfPocket, cur)}`} />
+            <Line label={result.walkable ? "Transport (à pied)" : "Transport"} value={`− ${money(result.transport, cur)}`} />
             {plan.lines.map((l) => (
               <Line key={l.id} label={l.label} value={`− ${money(l.amount, cur)}`} />
             ))}
           </dl>
           <div className="flex items-baseline justify-between border-t border-border pt-3">
-            <span className="heading-sm">You save each month</span>
+            <span className="heading-sm">Épargne chaque mois</span>
             <span className={cn("heading-xl tabular-nums", savingsTone(result.savings))}>{signedMoney(result.savings, cur)}</span>
           </div>
           {result.savingsVsTarget !== null && (
             <p className="text-xs text-muted-foreground">
-              {result.savingsVsTarget >= 0 ? `${money(result.savingsVsTarget, cur)} above your goal` : `${money(-result.savingsVsTarget, cur)} below your goal`}
-              {move.stayMonths ? ` · ${money(result.savings * move.stayMonths, cur)} over ${move.stayMonths} months` : ""}
+              {result.savingsVsTarget >= 0 ? `${money(result.savingsVsTarget, cur)} au-dessus de ton objectif` : `${money(-result.savingsVsTarget, cur)} sous ton objectif`}
+              {move.stayMonths ? ` · ${money(result.savings * move.stayMonths, cur)} sur ${move.stayMonths} mois` : ""}
             </p>
           )}
           <div className="rounded-xl bg-muted-background p-3 text-xs text-muted-foreground">
-            Money needed before moving in: <span className="font-medium text-foreground">{money(upfront, cur)}</span>
+            Argent à prévoir avant d’emménager : <span className="font-medium text-foreground">{money(upfront, cur)}</span>
             <br />
-            first month {money(housing, cur)}
-            {deposit ? ` + deposit ${money(deposit, cur)}` : selected ? " + deposit (unknown)" : ""}
-            {fees ? ` + fees ${money(fees, cur)}` : ""}
-            {plan.oneOff.length ? ` + one-off ${money(oneOffTotal(plan), cur)}` : ""}
+            premier mois {money(housing, cur)}
+            {deposit ? ` + garantie ${money(deposit, cur)}` : selected ? " + garantie (inconnue)" : ""}
+            {fees ? ` + frais ${money(fees, cur)}` : ""}
+            {plan.oneOff.length ? ` + ponctuels ${money(oneOffTotal(plan), cur)}` : ""}
           </div>
         </div>
 
         {comparison.length > 0 && (
           <div className="space-y-2">
-            <h3 className="heading-sm text-foreground">Savings by home</h3>
+            <h3 className="heading-sm text-foreground">Épargne par logement</h3>
             <ul className="overflow-hidden rounded-2xl border border-border bg-background">
               {comparison.map(({ l, r }) => (
                 <li key={l.id} className="flex items-center gap-3 border-b border-separator px-3 py-2 last:border-0">

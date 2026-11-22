@@ -1,24 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   BarChart3,
-  Bookmark,
+  Briefcase,
   Building2,
   CalendarDays,
   FileText,
   GraduationCap,
   Inbox,
   LayoutDashboard,
-  List,
   ListChecks,
   Plane,
   Plus,
   Settings,
-  SquareKanban,
   Sun,
   Trash2,
+  UserRound,
   Users,
 } from "lucide-react";
 import {
@@ -49,50 +48,51 @@ interface NavItem {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: number;
-  exact?: boolean;
-  shortcut?: string;
+  /** Extra path prefixes that also activate this item. */
+  also?: string[];
+}
+
+function isActive(pathname: string, item: NavItem) {
+  const prefixes = [item.href, ...(item.also ?? [])];
+  return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 function NavGroup({ label, items }: { label?: string; items: NavItem[] }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { isMobile, setOpenMobile } = useSidebar();
-  const view = searchParams.get("view");
   return (
     <SidebarGroup className="py-1">
       {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => {
-            const [path, query] = item.href.split("?");
-            const active = query
-              ? pathname === path && query === `view=${view}`
-              : item.exact
-                ? pathname === path && !view
-                : pathname === path || (pathname.startsWith(`${path}/`) && !(path === "/applications" && pathname.startsWith("/applications/board")));
-            return (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton asChild isActive={active} tooltip={item.label}>
-                  <Link href={item.href} onClick={() => isMobile && setOpenMobile(false)}>
-                    <item.icon />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-                {!!item.badge && <SidebarMenuBadge className="tabular-nums">{item.badge}</SidebarMenuBadge>}
-              </SidebarMenuItem>
-            );
-          })}
+          {items.map((item) => (
+            <SidebarMenuItem key={item.href}>
+              <SidebarMenuButton asChild isActive={isActive(pathname, item)} tooltip={item.label}>
+                <Link href={item.href} onClick={() => isMobile && setOpenMobile(false)}>
+                  <item.icon />
+                  <span className="truncate">{item.label}</span>
+                </Link>
+              </SidebarMenuButton>
+              {!!item.badge && <SidebarMenuBadge className="tabular-nums">{item.badge}</SidebarMenuBadge>}
+            </SidebarMenuItem>
+          ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
   );
 }
 
+/**
+ * Navigation follows the journey: what to do now, then Prepare → Apply → Settle in, then the network and the
+ * review screens. Saved views live in the Applications toolbar, the inbox only shows up when captures wait.
+ */
 export function AppSidebar() {
-  const { badges, views, ai } = useAppData();
+  const { badges, ai } = useAppData();
   const { open: openImport } = useQuickImport();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const apply: NavItem[] = [{ href: "/applications", label: "Candidatures", icon: Briefcase }];
+  if (badges.inbox > 0) apply.push({ href: "/inbox", label: "À trier", icon: Inbox, badge: badges.inbox });
   return (
     <Sidebar collapsible="icon" variant="sidebar">
       <SidebarHeader className="gap-2">
@@ -101,23 +101,23 @@ export function AppSidebar() {
           {!collapsed && (
             <span className="flex min-w-0 flex-col gap-0.5 leading-none">
               <span className="heading-sm text-foreground">Career OS</span>
-              <span className="text-xs text-faint">Personal pipeline</span>
+              <span className="truncate text-xs text-faint">Pilotage de carrière</span>
             </span>
           )}
         </Link>
         {collapsed ? (
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="highlight" size="icon-sm" onClick={() => openImport()} aria-label="Quick import">
+              <Button variant="highlight" size="icon-sm" onClick={() => openImport()} aria-label="Import rapide">
                 <Plus />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">Quick import (I)</TooltipContent>
+            <TooltipContent side="right">Import rapide (I)</TooltipContent>
           </Tooltip>
         ) : (
           <Button variant="highlight" onClick={() => openImport()} className="w-full justify-start gap-2">
             <Plus />
-            Quick import
+            Import rapide
             <Kbd className="ml-auto border-transparent bg-white/20 text-white shadow-none dark:bg-white/20">I</Kbd>
           </Button>
         )}
@@ -125,61 +125,59 @@ export function AppSidebar() {
       <SidebarContent>
         <NavGroup
           items={[
-            { href: "/today", label: "Today", icon: Sun, badge: badges.today },
-            { href: "/inbox", label: "Inbox", icon: Inbox, badge: badges.inbox },
-            { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+            { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today },
+            { href: "/tasks", label: "Tâches", icon: ListChecks },
+            { href: "/calendar", label: "Calendrier", icon: CalendarDays },
           ]}
         />
         <NavGroup
-          label="Pipeline"
+          label="Préparer"
           items={[
-            { href: "/applications", label: "Applications", icon: List, exact: true },
-            { href: "/applications/board", label: "Board", icon: SquareKanban },
-            { href: "/calendar", label: "Calendar", icon: CalendarDays },
-            { href: "/tasks", label: "Tasks", icon: ListChecks },
+            { href: "/settings/profile", label: "Profil & CV", icon: UserRound },
+            { href: "/documents", label: "Documents", icon: FileText },
           ]}
         />
-        <NavGroup label="Relocation" items={[{ href: "/moves", label: "Moves", icon: Plane }]} />
+        <NavGroup label="Candidater" items={apply} />
+        <NavGroup label="S'installer" items={[{ href: "/moves", label: "Installations", icon: Plane }]} />
         <NavGroup
-          label="Network"
+          label="Réseau"
           items={[
-            { href: "/companies", label: "Companies", icon: Building2 },
-            { href: "/institutions", label: "Institutions", icon: GraduationCap },
+            { href: "/companies", label: "Entreprises", icon: Building2 },
+            { href: "/institutions", label: "Établissements", icon: GraduationCap },
             { href: "/contacts", label: "Contacts", icon: Users },
           ]}
         />
         <NavGroup
-          label="Library"
+          label="Bilan"
           items={[
-            { href: "/documents", label: "Documents", icon: FileText },
-            { href: "/analytics", label: "Analytics", icon: BarChart3 },
+            { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+            { href: "/analytics", label: "Statistiques", icon: BarChart3 },
           ]}
         />
-        {views.length > 0 && <NavGroup label="Views" items={views.map((v) => ({ href: `/applications?view=${v.id}`, label: v.name, icon: Bookmark }))} />}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Trash">
+            <SidebarMenuButton asChild tooltip="Corbeille">
               <Link href="/trash">
                 <Trash2 />
-                <span>Recently deleted</span>
+                <span>Corbeille</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Settings">
+            <SidebarMenuButton asChild tooltip="Paramètres">
               <Link href="/settings/general">
                 <Settings />
-                <span>Settings</span>
+                <span>Paramètres</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip={ai.available ? `AI: ${ai.detail}` : "AI not configured"}>
+            <SidebarMenuButton asChild tooltip={ai.available ? `IA : ${ai.detail}` : "IA non configurée"}>
               <Link href="/settings/ai">
                 <span className={cn("ml-1 size-2 shrink-0 rounded-full", ai.available ? "bg-success-500" : "bg-stone-400")} />
-                <span className="truncate text-xs text-faint">{ai.available ? `AI · ${ai.provider}` : "AI off — MCP only"}</span>
+                <span className="truncate text-xs text-faint">{ai.available ? `IA · ${ai.provider}` : "IA désactivée (MCP seul)"}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

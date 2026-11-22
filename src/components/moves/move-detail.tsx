@@ -69,7 +69,7 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
     <PageContainer wide className="space-y-6">
       <nav className="flex items-center gap-1 text-sm text-muted-foreground">
         <Link href="/moves" className="hover:text-foreground">
-          Moves
+          Installations
         </Link>
         <ChevronRight className="size-3.5 text-faint" />
         <span className="truncate">{move.title}</span>
@@ -81,7 +81,7 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
             <Badge size="sm" variant="info">
               {MOVE_STATUS_LABEL[move.status]}
             </Badge>
-            {move.archivedAt && <Badge size="sm">Archived</Badge>}
+            {move.archivedAt && <Badge size="sm">Archivé</Badge>}
           </div>
           <h1 className="heading-2xl text-foreground">{move.title}</h1>
           <p className="flex flex-wrap items-center gap-x-3 gap-y-1 copy-sm text-muted-foreground">
@@ -95,7 +95,7 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
               <span className="inline-flex items-center gap-1">
                 <CalendarDays className="size-3.5" />
                 {dates}
-                {move.stayMonths ? ` · ${move.stayMonths} months` : ""}
+                {move.stayMonths ? ` · ${move.stayMonths} mois` : ""}
               </span>
             )}
             {move.opportunityId && (
@@ -107,7 +107,7 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Select value={move.status} onValueChange={(v) => run(() => updateMoveAction(move.id, { status: v as MoveStatus }), { success: "Status updated" })}>
+          <Select value={move.status} onValueChange={(v) => run(() => updateMoveAction(move.id, { status: v as MoveStatus }), { success: "Statut mis à jour" })}>
             <SelectTrigger className="w-44">
               <SelectValue />
             </SelectTrigger>
@@ -120,27 +120,27 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
             </SelectContent>
           </Select>
           <Button variant="outline" onClick={() => setMoveFormOpen(true)}>
-            <Pencil /> Edit
+            <Pencil /> Modifier
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost-secondary" size="icon" aria-label="More actions">
+              <Button variant="ghost-secondary" size="icon" aria-label="Plus d'actions">
                 <MoreHorizontal />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => run(() => archiveMoveAction(move.id, !move.archivedAt), { success: move.archivedAt ? "Unarchived" : "Archived" })}>
-                {move.archivedAt ? <ArchiveRestore /> : <Archive />} {move.archivedAt ? "Unarchive" : "Archive"}
+              <DropdownMenuItem onClick={() => run(() => archiveMoveAction(move.id, !move.archivedAt), { success: move.archivedAt ? "Désarchivé" : "Archivé" })}>
+                {move.archivedAt ? <ArchiveRestore /> : <Archive />} {move.archivedAt ? "Désarchiver" : "Archiver"}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"
                 onClick={async () => {
-                  if (await confirm({ title: "Delete this move?", description: "Its listings and budget are deleted with it.", destructive: true, confirmLabel: "Delete" }))
-                    run(() => deleteMoveAction(move.id), { success: "Move deleted", onSuccess: () => router.push("/moves") });
+                  if (await confirm({ title: "Supprimer cette installation ?", description: "Ses annonces et son budget sont supprimés avec elle.", destructive: true, confirmLabel: "Supprimer" }))
+                    run(() => deleteMoveAction(move.id), { success: "Installation supprimée", onSuccess: () => router.push("/moves") });
                 }}
               >
-                <Trash2 /> Delete
+                <Trash2 /> Supprimer
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -149,9 +149,9 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
 
       <Tabs value={tab} onValueChange={changeTab}>
         <TabsList variant="line">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="overview">Aperçu</TabsTrigger>
           <TabsTrigger value="housing">
-            Housing {move.summary.open > 0 && <span className="text-xs text-muted-foreground tabular-nums">{move.summary.open}</span>}
+            Logement {move.summary.open > 0 && <span className="text-xs text-muted-foreground tabular-nums">{move.summary.open}</span>}
           </TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
         </TabsList>
@@ -190,16 +190,16 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
   const chosen = s.chosen ? move.listings.find((l) => l.id === s.chosen!.id) : null;
 
   const actions: { key: string; icon: typeof Home; tone?: "warning" | "highlight" | "info"; title: string; sub?: string; onClick: () => void }[] = [];
-  if (!move.workAddress) actions.push({ key: "work", icon: TriangleAlert, tone: "warning", title: "Add the workplace address", sub: "Needed to compute walking times and transport costs", onClick: onEdit });
-  if (!move.budgetPlan.income) actions.push({ key: "income", icon: PiggyBank, tone: "warning", title: "Set your net income", sub: "The savings of each home are computed from it", onClick: () => onTab("budget") });
+  if (!move.workAddress) actions.push({ key: "work", icon: TriangleAlert, tone: "warning", title: "Ajouter l'adresse du lieu de travail", sub: "Nécessaire pour les temps de marche et les frais de transport", onClick: onEdit });
+  if (!move.budgetPlan.income) actions.push({ key: "income", icon: PiggyBank, tone: "warning", title: "Renseigner ton revenu net", sub: "L'épargne de chaque logement en dépend", onClick: () => onTab("budget") });
   for (const l of move.listings) {
     if (l.status === "VISIT_PLANNED" && l.visitDate && l.visitDate >= today)
-      actions.push({ key: `v${l.id}`, icon: CalendarDays, tone: "info", title: `Visit · ${l.title}`, sub: `${formatISODate(l.visitDate, "medium", dateLocale)}${l.visitTime ? ` at ${l.visitTime}` : ""}`, onClick: () => onOpenListing(l.id) });
+      actions.push({ key: `v${l.id}`, icon: CalendarDays, tone: "info", title: `Visite · ${l.title}`, sub: `${formatISODate(l.visitDate, "medium", dateLocale)}${l.visitTime ? ` à ${l.visitTime}` : ""}`, onClick: () => onOpenListing(l.id) });
   }
   for (const l of move.listings) {
-    if (l.status === "SHORTLISTED") actions.push({ key: `c${l.id}`, icon: Home, tone: "highlight", title: `Contact · ${l.title}`, sub: [l.contacts?.app ? "website / app" : null, l.contacts?.email ? "email" : null, l.contacts?.phone || l.contacts?.whatsapp ? "phone" : null].filter(Boolean).join(" · ") || "no contact yet", onClick: () => onOpenListing(l.id) });
+    if (l.status === "SHORTLISTED") actions.push({ key: `c${l.id}`, icon: Home, tone: "highlight", title: `Contacter · ${l.title}`, sub: [l.contacts?.app ? "site / app" : null, l.contacts?.email ? "email" : null, l.contacts?.phone || l.contacts?.whatsapp ? "téléphone" : null].filter(Boolean).join(" · ") || "pas encore de contact", onClick: () => onOpenListing(l.id) });
     if (l.status === "CONTACTED" && l.contactedAt && l.contactedAt <= addDays(today, -3))
-      actions.push({ key: `f${l.id}`, icon: Home, title: `Follow up · ${l.title}`, sub: `Contacted ${formatISODate(l.contactedAt, "dayMonth", dateLocale)}, no reply logged`, onClick: () => onOpenListing(l.id) });
+      actions.push({ key: `f${l.id}`, icon: Home, title: `Relancer · ${l.title}`, sub: `Contacté le ${formatISODate(l.contactedAt, "dayMonth", dateLocale)}, pas de réponse notée`, onClick: () => onOpenListing(l.id) });
   }
   const fresh = move.listings.filter((l) => l.status === "NEW");
   if (fresh.length)
@@ -207,8 +207,8 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
       key: "review",
       icon: Home,
       tone: "highlight",
-      title: `Review ${fresh.length} new listing${fresh.length > 1 ? "s" : ""}`,
-      sub: "Star your favourites, then move the ones to contact to « To contact »",
+      title: `Trier ${fresh.length} nouvelle${fresh.length > 1 ? "s" : ""} annonce${fresh.length > 1 ? "s" : ""}`,
+      sub: "Mets une étoile à tes préférées, puis passe celles à contacter en « À contacter »",
       onClick: () => onTab("housing"),
     });
 
@@ -216,28 +216,28 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
     <div className="space-y-8">
       <div className="grid gap-3 sm:grid-cols-3">
         <ValueCard
-          title="Arrival"
+          title="Arrivée"
           icon={CalendarDays}
-          value={s.daysUntilArrival === null ? "–" : s.daysUntilArrival > 0 ? `${s.daysUntilArrival} days` : s.daysUntilArrival === 0 ? "Today" : "Arrived"}
-          subtitle={move.arrivalDate ? formatISODate(move.arrivalDate, "long", dateLocale) : "Date not set"}
+          value={s.daysUntilArrival === null ? "–" : s.daysUntilArrival > 0 ? `${s.daysUntilArrival} jours` : s.daysUntilArrival === 0 ? "Aujourd'hui" : "Arrivé"}
+          subtitle={move.arrivalDate ? formatISODate(move.arrivalDate, "long", dateLocale) : "Date non définie"}
         />
         <ValueCard
-          title="Housing"
+          title="Logement"
           icon={Home}
           variant={chosen ? "default" : s.open ? "highlight" : "default"}
           value={chosen ? money(chosen.total, cur) : `${s.open}`}
-          subtitle={chosen ? chosen.title : `active listings · ${s.toContact} to contact · ${s.visitsPlanned} visits`}
+          subtitle={chosen ? chosen.title : `annonces actives · ${s.toContact} à contacter · ${s.visitsPlanned} visites`}
         />
         <ValueCard
-          title={chosen ? "Savings / month" : "Best savings / month"}
+          title={chosen ? "Épargne / mois" : "Meilleure épargne / mois"}
           icon={PiggyBank}
           value={<span className={cn(savingsTone(chosen?.budget?.savings ?? s.bestSavings?.savings))}>{chosen?.budget ? signedMoney(chosen.budget.savings, cur) : s.bestSavings ? signedMoney(s.bestSavings.savings, cur) : "–"}</span>}
-          subtitle={chosen ? "with the chosen home" : s.bestSavings ? s.bestSavings.title : "Add listings with a price"}
+          subtitle={chosen ? "avec le logement choisi" : s.bestSavings ? s.bestSavings.title : "Ajoute des annonces avec un prix"}
         />
       </div>
 
       <section className="space-y-3">
-        <SectionHeader title="Next steps" count={actions.length} />
+        <SectionHeader title="Prochaines étapes" count={actions.length} />
         {actions.length ? (
           <List>
             {actions.slice(0, 12).map((a) => (
@@ -252,15 +252,15 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
             ))}
           </List>
         ) : (
-          <p className="copy-sm text-muted-foreground">Nothing pending. Add listings in Housing, or ask Claude to search for you.</p>
+          <p className="copy-sm text-muted-foreground">Rien en attente. Ajoute des annonces dans Logement, ou demande à Claude de chercher pour toi dans le chat.</p>
         )}
       </section>
 
       <section className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2">
-          <SectionHeader title="Workplace" />
-          <p className="copy-sm">{move.workAddress ?? <span className="text-muted-foreground">Not set</span>}</p>
-          {move.workAddress && move.workLat === null && <p className="text-xs text-warning-700">Address not located: walking times use the distances entered on each listing.</p>}
+          <SectionHeader title="Lieu de travail" />
+          <p className="copy-sm">{move.workAddress ?? <span className="text-muted-foreground">Non renseigné</span>}</p>
+          {move.workAddress && move.workLat === null && <p className="text-xs text-warning-700">Adresse non localisée : les temps de marche utilisent les distances saisies sur chaque annonce.</p>}
         </div>
         {move.notes && (
           <div className="space-y-2">

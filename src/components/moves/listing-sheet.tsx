@@ -22,6 +22,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,7 +35,7 @@ import type { ListingView } from "@/server/services/moves";
 import { cn } from "@/lib/utils";
 import { mapsDirections, money, savingsTone, signedMoney } from "./format";
 
-const FURNISHED_LABEL = { YES: "Furnished", SEMI: "Semi-furnished", NO: "Not furnished", UNKNOWN: "Unknown" } as const;
+const FURNISHED_LABEL = { YES: "Meublé", SEMI: "Semi-meublé", NO: "Non meublé", UNKNOWN: "Inconnu" } as const;
 
 function Row({ label, children, muted }: { label: string; children: React.ReactNode; muted?: boolean }) {
   return (
@@ -45,7 +46,7 @@ function Row({ label, children, muted }: { label: string; children: React.ReactN
   );
 }
 
-const ask = <span className="text-muted-foreground italic">to ask</span>;
+const ask = <span className="text-muted-foreground italic">à demander</span>;
 
 export function ListingSheet({
   listing,
@@ -84,10 +85,10 @@ export function ListingSheet({
   const setStatus = async (status: ListingStatus) => {
     let reason: string | null = null;
     if (status === "EXCLUDED" && !l.excludedReason) {
-      reason = window.prompt("Why exclude it? (kept for later comparisons)");
+      reason = window.prompt("Pourquoi l'écarter ? (gardé pour comparer plus tard)");
       if (!reason) return;
     }
-    if ((status === "CHOSEN" || status === "DECLINED") && !(await confirm({ title: status === "CHOSEN" ? "Choose this home?" : "Decline this listing?", description: status === "CHOSEN" ? "The budget will use this home. You can change it later." : "It moves to the closed listings.", confirmLabel: "Confirm" })))
+    if ((status === "CHOSEN" || status === "DECLINED") && !(await confirm({ title: status === "CHOSEN" ? "Choisir ce logement ?" : "Refuser cette annonce ?", description: status === "CHOSEN" ? "Le budget utilisera ce logement. Tu pourras changer plus tard." : "Elle passe dans les annonces fermées.", confirmLabel: "Confirmer" })))
       return;
     run(() => setListingStatusAction(l.id, status, reason), { success: `${LISTING_STATUS_META[status].label}` });
   };
@@ -116,36 +117,36 @@ export function ListingSheet({
                 onClick={() => run(() => updateListingAction(l.id, { pick: l.pick === "YES" ? null : "YES" }))}
                 aria-pressed={l.pick === "YES"}
               >
-                <Star className={cn(l.pick === "YES" && "fill-current text-warning-500")} /> My top
+                <Star className={cn(l.pick === "YES" && "fill-current text-warning-500")} /> Mon top
               </Button>
               <Button variant={l.familyApproved ? "secondary" : "ghost"} size="sm" onClick={() => run(() => updateListingAction(l.id, { familyApproved: !l.familyApproved }))} aria-pressed={l.familyApproved}>
-                {l.familyApproved ? "Family OK ✓" : "Family OK?"}
+                {l.familyApproved ? "Validé famille ✓" : "Validé famille ?"}
               </Button>
             </div>
             <SheetTitle className="heading-lg text-left">{l.title}</SheetTitle>
             <SheetDescription className="text-left">
-              {[l.type ? HOUSING_TYPE_LABEL[l.type] : null, l.district ?? l.address].filter(Boolean).join(" · ") || "Housing listing"}
+              {[l.type ? HOUSING_TYPE_LABEL[l.type] : null, l.district ?? l.address].filter(Boolean).join(" · ") || "Annonce de logement"}
             </SheetDescription>
             <div className="flex flex-wrap gap-2">
               {l.url && (
                 <Button variant="outline" size="sm" asChild>
                   <a href={l.url} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink /> Open listing
+                    <ExternalLink /> Ouvrir l’annonce
                   </a>
                 </Button>
               )}
               <Button variant="outline" size="sm" onClick={() => onEdit(l)}>
-                <Pencil /> Edit
+                <Pencil /> Modifier
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={async () => {
-                  if (await confirm({ title: "Delete this listing?", description: "It disappears from the move. Use « Excluded » instead to keep a trace.", destructive: true, confirmLabel: "Delete" }))
-                    run(() => deleteListingAction(l.id), { success: "Listing deleted", onSuccess: () => onOpenChange(false) });
+                  if (await confirm({ title: "Supprimer cette annonce ?", description: "Elle disparaît de l'installation. Choisis plutôt « Écarté » pour en garder une trace.", destructive: true, confirmLabel: "Supprimer" }))
+                    run(() => deleteListingAction(l.id), { success: "Annonce supprimée", onSuccess: () => onOpenChange(false) });
                 }}
               >
-                <Trash2 /> Delete
+                <Trash2 /> Supprimer
               </Button>
             </div>
           </SheetHeader>
@@ -163,20 +164,20 @@ export function ListingSheet({
             )}
 
             <section>
-              <h3 className="heading-sm text-foreground">Cost per month</h3>
+              <h3 className="heading-sm text-foreground">Coût par mois</h3>
               <div className="divide-y divide-separator">
-                <Row label="Rent">{l.rent !== null ? money(l.rent, currency) : ask}</Row>
-                <Row label="Charges">{l.charges !== null ? money(l.charges, currency) : l.allInclusive ? "Included" : ask}</Row>
-                {(l.chargesInclude ?? []).length > 0 && <Row label="Charges cover" muted>{l.chargesInclude.join(", ")}</Row>}
+                <Row label="Loyer">{l.rent !== null ? money(l.rent, currency) : ask}</Row>
+                <Row label="Charges">{l.charges !== null ? money(l.charges, currency) : l.allInclusive ? "Inclus" : ask}</Row>
+                {(l.chargesInclude ?? []).length > 0 && <Row label="Les charges couvrent" muted>{l.chargesInclude.join(", ")}</Row>}
                 <Row label="Total">
                   <span className="heading-sm">{l.total !== null ? money(l.total, currency) : "–"}</span>
                 </Row>
                 {l.budget && (
-                  <Row label="You save each month">
+                  <Row label="Épargne chaque mois">
                     <span className={cn("heading-sm", savingsTone(l.budget.savings))}>{signedMoney(l.budget.savings, currency)}</span>
                   </Row>
                 )}
-                <Row label="Deposit">{l.deposit !== null ? money(l.deposit, currency) : l.depositText ?? ask}</Row>
+                <Row label="Garantie">{l.deposit !== null ? money(l.deposit, currency) : l.depositText ?? ask}</Row>
                 {(l.fees ?? []).map((f) => (
                   <Row key={f.label} label={f.label}>
                     {money(f.amount, currency)}
@@ -188,35 +189,35 @@ export function ListingSheet({
             <section>
               <h3 className="heading-sm text-foreground">Conditions</h3>
               <div className="divide-y divide-separator">
-                <Row label="Available">{l.availableFrom ?? l.availableText ?? ask}</Row>
-                <Row label="Minimum lease">{l.minLeaseMonths !== null ? `${l.minLeaseMonths} months` : l.leaseText ?? ask}</Row>
+                <Row label="Disponible">{l.availableFrom ?? l.availableText ?? ask}</Row>
+                <Row label="Bail minimum">{l.minLeaseMonths !== null ? `${l.minLeaseMonths} mois` : l.leaseText ?? ask}</Row>
                 {l.leaseText && l.minLeaseMonths !== null && <Row label="" muted>{l.leaseText}</Row>}
-                <Row label="Furnished">{l.furnished === "UNKNOWN" ? ask : FURNISHED_LABEL[l.furnished]}</Row>
-                <Row label="Room">{[l.roomSizeM2 ? `${l.roomSizeM2} m²` : null, l.privateBathroom === null ? null : l.privateBathroom ? "private bathroom" : "shared bathroom"].filter(Boolean).join(" · ") || ask}</Row>
-                <Row label="People in the home">{l.housemates ?? ask}</Row>
-                {l.housemateProfile && <Row label="Housemates" muted>{l.housemateProfile}</Row>}
+                <Row label="Meublé">{l.furnished === "UNKNOWN" ? ask : FURNISHED_LABEL[l.furnished]}</Row>
+                <Row label="Chambre">{[l.roomSizeM2 ? `${l.roomSizeM2} m²` : null, l.privateBathroom === null ? null : l.privateBathroom ? "salle de bain privée" : "salle de bain partagée"].filter(Boolean).join(" · ") || ask}</Row>
+                <Row label="Personnes dans le logement">{l.housemates ?? ask}</Row>
+                {l.housemateProfile && <Row label="Colocataires" muted>{l.housemateProfile}</Row>}
               </div>
             </section>
 
             <section>
-              <h3 className="heading-sm text-foreground">Location</h3>
+              <h3 className="heading-sm text-foreground">Emplacement</h3>
               <div className="divide-y divide-separator">
-                <Row label="Address">{l.address ?? ask}</Row>
-                <Row label="To work">
+                <Row label="Adresse">{l.address ?? ask}</Row>
+                <Row label="Trajet jusqu'au travail">
                   {l.commuteKm !== null ? (
                     <>
                       {l.distanceEstimated && l.lat === null ? "≈ " : ""}
-                      {l.commuteKm.toLocaleString("fr-FR")} km · ~{l.walkMin} min walk
+                      {l.commuteKm.toLocaleString("fr-FR")} km · ~{l.walkMin} min à pied
                     </>
                   ) : (
-                    <span className="text-muted-foreground">Add the address</span>
+                    <span className="text-muted-foreground">Ajoute l’adresse</span>
                   )}
                 </Row>
               </div>
               {directions && (
                 <Button variant="link" size="sm" asChild className="mt-1">
                   <a href={directions} target="_blank" rel="noopener noreferrer">
-                    <MapPin /> Route on Google Maps
+                    <MapPin /> Itinéraire sur Google Maps
                   </a>
                 </Button>
               )}
@@ -229,12 +230,12 @@ export function ListingSheet({
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button variant="highlight" size="sm" onClick={() => setMessageOpen(true)}>
-                  <MessageSquareText /> Prepare a message
+                  <MessageSquareText /> Préparer un message
                 </Button>
                 {c.app && (
                   <Button variant="outline" size="sm" asChild>
                     <a href={/^https?:/.test(c.app) ? c.app.split(" ")[0] : `https://www.google.com/search?q=${encodeURIComponent(c.app)}`} target="_blank" rel="noopener noreferrer">
-                      <Globe /> Website / app
+                      <Globe /> Site / app
                     </a>
                   </Button>
                 )}
@@ -252,27 +253,27 @@ export function ListingSheet({
               {unknowns.length > 0 && (
                 <p className="flex items-start gap-2 text-xs text-muted-foreground">
                   <CircleHelp className="mt-0.5 size-3.5 shrink-0" />
-                  To ask: {unknowns.map((u) => u.label.replace(/\?$/, "").toLowerCase()).join(", ")}.
+                  À demander : {unknowns.map((u) => u.label.replace(/\?$/, "").toLowerCase()).join(", ")}.
                 </p>
               )}
               {l.status === "SHORTLISTED" || l.status === "NEW" ? (
-                <Button variant="ghost" size="sm" onClick={() => run(() => setListingStatusAction(l.id, "CONTACTED"), { success: "Marked as contacted" })}>
-                  I sent the message
+                <Button variant="ghost" size="sm" onClick={() => run(() => setListingStatusAction(l.id, "CONTACTED"), { success: "Marqué comme contacté" })}>
+                  J’ai envoyé le message
                 </Button>
               ) : null}
             </section>
 
             <section className="space-y-2">
-              <h3 className="heading-sm text-foreground">Visit</h3>
+              <h3 className="heading-sm text-foreground">Visite</h3>
               <div className="grid grid-cols-[1fr_120px] gap-2">
-                <DateInput value={l.visitDate} onChange={(v) => run(() => updateListingAction(l.id, { visitDate: v }), { success: v ? "Visit planned (in the calendar)" : "Visit removed" })} />
+                <DateInput value={l.visitDate} onChange={(v) => run(() => updateListingAction(l.id, { visitDate: v }), { success: v ? "Visite planifiée (dans le calendrier)" : "Visite retirée" })} />
                 <TimeInput value={l.visitTime} onChange={(v) => run(() => updateListingAction(l.id, { visitTime: v }))} />
               </div>
             </section>
 
             <section className="space-y-2">
               <h3 className="heading-sm text-foreground">Notes</h3>
-              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} onBlur={() => notes !== (l.notes ?? "") && run(() => updateListingAction(l.id, { notes: notes || null }), { success: "Notes saved" })} rows={3} placeholder="Impressions, answers received, questions…" />
+              <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} onBlur={() => notes !== (l.notes ?? "") && run(() => updateListingAction(l.id, { notes: notes || null }), { success: "Notes enregistrées" })} rows={3} placeholder="Impressions, réponses reçues, questions…" />
               {l.history.length > 0 && (
                 <ol className="space-y-1 border-l border-separator pl-3">
                   {[...l.history].reverse().slice(0, 12).map((h, i) => (
@@ -286,7 +287,7 @@ export function ListingSheet({
 
             {l.sources.length > 1 && (
               <section className="space-y-1">
-                <h3 className="heading-sm text-foreground">Seen on</h3>
+                <h3 className="heading-sm text-foreground">Vu sur</h3>
                 {l.sources.map((s) => (
                   <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className="block text-sm text-highlight-600 hover:underline">
                     {s.name}
@@ -304,8 +305,8 @@ export function ListingSheet({
 
 function copy(text: string) {
   navigator.clipboard.writeText(text).then(
-    () => toast.success("Copied"),
-    () => toast.error("Copy failed"),
+    () => toast.success("Copié"),
+    () => toast.error("Copie impossible"),
   );
 }
 
@@ -329,8 +330,8 @@ function MessageDialog({ open, onOpenChange, listing, phone }: { open: boolean; 
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>First message</DialogTitle>
-          <DialogDescription>Only asks what the listing does not say. Edit it, then send it yourself.</DialogDescription>
+          <DialogTitle>Premier message</DialogTitle>
+          <DialogDescription>Ne demande que ce que l’annonce ne dit pas. Modifie-le, puis envoie-le toi-même.</DialogDescription>
         </DialogHeader>
         <Tabs value={lang} onValueChange={(v) => setLang(v as "fr" | "en")}>
           <TabsList>
@@ -338,29 +339,29 @@ function MessageDialog({ open, onOpenChange, listing, phone }: { open: boolean; 
             <TabsTrigger value="en">English</TabsTrigger>
           </TabsList>
         </Tabs>
-        <input value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm" aria-label="Subject" />
+        <Input value={subject} onChange={(e) => setSubject(e.target.value)} aria-label="Objet" />
         <Textarea value={body} onChange={(e) => setBody(e.target.value)} rows={14} className={cn(pending && "opacity-60")} />
         <DialogFooter className="flex-wrap gap-2 sm:justify-between">
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => copy(`${subject}\n\n${body}`)}>
-              <Copy /> Copy
+              <Copy /> Copier
             </Button>
             {email && (
               <Button variant="outline" size="sm" asChild>
                 <a href={`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`}>
-                  <Mail /> Open in mail app
+                  <Mail /> Ouvrir dans la messagerie
                 </a>
               </Button>
             )}
             {wa && (
               <Button variant="outline" size="sm" asChild>
                 <a href={wa} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle /> Open WhatsApp
+                  <MessageCircle /> Ouvrir WhatsApp
                 </a>
               </Button>
             )}
           </div>
-          <Badge variant="outline">Nothing is sent automatically</Badge>
+          <Badge variant="outline">Rien n’est envoyé automatiquement</Badge>
         </DialogFooter>
       </DialogContent>
     </Dialog>

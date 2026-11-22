@@ -12,28 +12,28 @@ import { isISODate } from "./dates";
 export const MOVE_STATUSES = ["PLANNING", "SEARCHING", "READY", "MOVED", "DONE"] as const;
 export type MoveStatus = (typeof MOVE_STATUSES)[number];
 export const MOVE_STATUS_LABEL: Record<MoveStatus, string> = {
-  PLANNING: "Planning",
-  SEARCHING: "Searching housing",
-  READY: "Ready to move",
-  MOVED: "Moved in",
-  DONE: "Done",
+  PLANNING: "En préparation",
+  SEARCHING: "Recherche de logement",
+  READY: "Prêt à partir",
+  MOVED: "Installé",
+  DONE: "Terminé",
 };
 
 /** Housing pipeline. Order matters (board columns, sort). */
 export const LISTING_STATUSES = ["NEW", "SHORTLISTED", "CONTACTED", "REPLIED", "VISIT_PLANNED", "VISITED", "APPLIED", "CHOSEN", "DECLINED", "GONE", "EXCLUDED"] as const;
 export type ListingStatus = (typeof LISTING_STATUSES)[number];
 export const LISTING_STATUS_META: Record<ListingStatus, { label: string; tone: "neutral" | "info" | "highlight" | "warning" | "success" | "muted"; open: boolean }> = {
-  NEW: { label: "New", tone: "neutral", open: true },
-  SHORTLISTED: { label: "To contact", tone: "info", open: true },
-  CONTACTED: { label: "Contacted", tone: "highlight", open: true },
-  REPLIED: { label: "Replied", tone: "highlight", open: true },
-  VISIT_PLANNED: { label: "Visit planned", tone: "warning", open: true },
-  VISITED: { label: "Visited", tone: "warning", open: true },
-  APPLIED: { label: "Application sent", tone: "warning", open: true },
-  CHOSEN: { label: "Chosen", tone: "success", open: true },
-  DECLINED: { label: "Declined", tone: "muted", open: false },
-  GONE: { label: "No longer available", tone: "muted", open: false },
-  EXCLUDED: { label: "Excluded", tone: "muted", open: false },
+  NEW: { label: "Nouveau", tone: "neutral", open: true },
+  SHORTLISTED: { label: "À contacter", tone: "info", open: true },
+  CONTACTED: { label: "Contacté", tone: "highlight", open: true },
+  REPLIED: { label: "Réponse reçue", tone: "highlight", open: true },
+  VISIT_PLANNED: { label: "Visite prévue", tone: "warning", open: true },
+  VISITED: { label: "Visité", tone: "warning", open: true },
+  APPLIED: { label: "Dossier envoyé", tone: "warning", open: true },
+  CHOSEN: { label: "Choisi", tone: "success", open: true },
+  DECLINED: { label: "Refusé", tone: "muted", open: false },
+  GONE: { label: "Plus disponible", tone: "muted", open: false },
+  EXCLUDED: { label: "Écarté", tone: "muted", open: false },
 };
 /** Columns shown on the housing board (closed statuses are grouped in a single « Closed » column). */
 export const BOARD_STATUSES: ListingStatus[] = ["NEW", "SHORTLISTED", "CONTACTED", "REPLIED", "VISIT_PLANNED", "VISITED", "APPLIED", "CHOSEN"];
@@ -41,11 +41,11 @@ export const BOARD_STATUSES: ListingStatus[] = ["NEW", "SHORTLISTED", "CONTACTED
 export const HOUSING_TYPES = ["ROOM_COLIVING", "ROOM_FLATSHARE", "STUDIO", "APARTMENT", "OTHER"] as const;
 export type HousingType = (typeof HOUSING_TYPES)[number];
 export const HOUSING_TYPE_LABEL: Record<HousingType, string> = {
-  ROOM_COLIVING: "Coliving room",
-  ROOM_FLATSHARE: "Room in a flatshare",
+  ROOM_COLIVING: "Chambre en coliving",
+  ROOM_FLATSHARE: "Chambre en colocation",
   STUDIO: "Studio",
-  APARTMENT: "Apartment",
-  OTHER: "Other",
+  APARTMENT: "Appartement",
+  OTHER: "Autre",
 };
 
 export const FURNISHED = ["YES", "SEMI", "NO", "UNKNOWN"] as const;
@@ -177,9 +177,9 @@ export function defaultBudget(income = 0): BudgetPlan {
     foodAllowance: 0,
     food: 350,
     lines: [
-      { id: "phone", label: "Phone", amount: 15, kind: "EXPENSE", note: null },
+      { id: "phone", label: "Téléphone", amount: 15, kind: "EXPENSE", note: null },
       { id: "sport", label: "Sport", amount: 40, kind: "EXPENSE", note: null },
-      { id: "leisure", label: "Leisure & unexpected", amount: 150, kind: "EXPENSE", note: null },
+      { id: "leisure", label: "Loisirs et imprévus", amount: 150, kind: "EXPENSE", note: null },
     ],
     transitMonthly: 50,
     walkThresholdKm: 2,
@@ -315,25 +315,25 @@ export function monthsBetween(from: string, to: string): number {
 export function listingFit(l: FitListing, ctx: FitContext): FitIssue[] {
   const issues: FitIssue[] = [];
   if (l.availableFrom && ctx.arrivalDate && l.availableFrom > ctx.arrivalDate) {
-    issues.push({ key: "availability", level: "ko", label: `Available ${l.availableFrom}, after your arrival` });
+    issues.push({ key: "availability", level: "ko", label: `Disponible le ${l.availableFrom}, après ton arrivée` });
   }
   if (l.minLeaseMonths && ctx.arrivalDate && ctx.departureDate) {
     const stay = monthsBetween(ctx.arrivalDate, ctx.departureDate);
-    if (l.minLeaseMonths > stay) issues.push({ key: "lease", level: "ko", label: `Minimum lease ${l.minLeaseMonths} months (you stay ${stay})` });
+    if (l.minLeaseMonths > stay) issues.push({ key: "lease", level: "ko", label: `Bail minimum ${l.minLeaseMonths} mois (séjour de ${stay})` });
   } else if (l.minLeaseMonths === null) {
-    issues.push({ key: "lease", level: "unknown", label: "Minimum lease unknown" });
+    issues.push({ key: "lease", level: "unknown", label: "Bail minimum inconnu" });
   }
-  if (l.furnished === "NO") issues.push({ key: "furnished", level: "ko", label: "Not furnished" });
-  else if (l.furnished === "SEMI") issues.push({ key: "furnished", level: "warn", label: "Semi-furnished" });
-  else if (l.furnished === "UNKNOWN") issues.push({ key: "furnished", level: "unknown", label: "Furnished?" });
+  if (l.furnished === "NO") issues.push({ key: "furnished", level: "ko", label: "Non meublé" });
+  else if (l.furnished === "SEMI") issues.push({ key: "furnished", level: "warn", label: "Semi-meublé" });
+  else if (l.furnished === "UNKNOWN") issues.push({ key: "furnished", level: "unknown", label: "Meublé ?" });
   const total = listingTotal(l);
-  if (total === null) issues.push({ key: "budget", level: "unknown", label: "Price unknown" });
-  else if (ctx.housingTarget && total > ctx.housingTarget * 1.15) issues.push({ key: "budget", level: "ko", label: `Over budget (+${total - ctx.housingTarget})` });
-  else if (ctx.housingTarget && total > ctx.housingTarget) issues.push({ key: "budget", level: "warn", label: `Slightly over budget (+${total - ctx.housingTarget})` });
+  if (total === null) issues.push({ key: "budget", level: "unknown", label: "Prix inconnu" });
+  else if (ctx.housingTarget && total > ctx.housingTarget * 1.15) issues.push({ key: "budget", level: "ko", label: `Hors budget (+${total - ctx.housingTarget})` });
+  else if (ctx.housingTarget && total > ctx.housingTarget) issues.push({ key: "budget", level: "warn", label: `Un peu au-dessus du budget (+${total - ctx.housingTarget})` });
   if (total !== null && ctx.medianTotal && total < ctx.medianTotal * 0.6) {
-    issues.push({ key: "price", level: "warn", label: "Much cheaper than similar listings: double-check before paying anything" });
+    issues.push({ key: "price", level: "warn", label: "Bien moins cher que les autres annonces : vérifie avant de payer quoi que ce soit" });
   }
-  if (l.distanceKm !== null && l.distanceKm > ctx.walkThresholdKm * 2.5) issues.push({ key: "distance", level: "warn", label: "Far from work" });
+  if (l.distanceKm !== null && l.distanceKm > ctx.walkThresholdKm * 2.5) issues.push({ key: "distance", level: "warn", label: "Loin du travail" });
   return issues;
 }
 

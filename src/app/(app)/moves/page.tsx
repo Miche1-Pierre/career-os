@@ -3,7 +3,7 @@ import { listMoves } from "@/server/services/moves";
 import { opportunityOptions } from "@/server/services/opportunities";
 import { MovesList } from "@/components/moves/moves-list";
 
-export const metadata: Metadata = { title: "Moves" };
+export const metadata: Metadata = { title: "Installations" };
 
 export default async function MovesPage({ searchParams }: { searchParams: Promise<{ new?: string }> }) {
   const { new: isNew } = await searchParams;

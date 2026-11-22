@@ -62,41 +62,41 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
       notes: s.notes.trim() || null,
       opportunityId: s.opportunity.id,
     };
-    if (move) run(() => updateMoveAction(move.id, payload), { success: "Saved", onSuccess: () => onOpenChange(false) });
-    else run(() => createMoveAction(payload), { success: "Move created", onSuccess: (d) => (onOpenChange(false), router.push(`/moves/${d.id}`)) });
+    if (move) run(() => updateMoveAction(move.id, payload), { success: "Enregistré", onSuccess: () => onOpenChange(false) });
+    else run(() => createMoveAction(payload), { success: "Installation créée", onSuccess: (d) => (onOpenChange(false), router.push(`/moves/${d.id}`)) });
   };
 
   return (
     <>
         <DialogHeader>
-          <DialogTitle>{move ? "Edit move" : "New move"}</DialogTitle>
-          <DialogDescription>Where you are going, when, and where you will work: commutes and budget are computed from it.</DialogDescription>
+          <DialogTitle>{move ? "Modifier l'installation" : "Nouvelle installation"}</DialogTitle>
+          <DialogDescription>Où tu vas, quand, et où tu travailleras : les trajets et le budget en dépendent.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField label="Name" htmlFor="m-title" required className="sm:col-span-2">
-            <Input id="m-title" value={s.title} onChange={(e) => set("title", e.target.value)} placeholder="BlackFin · Brussels" autoFocus />
+          <FormField label="Nom" htmlFor="m-title" required className="sm:col-span-2">
+            <Input id="m-title" value={s.title} onChange={(e) => set("title", e.target.value)} placeholder="BlackFin · Bruxelles" autoFocus />
           </FormField>
-          <FormField label="City" htmlFor="m-city">
+          <FormField label="Ville" htmlFor="m-city">
             <Input id="m-city" value={s.city} onChange={(e) => set("city", e.target.value)} />
           </FormField>
-          <FormField label="Country" htmlFor="m-country">
+          <FormField label="Pays" htmlFor="m-country">
             <Input id="m-country" value={s.country} onChange={(e) => set("country", e.target.value)} />
           </FormField>
-          <FormField label="Arrival / start" htmlFor="m-from">
+          <FormField label="Arrivée / début" htmlFor="m-from">
             <DateInput id="m-from" value={s.arrivalDate} onChange={(v) => set("arrivalDate", v)} />
           </FormField>
-          <FormField label="End (if known)" htmlFor="m-to">
+          <FormField label="Fin (si connue)" htmlFor="m-to">
             <DateInput id="m-to" value={s.departureDate} onChange={(v) => set("departureDate", v)} />
           </FormField>
-          <FormField label="Workplace address" htmlFor="m-work" className="sm:col-span-2" hint="Located automatically (OpenStreetMap) to compute walking times.">
+          <FormField label="Adresse du lieu de travail" htmlFor="m-work" className="sm:col-span-2" hint="Localisée automatiquement (OpenStreetMap) pour calculer les temps de marche.">
             <Input id="m-work" value={s.workAddress} onChange={(e) => set("workAddress", e.target.value)} placeholder="Avenue Louise 106, 1050 Ixelles" />
           </FormField>
-          <FormField label="Currency" htmlFor="m-cur">
+          <FormField label="Devise" htmlFor="m-cur">
             <Input id="m-cur" value={s.currency} maxLength={3} onChange={(e) => set("currency", e.target.value)} />
           </FormField>
           {!move && opportunities.length > 0 && (
-            <FormField label="Linked application" className="sm:col-span-1">
-              <EntityCombobox options={opportunities} value={s.opportunity} onChange={(v) => set("opportunity", v)} placeholder="Optional" allowCreate={false} />
+            <FormField label="Candidature liée" className="sm:col-span-1">
+              <EntityCombobox options={opportunities} value={s.opportunity} onChange={(v) => set("opportunity", v)} placeholder="Facultatif" allowCreate={false} />
             </FormField>
           )}
           <FormField label="Notes" htmlFor="m-notes" className="sm:col-span-2">
@@ -105,10 +105,10 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            Annuler
           </Button>
           <Button variant="highlight" onClick={submit} disabled={!s.title.trim() || pending}>
-            {move ? "Save" : "Create"}
+            {move ? "Enregistrer" : "Créer"}
           </Button>
         </DialogFooter>
     </>
