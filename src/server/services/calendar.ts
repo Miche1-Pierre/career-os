@@ -1,11 +1,11 @@
 import { and, eq, gte, isNull, lte, or, sql } from "drizzle-orm";
 import { db } from "@/server/db";
-import { interviews, opportunities, organizations, pipelineStages, tasks } from "@/server/db/schema";
+import { housingListings, interviews, moves, opportunities, organizations, pipelineStages, tasks } from "@/server/db/schema";
 import { addDays, instantToZonedParts, type ISODate } from "@/lib/dates";
 import { INTERVIEW_KIND_LABEL } from "@/lib/constants";
 import { getSettings } from "./settings";
 
-export type CalendarEventKind = "INTERVIEW" | "DEADLINE" | "FOLLOW_UP" | "TASK" | "OPENS" | "DECISION" | "APPLIED";
+export type CalendarEventKind = "INTERVIEW" | "DEADLINE" | "FOLLOW_UP" | "TASK" | "OPENS" | "DECISION" | "APPLIED" | "VISIT" | "MOVE";
 
 export interface CalendarEvent {
   id: string;
@@ -119,7 +119,41 @@ export async function getCalendarEvents(from: ISODate, to: ISODate, options: { i
     });
   }
 
-  const order: Record<CalendarEventKind, number> = { INTERVIEW: 0, DEADLINE: 1, DECISION: 2, FOLLOW_UP: 3, OPENS: 4, TASK: 5, APPLIED: 6 };
+  // Relocation: arrival / departure of each move, housing visits.
+  const moveRows = await db
+    .select()
+    .from(moves)
+    .where(and(isNull(moves.deletedAt), or(and(gte(moves.arrivalDate, from), lte(moves.arrivalDate, to)), and(gte(moves.departureDate, from), lte(moves.departureDate, to)))));
+  for (const m of moveRows) {
+    if (m.arrivalDate && m.arrivalDate >= from && m.arrivalDate <= to) {
+      events.push({ id: `move-arrival:${m.id}`, kind: "MOVE", date: m.arrivalDate, time: null, title: `Arrival · ${m.city ?? m.title}`, subtitle: m.title, opportunityId: m.opportunityId, href: `/moves/${m.id}` });
+    }
+    if (m.departureDate && m.departureDate >= from && m.departureDate <= to) {
+      events.push({ id: `move-end:${m.id}`, kind: "MOVE", date: m.departureDate, time: null, title: `End of stay · ${m.city ?? m.title}`, subtitle: m.title, opportunityId: m.opportunityId, href: `/moves/${m.id}` });
+    }
+  }
+  const visits = await db
+    .select({ listing: housingListings, moveTitle: moves.title })
+    .from(housingListings)
+    .innerJoin(moves, eq(moves.id, housingListings.moveId))
+    .where(and(isNull(housingListings.deletedAt), isNull(moves.deletedAt), gte(housingListings.visitDate, from), lte(housingListings.visitDate, to)));
+  for (const { listing, moveTitle } of visits) {
+    events.push({
+      id: `visit:${listing.id}`,
+      kind: "VISIT",
+      date: listing.visitDate!,
+      time: listing.visitTime,
+      title: `Visit · ${listing.title}`,
+      subtitle: moveTitle,
+      opportunityId: null,
+      href: `/moves/${listing.moveId}?tab=housing&listing=${listing.id}`,
+      location: listing.address,
+      url: listing.url,
+      done: ["VISITED", "APPLIED", "CHOSEN", "DECLINED"].includes(listing.status),
+    });
+  }
+
+  const order: Record<CalendarEventKind, number> = { INTERVIEW: 0, VISIT: 1, MOVE: 2, DEADLINE: 3, DECISION: 4, FOLLOW_UP: 5, OPENS: 6, TASK: 7, APPLIED: 8 };
   return events.sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "99").localeCompare(b.time ?? "99") || order[a.kind] - order[b.kind]);
 }
 

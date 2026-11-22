@@ -23,6 +23,7 @@ import * as data from "@/server/services/data-transfer";
 import * as notif from "@/server/services/notifications";
 import * as views from "@/server/services/views";
 import * as demo from "@/server/services/demo";
+import * as moves from "@/server/services/moves";
 import { applyFollowUpAction } from "@/server/services/followups";
 import { analyzeOpportunity, interpretCommand } from "@/server/services/analysis";
 import { getToday } from "@/server/services/today";
@@ -293,6 +294,24 @@ route("POST", "/import", async ({ req, json, form, query, ctx }) => {
 route("GET", "/backups", async () => data.listBackups());
 route("POST", "/backups", async () => data.createBackup("manual"));
 route("POST", "/backups/:name/restore", async ({ params, ctx }) => data.restoreBackup(params.name, ctx));
+// Relocation (moves, housing, budget)
+route("GET", "/moves", async ({ query }) => moves.listMoves({ includeArchived: bool(query, "archived") }), "Installation projects with listings and budget");
+route("POST", "/moves", async ({ json, ctx }) => moves.createMove(await json(), ctx));
+route("POST", "/opportunities/:id/move", async ({ params, ctx }) => moves.createMoveFromOpportunity(params.id, ctx), "Create (or get) the installation project of an opportunity");
+route("GET", "/moves/:id", async ({ params }) => moves.getMove(params.id));
+route("PATCH", "/moves/:id", async ({ params, json, ctx }) => moves.updateMove(params.id, await json(), ctx));
+route("DELETE", "/moves/:id", async ({ params, ctx }) => moves.deleteMove(params.id, ctx));
+route("PUT", "/moves/:id/budget", async ({ params, json, ctx }) => moves.updateBudget(params.id, await json(), ctx), "Partial budget plan");
+route("GET", "/moves/:id/listings.csv", async ({ params }) => {
+  const file = await moves.exportListingsCsv(params.id);
+  return new Response(file.content, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename*=UTF-8''${encodeURIComponent(file.fileName)}` } });
+}, "Housing shortlist for Excel");
+route("POST", "/moves/:id/listings", async ({ params, json, ctx }) => moves.upsertListing({ ...(await json<Record<string, unknown>>()), moveId: params.id } as never, ctx), "Create or update (dedup by URL)");
+route("GET", "/listings/:id", async ({ params }) => moves.getListing(params.id));
+route("PATCH", "/listings/:id", async ({ params, json, ctx }) => moves.updateListing(params.id, await json(), ctx));
+route("DELETE", "/listings/:id", async ({ params, ctx }) => moves.deleteListing(params.id, ctx));
+route("GET", "/listings/:id/draft", async ({ params, query }) => moves.draftListingMessage(params.id, query.get("lang") === "en" ? "en" : "fr"), "First-contact message ?lang=fr|en");
+
 route("POST", "/demo", async ({ ctx }) => demo.seedDemoData(ctx));
 route("DELETE", "/demo", async ({ ctx }) => demo.deleteDemoData(ctx));
 
