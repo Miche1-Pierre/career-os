@@ -195,7 +195,7 @@ describe("logos", () => {
     expect(sniffImageType(Buffer.from([0, 0, 1, 0, 0, 0]))).toBeNull(); // ICO with no image
   });
 
-  it("tries Google (128 px), DuckDuckGo, then the site itself, for the host then its registrable domain", () => {
+  it("tries Google (128 px), DuckDuckGo, then the site itself, for the host, its registrable domain, then www.", () => {
     expect(logoSources("careers.alten.com")).toEqual([
       "https://www.google.com/s2/favicons?domain=careers.alten.com&sz=128",
       "https://icons.duckduckgo.com/ip3/careers.alten.com.ico",
@@ -205,8 +205,14 @@ describe("logos", () => {
       "https://icons.duckduckgo.com/ip3/alten.com.ico",
       "https://alten.com/apple-touch-icon.png",
       "https://alten.com/favicon.ico",
+      "https://www.google.com/s2/favicons?domain=www.alten.com&sz=128",
+      "https://icons.duckduckgo.com/ip3/www.alten.com.ico",
+      "https://www.alten.com/apple-touch-icon.png",
+      "https://www.alten.com/favicon.ico",
     ]);
-    expect(logoSources("alten.com")).toHaveLength(4);
+    // Apex host: the apex, then www.
+    expect(logoSources("ulaval.ca")).toHaveLength(8);
+    expect(logoSources("ulaval.ca")[4]).toBe("https://www.google.com/s2/favicons?domain=www.ulaval.ca&sz=128");
   });
 
   it("measures icons and keeps looking until a sharp one is found", async () => {
@@ -262,16 +268,16 @@ describe("logos", () => {
   it("caches misses too", async () => {
     const deps = stubDeps({});
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(4);
+    expect(deps.calls).toHaveLength(8); // apex then www.
     expect(await getLogo("unknown-company.fr", deps)).toBeNull();
-    expect(deps.calls).toHaveLength(4);
+    expect(deps.calls).toHaveLength(8);
   });
 
   it("deduplicates concurrent requests for the same domain", async () => {
     const deps = stubDeps({ "https://icons.duckduckgo.com/ip3/zefir.fr.ico": () => new Response(ICO, { headers: { "content-type": "image/vnd.microsoft.icon" } }) });
     const [a, b, c] = await Promise.all([getLogo("zefir.fr", deps), getLogo("zefir.fr", deps), getLogo("zefir.fr", deps)]);
     expect([a?.contentType, b?.contentType, c?.contentType]).toEqual(["image/x-icon", "image/x-icon", "image/x-icon"]);
-    expect(deps.calls).toHaveLength(4); // one resolution shared by the three requests
+    expect(deps.calls).toHaveLength(8); // one resolution shared by the three requests
   });
 
   it("refuses non-images, SVG, oversized bodies, private hosts and redirects to them", async () => {
