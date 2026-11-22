@@ -57,7 +57,9 @@ export async function listNotifications(options: { limit?: number } = {}) {
     .where(isNull(notifications.dismissedAt))
     .orderBy(desc(notifications.createdAt))
     .limit(options.limit ?? 50);
-  const oppIds = rows.filter((r) => r.entityType === "opportunity" && r.entityId).map((r) => r.entityId!);
+  // Hide notifications about an application that is closed, archived or deleted. Notifications on a child entity
+  // (an interview…) carry their application in action.payload.opportunityId.
+  const oppIds = [...new Set(rows.map(notificationOpportunityId).filter((id): id is string => !!id))];
   if (!oppIds.length) return rows;
   const alive = await db
     .select({ id: opportunities.id, category: pipelineStages.category, deletedAt: opportunities.deletedAt, archivedAt: opportunities.archivedAt })
@@ -65,7 +67,16 @@ export async function listNotifications(options: { limit?: number } = {}) {
     .innerJoin(pipelineStages, eq(pipelineStages.id, opportunities.stageId))
     .where(inArray(opportunities.id, oppIds));
   const ok = new Set(alive.filter((a) => !a.deletedAt && !a.archivedAt && a.category !== "WON" && a.category !== "LOST").map((a) => a.id));
-  return rows.filter((r) => r.entityType !== "opportunity" || !r.entityId || ok.has(r.entityId));
+  return rows.filter((r) => {
+    const id = notificationOpportunityId(r);
+    return !id || ok.has(id);
+  });
+}
+
+function notificationOpportunityId(row: Notification): string | null {
+  if (row.entityType === "opportunity" && row.entityId) return row.entityId;
+  const fromAction = row.action?.payload?.opportunityId;
+  return typeof fromAction === "string" ? fromAction : null;
 }
 
 export async function markNotificationRead(id: string) {

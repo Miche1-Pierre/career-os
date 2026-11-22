@@ -6,7 +6,7 @@ import { createTestDb, useTempStorage } from "./helpers/db";
 import { USER, CLAUDE } from "@/server/context";
 import * as s from "@/server/db/schema";
 import { addDays, todayISO } from "@/lib/dates";
-import { changeStatus, createOpportunity, getOpportunity, updateOpportunity, findDuplicates } from "@/server/services/opportunities";
+import { changeStatus, createOpportunity, getOpportunity, updateOpportunity, findDuplicates, setOpportunityArchived } from "@/server/services/opportunities";
 import { markFollowUpDone } from "@/server/services/followups";
 import { createInterview, updateInterview } from "@/server/services/interviews";
 import { listAudit } from "@/server/services/audit";
@@ -234,6 +234,25 @@ describe("rules engine", () => {
     expect(second.deadlines).toBe(0);
     const notifications = await listNotifications();
     expect(notifications.some((n) => n.kind === "deadline_urgent")).toBe(true);
+  });
+
+  it("asks for past interview outcomes only on live applications, and hides them once archived", async () => {
+    const live = await createOpportunity({ type: "JOB", title: "Data Engineer", organizationName: "Interview Corp", status: "APPLIED" }, USER);
+    const archived = await createOpportunity({ type: "JOB", title: "ML Engineer", organizationName: "Archive Corp", status: "APPLIED" }, USER);
+    const past = new Date(Date.now() - 3 * 24 * 3600_000).toISOString();
+    const liveInterview = await createInterview({ opportunityId: live.opportunity!.id, kind: "HR", scheduledAt: past }, USER, { advanceStage: false });
+    const archivedInterview = await createInterview({ opportunityId: archived.opportunity!.id, kind: "HR", scheduledAt: past }, USER, { advanceStage: false });
+    await setOpportunityArchived(archived.opportunity!.id, true, USER);
+
+    await evaluatePeriodicRules();
+    const stale = (await listNotifications()).filter((n) => n.kind === "stale_interview");
+    expect(stale.map((n) => n.entityId)).toContain(liveInterview.id);
+    expect(stale.map((n) => n.entityId)).not.toContain(archivedInterview.id);
+    expect(stale.find((n) => n.entityId === liveInterview.id)?.title).toBe("Comment s’est passé l’entretien ?");
+
+    // Archiving afterwards hides the existing suggestion (it points to the application through its action payload).
+    await setOpportunityArchived(live.opportunity!.id, true, USER);
+    expect((await listNotifications()).some((n) => n.entityId === liveInterview.id)).toBe(false);
   });
 });
 
