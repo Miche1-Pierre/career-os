@@ -48,7 +48,7 @@ export function FormField({
 }
 
 /** Chip input with suggestions from existing tags. Enter / comma to add, Backspace to remove. */
-export function TagInput({ value, onChange, placeholder = "Add a tag…", suggestions: extra }: { value: string[]; onChange: (tags: string[]) => void; placeholder?: string; suggestions?: string[] }) {
+export function TagInput({ value, onChange, placeholder = "Ajouter un tag…", suggestions: extra }: { value: string[]; onChange: (tags: string[]) => void; placeholder?: string; suggestions?: string[] }) {
   const { tags } = useAppData();
   const [draft, setDraft] = useState("");
   const [focused, setFocused] = useState(false);
@@ -118,7 +118,7 @@ export function ListEditor({ value, onChange, placeholder, rows = 4, id }: { val
       id={id}
       value={text}
       rows={Math.max(rows, Math.min(12, value.length + 1))}
-      placeholder={placeholder ?? "One item per line"}
+      placeholder={placeholder ?? "Un élément par ligne"}
       onChange={(e) => {
         setText(e.target.value);
         const items = e.target.value
