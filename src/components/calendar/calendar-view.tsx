@@ -19,6 +19,8 @@ const KIND_STYLE: Record<CalendarEventKind, { label: string; className: string; 
   OPENS: { label: "Applications open", className: "bg-violet-50 text-violet-700 dark:bg-violet-950 dark:text-violet-300", dot: "bg-violet-500" },
   DECISION: { label: "Answer expected", className: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300", dot: "bg-pink-500" },
   APPLIED: { label: "Applied", className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300", dot: "bg-emerald-500" },
+  VISIT: { label: "Housing visit", className: "bg-teal-50 text-teal-800 dark:bg-teal-950 dark:text-teal-300", dot: "bg-teal-500" },
+  MOVE: { label: "Move", className: "bg-sky-50 text-sky-800 dark:bg-sky-950 dark:text-sky-300", dot: "bg-sky-500" },
 };
 
 export function CalendarView({ month, events }: { month: string; events: CalendarEvent[] }) {

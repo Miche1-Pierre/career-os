@@ -17,6 +17,7 @@ import {
   MoreHorizontal,
   NotebookPen,
   Pencil,
+  Plane,
   ScrollText,
   Send,
   Sparkles,
@@ -40,6 +41,7 @@ import {
   setOpportunityArchivedAction,
   updateOpportunityAction,
 } from "@/app/actions/opportunities";
+import { createMoveFromOpportunityAction } from "@/app/actions/moves";
 import { OPPORTUNITY_TYPE_META, PRIORITIES, PRIORITY_META, REMOTE_LABEL, familyOf, type Priority } from "@/lib/constants";
 import { formatISODate, relativeDayLabel } from "@/lib/dates";
 import type { OpportunityDetail } from "@/server/services/opportunities";
@@ -173,6 +175,11 @@ export function OpportunityDetailView({
           {preSubmit && (
             <Button onClick={() => setStatus(family === "EDUCATION" ? "APPLICATION_SUBMITTED" : "APPLIED")}>
               <Send /> Mark as applied
+            </Button>
+          )}
+          {(opp.stage.category === "OFFER" || opp.stage.category === "WON") && (
+            <Button variant="outline" onClick={() => run(() => createMoveFromOpportunityAction(opp.id), { onSuccess: (d) => router.push(`/moves/${d.id}`) })}>
+              <Plane /> Plan the move
             </Button>
           )}
           <Button variant="outline" asChild>
