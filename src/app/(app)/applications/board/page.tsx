@@ -1,12 +1,7 @@
-import type { Metadata } from "next";
-import { listOpportunities } from "@/server/services/opportunities";
-import { parseListFilters } from "@/lib/filters";
-import { KanbanBoard } from "@/components/opportunities/kanban-board";
+import { redirect } from "next/navigation";
+import { boardRedirectHref, type SearchParamsRecord } from "@/components/opportunities/applications-params";
 
-export const metadata: Metadata = { title: "Board" };
-
-export default async function BoardPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
-  const filters = parseListFilters(await searchParams);
-  const rows = await listOpportunities({ family: filters.family, tags: filters.tags, q: filters.q, types: filters.types, sort: "priority", limit: 2000 });
-  return <KanbanBoard rows={JSON.parse(JSON.stringify(rows))} filters={filters} />;
+/** The board is now a layout of the Candidatures page: keep old links and the G B shortcut working. */
+export default async function BoardPage({ searchParams }: { searchParams: Promise<SearchParamsRecord> }) {
+  redirect(boardRedirectHref(await searchParams));
 }

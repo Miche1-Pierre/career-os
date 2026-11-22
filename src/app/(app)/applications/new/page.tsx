@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { listOrganizations } from "@/server/services/organizations";
-import { OPPORTUNITY_TYPES, OPPORTUNITY_TYPE_META, type OpportunityType } from "@/lib/constants";
+import { OPPORTUNITY_TYPES, type OpportunityType } from "@/lib/constants";
 import { emptyOpportunityInput } from "@/lib/opportunity-input";
 import { PageContainer, PageHeader } from "@/components/app/page-header";
 import { OpportunityForm } from "@/components/opportunities/opportunity-form";
 
-export const metadata: Metadata = { title: "New opportunity" };
+export const metadata: Metadata = { title: "Nouvelle candidature" };
 
 export default async function NewOpportunityPage({ searchParams }: { searchParams: Promise<{ type?: string; org?: string }> }) {
   const sp = await searchParams;
@@ -18,8 +18,8 @@ export default async function NewOpportunityPage({ searchParams }: { searchParam
   }
   return (
     <PageContainer className="max-w-4xl">
-      <PageHeader title={`New ${OPPORTUNITY_TYPE_META[type].label.toLowerCase()}`} description="Tip: Quick import (I) pre-fills everything from a pasted posting." />
-      <OpportunityForm mode="create" initial={initial} organizations={orgs.map((o) => ({ id: o.id, label: o.name, hint: o.kind === "INSTITUTION" ? "Institution" : o.city }))} />
+      <PageHeader title="Nouvelle candidature" description="Astuce : l’import rapide (touche I) pré-remplit tous les champs à partir d’une offre collée." />
+      <OpportunityForm mode="create" initial={initial} organizations={orgs.map((o) => ({ id: o.id, label: o.name, hint: o.kind === "INSTITUTION" ? "Établissement" : o.city }))} />
     </PageContainer>
   );
 }
