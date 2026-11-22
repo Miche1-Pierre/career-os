@@ -1,5 +1,6 @@
 "use server";
 
+import { analyzeContract, updateOffer } from "@/server/services/offers";
 import { USER } from "@/server/context";
 import { runAction } from "@/server/action-utils";
 import type { FollowUpAction, InterviewInput, OpportunityContactRef, OpportunityInput, OpportunityPatch, TaskInput, TimelineEventInput } from "@/lib/schemas";
@@ -177,4 +178,18 @@ export async function applyActionsAction(actions: unknown[], inboxId?: string | 
 export async function renderEmailAction(opportunityId: string, templateId?: string | null) {
   const { renderEmailTemplate } = await import("@/server/services/email-templates");
   return runAction(() => renderEmailTemplate(opportunityId, templateId), { revalidate: false });
+}
+
+export async function updateOfferAction(id: string, patch: Record<string, unknown>) {
+  return runAction(async () => {
+    await updateOffer(id, patch, USER);
+    return null;
+  });
+}
+
+export async function analyzeContractAction(id: string, documentVersionId?: string | null) {
+  return runAction(async () => {
+    const result = await analyzeContract(id, { documentVersionId }, USER);
+    return { filled: result.filled };
+  });
 }

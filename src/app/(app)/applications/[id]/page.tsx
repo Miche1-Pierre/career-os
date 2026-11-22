@@ -5,6 +5,7 @@ import { listVersionOptions } from "@/server/services/documents";
 import { listContacts } from "@/server/services/contacts";
 import { listAudit } from "@/server/services/audit";
 import { getSettings } from "@/server/services/settings";
+import { findMoveForOpportunity } from "@/server/services/moves";
 import { AppError } from "@/server/context";
 import { computeSkillMatch } from "@/lib/matching";
 import { describeInterval, resolveFollowUpInterval } from "@/lib/followups";
@@ -27,7 +28,7 @@ export default async function OpportunityPage({ params, searchParams }: { params
     if (e instanceof AppError && e.code === "NOT_FOUND") notFound();
     throw e;
   });
-  const [versions, contacts, audit, settings] = await Promise.all([listVersionOptions(), listContacts(), listAudit("opportunity", id, 200), getSettings()]);
+  const [versions, contacts, audit, settings, move] = await Promise.all([listVersionOptions(), listContacts(), listAudit("opportunity", id, 200), getSettings(), findMoveForOpportunity(id)]);
   const skillMatch = computeSkillMatch([...opp.skills, ...opp.technologies], settings.profile.skills);
   const interval = describeInterval(resolveFollowUpInterval(opp, settings.followUp, { afterInterview: opp.stage.category === "INTERVIEW" }));
   return (
@@ -40,6 +41,7 @@ export default async function OpportunityPage({ params, searchParams }: { params
       profileHasSkills={settings.profile.skills.length > 0}
       intervalLabel={interval}
       initialTab={tab ?? "overview"}
+      move={move}
     />
   );
 }

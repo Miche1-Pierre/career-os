@@ -12,14 +12,18 @@ import {
   Clock,
   DoorOpen,
   ExternalLink,
+  FileSignature,
   FileWarning,
+  Home,
   Hourglass,
   Inbox,
   ListTodo,
   Mail,
   MessageSquareReply,
+  MapPin,
   MoreHorizontal,
   PartyPopper,
+  Plane,
   Send,
   Video,
   X,
@@ -29,7 +33,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { formatISODate } from "@/lib/dates";
-import type { TodayData, TodayItem } from "@/server/services/today";
+import type { TodayData, TodayItem, TodayMove } from "@/server/services/today";
 import { PageContainer } from "@/components/app/page-header";
 import { DueBadge, StageBadge } from "@/components/app/badges";
 import { EmptyState } from "@/components/app/empty-state";
@@ -51,6 +55,9 @@ const KIND_ICON: Record<TodayItem["kind"], React.ComponentType<{ className?: str
   DECISION: Hourglass,
   WAITING: Clock,
   DOCUMENTS: FileWarning,
+  OFFER: FileSignature,
+  VISIT: MapPin,
+  HOUSING: Home,
 };
 
 function greeting() {
@@ -68,10 +75,11 @@ export function TodayView({ data, tasks, userName }: { data: TodayData; tasks: T
     { n: c.interviewsUpcoming, label: c.interviewsUpcoming === 1 ? "Entretien à venir" : "Entretiens à venir", href: "#upcoming", icon: Video },
     { n: c.deadlinesSoon, label: c.deadlinesSoon === 1 ? "Date limite cette semaine" : "Dates limites cette semaine", href: "#upcoming", icon: CalendarCheck2 },
     { n: c.missingDocuments, label: c.missingDocuments === 1 ? "Document manquant" : "Documents manquants", href: "#documents", icon: FileWarning },
+    { n: c.housing, label: c.housing === 1 ? "Action logement" : "Actions logement", href: "#today", icon: Home },
     { n: c.waiting, label: "En attente de réponse", href: "#waiting", icon: Clock },
     { n: c.inbox, label: "À trier", href: "/inbox", icon: Inbox },
   ].filter((x) => x.n > 0);
-  const nothing = !data.overdue.length && !data.dueToday.length && !data.upcoming.length && !data.waiting.length && !data.missingDocuments.length && !data.suggestions.length;
+  const nothing = !data.overdue.length && !data.dueToday.length && !data.upcoming.length && !data.waiting.length && !data.missingDocuments.length && !data.suggestions.length && !data.moves.length;
 
   return (
     <PageContainer>
@@ -85,6 +93,14 @@ export function TodayView({ data, tasks, userName }: { data: TodayData; tasks: T
         </h1>
         <p className="copy-base text-muted-foreground">{stats.length > 0 ? "Voici ce qui demande votre attention." : "Rien d’urgent. Une bonne journée pour trouver de nouvelles opportunités."}</p>
       </div>
+
+      {data.moves.length > 0 && (
+        <div className="mb-8 space-y-2">
+          {data.moves.map((m) => (
+            <MoveCard key={m.id} move={m} />
+          ))}
+        </div>
+      )}
 
       {stats.length > 0 && (
         <div className="mb-10 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
@@ -119,6 +135,37 @@ export function TodayView({ data, tasks, userName }: { data: TodayData; tasks: T
   );
 }
 
+/** Installation project: countdown to arrival and where the housing search stands. */
+function MoveCard({ move }: { move: TodayMove }) {
+  const { dateLocale } = useAppData();
+  const money = (n: number) => new Intl.NumberFormat("fr-FR", { style: "currency", currency: move.currency, maximumFractionDigits: 0 }).format(n);
+  const d = move.daysUntilArrival;
+  const facts = [
+    move.chosen ? `Logement choisi : ${move.chosen}` : null,
+    !move.chosen && move.toContact ? `${move.toContact} à contacter` : null,
+    !move.chosen && move.waitingReply ? `${move.waitingReply} en attente de réponse` : null,
+    move.visitsPlanned ? `${move.visitsPlanned} visite${move.visitsPlanned > 1 ? "s" : ""} prévue${move.visitsPlanned > 1 ? "s" : ""}` : null,
+    !move.chosen && move.bestSavings !== null ? `meilleure épargne ${money(move.bestSavings)}/mois` : null,
+  ].filter(Boolean);
+  return (
+    <Link href={`/moves/${move.id}`} className="flex items-center gap-4 rounded-2xl border border-border bg-background px-4 py-3.5 transition-colors hover:bg-muted-background">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-highlight-50 text-highlight-700">
+        <Plane className="size-5" />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">{move.title}</p>
+        <p className="truncate text-xs text-muted-foreground">{facts.length ? facts.join(" · ") : "Aucun logement suivi pour l’instant"}</p>
+      </div>
+      {d !== null && (
+        <div className="shrink-0 text-right">
+          <p className="heading-lg text-foreground tabular-nums">{d > 0 ? `J-${d}` : d === 0 ? "Jour J" : "Arrivé"}</p>
+          {move.arrivalDate && <p className="text-xs text-muted-foreground">{formatISODate(move.arrivalDate, "medium", dateLocale)}</p>}
+        </div>
+      )}
+    </Link>
+  );
+}
+
 function TodaySection({ id, title, items, tone, empty, compact }: { id: string; title: string; items: TodayItem[]; tone?: "danger" | "warning"; empty?: string; compact?: boolean }) {
   if (!items.length && !empty) return null;
   return (
@@ -143,7 +190,7 @@ function TodayRow({ item, compact }: { item: TodayItem; compact?: boolean }) {
   const [emailOpen, setEmailOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
   const opp = item.opportunity;
-  const href = opp ? `/applications/${opp.id}${item.kind === "INTERVIEW" || item.kind === "OUTCOME" ? "?tab=interviews" : item.kind === "DOCUMENTS" ? "?tab=checklist" : ""}` : "/tasks";
+  const href = item.href ?? (opp ? `/applications/${opp.id}${item.kind === "INTERVIEW" || item.kind === "OUTCOME" ? "?tab=interviews" : item.kind === "DOCUMENTS" ? "?tab=checklist" : ""}` : "/tasks");
   if (hidden) return null;
   const done = (fn: () => ReturnType<typeof followUpAction>, message: string) =>
     run(fn, {

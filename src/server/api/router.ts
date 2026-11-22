@@ -25,6 +25,7 @@ import * as views from "@/server/services/views";
 import * as demo from "@/server/services/demo";
 import * as moves from "@/server/services/moves";
 import { applyFollowUpAction } from "@/server/services/followups";
+import * as offers from "@/server/services/offers";
 import { analyzeOpportunity, interpretCommand } from "@/server/services/analysis";
 import { getToday } from "@/server/services/today";
 import { searchAll } from "@/server/services/search";
@@ -134,6 +135,10 @@ route("POST", "/opportunities/:id/contacts", async ({ params, json, ctx }) => pe
 route("DELETE", "/opportunities/:id/contacts/:contactId", async ({ params, ctx }) => people.unlinkContactFromOpportunity(params.id, params.contactId, ctx));
 route("POST", "/opportunities/:id/documents", async ({ params, json, ctx }) => docs.attachDocument({ ...(await json<object>()), opportunityId: params.id } as never, ctx));
 route("POST", "/opportunities/:id/analyze", async ({ params, ctx }) => analyzeOpportunity(params.id, ctx));
+route("GET", "/opportunities/:id/offer", async ({ params }) => offers.getOffer(params.id), "Offer & contract: terms, review checklist, last contract analysis");
+route("PATCH", "/opportunities/:id/offer", async ({ params, json, ctx }) => offers.updateOffer(params.id, await json(), ctx));
+route("POST", "/opportunities/:id/contract-analysis", async ({ params, json, ctx }) => offers.analyzeContract(params.id, await json<{ documentVersionId?: string }>().catch(() => ({})), ctx));
+route("PUT", "/opportunities/:id/contract-analysis", async ({ params, json, ctx }) => offers.saveContractAnalysis(params.id, await json(), ctx));
 route("POST", "/opportunities/:id/duplicate", async ({ params, ctx }) => opp.duplicateOpportunity(params.id, ctx));
 route("GET", "/duplicates", async ({ query }) => opp.findDuplicates({ title: query.get("title"), organizationName: query.get("organization"), url: query.get("url") }));
 route("DELETE", "/attachments/:id", async ({ params, ctx }) => docs.detachDocument(params.id, ctx));

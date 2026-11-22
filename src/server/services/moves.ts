@@ -30,6 +30,7 @@ import {
   type MoveInput,
 } from "@/lib/relocation";
 import { badRequest, notFound, type Ctx } from "@/server/context";
+import { moveFromOffer, parseOffer } from "@/lib/offer";
 import { logAudit } from "./audit";
 import { getSettings } from "./settings";
 import { geocode } from "./geocode";
@@ -193,26 +194,43 @@ export async function createMove(raw: MoveInput, ctx: Ctx) {
   return row;
 }
 
-/** Creates a move pre-filled from an opportunity (title, city, country). Returns the existing one if any. */
+/**
+ * Creates the move of an opportunity, pre-filled from it (title, city, country) and from its offer (dates, workplace,
+ * net salary, meal vouchers). When the move already exists, only its empty fields are filled from the offer.
+ */
 export async function createMoveFromOpportunity(opportunityId: string, ctx: Ctx) {
-  const [existing] = await db.select().from(moves).where(and(eq(moves.opportunityId, opportunityId), isNull(moves.deletedAt)));
-  if (existing) return existing;
   const [opp] = await db
     .select({ opp: opportunities, org: organizations.name })
     .from(opportunities)
     .leftJoin(organizations, eq(organizations.id, opportunities.organizationId))
     .where(eq(opportunities.id, opportunityId));
   if (!opp) throw notFound("Opportunity");
+  const offer = parseOffer(opp.opp.details);
+  const [existing] = await db.select().from(moves).where(and(eq(moves.opportunityId, opportunityId), isNull(moves.deletedAt)));
+  if (existing) {
+    const budget = normalizeBudget(existing.budget);
+    const patch = moveFromOffer(offer, { ...existing, budget });
+    if (!Object.keys(patch).length) return existing;
+    return updateMove(existing.id, patch, ctx);
+  }
   const place = opp.opp.locationCity ?? opp.opp.locationText ?? null;
+  const fromOffer = moveFromOffer(offer);
   return createMove(
     {
       title: [opp.org ?? opp.opp.title, place].filter(Boolean).join(" · "),
       opportunityId,
       city: opp.opp.locationCity,
       country: opp.opp.locationCountry,
+      ...fromOffer,
     },
     ctx,
   );
+}
+
+/** The installation project linked to an opportunity, if any. */
+export async function findMoveForOpportunity(opportunityId: string) {
+  const [row] = await db.select({ id: moves.id, title: moves.title }).from(moves).where(and(eq(moves.opportunityId, opportunityId), isNull(moves.deletedAt)));
+  return row ?? null;
 }
 
 export async function updateMove(id: string, raw: Partial<MoveInput>, ctx: Ctx) {

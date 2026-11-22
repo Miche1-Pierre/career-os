@@ -12,6 +12,7 @@ import {
   Copy,
   Download,
   ExternalLink,
+  FileSignature,
   FileText,
   History,
   MoreHorizontal,
@@ -59,6 +60,8 @@ import { DetailDocuments, type VersionOption } from "./detail-documents";
 import { DetailNotes } from "./detail-notes";
 import { DetailAnalysis } from "./detail-analysis";
 import { DetailHistory } from "./detail-history";
+import { DetailOffer } from "./detail-offer";
+import { reviewProgress } from "@/lib/offer";
 import { DetailSidebar } from "./detail-sidebar";
 
 const PERIOD_LABEL: Record<string, string> = { YEAR: "an", MONTH: "mois", DAY: "jour", HOUR: "heure" };
@@ -72,6 +75,7 @@ export function OpportunityDetailView({
   profileHasSkills,
   intervalLabel,
   initialTab,
+  move,
 }: {
   opp: OpportunityDetail;
   versions: VersionOption[];
@@ -81,6 +85,7 @@ export function OpportunityDetailView({
   profileHasSkills: boolean;
   intervalLabel: string;
   initialTab: string;
+  move: { id: string; title: string } | null;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -94,6 +99,8 @@ export function OpportunityDetailView({
   const details = opp.details ?? {};
   const openTasks = opp.tasks.filter((t) => !t.done).length;
   const upcomingInterviews = opp.interviews.filter((i) => i.status === "SCHEDULED").length;
+  const showOffer = family === "JOB" && (!!opp.offer || ["INTERVIEW", "OFFER", "WON"].includes(opp.stage.category));
+  const offerWarnings = opp.offer ? reviewProgress(opp.offer.reviewChecklist).warnings : 0;
 
   const changeTab = (value: string) => {
     setTab(value);
@@ -276,6 +283,11 @@ export function OpportunityDetailView({
               <TabsTrigger value="interviews">
                 <CalendarDays /> Entretiens <Count n={opp.interviews.length} highlight={upcomingInterviews > 0} />
               </TabsTrigger>
+              {showOffer && (
+                <TabsTrigger value="offer">
+                  <FileSignature /> Offre <Count n={offerWarnings} highlight={offerWarnings > 0} />
+                </TabsTrigger>
+              )}
               <TabsTrigger value="checklist">
                 <CheckSquare /> Checklist <Count n={openTasks} />
               </TabsTrigger>
@@ -302,6 +314,11 @@ export function OpportunityDetailView({
           <TabsContent value="interviews" className="pt-4">
             <DetailInterviews opp={opp} />
           </TabsContent>
+          {showOffer && (
+            <TabsContent value="offer" className="pt-4">
+              <DetailOffer opp={opp} move={move} />
+            </TabsContent>
+          )}
           <TabsContent value="checklist" className="pt-4">
             <DetailChecklist opp={opp} />
           </TabsContent>

@@ -46,6 +46,8 @@ Typical requests and the tools to use:
 | “Ajoute un entretien avec Jean mardi 14h” | `search` → `add_interview` |
 | “Prépare mon entretien chez Zefir” | `get_opportunity` + `get_profile` → `update_interview` (skill `career-prep`) |
 | “Analyse cette offre par rapport à mon profil” | `get_opportunity` + `get_profile` → `save_analysis` |
+| “J'ai reçu une offre : …” / “voici les conditions” | `search` → `update_offer` (terms from the source only) → `set_status` OFFER |
+| “Analyse mon contrat / ma convention” | `get_contract_text` → `save_contract_analysis` (descriptive, quotes checked) |
 | “Voici un email reçu : …” | `search` → `apply_actions` (LOG_EVENT, SET_STATUS, ADD_INTERVIEW…) |
 | “Lis mon CV et remplis mon profil” | read the file → `update_profile` |
 | Statistics | `get_analytics` (report numbers, no conclusions) |
