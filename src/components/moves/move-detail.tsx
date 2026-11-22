@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Archive, ArchiveRestore, Briefcase, CalendarDays, ChevronRight, Home, MapPin, MoreHorizontal, Pencil, PiggyBank, Trash2, TriangleAlert } from "lucide-react";
+import { Archive, ArchiveRestore, Briefcase, CalendarDays, ChevronRight, Home, MapPin, MoreHorizontal, Pencil, PiggyBank, Sparkles, Trash2, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,6 +19,7 @@ import { MOVE_STATUSES, MOVE_STATUS_LABEL, type MoveStatus } from "@/lib/relocat
 import { addDays, formatISODate } from "@/lib/dates";
 import type { ListingView, MoveView } from "@/server/services/moves";
 import { cn } from "@/lib/utils";
+import { useChat } from "@/components/chat/chat-dock";
 import { HousingView } from "./housing-view";
 import { BudgetView } from "./budget-view";
 import { ListingSheet } from "./listing-sheet";
@@ -30,6 +31,7 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
   const router = useRouter();
   const pathname = usePathname();
   const confirm = useConfirm();
+  const chat = useChat();
   const { run } = useAction();
   const { dateLocale } = useAppData();
   const [tab, setTab] = useState(initialTab);
@@ -119,6 +121,9 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
               ))}
             </SelectContent>
           </Select>
+          <Button variant="outline" onClick={() => chat.mention({ type: "move", id: move.id, label: move.title, href: `/moves/${move.id}` })}>
+            <Sparkles /> Demander à Claude
+          </Button>
           <Button variant="outline" onClick={() => setMoveFormOpen(true)}>
             <Pencil /> Modifier
           </Button>

@@ -13,6 +13,7 @@ import {
   MessageSquareText,
   Pencil,
   Phone,
+  Sparkles,
   Star,
   Trash2,
   XCircle,
@@ -33,6 +34,7 @@ import { deleteListingAction, draftListingMessageAction, setListingStatusAction,
 import { firstPhone, HOUSING_TYPE_LABEL, LISTING_STATUSES, LISTING_STATUS_META, whatsappLink, type ListingStatus } from "@/lib/relocation";
 import type { ListingView } from "@/server/services/moves";
 import { cn } from "@/lib/utils";
+import { useChat } from "@/components/chat/chat-dock";
 import { mapsDirections, money, savingsTone, signedMoney } from "./format";
 
 const FURNISHED_LABEL = { YES: "Meublé", SEMI: "Semi-meublé", NO: "Non meublé", UNKNOWN: "Inconnu" } as const;
@@ -65,6 +67,7 @@ export function ListingSheet({
 }) {
   const { run } = useAction();
   const confirm = useConfirm();
+  const chat = useChat();
   const [notes, setNotes] = useState("");
   const [notesFor, setNotesFor] = useState<string | null>(null);
   const [messageOpen, setMessageOpen] = useState(false);
@@ -135,6 +138,13 @@ export function ListingSheet({
                   </a>
                 </Button>
               )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => chat.mention({ type: "listing", id: l.id, label: l.title, href: `/moves/${l.moveId}?tab=housing&listing=${l.id}` })}
+              >
+                <Sparkles /> Demander à Claude
+              </Button>
               <Button variant="outline" size="sm" onClick={() => onEdit(l)}>
                 <Pencil /> Modifier
               </Button>
