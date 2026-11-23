@@ -13,6 +13,12 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { claudeVersion, readClaudeUsage, resolveClaudeBin, runClaude, streamClaude } from "./claude-runner.mjs";
 
+function apiConfigDir() {
+  const dir = path.resolve(process.cwd(), "data", "claude-api");
+  fs.mkdirSync(dir, { recursive: true });
+  return dir;
+}
+
 const here = path.dirname(fileURLToPath(import.meta.url));
 
 function readEnvFile() {
@@ -88,6 +94,11 @@ const server = http.createServer(async (req, res) => {
   }
   if (typeof body.prompt !== "string" || !body.prompt) return send(res, 400, { ok: false, error: "prompt required" });
   const pick = (v, re) => (typeof v === "string" && re.test(v) ? v : null);
+  // Claude API key pasted in the app: used for this run instead of the subscription the host CLI is logged in with.
+  const apiKey = pick(body.apiKey, /^sk-ant-[A-Za-z0-9_-]{20,300}$/);
+  // The host CLI is logged in with a subscription and would ignore the key: give it an empty configuration folder
+  // (data/claude-api, the same folder the app uses in Docker).
+  const env = apiKey ? { ANTHROPIC_API_KEY: apiKey, CLAUDE_CODE_OAUTH_TOKEN: undefined, CLAUDE_CONFIG_DIR: apiConfigDir() } : undefined;
 
   if (req.url === "/v1/chat") {
     // In-app chat: Claude Code with the Career OS MCP tools (+ web search/fetch), streamed as NDJSON events.
@@ -106,6 +117,7 @@ const server = http.createServer(async (req, res) => {
         sessionId: pick(body.sessionId, /^[a-f0-9-]{8,64}$/i),
         webTools: body.webTools !== false,
         bin: BIN,
+        env,
       },
       (event) => res.write(`${JSON.stringify(event)}\n`),
     );
@@ -131,6 +143,7 @@ const server = http.createServer(async (req, res) => {
       effort: pick(body.effort, /^(low|medium|high|xhigh|max)$/),
       timeoutMs: Math.min(Number(body.timeoutMs) || 240_000, 600_000),
       bin: BIN,
+      env,
     });
     console.log(`[bridge] ${new Date().toISOString()} ok ${result.model ?? "?"} ${Date.now() - started}ms`);
     send(res, 200, { ok: true, ...result });

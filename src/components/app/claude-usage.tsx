@@ -10,7 +10,7 @@ interface UsageWindow {
   utilization: number;
   resetsAt: string | null;
 }
-type Usage = { available: true; fiveHour: UsageWindow | null; sevenDay: UsageWindow | null; plan: string | null } | { available: false; reason: string };
+type Usage = { available: true; fiveHour: UsageWindow | null; sevenDay: UsageWindow | null; plan: string | null } | { available: false; reason: string; apiKey?: boolean };
 
 const REFRESH_MS = 120_000;
 
@@ -86,7 +86,7 @@ export function ClaudeUsage() {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
-          <p className="truncate px-2 text-[11px] text-faint">Quota Claude indisponible</p>
+          <p className="truncate px-2 text-[11px] text-faint">{usage.apiKey ? "Clé API Claude" : "Quota Claude indisponible"}</p>
         </TooltipTrigger>
         <TooltipContent side="right" className="max-w-64">
           {usage.reason}

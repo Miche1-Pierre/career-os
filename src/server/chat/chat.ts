@@ -7,7 +7,8 @@ import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/server/db";
 import { chatMessages, chatThreads, housingListings, moves, opportunities, organizations, type ChatToolCall } from "@/server/db/schema";
-import { claudeMode, inDocker } from "@/server/ai";
+import { chatAvailable, claudeMode, inDocker } from "@/server/ai";
+import { claudeKeyEnv, explainClaudeError } from "@/server/ai/credentials";
 import { streamClaude } from "../../../bridge/claude-runner.mjs";
 import { AppError, notFound } from "@/server/context";
 import { getSettings } from "@/server/services/settings";
@@ -184,8 +185,8 @@ function chatModel() {
 
 export async function startChat(raw: unknown, requestOrigin: string, signal?: AbortSignal): Promise<ReadableStream<Uint8Array>> {
   const req = chatRequestSchema.parse(raw);
-  if ((process.env.AI_PROVIDER?.trim() || "claude-code") !== "claude-code") {
-    throw new AppError("UNAVAILABLE", "Le chat utilise Claude Code. Choisis le fournisseur « claude-code » dans Paramètres → IA.");
+  if (!chatAvailable()) {
+    throw new AppError("UNAVAILABLE", "Le chat a besoin de Claude : colle ta clé API Claude dans Paramètres → IA.");
   }
   const mode = claudeMode();
   if (!mode) throw new AppError("UNAVAILABLE", "Claude Code n'est pas configuré (Paramètres → IA).");
@@ -262,6 +263,7 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
 
       emit({ type: "thread", threadId });
       const options = { system, prompt, mcpUrl, mcpHeaders, model: chatModel(), sessionId };
+      const keyEnv = claudeKeyEnv();
       let final: Record<string, unknown> | null = null;
       const capture = (event: Record<string, unknown>) => {
         if (event.type === "done" || event.type === "error") final = event;
@@ -269,7 +271,7 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
       };
       try {
         if (mode === "cli") {
-          const run = streamClaude(options, capture);
+          const run = streamClaude({ ...options, env: keyEnv }, capture);
           running.set(threadId, run.cancel);
           signal?.addEventListener("abort", run.cancel);
           await run.done;
@@ -281,7 +283,7 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
           const res = await fetch(`${url}/v1/chat`, {
             method: "POST",
             headers: { "content-type": "application/json", authorization: `Bearer ${process.env.CLAUDE_BRIDGE_TOKEN ?? ""}` },
-            body: JSON.stringify(options),
+            body: JSON.stringify({ ...options, apiKey: keyEnv?.ANTHROPIC_API_KEY }),
             signal: ac.signal,
           });
           if (!res.ok || !res.body) {
@@ -313,7 +315,7 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
         emit({ type: "done", text, model: (f.model as string) ?? null, costUsd: (f.costUsd as number) ?? null, durationMs: Number(f.durationMs ?? 0), wrote });
         await finish({ text, model: f.model as string, costUsd: f.costUsd as number, durationMs: Number(f.durationMs ?? 0) });
       } else {
-        const message = String(f.message ?? "Erreur");
+        const message = explainClaudeError(String(f.message ?? "Erreur"));
         emit({ type: "error", message });
         await finish({ text: "", error: message });
       }
