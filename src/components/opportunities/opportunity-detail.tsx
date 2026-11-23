@@ -61,6 +61,8 @@ import { DetailNotes } from "./detail-notes";
 import { DetailAnalysis } from "./detail-analysis";
 import { DetailHistory } from "./detail-history";
 import { DetailOffer } from "./detail-offer";
+import { DetailKit } from "./detail-kit";
+import { parseKit } from "@/lib/kit";
 import { reviewProgress } from "@/lib/offer";
 import { DetailSidebar } from "./detail-sidebar";
 
@@ -305,7 +307,8 @@ export function OpportunityDetailView({
               </TabsTrigger>
             </TabsList>
           </div>
-          <TabsContent value="overview" className="pt-4">
+          <TabsContent value="overview" className="space-y-6 pt-4">
+            {(preSubmit || !!parseKit(opp.details)) && !closed && <DetailKit opp={opp} versions={versions} />}
             <DetailOverview opp={opp} skillMatch={skillMatch} />
           </TabsContent>
           <TabsContent value="timeline" className="pt-4">

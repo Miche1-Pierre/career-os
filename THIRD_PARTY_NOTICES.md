@@ -26,3 +26,13 @@ NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FO
 OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
+
+## Other bundled assets and libraries
+
+- **Gelasio** font (`public/fonts/gelasio/`, CV PDF template): SIL Open Font License 1.1, copyright the Gelasio
+  Project Authors. Full text in `public/fonts/gelasio/LICENSE`.
+- **simple-icons** (technology icons on the profile page): CC0 1.0. Brand icons remain trademarks of their owners.
+- **@react-pdf/renderer** (CV PDF rendering): MIT.
+- **@huggingface/transformers** and **onnxruntime-node** (local dictation): Apache License 2.0 / MIT. The Whisper model
+  (`Xenova/whisper-small`, downloaded on first use) is released under the MIT License by OpenAI.
+- **OpenStreetMap** map tiles: © OpenStreetMap contributors (ODbL), shown with attribution on the map.

@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy, Loader2, Mail } from "lucide-react";
+import { Check, Copy, Loader2, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { renderEmailAction } from "@/app/actions/opportunities";
+import { draftMessageAction, renderEmailAction } from "@/app/actions/opportunities";
 
 interface Rendered {
-  templates: { id: string; name: string }[];
+  templates: { id: string; name: string; language: "fr" | "en" }[];
   templateId: string | null;
   to: string | null;
   contactName: string | null;
@@ -27,6 +27,17 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
   const [body, setBody] = useState("");
   const [to, setTo] = useState("");
   const [copied, setCopied] = useState<"subject" | "body" | null>(null);
+  const [drafting, setDrafting] = useState(false);
+  const personalize = async () => {
+    const language = data?.templates.find((t) => t.id === (templateId ?? data?.templateId))?.language ?? "fr";
+    setDrafting(true);
+    const r = await draftMessageAction(opportunityId, { subject, body, language });
+    setDrafting(false);
+    if (!r.ok) return void toast.error(r.error);
+    setSubject(r.data.subject);
+    setBody(r.data.body);
+    toast.success("Message personnalisé : relis-le avant d’envoyer");
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -96,6 +107,9 @@ export function EmailDialog({ opportunityId, open, onOpenChange, onSent }: { opp
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             Fermer
+          </Button>
+          <Button variant="outline" onClick={() => void personalize()} disabled={drafting || !body}>
+            {drafting ? <Loader2 className="animate-spin" /> : <Sparkles />} Personnaliser avec Claude
           </Button>
           <Button variant="outline" asChild>
             <a href={mailto}>

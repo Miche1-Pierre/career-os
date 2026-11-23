@@ -36,6 +36,20 @@
       "when": 1795394291266,
       "tag": "0004_discovery",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795424290190,
+      "tag": "0005_cv",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795424863324,
+      "tag": "0006_cv_style",
+      "breakpoints": true
     }
   ]
 }

@@ -19,6 +19,7 @@ import {
   UserRound,
   Users,
   Radar,
+  FileUser,
 } from "lucide-react";
 import {
   Sidebar,
@@ -136,7 +137,8 @@ export function AppSidebar() {
         <NavGroup
           label="Préparer"
           items={[
-            { href: "/settings/profile", label: "Profil & CV", icon: UserRound },
+            { href: "/settings/profile", label: "Profil", icon: UserRound },
+            { href: "/cv", label: "CV", icon: FileUser },
             { href: "/documents", label: "Documents", icon: FileText },
           ]}
         />

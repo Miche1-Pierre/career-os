@@ -45,6 +45,9 @@ const PURPOSE_LABEL: Record<EmailTemplate["purpose"], string> = {
   THANK_YOU: "Remerciement",
   NETWORKING: "Réseautage",
   WITHDRAW: "Désistement",
+  APPLICATION: "Envoi de candidature",
+  LINKEDIN: "Message LinkedIn",
+  SPONTANEOUS: "Candidature spontanée",
   OTHER: "Autre",
 };
 
@@ -200,7 +203,7 @@ export function EmailTemplateSettings({ value }: { value: AppSettings["emailTemp
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {["FOLLOW_UP", "THANK_YOU", "NETWORKING", "WITHDRAW", "OTHER"].map((p) => (
+                {["APPLICATION", "LINKEDIN", "SPONTANEOUS", "FOLLOW_UP", "THANK_YOU", "NETWORKING", "WITHDRAW", "OTHER"].map((p) => (
                   <SelectItem key={p} value={p}>
                     {PURPOSE_LABEL[p as EmailTemplate["purpose"]]}
                   </SelectItem>

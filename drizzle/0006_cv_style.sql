@@ -1,0 +1,1 @@
+ALTER TABLE "cv_variants" ADD COLUMN "style" jsonb DEFAULT '{}'::jsonb NOT NULL;
