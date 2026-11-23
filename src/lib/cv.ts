@@ -91,10 +91,21 @@ export interface CvEntryView {
   bullets: string[];
 }
 
-/** File name of an export: "CV-Pierre-Michel-AIProduct-FR-2026-11-23.pdf". Pure. */
-export function exportFileName(variant: { name: string; fileName?: string | null }, date: string): string {
-  const base = (variant.fileName ?? `CV-${variant.name}.pdf`).replace(/\.pdf$/i, "").replace(/[^\w.()-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
-  return `${base}-${date}.pdf`;
+/** File-safe version of a CV name: "CV Pierre Michel (AI)" → "CV-Pierre-Michel-(AI)". Pure. */
+export function fileBase(name: string): string {
+  const base = name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\.pdf$/i, "")
+    .replace(/[^\w.()-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return base || "CV";
+}
+
+/** File name of an export: the CV's name ("CV-Pierre-Michel-AIProduct-FR.pdf"); versions live in Documents. Pure. */
+export function exportFileName(variant: { name: string; fileName?: string | null }): string {
+  return `${fileBase(variant.fileName || variant.name)}.pdf`;
 }
 
 /** Entries referenced by a variant that no longer exist (shown as a warning, skipped in the PDF). Pure. */

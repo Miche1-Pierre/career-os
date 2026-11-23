@@ -1,19 +1,32 @@
 import type { Metadata } from "next";
-import { listEntries, listVariants } from "@/server/services/cv";
-import { opportunityOptions } from "@/server/services/opportunities";
-import { CvView } from "@/components/cv/cv-view";
+import { z } from "zod";
+import { listCvCards, listEntries } from "@/server/services/cv";
+import { cvBlockSchema, cvHeaderSchema, cvStyleSchema } from "@/lib/cv";
+import { cvDesignSchema } from "@/lib/cv-design";
+import { CvList } from "@/components/cv/cv-list";
 
 export const metadata: Metadata = { title: "CV" };
 
-export default async function CvPage({ searchParams }: { searchParams: Promise<{ v?: string }> }) {
-  const { v } = await searchParams;
-  const [variants, entries, opps] = await Promise.all([listVariants(), listEntries(), opportunityOptions({ limit: 300 })]);
+export default async function CvPage() {
+  const [cards, entries] = await Promise.all([listCvCards(), listEntries()]);
   return (
-    <CvView
-      variants={JSON.parse(JSON.stringify(variants))}
+    <CvList
       entries={entries}
-      opportunities={opps.map((o) => ({ id: o.id, label: o.organizationName ? `${o.organizationName} · ${o.title}` : o.title }))}
-      selectedId={v ?? null}
+      cards={cards.map((c) => {
+        const design = c.design ? cvDesignSchema.safeParse(c.design) : null;
+        return {
+          id: c.id,
+          name: c.name,
+          lang: c.lang,
+          design: design?.success ? design.data : null,
+          header: cvHeaderSchema.parse(c.header),
+          sections: z.array(cvBlockSchema).catch([]).parse(c.sections),
+          style: cvStyleSchema.parse(c.style ?? {}),
+          documentId: c.documentId,
+          updatedAt: new Date(c.updatedAt).toISOString(),
+          versions: c.versions.map((v) => ({ id: v.id, version: v.version, fileName: v.fileName, createdAt: new Date(v.createdAt).toISOString() })),
+        };
+      })}
     />
   );
 }

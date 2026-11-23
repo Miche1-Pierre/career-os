@@ -175,7 +175,7 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
       id: c.id,
       title: c.name,
       subtitle: `CV · ${c.lang.toUpperCase()}`,
-      href: `/cv?variant=${c.id}`,
+      href: `/cv/${c.id}`,
       score: score(c.name, q) + 3,
     })),
   ];

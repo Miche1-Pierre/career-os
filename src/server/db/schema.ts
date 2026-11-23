@@ -44,6 +44,7 @@ import type { BudgetPlan, Furnished, HousingType, ListingContacts, ListingSource
 import type { ProcedureCategory, ProcedureSource, ProcedureStatus } from "@/lib/procedures";
 import type { DiscoveryDomain, Schedule } from "@/lib/discovery";
 import type { CvBlock, CvHeader, CvLang, CvSection, CvStyle } from "@/lib/cv";
+import type { CvDesign } from "@/lib/cv-design";
 
 // ---------------------------------------------------------------------------
 // Column helpers
@@ -852,6 +853,8 @@ export const cvVariants = pgTable("cv_variants", {
   sections: jsonList<CvBlock>("sections"),
   style: jsonObject<CvStyle>("style"),
   template: text("template").notNull().default("classic"),
+  /** Free-form layout from the Canva-like editor (null until the CV is first opened in it). */
+  design: jsonb("design").$type<CvDesign | null>(),
   /** Library document the exports are versions of (kind CV). */
   documentId: uuid("document_id").references(() => documents.id, { onDelete: "set null" }),
   lastExportedAt: ts("last_exported_at"),

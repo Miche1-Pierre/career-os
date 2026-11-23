@@ -210,6 +210,9 @@ const DockStateContext = createContext<DockProps | null>(null);
 /** The always-visible chat bar, mounted at the bottom of the page area (state lives in ChatProvider). */
 export function ChatDock() {
   const props = useContext(DockStateContext);
+  const pathname = usePathname();
+  // The CV editor has its own Claude bar (it edits the CV directly).
+  if (/^\/cv\/[^/]+/.test(pathname)) return null;
   return props ? <Dock {...props} /> : null;
 }
 
