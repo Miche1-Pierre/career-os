@@ -64,7 +64,7 @@ function NavGroup({ label, items, children }: { label?: string; items: NavItem[]
   const { isMobile, setOpenMobile } = useSidebar();
   return (
     <SidebarGroup className="py-1">
-      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+      {label && <SidebarGroupLabel className="group-data-[collapsible=icon]:pointer-events-none">{label}</SidebarGroupLabel>}
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
@@ -99,11 +99,16 @@ export function AppSidebar() {
   const apply: NavItem[] = [{ href: "/applications", label: "Candidatures", icon: Briefcase }];
   if (badges.inbox > 0) apply.push({ href: "/inbox", label: "À trier", icon: Inbox, badge: badges.inbox });
   return (
-    <Sidebar collapsible="icon" variant="floating" className="macos-sidebar">
-      <SidebarHeader className={cn("gap-2 pt-3 pb-1", collapsed ? "items-center px-2" : "px-3")}>
-        <Link href="/" className="flex min-w-0 items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-          {collapsed ? <CareerOsGlyph className="size-5" /> : <CareerOsMark className="h-[18px]" />}
-          {!collapsed && <span className="truncate text-[13px] font-semibold text-foreground">Career OS</span>}
+    <Sidebar collapsible="icon" variant="sidebar">
+      <SidebarHeader className="gap-2">
+        <Link href="/" className="flex items-center gap-2.5 rounded-lg px-1.5 py-1.5 transition-colors hover:bg-hover">
+          {collapsed ? <CareerOsGlyph className="size-6" /> : <CareerOsMark className="h-[20px]" />}
+          {!collapsed && (
+            <span className="flex min-w-0 flex-col gap-0.5 leading-none">
+              <span className="heading-sm text-foreground">Career OS</span>
+              <span className="truncate text-xs text-faint">Pilotage de carrière</span>
+            </span>
+          )}
         </Link>
         {collapsed ? (
           <Tooltip>
@@ -117,7 +122,7 @@ export function AppSidebar() {
             <TooltipContent side="right">Rechercher</TooltipContent>
           </Tooltip>
         ) : (
-          <Button variant="highlight" asChild className={cn("h-8 w-full justify-start gap-2 rounded-lg", onHome && "ring-2 ring-highlight-200 dark:ring-highlight-900")}>
+          <Button variant="highlight" asChild className={cn("w-full justify-start gap-2", onHome && "ring-2 ring-highlight-200 dark:ring-highlight-900")}>
             <Link href="/" onClick={() => isMobile && setOpenMobile(false)}>
               <Radar />
               Rechercher
