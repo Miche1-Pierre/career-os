@@ -36,6 +36,10 @@ l'entrée de désinstallation, puis ouvre l'app. Tout va dans `%LOCALAPPDATA%\Ca
 L'assistant s'active en collant une clé API Claude au premier lancement (ou dans Paramètres → IA). Relancer la commande
 met à jour.
 
+**Microsoft Store** (en préparation) : le même workflow fabrique aussi un paquet MSIX (lanceur sans console, dossier de
+l'app en lecture seule, données dans `Documents\CareerOS`, arrêt automatique après la fermeture du dernier onglet).
+Soumission, fiche et réponses pour la certification : [docs/store](docs/store/README.md).
+
 ### Avec Claude Code (Mac, Linux, ou pour tout régler avec Claude)
 
 Le plus simple : dans [Claude Code](https://claude.com/claude-code) (onglet Code de l'application Claude, ou `claude`

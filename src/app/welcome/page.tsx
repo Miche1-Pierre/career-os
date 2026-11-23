@@ -30,7 +30,7 @@ export default async function WelcomePage({ searchParams }: { searchParams: Prom
       followUpDays={settings.followUp.defaultDays.JOB}
       businessDays={settings.followUp.businessDays}
       library={{ hostRoot: library.hostRoot, exists: library.exists, writable: library.writable, folders: labels }}
-      ai={{ available: ai.available, apiKey: ai.apiKey ?? null, detail: ai.detail }}
+      ai={{ available: ai.available, apiKey: ai.apiKey ?? null, detail: ai.detail, install: ai.install ?? null }}
       hasDemo={demo}
     />
   );

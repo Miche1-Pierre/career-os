@@ -1,21 +1,60 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, ExternalLink, KeyRound, Loader2 } from "lucide-react";
+import { CheckCircle2, Download, ExternalLink, KeyRound, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAction } from "@/hooks/use-action";
-import { removeApiKeyAction, saveApiKeyAction } from "@/app/actions/settings";
+import { installClaudeCodeAction, removeApiKeyAction, saveApiKeyAction, testAiAction } from "@/app/actions/settings";
 import type { AIStatus } from "@/server/ai";
 import { cn } from "@/lib/utils";
 
 const CONSOLE_KEYS_URL = "https://console.anthropic.com/settings/keys";
 
 /**
+ * Microsoft Store version without Claude Code yet: one button opens Windows' installer for Anthropic's program (it asks
+ * for consent itself), then « Vérifier » picks it up.
+ */
+function ClaudeCodeInstall({ onChange }: { onChange?: (status: AIStatus) => void }) {
+  const { run, pending } = useAction();
+  const [started, setStarted] = useState(false);
+  return (
+    <div className="space-y-2 rounded-xl border border-border bg-background px-3.5 py-3">
+      <p className="label-sm text-foreground">Il manque Claude Code</p>
+      <p className="copy-xs text-muted-foreground">
+        C&apos;est le programme gratuit d&apos;Anthropic qui fait tourner l&apos;assistant. Une fenêtre s&apos;ouvre : accepte les conditions d&apos;Anthropic, attends la fin, puis clique sur « Vérifier ».
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          disabled={pending}
+          onClick={() =>
+            void run(() => installClaudeCodeAction(), {
+              onSuccess: (r) => {
+                if (r.started) setStarted(true);
+                else window.open(r.url, "_blank", "noopener,noreferrer");
+              },
+            })
+          }
+        >
+          <Download /> Installer Claude Code
+        </Button>
+        {started && (
+          <Button size="sm" variant="outline" disabled={pending} onClick={() => void run(() => testAiAction(), { onSuccess: (s) => onChange?.(s) })}>
+            {pending ? <Loader2 className="animate-spin" /> : <RefreshCw />} Vérifier
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
  * Paste a Claude API key and the assistant is on: the key is checked with Anthropic, stored on this computer and used
  * right away by the chat, the searches and the analyses. Nothing to edit by hand.
  */
-export function ApiKeyField({ status, onChange, compact = false }: { status: Pick<AIStatus, "apiKey" | "available">; onChange?: (status: AIStatus) => void; compact?: boolean }) {
+export function ApiKeyField({ status, onChange, compact = false }: { status: Pick<AIStatus, "apiKey" | "available" | "install">; onChange?: (status: AIStatus) => void; compact?: boolean }) {
   const { run, pending } = useAction();
   const [value, setValue] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +74,12 @@ export function ApiKeyField({ status, onChange, compact = false }: { status: Pic
     });
   };
 
+  const install = status.install === "claude-code" ? <ClaudeCodeInstall onChange={onChange} /> : null;
+
   if (fromApp) {
     return (
+      <div className="space-y-2">
+      {install}
       <div className="flex flex-wrap items-center gap-3 rounded-xl border border-transparent bg-emerald-50 px-3.5 py-3 dark:bg-emerald-950">
         <CheckCircle2 className="size-5 shrink-0 text-emerald-700" />
         <div className="min-w-0 flex-1">
@@ -61,11 +104,13 @@ export function ApiKeyField({ status, onChange, compact = false }: { status: Pic
           </Button>
         )}
       </div>
+      </div>
     );
   }
 
   return (
     <div className={cn("space-y-2", compact && "space-y-1.5")}>
+      {install}
       {status.apiKey?.source === "env" && (
         <p className="copy-xs text-muted-foreground">
           Une clé est déjà définie à l&apos;installation (<code>{status.apiKey.hint}</code>). Colles-en une autre pour la remplacer.
