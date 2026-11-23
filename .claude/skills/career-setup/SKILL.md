@@ -12,6 +12,11 @@ questions, never paste a wall of commands at them. Never invent data. Never prin
 
 ## 0. Where are we?
 
+- Not in the repository yet (the user pasted « Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os »
+  in a session opened on another folder): get the application into a `career-os` folder inside the current folder
+  (say where, offer another place): `git clone https://github.com/Miche1-Pierre/career-os.git`; without git, download
+  `https://github.com/Miche1-Pierre/career-os/archive/refs/heads/main.zip` and extract it. Then work from that folder
+  and read its `CLAUDE.md`. Users coming from the website are not developers: no jargon, no command dumps.
 - Work from the repository root (`package.json` with `"name": "career-os"`).
 - Already installed? If `.env` exists and `GET http://localhost:<APP_PORT>/api/health` answers
   `{"status":"ok","database":{"ok":true}}`, offer to **update or repair** (section 9) instead of reinstalling.
