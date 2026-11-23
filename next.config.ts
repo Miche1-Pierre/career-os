@@ -15,8 +15,8 @@ const securityHeaders = [
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
       "style-src 'self' 'unsafe-inline'",
-      // CARTO basemap tiles (OpenStreetMap data) for the housing map.
-      "img-src 'self' data: blob: https://*.basemaps.cartocdn.com",
+      // OpenStreetMap tiles for the housing map.
+      "img-src 'self' data: blob: https://tile.openstreetmap.org",
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-src 'self' blob:",
