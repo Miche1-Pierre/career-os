@@ -17,6 +17,7 @@ import {
   Home,
   Hourglass,
   Inbox,
+  Landmark,
   ListTodo,
   Mail,
   MessageSquareReply,
@@ -58,6 +59,7 @@ const KIND_ICON: Record<TodayItem["kind"], React.ComponentType<{ className?: str
   OFFER: FileSignature,
   VISIT: MapPin,
   HOUSING: Home,
+  PROCEDURE: Landmark,
 };
 
 function greeting() {

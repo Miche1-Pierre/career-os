@@ -15,9 +15,10 @@ import { interviewKindTitle, type OpportunityType, type StageCategory } from "@/
 import { getSettings } from "./settings";
 import { listNotifications } from "./notifications";
 import { listMoves } from "./moves";
+import { dueProcedures } from "./procedures";
 import { parseOffer, reviewProgress } from "@/lib/offer";
 
-export type TodayItemKind = "FOLLOW_UP" | "TASK" | "INTERVIEW" | "DEADLINE" | "OPENS" | "DECISION" | "WAITING" | "DOCUMENTS" | "OUTCOME" | "OFFER" | "VISIT" | "HOUSING";
+export type TodayItemKind = "FOLLOW_UP" | "TASK" | "INTERVIEW" | "DEADLINE" | "OPENS" | "DECISION" | "WAITING" | "DOCUMENTS" | "OUTCOME" | "OFFER" | "VISIT" | "HOUSING" | "PROCEDURE";
 
 export interface TodayOpportunityRef {
   id: string;
@@ -290,6 +291,11 @@ export async function getToday(options: { horizonDays?: number } = {}): Promise<
       items.push({ key: `housing:${m.id}`, kind: "HOUSING", date: today, title: `${n} logement${n > 1 ? "s" : ""} à contacter — ${m.title}`, subtitle: "Les brouillons de message sont prêts sur chaque fiche", due: dueStatus(today, today), href: `/moves/${m.id}?tab=housing` });
       housing++;
     }
+  }
+
+  // Administrative procedures with a due date (open ones, overdue included).
+  for (const { procedure: p, moveTitle } of await dueProcedures(horizon)) {
+    items.push({ key: `procedure:${p.id}`, kind: "PROCEDURE", date: p.dueDate!, title: p.title, subtitle: moveTitle, due: dueStatus(p.dueDate!, today), href: `/moves/${p.moveId}?tab=procedures` });
   }
 
   const sortItems = (list: TodayItem[]) =>

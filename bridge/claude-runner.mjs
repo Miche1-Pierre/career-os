@@ -38,14 +38,17 @@ function workDir() {
 
 /**
  * @param {{ system?: string, prompt: string, schema?: object, model?: string | null, fallbackModel?: string | null,
- *           effort?: string | null, timeoutMs?: number, bin?: string, env?: Record<string, string | undefined> }} options
+ *           effort?: string | null, timeoutMs?: number, bin?: string, env?: Record<string, string | undefined>,
+ *           webTools?: boolean }} options  webTools: allow WebSearch / WebFetch (research tasks only)
  * @returns {Promise<{ structured: unknown, text: string | null, model: string | null, costUsd: number | null, durationMs: number, turns: number | null }>}
  */
 export function runClaude(options) {
-  const { system, prompt, schema, model, fallbackModel, effort, timeoutMs = 240_000, bin, env } = options;
+  const { system, prompt, schema, model, fallbackModel, effort, timeoutMs = 240_000, bin, env, webTools = false } = options;
   const cwd = workDir();
   let systemFile = null;
-  const args = ["-p", "--output-format", "json", "--no-session-persistence", "--tools", "", "--strict-mcp-config", "--setting-sources", "project", "--max-turns", "6"];
+  const tools = webTools ? "WebSearch,WebFetch" : "";
+  const args = ["-p", "--output-format", "json", "--no-session-persistence", "--tools", tools, "--strict-mcp-config", "--setting-sources", "project", "--max-turns", webTools ? "60" : "6"];
+  if (webTools) args.push("--allowedTools", tools);
   if (system) {
     systemFile = path.join(cwd, `system-${crypto.randomUUID()}.txt`);
     fs.writeFileSync(systemFile, system, "utf8");

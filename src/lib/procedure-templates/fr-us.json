@@ -1,0 +1,520 @@
+{
+  "key": "FR-US",
+  "from": "FR",
+  "to": "US",
+  "title": "France → États-Unis (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "visa-categorie",
+      "title": "Choisir la catégorie de visa",
+      "category": "VISA",
+      "summary": "Un stage ou un emploi aux États-Unis exige un visa obtenu avant le départ. Pour la plupart des visas de travail, l'employeur dépose d'abord une pétition auprès de l'USCIS ; le J-1 passe par un sponsor désigné.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.uscis.gov/working-in-the-united-states/temporary-nonimmigrant-workers",
+      "steps": [
+        {
+          "title": "Écarter l'ESTA",
+          "detail": "L'exemption de visa (ESTA) couvre le tourisme ou les affaires jusqu'à 90 jours. Elle ne permet aucune activité professionnelle, même non rémunérée, ni de changer de statut sur place.",
+          "officialUrl": "https://www.diplomatie.gouv.fr/fr/information-par-pays/etats-unis/conseils-aux-voyageurs-entree-sejour",
+          "requiredDocuments": null
+        },
+        {
+          "title": "J-1 Intern : stage d'étudiant ou de jeune diplômé",
+          "detail": "Pour un étudiant inscrit dans un établissement d'enseignement supérieur hors des États-Unis, ou diplômé depuis 12 mois au plus avant le début du programme. Le dossier passe par un sponsor désigné par le Département d'État.",
+          "officialUrl": "https://j1visa.state.gov/programs/intern",
+          "requiredDocuments": null
+        },
+        {
+          "title": "J-1 Trainee : formation en entreprise",
+          "detail": "Pour un diplômé ayant au moins 1 an d'expérience dans le domaine hors des États-Unis, ou une personne ayant 5 ans d'expérience hors des États-Unis. La formation est à temps plein (32 heures par semaine au moins) et ne doit pas répéter l'expérience passée.",
+          "officialUrl": "https://j1visa.state.gov/programs/trainee",
+          "requiredDocuments": null
+        },
+        {
+          "title": "H-1B : emploi qualifié",
+          "detail": "Pour un poste exigeant au moins un bachelor's degree (ou équivalent) dans une spécialité : l'employeur fait certifier une LCA par le Department of Labor puis dépose le formulaire I-129. Un plafond annuel s'applique (sauf notamment universités et organismes de recherche à but non lucratif ou publics) avec une inscription électronique sélectionnée au préalable, et l'admission initiale va jusqu'à 3 ans (6 ans au total en général).",
+          "officialUrl": "https://www.uscis.gov/working-in-the-united-states/h-1b-specialty-occupations",
+          "requiredDocuments": null
+        },
+        {
+          "title": "L-1 : mutation au sein d'un groupe",
+          "detail": "Pour un salarié ayant travaillé au moins 1 an en continu, au cours des 3 dernières années, dans une entité étrangère liée à l'employeur américain : L-1A pour un dirigeant ou manager, L-1B pour une connaissance spécialisée. L'employeur dépose le formulaire I-129.",
+          "officialUrl": "https://www.uscis.gov/working-in-the-united-states/temporary-workers/l-1a-intracompany-transferee-executive-or-manager",
+          "requiredDocuments": null
+        },
+        {
+          "title": "O-1 : capacités extraordinaires",
+          "detail": "Pour une personne reconnue au niveau national ou international dans les sciences, l'éducation, les affaires, le sport ou les arts. Un employeur ou un agent américain dépose le formulaire I-129 avec l'avis écrit d'un groupe de pairs ou d'un expert du domaine.",
+          "officialUrl": "https://www.uscis.gov/working-in-the-united-states/temporary-workers/o-1-visa-individuals-with-extraordinary-ability-or-achievement",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "j1-sponsor",
+      "title": "Trouver un sponsor J-1 et obtenir le DS-2019",
+      "category": "VISA",
+      "summary": "Le J-1 exige un sponsor désigné par le Département d'État. Il sélectionne le participant, l'enregistre dans SEVIS et lui remet le formulaire DS-2019.",
+      "appliesIf": "visa J-1 (Intern ou Trainee)",
+      "when": null,
+      "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/",
+      "steps": [
+        {
+          "title": "Choisir un sponsor désigné",
+          "detail": "Cherchez un sponsor par catégorie dans la liste officielle du Département d'État, puis contactez-le directement.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/sponsor-search/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier les conditions et les frais",
+          "detail": "Les frais de programme varient selon le sponsor : demandez le détail de tous les coûts. Tout participant doit avoir un niveau d'anglais suffisant et une assurance santé conforme.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la durée maximale",
+          "detail": "Un stage (Intern) dure 12 mois au plus et une formation (Trainee) 18 mois au plus (12 mois en agriculture et en hôtellerie-tourisme), dans la limite de l'agrément du sponsor.",
+          "officialUrl": "https://www.ecfr.gov/current/title-22/part-62/section-62.22",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Faire signer le plan de stage DS-7002",
+          "detail": "L'entreprise d'accueil signe le Training/Internship Placement Plan (formulaire DS-7002), à présenter lors de la demande de visa.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/interviews-documents/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Recevoir et vérifier le DS-2019",
+          "detail": "Le DS-2019 indique le sponsor, la catégorie, les dates de début et de fin et le coût estimé du programme. En cas d'erreur, contactez le sponsor dont les coordonnées figurent sur le formulaire.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/about-ds-2019/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la règle des deux ans",
+          "detail": "Selon le financement du programme ou le domaine, vous pouvez devoir résider 2 ans dans votre pays après le programme avant d'obtenir certains visas liés à l'emploi ou à la famille. Posez la question au sponsor.",
+          "officialUrl": "https://j1visa.state.gov/participants/common-questions/",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "sevis-i901",
+      "title": "Payer les frais SEVIS I-901",
+      "category": "VISA",
+      "summary": "Les participants J-1 doivent payer au DHS les frais SEVIS I-901, distincts des frais de visa, avant la délivrance du visa (8 CFR 214.13).",
+      "appliesIf": "visa J-1, sauf si le sponsor inclut ces frais dans le programme",
+      "when": null,
+      "officialUrl": "https://www.ice.gov/sevis/i901",
+      "steps": [
+        {
+          "title": "Demander au sponsor qui paie",
+          "detail": "Le sponsor indique si vous devez payer vous-même ou si les frais sont inclus dans le programme ; s'il paie, il vous remet un reçu.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Payer sur le site officiel FMJfee",
+          "detail": "Le paiement se fait en dollars par carte sur FMJfee.com ; le chèque, le mandat et Western Union sont aussi acceptés.",
+          "officialUrl": "https://www.fmjfee.com/i901fee/index.html",
+          "requiredDocuments": ["Formulaire DS-2019 (numéro SEVIS)"]
+        },
+        {
+          "title": "Imprimer la confirmation de paiement",
+          "detail": "Imprimez la confirmation sur FMJfee.com avec votre SEVIS ID, votre nom et votre date de naissance, et gardez-la pour la demande de visa.",
+          "officialUrl": "https://www.ice.gov/sevis/i901",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "visa-ambassade",
+      "title": "Demander le visa à l'ambassade à Paris",
+      "category": "VISA",
+      "summary": "La demande se fait auprès de la section consulaire de l'ambassade des États-Unis à Paris : formulaire DS-160, paiement, rendez-vous puis entretien en personne.",
+      "appliesIf": "J-1 après réception du DS-2019 ; H-1B, L-1 ou O-1 après approbation de la pétition I-129",
+      "when": null,
+      "officialUrl": "https://fr.usembassy.gov/visas/visas-nonimmigrant-visas/",
+      "steps": [
+        {
+          "title": "Remplir le formulaire DS-160",
+          "detail": "Soumettez le DS-160 en ligne au moins 2 jours ouvrés avant l'entretien. Son numéro de confirmation (commençant par AA) doit être celui utilisé pour réserver le rendez-vous, sinon l'accès à l'entretien est refusé.",
+          "officialUrl": "https://fr.usembassy.gov/visas/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Payer et prendre rendez-vous",
+          "detail": "Créez un compte, payez les frais de visa et réservez l'entretien sur le site du prestataire indiqué par l'ambassade (usvisaappt.com).",
+          "officialUrl": "https://fr.usembassy.gov/visas/visas-nonimmigrant-visas/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Rendre ses réseaux sociaux publics",
+          "detail": "L'ambassade demande aux candidats à certains visas, dont J et H-1B, de passer leurs comptes de réseaux sociaux en mode public pour les vérifications.",
+          "officialUrl": "https://fr.usembassy.gov/visas/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Préparer le dossier",
+          "detail": "Pour un J-1, vous devez montrer des attaches en France et le caractère temporaire du séjour. Les délais de rendez-vous varient : lancez la demande le plus tôt possible.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/interviews-documents/",
+          "requiredDocuments": [
+            "Passeport valide",
+            "Confirmation du DS-160",
+            "Photo d'identité au format américain (2 x 2 pouces)",
+            "Reçu des frais de visa",
+            "DS-2019 et DS-7002 (J-1)",
+            "Confirmation de paiement SEVIS I-901 (J-1)"
+          ]
+        },
+        {
+          "title": "Passer l'entretien en personne",
+          "detail": "Sauf rares exceptions, tout demandeur de visa non immigrant passe un entretien avec un agent consulaire. Lisez les consignes de sécurité de l'ambassade avant de vous y rendre.",
+          "officialUrl": "https://fr.usembassy.gov/visas/visas-nonimmigrant-visas/",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "assurance-j1",
+      "title": "Souscrire l'assurance santé exigée pour le J-1",
+      "category": "HEALTH",
+      "summary": "Tout participant J-1 doit être assuré maladie et accident pendant tout le programme, avec des garanties minimales fixées par la réglementation.",
+      "appliesIf": "visa J-1",
+      "when": null,
+      "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+      "steps": [
+        {
+          "title": "Vérifier les garanties minimales",
+          "detail": "Le contrat doit couvrir au moins 100 000 $ de frais médicaux par accident ou maladie, 25 000 $ de rapatriement du corps et 50 000 $ d'évacuation sanitaire vers la France, avec une franchise de 500 $ au plus.",
+          "officialUrl": "https://www.ecfr.gov/current/title-22/part-62/section-62.14",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Couvrir toute la durée du programme",
+          "detail": "La couverture doit courir sur les dates du programme enregistrées dans SEVIS ; une couverture du départ au retour est facultative.",
+          "officialUrl": "https://www.ecfr.gov/current/title-22/part-62/section-62.14",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Faire valider le contrat par le sponsor",
+          "detail": "Le sponsor vérifie la conformité de votre assurance et peut faciliter l'achat d'une couverture adaptée. Ne pas maintenir volontairement l'assurance est un motif d'exclusion du programme.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "entree-i94",
+      "title": "Entrer aux États-Unis et récupérer son I-94",
+      "category": "VISA",
+      "summary": "À l'arrivée, vous demandez l'admission à CBP (Customs and Border Protection). Elle est enregistrée électroniquement dans le formulaire I-94, preuve de votre statut.",
+      "appliesIf": null,
+      "when": 0,
+      "officialUrl": "https://www.cbp.gov/travel/international-visitors/i-94",
+      "steps": [
+        {
+          "title": "Respecter la fenêtre d'arrivée J-1",
+          "detail": "Pour un nouveau programme J-1, vous ne pouvez pas arriver plus de 30 jours avant la date de début indiquée sur le DS-2019. Après la fin du programme, vous avez 30 jours pour quitter le pays.",
+          "officialUrl": "https://j1visa.state.gov/participants/common-questions/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Télécharger son I-94",
+          "detail": "Le I-94 est électronique : récupérez votre numéro sur le site I-94 de CBP ou l'application CBP Link pour prouver votre statut à l'employeur ou aux administrations.",
+          "officialUrl": "https://www.cbp.gov/travel/international-visitors/i-94",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la date limite de séjour",
+          "detail": "Contrôlez sur le I-94 la date « Admit Until Date », jusqu'à laquelle votre admission est valable.",
+          "officialUrl": "https://www.cbp.gov/travel/international-visitors/i-94",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "arrivee-sponsor",
+      "title": "Signaler son arrivée au sponsor J-1",
+      "category": "VISA",
+      "summary": "Avant le départ, le sponsor vous indique comment signaler votre arrivée ; il organise ensuite une orientation et suit votre programme.",
+      "appliesIf": "visa J-1",
+      "when": null,
+      "officialUrl": "https://www.ecfr.gov/current/title-22/part-62/section-62.10",
+      "steps": [
+        {
+          "title": "Suivre la procédure d'arrivée",
+          "detail": "Appliquez les consignes transmises par le sponsor pour signaler votre arrivée et vous présenter sur le lieu du programme.",
+          "officialUrl": "https://www.ecfr.gov/current/title-22/part-62/section-62.10",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Participer à l'orientation",
+          "detail": "Le sponsor doit proposer une orientation à l'arrivée et vous donner un contact d'urgence joignable 24 h sur 24.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Tenir ses coordonnées à jour",
+          "detail": "Communiquez au sponsor votre adresse et votre téléphone actuels pendant tout le programme.",
+          "officialUrl": "https://j1visa.state.gov/participants/how-to-apply/eligibility-and-fees/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "S'en tenir à l'activité du DS-2019",
+          "detail": "Vous ne pouvez exercer que l'activité indiquée sur le DS-2019. Tout voyage hors des États-Unis pendant le programme se prépare avec le sponsor.",
+          "officialUrl": "https://j1visa.state.gov/participants/common-questions/",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "logement",
+      "title": "Trouver un logement et signer un bail",
+      "category": "RESIDENCE",
+      "summary": "Les droits des locataires dépendent de l'État : lisez le bail avant de signer et méfiez-vous des fausses annonces.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.usa.gov/tenant-rights",
+      "steps": [
+        {
+          "title": "Repérer les fausses annonces",
+          "detail": "Visitez le logement ou faites-le visiter, vérifiez l'identité du propriétaire, et refusez tout paiement par Western Union, MoneyGram, carte cadeau ou cryptomonnaie.",
+          "officialUrl": "https://consumer.ftc.gov/articles/rental-listing-scams",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Protéger ses données personnelles",
+          "detail": "Tant que vous n'avez pas accepté de louer, un propriétaire n'a pas besoin de votre numéro de sécurité sociale ni de votre score de crédit.",
+          "officialUrl": "https://consumer.ftc.gov/articles/rental-listing-scams",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Lire le bail et connaître ses droits",
+          "detail": "Lisez attentivement le bail ; en cas de litige, l'agence de votre État chargée des droits des locataires peut vous orienter.",
+          "officialUrl": "https://www.usa.gov/tenant-rights",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Conserver le bail",
+          "detail": "Le contrat de location sert de justificatif de résidence, notamment pour l'inscription consulaire.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "ssn",
+      "title": "Demander un numéro de sécurité sociale (SSN)",
+      "category": "OTHER",
+      "summary": "Le SSN sert notamment à travailler, déclarer ses impôts et ouvrir un compte bancaire. En général, seuls les étrangers autorisés à travailler par le DHS peuvent le demander.",
+      "appliesIf": "statut autorisant le travail (J-1, H-1B, L-1, O-1)",
+      "when": null,
+      "officialUrl": "https://www.ssa.gov/number-card/request-number-first-time",
+      "steps": [
+        {
+          "title": "Commencer la demande en ligne",
+          "detail": "Une fois aux États-Unis, commencez la demande en ligne sur le site de la Social Security Administration (SSA) ; elle est gratuite.",
+          "officialUrl": "https://www.ssa.gov/number-card/request-number-first-time",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Présenter ses justificatifs au bureau SSA",
+          "detail": "Rendez-vous ensuite dans un bureau local de la SSA avec vos justificatifs. La carte arrive par courrier 5 à 10 jours ouvrés après l'approbation.",
+          "officialUrl": "https://www.ssa.gov/number-card/request-number-first-time",
+          "requiredDocuments": null
+        },
+        {
+          "title": "En cas de difficulté (J-1)",
+          "detail": "Contactez votre sponsor et la Social Security Administration.",
+          "officialUrl": "https://j1visa.state.gov/participants/common-questions/",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire",
+      "category": "BANK",
+      "summary": "Beaucoup de banques acceptent les clients qui ne sont pas citoyens américains ; les pièces demandées varient selon l'établissement.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.fdic.gov/getbanked",
+      "steps": [
+        {
+          "title": "Choisir une banque assurée par la FDIC",
+          "detail": "Dans une banque assurée par la FDIC, vos dépôts sont garantis au moins jusqu'à 250 000 $ en cas de faillite.",
+          "officialUrl": "https://www.fdic.gov/getbanked",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Préparer ses pièces",
+          "detail": "La banque demande une pièce d'identité et un numéro d'identification ; sans citoyenneté américaine, d'autres pièces peuvent être demandées, comme un passeport étranger ou un ITIN. Demandez la liste exacte à la banque.",
+          "officialUrl": "https://www.fdic.gov/getbanked",
+          "requiredDocuments": ["Passeport", "SSN ou ITIN si la banque l'exige"]
+        }
+      ]
+    },
+    {
+      "key": "protection-sociale-france",
+      "title": "Régler sa protection sociale française",
+      "category": "HEALTH",
+      "summary": "Salarié d'un employeur américain, vous relevez de la sécurité sociale américaine et quittez l'Assurance Maladie française. Détaché par une entreprise établie en France, vous pouvez rester au régime français sous conditions.",
+      "appliesIf": "emploi aux États-Unis (expatriation ou détachement)",
+      "when": 30,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+      "steps": [
+        {
+          "title": "Vérifier si vous êtes détaché ou expatrié",
+          "detail": "Hors détachement, la législation américaine de sécurité sociale s'applique dès que vous travaillez aux États-Unis. L'accord franco-américain ne prévoit aucune coordination en assurance maladie pour les expatriés.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/etatsunis.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Si vous êtes détaché, garder l'Assurance Maladie",
+          "detail": "Votre employeur peut vous maintenir au régime français dans le cadre de l'accord ; les soins reçus aux États-Unis sont remboursés sur factures acquittées avec le formulaire « Soins reçus à l'étranger » (S 3125).",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/detachement/etatsunis.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Sinon, déclarer le transfert de résidence à la CPAM",
+          "detail": "Envoyez le formulaire « Déclaration de transfert de résidence hors de France » dans le mois qui suit la fin de votre résidence en France. Rendez votre carte Vitale et votre carte européenne d'assurance maladie avant le départ.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Envisager la CFE",
+          "detail": "L'adhésion facultative à la Caisse des Français de l'étranger permet de continuer à bénéficier de l'Assurance Maladie française en tant qu'expatrié ; elle s'ajoute aux cotisations obligatoires du pays.",
+          "officialUrl": "https://www.cfe.fr/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prévenir la CAF et France Travail",
+          "detail": "Signalez votre départ aux organismes qui vous versent des prestations pour éviter d'avoir à rembourser des sommes indues.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/etatsunis.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "permis-conduire",
+      "title": "Vérifier les règles du permis de conduire",
+      "category": "TRANSPORT",
+      "summary": "Le permis de conduire et la carte d'identité locale relèvent de chaque État américain, via son service des véhicules (DMV).",
+      "appliesIf": "si vous comptez conduire ou voulez une pièce d'identité américaine",
+      "when": null,
+      "officialUrl": "https://www.usa.gov/state-motor-vehicle-services",
+      "steps": [
+        {
+          "title": "Vérifier le besoin d'un permis international",
+          "detail": "Si un permis international est exigé en plus du permis français, demandez-le avant le départ, au moins 1 mois à l'avance selon Service-Public.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F11534",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Consulter le DMV de votre État",
+          "detail": "Le permis local et la carte d'identité d'État se demandent au DMV de votre État ; renseignez-vous aussi auprès de lui sur la conduite avec un permis étranger.",
+          "officialUrl": "https://www.usa.gov/state-motor-vehicle-services",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Utiliser le passeport pour les vols intérieurs",
+          "detail": "Le passeport est accepté à la place d'une pièce REAL ID pour prendre un vol intérieur et entrer dans certains bâtiments fédéraux.",
+          "officialUrl": "https://www.tsa.gov/realid",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "impots",
+      "title": "Déclarer ses impôts aux États-Unis et en France",
+      "category": "TAX",
+      "summary": "Aux États-Unis, une déclaration fédérale et souvent une déclaration d'État sont à déposer. En France, les revenus de l'année du départ se déclarent l'année suivante.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.irs.gov/individuals/international-taxpayers/taxation-of-nonresident-aliens",
+      "steps": [
+        {
+          "title": "Déterminer son statut fiscal américain",
+          "detail": "Vous êtes non-résident fiscal sauf si vous êtes présent au moins 31 jours dans l'année et 183 jours sur 3 ans selon un calcul pondéré. Les jours passés en J comme trainee ne comptent en général pas, à condition de déposer le formulaire 8843.",
+          "officialUrl": "https://www.irs.gov/individuals/international-taxpayers/substantial-presence-test",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déposer la déclaration fédérale",
+          "detail": "Un non-résident fiscal déclare sur le formulaire 1040-NR. Un salarié dont l'impôt est retenu sur le salaire dépose en général au plus tard le 15 avril de l'année suivante.",
+          "officialUrl": "https://www.irs.gov/individuals/international-taxpayers/taxation-of-nonresident-aliens",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier les cotisations sociales (J-1)",
+          "detail": "Un J-1 non-résident fiscal est exonéré des cotisations Social Security et Medicare sur les salaires liés à son programme ; l'exonération cesse s'il devient résident fiscal.",
+          "officialUrl": "https://www.irs.gov/individuals/international-taxpayers/aliens-employed-in-the-us-social-security-taxes",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer l'impôt de l'État",
+          "detail": "Selon l'État et la ville, un impôt local sur le revenu peut s'ajouter : consultez l'administration fiscale de votre État.",
+          "officialUrl": "https://www.usa.gov/state-taxes",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer l'année du départ en France",
+          "detail": "Signalez votre nouvelle adresse à votre centre des finances publiques. L'année suivante, déclarez vos revenus du 1er janvier au départ (formulaire 2042) et, si vous gardez des revenus de source française, le formulaire 2042-NR.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Consulter la convention fiscale franco-américaine",
+          "detail": "Les textes officiels (convention de 1994, avenants de 2004 et 2009) sont publiés par l'IRS et sur impots.gouv.fr : lisez-les avant de demander un avantage conventionnel.",
+          "officialUrl": "https://www.irs.gov/businesses/international-businesses/france-tax-treaty-documents",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "inscription-consulaire",
+      "title": "S'inscrire au registre des Français de l'étranger",
+      "category": "OTHER",
+      "summary": "Facultative mais recommandée, gratuite et valable 5 ans, l'inscription consulaire facilite les démarches à l'étranger (vote, papiers d'identité).",
+      "appliesIf": "facultatif, pour une installation de plus de 6 mois",
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+      "steps": [
+        {
+          "title": "Identifier son consulat",
+          "detail": "Les États-Unis comptent plusieurs consulats de France : vérifiez sur le site de l'ambassade et des consulats de quelle circonscription dépend votre adresse.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+          "requiredDocuments": null
+        },
+        {
+          "title": "S'inscrire en ligne",
+          "detail": "Faites la demande sur le téléservice de Service-Public avec les pièces scannées ; les documents d'inscription sont ensuite disponibles dans votre espace personnel.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/R43248",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport français (valide ou périmé depuis moins de 2 ans)",
+            "Photo d'identité de moins de 6 mois",
+            "Justificatif de résidence (bail ou facture récente d'électricité)"
+          ]
+        },
+        {
+          "title": "Pour un séjour de moins de 6 mois, utiliser Ariane",
+          "detail": "L'inscription sur Ariane permet d'être alerté en cas d'événement grave pendant le séjour.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/R18974",
+          "requiredDocuments": null
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Les règles américaines ont beaucoup évolué en 2025 et 2026 : le paiement de 100 000 $ exigé pour certaines pétitions H-1B fait l'objet de décisions de justice, de nouveaux frais visent certains employeurs H-1B et L-1, et une règle de juillet 2026 fixant une durée d'admission pour les J est contestée. Vérifiez les pages USCIS et ICE avant toute démarche.",
+    "Les montants des frais (visa, SEVIS, programme du sponsor) et les délais de rendez-vous changent souvent : ils ne sont pas repris ici, consultez les sites officiels.",
+    "La délivrance du visa reste à la discrétion de l'agent consulaire, même avec un DS-2019 ou une pétition approuvée, et certaines demandes nécessitent un traitement administratif supplémentaire après l'entretien.",
+    "La France est exemptée de la règle des 6 mois de validité du passeport au-delà du séjour, mais le ministère des Affaires étrangères conseille de garder 6 mois de marge.",
+    "Pour un stage J-1 avec une convention de stage d'une école française, la protection sociale peut différer de celle d'un salarié expatrié : renseignez-vous auprès de l'école et de la CPAM.",
+    "L'exemption des trainees J pour le test de présence substantielle ne s'applique plus si vous en avez déjà bénéficié au cours de 2 des 6 années civiles précédentes, et la convention fiscale peut modifier le résultat : en cas de doute, consultez la Publication 519 de l'IRS ou le service des impôts.",
+    "Les règles de location, de permis de conduire et d'impôt local varient d'un État à l'autre et ne sont pas détaillées ici.",
+    "Une adhésion à la CFE ou une assurance française ne dispense pas de vérifier avec le sponsor qu'elle respecte les minima exigés pour le J-1."
+  ]
+}

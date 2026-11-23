@@ -143,6 +143,18 @@ champs vides de l'offre ; la checklist n'écrase jamais un point déjà jugé pa
 (× 20 jours) ; sur un projet existant, seuls les champs vides sont complétés. Aujourd'hui agrège les offres en cours, les
 visites et les logements à contacter, avec une carte par installation (compte à rebours).
 
+### Démarches
+
+Chaque installation a ses démarches (`procedures` + `procedure_steps`, `src/server/services/procedures.ts`) : catégorie,
+statut, échéance, lien officiel, sources, étapes à cocher (le statut suit les étapes), notes. Trois origines :
+- **modèles versionnés** `src/lib/procedure-templates/*.json` (FR-GENERIC pour quitter la France, FR-BE, FR-CA, FR-US),
+  chaque lien officiel vérifié, date `checkedAt` ; les délais (« dans les 8 jours ») deviennent des échéances à partir
+  de la date d'arrivée ;
+- **recherche Claude** (`procedures_research_v1`, recherche web autorisée pour cette seule tâche) pour n'importe quel
+  pays : sources officielles uniquement, liens non https écartés, résultats marqués « à vérifier » jusqu'à relecture ;
+- saisie à la main.
+Les échéances ouvertes apparaissent dans Aujourd'hui. Export : `EXPORT_SCHEMA_VERSION` 3 (les exports v2 s'importent).
+
 ### Dictée
 
 Le micro de la barre de chat enregistre (MediaRecorder, niveau affiché en direct), puis le navigateur rééchantillonne
@@ -153,7 +165,7 @@ enregistrement. Variables : `TRANSCRIBE=off`, `TRANSCRIBE_MODEL`, `TRANSCRIBE_LA
 
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
-- `.mcp.json` enregistre le serveur MCP `career-os` → 42 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget,
+- `.mcp.json` enregistre le serveur MCP `career-os` → 45 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget, démarches,
   follow_up, add_interview, attach_document, inbox…, save_analysis…).
 - `CLAUDE.md` + skills `.claude/skills/*` décrivent les workflows (importer, traiter l'Inbox, relances, préparation
   d'entretien, analyse). Claude extrait lui-même, avec provenance, et crée les objets via MCP — sans clé API.

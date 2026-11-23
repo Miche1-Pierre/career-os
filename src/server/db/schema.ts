@@ -41,6 +41,7 @@ import type {
   StoredAnalysis,
 } from "@/lib/schemas";
 import type { BudgetPlan, Furnished, HousingType, ListingContacts, ListingSource, ListingStatus, MoveStatus, ListingPick } from "@/lib/relocation";
+import type { ProcedureCategory, ProcedureSource, ProcedureStatus } from "@/lib/procedures";
 
 // ---------------------------------------------------------------------------
 // Column helpers
@@ -647,6 +648,74 @@ export const housingListings = pgTable(
   },
   (t) => [index("housing_move_idx").on(t.moveId, t.status), index("housing_url_idx").on(t.url)],
 );
+
+// ---------------------------------------------------------------------------
+// Administrative procedures of a move (spec v2, P3)
+// ---------------------------------------------------------------------------
+
+export interface ProcedureSourceLink {
+  label: string;
+  url: string;
+}
+
+export const procedures = pgTable(
+  "procedures",
+  {
+    id: pk(),
+    moveId: uuid("move_id")
+      .notNull()
+      .references(() => moves.id, { onDelete: "cascade" }),
+    /** Template it came from (FR-BE…) and the procedure key inside it, to avoid adding it twice. */
+    templateKey: text("template_key"),
+    key: text("key"),
+    title: text("title").notNull(),
+    category: text("category").$type<ProcedureCategory>().notNull().default("OTHER"),
+    country: text("country"),
+    summary: text("summary"),
+    appliesIf: text("applies_if"),
+    status: text("status").$type<ProcedureStatus>().notNull().default("TODO"),
+    dueDate: day("due_date"),
+    officialUrl: text("official_url"),
+    sources: jsonList<ProcedureSourceLink>("sources"),
+    notes: text("notes"),
+    source: text("source").$type<ProcedureSource>().notNull().default("USER"),
+    /** Date the template / research was checked against the official sources. */
+    checkedAt: day("checked_at"),
+    /** Set when the user has read an AI-found procedure (until then it shows "à vérifier"). */
+    verifiedAt: ts("verified_at"),
+    position: integer("position").notNull().default(0),
+    isDemo: isDemo(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("procedures_move_idx").on(t.moveId, t.status), index("procedures_due_idx").on(t.dueDate)],
+);
+
+export const procedureSteps = pgTable(
+  "procedure_steps",
+  {
+    id: pk(),
+    procedureId: uuid("procedure_id")
+      .notNull()
+      .references(() => procedures.id, { onDelete: "cascade" }),
+    position: integer("position").notNull().default(0),
+    title: text("title").notNull(),
+    detail: text("detail"),
+    done: boolean("done").notNull().default(false),
+    doneAt: ts("done_at"),
+    dueDate: day("due_date"),
+    officialUrl: text("official_url"),
+    requiredDocuments: textArray("required_documents"),
+    documentVersionIds: textArray("document_version_ids"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("procedure_steps_procedure_idx").on(t.procedureId, t.position)],
+);
+
+export type Procedure = typeof procedures.$inferSelect;
+export type ProcedureStep = typeof procedureSteps.$inferSelect;
 
 // ---------------------------------------------------------------------------
 // In-app chat (Claude Code with the Career OS tools)
