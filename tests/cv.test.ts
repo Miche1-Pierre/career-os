@@ -20,8 +20,8 @@ const entry = (id: string, title: string, bullets: string[] = []): CvEntryView =
 
 describe("cv logic", () => {
   it("names exports with the date, splits roles and reads bold markers", () => {
-    expect(exportFileName({ name: "AI Product (FR)", fileName: "CV-Pierre-Michel-AIProduct-FR.pdf" }, "2026-11-23")).toBe("CV-Pierre-Michel-AIProduct-FR-2026-11-23.pdf");
-    expect(exportFileName({ name: "Mon CV" }, "2026-11-23")).toBe("CV-Mon-CV-2026-11-23.pdf");
+    expect(exportFileName({ name: "AI Product (FR)", fileName: "CV-Pierre-Michel-AIProduct-FR.pdf" })).toBe("CV-Pierre-Michel-AIProduct-FR.pdf");
+    expect(exportFileName({ name: "Mon CV général" })).toBe("Mon-CV-general.pdf");
     expect(splitRole("Head of Engineering, Plania (TechGuys), Montréal")).toEqual(["Head of Engineering,", " Plania (TechGuys), Montréal"]);
     expect(splitRole("Taskforce")).toEqual(["Taskforce", ""]);
     expect(boldRuns("**Safex** (transporteur) : agent IA")).toEqual([
@@ -123,7 +123,7 @@ describe("cv and application kit (database)", () => {
 
     const { opportunity } = await createOpportunity({ type: "JOB", title: "AI Engineer", organizationName: "Acme", status: "TO_APPLY" }, USER);
     const first = await exportVariant(variant.id, USER);
-    expect(first.fileName).toMatch(/^CV-Test-AIProduct-FR-\d{4}-\d{2}-\d{2}\.pdf$/);
+    expect(first.fileName).toBe("CV-Test-AIProduct-FR.pdf");
     const second = await exportVariant(variant.id, USER, { opportunityId: opportunity!.id });
     expect(second.documentId).toBe(first.documentId);
     const doc = await getDocument(first.documentId);
