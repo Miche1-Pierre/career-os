@@ -17,7 +17,8 @@ import * as notif from "@/server/services/notifications";
 import * as data from "@/server/services/data-transfer";
 import { changeStatus } from "@/server/services/opportunities";
 import { evaluatePeriodicRules } from "@/server/services/rules";
-import { aiStatus } from "@/server/ai";
+import { aiStatus, invalidateAiStatus } from "@/server/ai";
+import { removeAnthropicKey, saveAnthropicKey } from "@/server/ai/credentials";
 import { accessToken, safeEqual, SESSION_COOKIE, sessionValue } from "@/server/security";
 
 export async function updateSettingsAction(section: SettingsSection, value: unknown) {
@@ -88,6 +89,23 @@ export async function deleteDemoAction() {
 
 export async function testAiAction() {
   return runAction(() => aiStatus({ fresh: true }), { revalidate: false });
+}
+
+/** Claude API key pasted in the app: checked with Anthropic, stored on this computer, used right away. */
+export async function saveApiKeyAction(key: string) {
+  return runAction(async () => {
+    await saveAnthropicKey(String(key ?? ""));
+    invalidateAiStatus();
+    return aiStatus({ fresh: true });
+  });
+}
+
+export async function removeApiKeyAction() {
+  return runAction(async () => {
+    removeAnthropicKey();
+    invalidateAiStatus();
+    return aiStatus({ fresh: true });
+  });
 }
 
 export async function runRulesAction() {

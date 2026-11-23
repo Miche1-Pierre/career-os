@@ -38,9 +38,10 @@ questions, never paste a wall of commands at them. Never invent data. Never prin
    - Docker installed and running → ask: **« Local » (recommandé : la base est un dossier sur ton disque, rien d'autre
      à lancer)** or **« Docker »** (PostgreSQL dans un conteneur).
    - No Docker → local mode, without asking.
-6. L'IA dans l'application: **Claude Code** (ton abonnement, celui qui tourne ici : rien à configurer, default),
-   **clé API Anthropic** (the user pastes it into `.env` himself), or **aucune** (the app works, Claude Code still
-   drives it through MCP).
+6. L'IA dans l'application: **Claude Code** (ton abonnement, celui qui tourne ici : rien à configurer, default), or
+   **une clé API Claude** (someone without a subscription, or a friend's key): nothing to write in `.env`, the user
+   pastes it in the app, at the last step of the first launch or in Paramètres → IA; the app checks it and every
+   feature uses it (chat, web searches, analyses). Or **aucune** (the app works, Claude Code still drives it through MCP).
 
 ## 2. Create the folders (under the chosen root, written `<HOME>` below)
 
@@ -76,9 +77,14 @@ Copy `.env.example` to `.env`, then set (forward slashes in paths, also on Windo
   ```
 - **Docker mode**: keep `CAREER_OS_DB_DIR` empty; set a random `POSTGRES_PASSWORD` and the matching `DATABASE_URL`;
   the database lives in the `postgres_data` volume (persistent), documents in `DOCUMENTS_DIR` (mounted).
-- Anthropic key: tell the user to open `.env` and paste it after `ANTHROPIC_API_KEY=`; never ask for it in the chat.
+- Claude API key: never ask for it in the chat and never write it in `.env`; the user pastes it in the app (see 1.6).
 
 ## 4. Install, build, start
+
+- The app runs the **Claude Code CLI** for its chat, searches and analyses (with the subscription or with the pasted
+  key). Check `claude --version` in a normal terminal: if it is missing (some people only have the Claude desktop
+  app), install it, with the user's yes: `npm i -g @anthropic-ai/claude-code`. No login is needed for it when the user
+  pastes a key in the app.
 
 - **Local**: `npm ci` (a few minutes) → `npm run build:local` (3 to 5 minutes) → start:
   - Windows: `powershell -ExecutionPolicy Bypass -File scripts/career-os-local.ps1` (starts a minimized « Career OS »

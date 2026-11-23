@@ -18,6 +18,7 @@ import type { AppSettings } from "@/lib/settings-schema";
 import type { AIStatus } from "@/server/ai";
 import { formatRelativeInstant } from "@/lib/dates";
 import { SettingsCard } from "./settings-shell";
+import { ApiKeyField } from "@/components/app/api-key-field";
 import { cn } from "@/lib/utils";
 
 const BACKUP_KIND_LABEL: Record<string, string> = { auto: "automatique", manual: "manuelle", pre: "avant restauration", "pre-restore": "avant restauration", pg_dump: "pg_dump" };
@@ -40,6 +41,10 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
   const dirty = JSON.stringify(v) !== JSON.stringify(value);
   return (
     <>
+      <SettingsCard title="Connecter Claude" description="Colle une clé API Claude : le chat, les recherches et les analyses l’utilisent aussitôt. Sans clé, Career OS passe par Claude Code s’il est connecté sur cet ordinateur.">
+        <ApiKeyField status={live} onChange={setLive} />
+      </SettingsCard>
+
       <SettingsCard title="IA intégrée" description="Utilisée par l’import rapide, l’analyse, les questions à l’IA et l’import de CV. Tout le reste de Career OS est déterministe et fonctionne sans IA.">
         <div className={cn("flex items-start gap-3 rounded-lg border p-3", live.available ? "border-transparent bg-emerald-50 dark:bg-emerald-950" : "bg-muted-background")}>
           {live.available ? <CheckCircle2 className="mt-0.5 size-5 text-emerald-700" /> : <XCircle className="mt-0.5 size-5 text-muted-foreground" />}
@@ -111,8 +116,8 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
             <CodeBlock>{"cd C:\\Candidature\nnpm run bridge"}</CodeBlock>
           </div>
           <div>
-            <p className="font-medium">Option C — Clé API Anthropic</p>
-            <CodeBlock>{"AI_PROVIDER=anthropic\nANTHROPIC_API_KEY=sk-ant-…\nAI_MODEL=claude-opus-5-5"}</CodeBlock>
+            <p className="font-medium">Option C — Clé API Claude</p>
+            <p className="text-xs text-muted-foreground">Collez-la dans « Connecter Claude » en haut de cette page : rien à redémarrer.</p>
           </div>
           <div>
             <p className="font-medium">Option D — API compatible OpenAI ou LLM local (Ollama, LM Studio…)</p>

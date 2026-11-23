@@ -5,6 +5,7 @@
  */
 import { readClaudeUsage } from "../../../bridge/claude-runner.mjs";
 import { inDocker } from "./index";
+import { claudeKeyEnv } from "./credentials";
 
 export interface UsageWindow {
   utilization: number;
@@ -13,7 +14,7 @@ export interface UsageWindow {
 
 export type ClaudeUsage =
   | { available: true; fiveHour: UsageWindow | null; sevenDay: UsageWindow | null; plan: string | null; fetchedAt: string }
-  | { available: false; reason: string };
+  | { available: false; reason: string; apiKey?: boolean };
 
 const cache = globalThis as unknown as { __careerOsUsage?: { at: number; value: ClaudeUsage }; __careerOsUsageGood?: { at: number; value: ClaudeUsage } };
 const TTL_MS = 120_000;
@@ -21,6 +22,8 @@ const TTL_MS = 120_000;
 const STALE_OK_MS = 30 * 60_000;
 
 export async function getClaudeUsage(options: { fresh?: boolean } = {}): Promise<ClaudeUsage> {
+  // With an API key there is no subscription quota: usage is billed on the Anthropic Console.
+  if (claudeKeyEnv()) return { available: false, apiKey: true, reason: "L'IA utilise une clé API Claude : la consommation se suit sur console.anthropic.com." };
   const hit = cache.__careerOsUsage;
   if (!options.fresh && hit && Date.now() - hit.at < TTL_MS) return hit.value;
   let value = await load();
