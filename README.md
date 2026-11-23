@@ -2,6 +2,8 @@
   <img src="docs/assets/logo.png" alt="Career OS" height="72">
 </p>
 
+<p align="center"><a href="https://get-career-os.vercel.app">get-career-os.vercel.app</a></p>
+
 Système personnel de pilotage de candidatures : emplois, stages, alternances, VIE, masters/formations, thèses.
 Capturer une opportunité en quelques secondes (coller un texte, une URL, un fichier, un email), la faire analyser
 par Claude **sans jamais inventer d'information**, la vérifier, puis la suivre jusqu'à la décision : statuts,
