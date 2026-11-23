@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { accessToken, isAllowedHost, isAllowedOrigin, isAuthorizedRequest, SESSION_COOKIE } from "@/server/security";
 
-const PUBLIC_PATHS = ["/unlock", "/api/health", "/favicon.ico", "/icon.svg", "/manifest.webmanifest"];
+// /share: read-only links (the random token in the URL is the key, see services/shares.ts).
+const PUBLIC_PATHS = ["/unlock", "/api/health", "/favicon.ico", "/icon.svg", "/manifest.webmanifest", "/share"];
 
 export function proxy(request: NextRequest) {
   const host = request.headers.get("host");

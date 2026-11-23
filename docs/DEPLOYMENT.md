@@ -98,3 +98,6 @@ majeure.
 - [ ] `.env` lisible par vous seul : `chmod 600 .env`
 - [ ] Sauvegardes copiées hors du serveur, restauration testée
 - [ ] HTTPS actif (Caddy renouvelle les certificats automatiquement ; HSTS activé)
+- [ ] Liens de partage : seules les pages `/share/<jeton>` sont publiques (lecture seule de la shortlist logement,
+      sans contacts, notes ni revenu). Chaque lien peut expirer et se révoque dans Logement › Partager ; les liens ne
+      sont pas exportés, une restauration demande d'en recréer.

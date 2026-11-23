@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, Briefcase, CheckCircle2, ExternalLink, Home, MoreHorizontal, Play, Plus, Radar, Sparkles, Trash2 } from "lucide-react";
+import { AlertTriangle, Briefcase, CheckCircle2, ExternalLink, Home, MoreHorizontal, Play, Plus, Radar, Sparkles, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -19,8 +19,9 @@ import { EmptyState } from "@/components/app/empty-state";
 import { useConfirm } from "@/components/app/confirm";
 import { useAppData } from "@/components/app/app-data";
 import { useAction } from "@/hooks/use-action";
-import { createSearchAction, deleteSearchAction, runSearchAction, updateSearchAction } from "@/app/actions/discovery";
-import { ATS, HOUSING_TYPES_SEARCH, SCHEDULES, SCHEDULE_LABEL, type Ats, type DiscoverySource, type Schedule } from "@/lib/discovery";
+import { createSearchAction, deleteSearchAction, detectCareersBoardAction, runSearchAction, updateSearchAction } from "@/app/actions/discovery";
+import { HOUSING_TYPES_SEARCH, SCHEDULES, SCHEDULE_LABEL, searchName, type Ats, type CompanyBoard, type DiscoverySource, type Schedule } from "@/lib/discovery";
+import { PlaceInput } from "@/components/app/place-input";
 import { HOUSING_TYPE_LABEL } from "@/lib/relocation";
 import type { SearchView } from "@/server/services/discovery";
 import { cn } from "@/lib/utils";
@@ -218,7 +219,6 @@ function SearchCard({ s, move }: { s: SearchView; move: MoveOption | null }) {
 function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }: { initialDomain: "JOBS" | "HOUSING"; moves: MoveOption[]; sources: DiscoverySource[]; adzunaReady: boolean; onClose: () => void }) {
   const { run, pending } = useAction();
   const [domain, setDomain] = useState<"JOBS" | "HOUSING">(initialDomain);
-  const [name, setName] = useState("");
   const [schedule, setSchedule] = useState<Schedule>("OFF");
   const [useAgent, setUseAgent] = useState(initialDomain === "HOUSING");
   // Jobs
@@ -227,7 +227,10 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
   const [locations, setLocations] = useState<string[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
   const [remoteOk, setRemoteOk] = useState(true);
-  const [companies, setCompanies] = useState<{ name: string; ats: Ats; slug: string }[]>([]);
+  const [companies, setCompanies] = useState<(CompanyBoard & { jobs: number | null })[]>([]);
+  const [careersUrl, setCareersUrl] = useState("");
+  const [careersError, setCareersError] = useState<string | null>(null);
+  const [locationDraft, setLocationDraft] = useState("");
   const apiSources = sources.filter((s) => s.domain === "JOBS" && s.access === "API");
   const [picked, setPicked] = useState<string[]>(apiSources.filter((s) => s.key !== "adzuna" || adzunaReady).map((s) => s.key));
   // Housing
@@ -240,6 +243,31 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
   const [from, setFrom] = useState<string | null>(move?.arrivalDate ?? null);
   const [to, setTo] = useState<string | null>(move?.departureDate ?? null);
   const [near, setNear] = useState(move?.workAddress ?? "");
+  const [cityCoords, setCityCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const { run: runDetect, pending: detecting } = useAction();
+
+  const addLocation = (text: string, countryCode?: string | null) => {
+    const t = text.trim();
+    if (t && !locations.some((l) => l.toLowerCase() === t.toLowerCase())) setLocations([...locations, t]);
+    if (countryCode && !countries.includes(countryCode)) setCountries([...countries, countryCode]);
+    setLocationDraft("");
+  };
+  const detectCareers = () => {
+    const url = careersUrl.trim();
+    if (!url) return;
+    setCareersError(null);
+    runDetect(() => detectCareersBoardAction(url), {
+      onSuccess: (d) => {
+        if (!d.boards.length) {
+          setCareersError("Pas de page Greenhouse, Lever ou Ashby trouvée sur ce lien. Pour cette entreprise, active plutôt « Claude cherche aussi sur le web ».");
+          return;
+        }
+        const fresh = d.boards.filter((b) => !companies.some((c) => c.ats === b.ats && c.slug.toLowerCase() === b.slug.toLowerCase()));
+        setCompanies([...companies, ...fresh]);
+        setCareersUrl("");
+      },
+    });
+  };
   const [notes, setNotes] = useState("");
 
   const pickMove = (id: string) => {
@@ -253,12 +281,17 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
     }
   };
 
-  const valid = domain === "JOBS" ? keywords.length > 0 && name.trim() : moveId && city.trim() && name.trim();
+  const boards = companies.map(({ name, ats, slug }) => ({ name, ats, slug }));
+  const autoName =
+    domain === "JOBS"
+      ? searchName({ domain, criteria: { keywords, locations, remoteOk, companies: boards } })
+      : searchName({ domain, criteria: { city: city.trim(), types: types as (typeof HOUSING_TYPES_SEARCH)[number][], maxTotalMonthly: maxTotal, currency: move?.currency ?? "EUR" } });
+  const valid = domain === "JOBS" ? keywords.length > 0 : !!moveId && !!city.trim();
   const submit = () => {
     const payload =
       domain === "JOBS"
-        ? { domain, name: name.trim(), schedule, useAgent, sources: picked, criteria: { keywords, excludeKeywords: exclude, locations, countries, remoteOk, companies: companies.filter((c) => c.name && c.slug) } }
-        : { domain, name: name.trim(), schedule, useAgent, moveId, criteria: { city: city.trim(), maxTotalMonthly: maxTotal, currency: move?.currency ?? "EUR", furnished, types, from, to, near: near.trim() || null, notes: notes.trim() || null } };
+        ? { domain, schedule, useAgent, sources: picked, criteria: { keywords, excludeKeywords: exclude, locations, countries, remoteOk, companies: boards } }
+        : { domain, schedule, useAgent, moveId, criteria: { city: city.trim(), maxTotalMonthly: maxTotal, currency: move?.currency ?? "EUR", furnished, types, from, to, near: near.trim() || null, notes: notes.trim() || null } };
     run(() => createSearchAction(payload), { success: "Recherche enregistrée", onSuccess: onClose });
   };
 
@@ -278,9 +311,6 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
               <Home /> Logement
             </ToggleGroupItem>
           </ToggleGroup>
-          <FormField label="Nom">
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={domain === "JOBS" ? "Forward Deployed Engineer · Bruxelles" : "Colocs meublées près du bureau"} />
-          </FormField>
 
           {domain === "JOBS" ? (
             <>
@@ -292,41 +322,77 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
                   <TagInput value={exclude} onChange={setExclude} placeholder="senior, stage…" />
                 </FormField>
                 <FormField label="Lieux">
-                  <TagInput value={locations} onChange={setLocations} placeholder="Bruxelles, Paris…" />
+                  <div className="space-y-1.5">
+                    <PlaceInput
+                      mode="city"
+                      value={locationDraft}
+                      onChange={setLocationDraft}
+                      clearOnSelect
+                      onSelect={(p) => addLocation(p.city ?? p.title, p.countryCode)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          addLocation(locationDraft);
+                        }
+                      }}
+                      placeholder="Bruxelles, Paris…"
+                    />
+                    {locations.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {locations.map((l) => (
+                          <Badge key={l} size="sm" variant="outline" className="gap-1 pr-1">
+                            {l}
+                            <button type="button" onClick={() => setLocations(locations.filter((x) => x !== l))} aria-label={`Retirer ${l}`} className="rounded-full hover:bg-hover">
+                              <X className="size-3" />
+                            </button>
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </FormField>
-                <FormField label="Pays (codes)" hint="FR, BE, CA… pour Adzuna et les liens">
+                <FormField label="Pays (codes)" hint="Ajoutés avec les lieux ; servent à Adzuna et aux liens">
                   <TagInput value={countries} onChange={(l) => setCountries(l.map((x) => x.toUpperCase().slice(0, 2)))} placeholder="BE" />
                 </FormField>
               </div>
               <label className="flex items-center gap-2 text-sm">
                 <Switch checked={remoteOk} onCheckedChange={setRemoteOk} /> Accepter le télétravail hors de ces lieux
               </label>
-              <FormField label="Entreprises suivies" hint="Leur page carrières Greenhouse, Lever ou Ashby (identifiant dans l’adresse : boards.greenhouse.io/identifiant)">
+              <FormField label="Entreprises à suivre" hint="Colle le lien de leur page carrières : si elle passe par Greenhouse, Lever ou Ashby, leurs offres seront lues directement.">
                 <div className="space-y-2">
-                  {companies.map((c, i) => (
-                    <div key={i} className="grid grid-cols-[minmax(0,1fr)_130px_minmax(0,1fr)_auto] gap-2">
-                      <Input value={c.name} onChange={(e) => setCompanies(companies.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} placeholder="Entreprise" />
-                      <Select value={c.ats} onValueChange={(v) => setCompanies(companies.map((x, j) => (j === i ? { ...x, ats: v as Ats } : x)))}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ATS.map((a) => (
-                            <SelectItem key={a} value={a}>
-                              {ATS_LABEL[a]}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Input value={c.slug} onChange={(e) => setCompanies(companies.map((x, j) => (j === i ? { ...x, slug: e.target.value.trim() } : x)))} placeholder="identifiant" />
-                      <Button size="icon" variant="ghost" onClick={() => setCompanies(companies.filter((_, j) => j !== i))} aria-label="Retirer">
-                        <Trash2 />
-                      </Button>
+                  <div className="flex gap-2">
+                    <Input
+                      value={careersUrl}
+                      onChange={(e) => {
+                        setCareersUrl(e.target.value);
+                        setCareersError(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          detectCareers();
+                        }
+                      }}
+                      placeholder="https://mistral.ai/careers"
+                    />
+                    <Button variant="outline" onClick={detectCareers} disabled={!careersUrl.trim() || detecting}>
+                      {detecting ? <Spinner /> : <Plus />} Ajouter
+                    </Button>
+                  </div>
+                  {careersError && <p className="text-xs text-warning-700">{careersError}</p>}
+                  {companies.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {companies.map((c) => (
+                        <Badge key={`${c.ats}:${c.slug}`} variant="outline" className="gap-1.5 pr-1" title={`${ATS_LABEL[c.ats]} · ${c.slug}`}>
+                          {c.name}
+                          <span className="text-muted-foreground">{c.jobs === null ? ATS_LABEL[c.ats] : `${c.jobs} offre${c.jobs > 1 ? "s" : ""}`}</span>
+                          <button type="button" onClick={() => setCompanies(companies.filter((x) => x !== c))} aria-label={`Retirer ${c.name}`} className="rounded-full hover:bg-hover">
+                            <X className="size-3" />
+                          </button>
+                        </Badge>
+                      ))}
                     </div>
-                  ))}
-                  <Button size="xs" variant="outline" onClick={() => setCompanies([...companies, { name: "", ats: "greenhouse", slug: "" }])}>
-                    <Plus /> Entreprise
-                  </Button>
+                  )}
                 </div>
               </FormField>
               <FormField label="Sources">
@@ -364,7 +430,16 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
                   </Select>
                 </FormField>
                 <FormField label="Ville">
-                  <Input value={city} onChange={(e) => setCity(e.target.value)} />
+                  <PlaceInput
+                    mode="city"
+                    value={city}
+                    onChange={setCity}
+                    onSelect={(p) => {
+                      setCity(p.city ?? p.title);
+                      setCityCoords({ lat: p.lat, lng: p.lng });
+                    }}
+                    placeholder="Bruxelles"
+                  />
                 </FormField>
                 <FormField label={`Budget total / mois (${move?.currency ?? "EUR"})`}>
                   <NumberInput value={maxTotal} onChange={setMaxTotal} />
@@ -398,7 +473,7 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
                 </ToggleGroup>
               </FormField>
               <FormField label="Près de">
-                <Input value={near} onChange={(e) => setNear(e.target.value)} placeholder="Adresse du bureau" />
+                <PlaceInput value={near} onChange={setNear} near={cityCoords} placeholder="Adresse du bureau, une gare…" />
               </FormField>
               <FormField label="Précisions">
                 <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} placeholder="Colocataires respectueux, à pied du bureau…" />
@@ -430,7 +505,8 @@ function NewSearchDialog({ initialDomain, moves, sources, adzunaReady, onClose }
             </FormField>
           </div>
         </div>
-        <DialogFooter>
+        <DialogFooter className="items-center">
+          {valid ? <p className="mr-auto min-w-0 truncate text-xs text-muted-foreground">Enregistrée sous « {autoName} »</p> : null}
           <Button variant="ghost" onClick={onClose}>
             Annuler
           </Button>

@@ -1,3 +1,4 @@
+import { EXPORT_SCHEMA_VERSION } from "@/lib/constants";
 import { beforeAll, describe, expect, it } from "vitest";
 import { createTestDb, useTempStorage } from "./helpers/db";
 import { USER, CLAUDE } from "@/server/context";
@@ -206,7 +207,7 @@ describe("relocation data in backups", () => {
   it("exports moves and listings", async () => {
     const { exportAll } = await import("@/server/services/data-transfer");
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(4);
+    expect(file.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(file.counts.moves).toBe(1);
     expect(file.counts.housingListings).toBe(3);
   });

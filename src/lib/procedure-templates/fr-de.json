@@ -1,0 +1,415 @@
+{
+  "key": "FR-DE",
+  "from": "FR",
+  "to": "DE",
+  "title": "France → Allemagne (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "praktikum",
+      "title": "Vérifier votre contrat de stage (Praktikumsvertrag)",
+      "category": "OTHER",
+      "summary": "L'entreprise doit vous remettre par écrit les conditions essentielles du stage, au plus tard avant son début. Selon le type de stage, le salaire minimum légal peut s'appliquer.",
+      "appliesIf": "stage (Praktikum) dans une entreprise en Allemagne",
+      "when": null,
+      "officialUrl": "https://www.gesetze-im-internet.de/nachwg/__2.html",
+      "steps": [
+        {
+          "title": "Demander le document écrit des conditions du stage",
+          "detail": "Selon la loi sur la preuve des conditions de travail (Nachweisgesetz), l'entreprise vous le remet sans délai après la conclusion du contrat, et au plus tard avant le début du stage. Il indique notamment les objectifs d'apprentissage, le début et la durée, le temps de stage quotidien, la rémunération et la durée des congés.",
+          "officialUrl": "https://www.gesetze-im-internet.de/nachwg/__2.html"
+        },
+        {
+          "title": "Vérifier si le salaire minimum s'applique",
+          "detail": "Le salaire minimum légal est de 13,90 € brut de l'heure depuis le 1er janvier 2026 et passe à 14,60 € le 1er janvier 2027. Il ne s'applique pas aux stages obligatoires (prévus par les règles scolaires, de formation ou universitaires), ni aux stages volontaires de 3 mois maximum faits pour s'orienter avant une formation ou des études, ou pendant celles-ci. Un stage volontaire de plus de 3 mois est payé au salaire minimum dès le premier jour.",
+          "officialUrl": "https://www.bmas.de/EN/Labour/Minimum-Wage/the-minimum-wage-questions-and-answers.html"
+        },
+        {
+          "title": "Vérifier l'assurance accidents du travail",
+          "detail": "Selon la DGUV, un étudiant en stage dans une entreprise est assuré contre les accidents du travail comme salarié de l'entreprise, que le stage soit obligatoire ou volontaire. L'organisme compétent est la Berufsgenossenschaft ou l'Unfallkasse de l'entreprise, qui paie les cotisations.",
+          "officialUrl": "https://www.dguv.de/de/versicherung/versicherte_personen/kinder/praktika_studium/index.jsp"
+        },
+        {
+          "title": "Si vous êtes étudiant en France, lire la fiche stage du CLEISS",
+          "detail": "Au-delà d'une gratification de 15 % du plafond horaire de la Sécurité sociale, la protection française contre les accidents du travail ne s'applique pas. Selon la durée et la rémunération, le pays d'accueil peut aussi vous considérer comme salarié et vous affilier à son régime : renseignez-vous auprès de l'entreprise avant le départ.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        }
+      ]
+    },
+    {
+      "key": "bail",
+      "title": "Signer le bail et verser la caution (Kaution)",
+      "category": "OTHER",
+      "summary": "Le Code civil allemand (BGB, § 551) plafonne la caution locative et encadre son placement par le bailleur.",
+      "appliesIf": "location d'un logement en Allemagne",
+      "when": null,
+      "officialUrl": "https://www.gesetze-im-internet.de/bgb/__551.html",
+      "steps": [
+        {
+          "title": "Vérifier le montant de la caution",
+          "detail": "Elle ne peut pas dépasser trois mois de loyer, sans les charges facturées au forfait ou en provisions. Si elle consiste en une somme d'argent, vous pouvez la payer en trois mensualités égales : la première au début du bail, les deux autres avec les loyers suivants.",
+          "officialUrl": "https://www.gesetze-im-internet.de/bgb/__551.html"
+        },
+        {
+          "title": "Vérifier comment la caution est placée",
+          "detail": "Le bailleur la place auprès d'une banque, séparément de son propre patrimoine, au taux habituel d'un livret à préavis de trois mois, sauf autre placement convenu. Les intérêts vous reviennent et s'ajoutent à la caution, sauf en résidence pour étudiants ou jeunes.",
+          "officialUrl": "https://www.gesetze-im-internet.de/bgb/__551.html"
+        }
+      ]
+    },
+    {
+      "key": "anmeldung",
+      "title": "Déclarer votre domicile au Bürgeramt (Anmeldung)",
+      "category": "RESIDENCE",
+      "summary": "Toute personne qui emménage dans un logement doit se déclarer auprès de la commune (Meldebehörde) dans les deux semaines suivant l'emménagement.",
+      "appliesIf": "séjour de plus de 3 mois",
+      "when": 14,
+      "officialUrl": "https://www.gesetze-im-internet.de/bmg/__17.html",
+      "steps": [
+        {
+          "title": "Obtenir la Wohnungsgeberbestätigung du bailleur",
+          "detail": "Le bailleur doit vous confirmer l'emménagement par écrit dans le même délai, ou le confirmer en ligne directement à la commune. L'attestation indique son nom et son adresse, la date d'emménagement, l'adresse du logement et le nom des personnes à déclarer. S'il refuse ou si elle n'arrive pas à temps, prévenez sans délai la commune.",
+          "officialUrl": "https://www.gesetze-im-internet.de/bmg/__19.html"
+        },
+        {
+          "title": "Prendre rendez-vous au Bürgeramt",
+          "detail": "À Berlin, la démarche est gratuite et se fait sur place sur rendez-vous. En ligne, elle exige un compte BundID et une carte d'identité électronique allemande ou une carte eID de citoyen de l'UE avec la fonction en ligne activée. Un bail ne remplace pas la Wohnungsgeberbestätigung.",
+          "officialUrl": "https://service.berlin.de/dienstleistung/120686/",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport en cours de validité",
+            "Wohnungsgeberbestätigung remplie et signée par le bailleur",
+            "Formulaire de déclaration (Anmeldung) rempli"
+          ]
+        },
+        {
+          "title": "Se présenter en personne ou mandater quelqu'un",
+          "detail": "À Munich par exemple, vous vous déclarez en personne ou par une personne munie d'une procuration écrite. Vous recevez une confirmation écrite de l'inscription : gardez-la.",
+          "officialUrl": "https://stadt.muenchen.de/infos/residence-registration.html"
+        },
+        {
+          "title": "Respecter le délai",
+          "detail": "Une déclaration absente, inexacte ou tardive est une infraction administrative passible d'une amende pouvant aller jusqu'à 1 000 €.",
+          "officialUrl": "https://www.gesetze-im-internet.de/bmg/__54.html"
+        }
+      ]
+    },
+    {
+      "key": "steuer-id",
+      "title": "Recevoir votre numéro d'identification fiscale (Steuer-ID)",
+      "category": "TAX",
+      "summary": "Après votre Anmeldung, le Bundeszentralamt für Steuern (BZSt) vous attribue un numéro fiscal valable à vie, envoyé uniquement par courrier. Votre employeur en a besoin pour la retenue d'impôt sur le salaire.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/steuerlicheidentifikationsnummer_node.html",
+      "steps": [
+        {
+          "title": "Attendre le courrier du BZSt",
+          "detail": "Le BZSt attribue le numéro dès que la commune lui a transmis vos données. Mettez votre nom sur la boîte aux lettres pour que le courrier vous parvienne.",
+          "officialUrl": "https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/FAQ/faq_node.html"
+        },
+        {
+          "title": "Communiquer le numéro à l'employeur",
+          "detail": "Donnez-lui votre numéro fiscal et votre date de naissance, et précisez s'il s'agit de votre emploi principal. Sans numéro au bout de trois mois, l'employeur doit appliquer la classe d'impôt 6.",
+          "officialUrl": "https://www.elster.de/elsterweb/infoseite/elstam_(privatpersonen)"
+        },
+        {
+          "title": "Relancer le BZSt si rien n'arrive après trois mois",
+          "detail": "Envoyez au BZSt une copie de votre pièce d'identité et de votre confirmation d'inscription à la commune : il contacte lui-même la commune.",
+          "officialUrl": "https://www.bzst.de/DE/Privatpersonen/SteuerlicheIdentifikationsnummer/FAQ/faq_node.html",
+          "requiredDocuments": [
+            "Copie de la carte d'identité ou du passeport",
+            "Copie de la confirmation d'Anmeldung"
+          ]
+        },
+        {
+          "title": "Redemander le numéro en cas de perte",
+          "detail": "Un formulaire en ligne permet de le recevoir à nouveau par courrier à votre adresse déclarée, jamais par e-mail ni par téléphone. Le BZSt indique un traitement pouvant actuellement prendre jusqu'à quatre semaines.",
+          "officialUrl": "https://www.bzst.de/SiteGlobals/Kontaktformulare/DE/IdNr/Mitteilung_IdNr/mitteilung_IdNr_node.html"
+        }
+      ]
+    },
+    {
+      "key": "sozialversicherungsnummer",
+      "title": "Recevoir votre numéro de sécurité sociale (Versicherungsnummer)",
+      "category": "OTHER",
+      "summary": "L'employeur doit vous déclarer à l'assurance retraite dès le premier jour de travail. La Deutsche Rentenversicherung (DRV) vous envoie ensuite un courrier avec votre numéro personnel.",
+      "appliesIf": "emploi ou stage rémunéré en Allemagne",
+      "when": null,
+      "officialUrl": "https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Azubis-Studierende-und-Berufseinsteiger/Berufseinsteiger/berufseinsteiger_node.html",
+      "steps": [
+        {
+          "title": "Vérifier que l'employeur vous a déclaré",
+          "detail": "Vous n'avez pas à demander le numéro vous-même : l'employeur vous déclare à la Rentenversicherung dès le premier jour. Le numéro figure ensuite sur les courriers de la DRV ; indiquez-le dans toutes vos demandes.",
+          "officialUrl": "https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Azubis-Studierende-und-Berufseinsteiger/Berufseinsteiger/berufseinsteiger_node.html"
+        },
+        {
+          "title": "Garder le Versicherungsnummernachweis",
+          "detail": "Ce document (anciennement Sozialversicherungsausweis) est gratuit. S'il ne vous parvient pas ou si vous le perdez, demandez-le gratuitement à la DRV ou à votre Krankenkasse : certains sites privés le font payer et ne sont pas des administrations.",
+          "officialUrl": "https://www.deutsche-rentenversicherung.de/DRV/DE/Ueber-uns-und-Presse/Presse/Meldungen/2025/250709-versicherungsnummernachweis"
+        }
+      ]
+    },
+    {
+      "key": "krankenkasse",
+      "title": "S'affilier à une caisse d'assurance maladie (Krankenkasse)",
+      "category": "HEALTH",
+      "summary": "Les salariés sont en principe assurés obligatoires à l'assurance maladie légale (GKV). Vous choisissez votre caisse et l'indiquez à votre employeur.",
+      "appliesIf": "emploi ou stage rémunéré soumis à la sécurité sociale allemande (à vérifier pour un stage obligatoire pendant les études)",
+      "when": 0,
+      "officialUrl": "https://www.bundesgesundheitsministerium.de/gesetzlich-versicherte",
+      "steps": [
+        {
+          "title": "Vérifier si vous êtes assuré obligatoire",
+          "detail": "Sont notamment assurés obligatoires les salariés dont le revenu brut dépasse 603 € par mois et reste inférieur à 77 400 € par an (valeurs 2026).",
+          "officialUrl": "https://www.bundesgesundheitsministerium.de/gesetzlich-versicherte"
+        },
+        {
+          "title": "Vérifier le cas particulier des stages",
+          "detail": "Selon la DRV, un stage obligatoire prévu par le règlement d'études est exonéré dans toutes les branches de la sécurité sociale, quels que soient le salaire et la durée de travail. Un stage volontaire pendant les études payé jusqu'à 603 € par mois est un minijob (au-delà, faites-vous conseiller). Un stage avant ou après les études est en principe soumis aux cotisations.",
+          "officialUrl": "https://www.deutsche-rentenversicherung.de/DRV/DE/Rente/Azubis-Studierende-und-Berufseinsteiger/Studierende/studierende_node.html"
+        },
+        {
+          "title": "Choisir une Krankenkasse",
+          "detail": "Le choix est libre, notamment l'AOK de votre lieu de travail ou de domicile, toute Ersatzkasse, ou une BKK ou IKK ouverte à tous. Vous êtes en principe lié à ce choix pendant douze mois.",
+          "officialUrl": "https://www.bundesgesundheitsministerium.de/themen/krankenversicherung/online-ratgeber-krankenversicherung/krankenversicherung/wahl-und-wechsel-der-krankenkasse"
+        },
+        {
+          "title": "Informer l'employeur sans tarder",
+          "detail": "Indiquez votre caisse à l'employeur dès le début de l'emploi. Si votre choix ne lui parvient pas dans les deux semaines suivant le début de l'assurance obligatoire, il vous déclare lui-même auprès d'une caisse et vous en informe.",
+          "officialUrl": "https://www.gesetze-im-internet.de/sgb_5/__175.html"
+        },
+        {
+          "title": "Déclarer votre transfert de résidence à la CPAM",
+          "detail": "Si vous partez travailler à l'étranger, envoyez la déclaration de transfert de résidence hors de France dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "La CEAM permet la prise en charge des soins devenus nécessaires pendant un séjour temporaire en Allemagne, selon les règles allemandes, chez les médecins conventionnés.",
+      "appliesIf": "tant que vous restez affilié à l'Assurance Maladie française (par exemple stage dans le cadre d'études en France, à vérifier)",
+      "when": -20,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Demandez-la en ligne, au 36 46 ou en point d'accueil, au moins 15 jours avant le départ selon ameli. Elle est valable 2 ans au maximum, sans dépasser la durée de vos droits. Si le départ est trop proche, un certificat provisoire valable 3 mois la remplace.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Se faire soigner avec la CEAM en Allemagne",
+          "detail": "Allez directement chez un médecin conventionné (Vertragsarzt) avec la CEAM et une pièce d'identité. Le cabinet vous fait remplir la « Patientenerklärung Europäische Krankenversicherung », où vous choisissez une caisse allemande qui gère la prise en charge. Une facture privée pour ces soins n'est pas permise.",
+          "officialUrl": "https://www.dvka.de/de/versicherte/faq/",
+          "requiredDocuments": [
+            "Carte européenne d'assurance maladie (ou certificat provisoire)",
+            "Carte d'identité ou passeport"
+          ]
+        },
+        {
+          "title": "Vérifier que la CEAM convient à votre séjour",
+          "detail": "La CEAM sert aux séjours temporaires. Si vous allez vivre dans un autre pays européen, service-public.fr indique qu'il faut utiliser le formulaire S1, et non la CEAM.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34441"
+        }
+      ]
+    },
+    {
+      "key": "rundfunkbeitrag",
+      "title": "Déclarer votre logement pour la contribution audiovisuelle (Rundfunkbeitrag)",
+      "category": "OTHER",
+      "summary": "Le Rundfunkbeitrag est dû pour chaque logement, quel que soit le nombre d'occupants : 18,36 € par mois. En colocation, une seule personne déclare le logement et paie.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.rundfunkbeitrag.de/",
+      "steps": [
+        {
+          "title": "Vérifier si un colocataire paie déjà",
+          "detail": "Une seule personne par logement fait la déclaration. Si quelqu'un paie déjà, communiquez au Beitragsservice son numéro de cotisant (Beitragsnummer), avec la référence à dix chiffres du courrier que vous avez reçu.",
+          "officialUrl": "https://www.rundfunkbeitrag.de/presse-und-aktuelles/servicethemen/worauf-muessen-sie-bei-einem-umzug-achten"
+        },
+        {
+          "title": "Sinon, déclarer le logement en ligne",
+          "detail": "Le formulaire en ligne de déclaration du logement est le moyen le plus simple. Vous recevez ensuite un numéro de cotisant à neuf chiffres. La contribution représente 55,08 € par trimestre.",
+          "officialUrl": "https://www.rundfunkbeitrag.de/presse-und-aktuelles/servicethemen/worauf-muessen-sie-bei-einem-umzug-achten"
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire allemand si nécessaire",
+      "category": "BANK",
+      "summary": "Un compte français en euros permet en principe les virements et prélèvements SEPA. Si vous ouvrez un compte en Allemagne, vous avez droit à un compte de base (Basiskonto).",
+      "appliesIf": "si votre compte français ne suffit pas",
+      "when": null,
+      "officialUrl": "https://www.bafin.de/DE/verbraucherinnen-verbraucher/themen-finanzprodukte/konten-zahlungen/konten/basiskonto/basiskonto.html",
+      "steps": [
+        {
+          "title": "Vérifier si votre compte français peut servir",
+          "detail": "Pour un virement ou un prélèvement SEPA, un compte ne peut pas être refusé au seul motif qu'il est situé dans un autre pays de l'UE. Cette règle s'applique si l'autre partie accepte ces opérations depuis des comptes nationaux.",
+          "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/payments-transfers-cheques/index_fr.htm"
+        },
+        {
+          "title": "Demander un Basiskonto en cas de refus",
+          "detail": "Toute personne résidant légalement dans l'UE et sans compte de paiement en Allemagne y a droit. Une fois le formulaire complet remis, la banque a dix jours ouvrables pour répondre. Les frais doivent rester raisonnables et la banque ne peut refuser que dans des cas prévus par la loi, par exemple si vous avez déjà un compte en Allemagne.",
+          "officialUrl": "https://www.bafin.de/DE/verbraucherinnen-verbraucher/themen-finanzprodukte/konten-zahlungen/konten/basiskonto/basiskonto.html",
+          "requiredDocuments": ["Carte d'identité ou passeport en cours de validité"]
+        }
+      ]
+    },
+    {
+      "key": "deutschlandticket",
+      "title": "Prendre un Deutschlandticket",
+      "category": "TRANSPORT",
+      "summary": "Abonnement valable dans toute l'Allemagne sur les bus et trains des transports locaux et régionaux, hors grandes lignes (IC, EC, ICE). Il coûte 63 € par mois depuis janvier 2026.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.bundesregierung.de/breg-de/service/fragen-und-anworten/deutschlandticket-2134074",
+      "steps": [
+        {
+          "title": "Souscrire l'abonnement",
+          "detail": "Il s'achète auprès de toutes les entreprises et communautés de transport, y compris en ligne, sous forme de billet numérique. L'abonnement est résiliable chaque mois.",
+          "officialUrl": "https://www.bundesregierung.de/breg-de/service/fragen-und-anworten/deutschlandticket-2134074"
+        },
+        {
+          "title": "Anticiper la hausse du 1er janvier 2027",
+          "detail": "Le prix passe de 63 € à 66,80 € par mois. Il est souvent adapté automatiquement sur les abonnements en cours ; si votre accord est nécessaire, l'entreprise de transport vous contacte.",
+          "officialUrl": "https://www.bundesregierung.de/breg-de/service/fragen-und-anworten/deutschlandticket-2134074"
+        },
+        {
+          "title": "Demander le Jobticket à l'employeur",
+          "detail": "Si l'employeur prend en charge au moins 25 % du prix, une réduction supplémentaire de 5 % peut être accordée.",
+          "officialUrl": "https://www.bundesregierung.de/breg-de/service/fragen-und-anworten/deutschlandticket-2134074"
+        }
+      ]
+    },
+    {
+      "key": "impots-allemagne",
+      "title": "Déclarer vos revenus en Allemagne et en France",
+      "category": "TAX",
+      "summary": "Selon la convention fiscale franco-allemande, les salaires privés sont en principe imposables dans l'État où le travail est exercé. L'impôt allemand est retenu sur la paie ; vos obligations déclaratives dépendent de votre résidence fiscale.",
+      "appliesIf": "revenus perçus pour un travail en Allemagne",
+      "when": null,
+      "officialUrl": "https://bofip.impots.gouv.fr/bofip/2550-PGP",
+      "steps": [
+        {
+          "title": "Savoir si l'Allemagne vous considère comme résident fiscal",
+          "detail": "Toute personne qui a en Allemagne un domicile (Wohnsitz) ou sa résidence habituelle y est imposable sur l'ensemble de ses revenus.",
+          "officialUrl": "https://www.gesetze-im-internet.de/estg/__1.html"
+        },
+        {
+          "title": "Compter la durée de votre séjour",
+          "detail": "Un séjour continu de plus de six mois en Allemagne vaut résidence habituelle dès son début ; les courtes interruptions ne comptent pas.",
+          "officialUrl": "https://www.gesetze-im-internet.de/ao_1977/__9.html"
+        },
+        {
+          "title": "Tenir compte des critères français et de la convention",
+          "detail": "Un seul critère suffit pour être domicilié fiscalement en France : foyer ou lieu de séjour principal, activité professionnelle principale, ou centre des intérêts économiques. Si les deux pays vous considèrent comme résident, la convention fiscale tranche.",
+          "officialUrl": "https://www.impots.gouv.fr/resident-de-france"
+        },
+        {
+          "title": "Vérifier si la déclaration allemande est obligatoire",
+          "detail": "Elle l'est dans certains cas, par exemple avec plus de 410 € de revenus sans retenue d'impôt dans l'année ou un abattement inscrit sur la retenue. La déclaration 2025 devait par exemple être déposée avant le 31 juillet 2026. Sinon, vous pouvez déclarer volontairement dans les quatre ans suivant l'année concernée.",
+          "officialUrl": "https://www.finanzamt.nrw.de/steuerinfos/weitere-themen/steuererklaerung/abgabepflichten-und-fristen"
+        },
+        {
+          "title": "Déclarer en ligne avec ELSTER",
+          "detail": "La déclaration se fait sur Mein ELSTER après inscription, qui peut prendre jusqu'à deux semaines. Le délai de quatre ans pour une déclaration volontaire ne peut pas être prolongé.",
+          "officialUrl": "https://service.berlin.de/dienstleistung/325685/"
+        },
+        {
+          "title": "Déclarer en France les revenus de l'année du départ",
+          "detail": "La déclaration de l'année du départ est obligatoire. Les revenus de source étrangère se déclarent sur le formulaire 2047 puis se reportent sur la 2042.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer"
+        },
+        {
+          "title": "Comprendre l'élimination de la double imposition",
+          "detail": "Pour un résident de France, les salaires imposables en Allemagne sont inclus dans le revenu global, puis la France accorde un crédit d'impôt égal à l'impôt français correspondant à ces salaires, quel que soit l'impôt payé en Allemagne.",
+          "officialUrl": "https://bofip.impots.gouv.fr/bofip/2587-PGP.html/identifiant=BOI-INT-CVB-DEU-10-70-20141226"
+        }
+      ]
+    },
+    {
+      "key": "registre-francais",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Pour un départ de plus de 6 mois, l'inscription est facultative mais fortement recommandée. Elle est gratuite et valable 5 ans.",
+      "appliesIf": "facultatif",
+      "when": null,
+      "officialUrl": "https://de.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne sur service-public.fr",
+          "detail": "Pour une première inscription, connectez-vous sur service-public.fr et déposez les pièces. Le consulat dont vous dépendez vous contacte ensuite et vous recevez un e-mail une fois l'inscription validée.",
+          "officialUrl": "https://de.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+          "requiredDocuments": [
+            "Carte nationale d'identité ou passeport français",
+            "Justificatif de résidence en Allemagne",
+            "Photo d'identité récente"
+          ]
+        },
+        {
+          "title": "Identifier votre consulat",
+          "detail": "La section consulaire de l'ambassade à Berlin couvre dix Länder : Berlin, Basse-Saxe, Brandebourg, Brême, Hambourg, Mecklembourg-Poméranie-Occidentale, Saxe, Saxe-Anhalt, Schleswig-Holstein et Thuringe. Pour les autres, utilisez l'outil « Trouver mon consulat » du site.",
+          "officialUrl": "https://de.diplomatie.gouv.fr/fr/section-consulaire-de-lambassade-de-france-berlin"
+        },
+        {
+          "title": "Choisir où voter (facultatif)",
+          "detail": "Une inscription sur une nouvelle liste électorale, communale ou consulaire, vous radie automatiquement de la précédente.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307"
+        }
+      ]
+    },
+    {
+      "key": "abmeldung",
+      "title": "Vous désinscrire de la commune avant de partir (Abmeldung)",
+      "category": "RESIDENCE",
+      "summary": "Si vous quittez votre logement sans en prendre un autre en Allemagne, vous devez vous désinscrire dans les deux semaines suivant le départ, au plus tôt une semaine avant.",
+      "appliesIf": "départ d'Allemagne sans autre logement en Allemagne",
+      "when": null,
+      "officialUrl": "https://www.gesetze-im-internet.de/bmg/__17.html",
+      "steps": [
+        {
+          "title": "Déclarer votre départ",
+          "detail": "À Berlin, la démarche est gratuite : en ligne avec un compte BundID et une carte eID compatible, par courrier au Bürgeramt avec le formulaire « Abmeldung bei der Meldebehörde » et une copie de votre pièce d'identité, ou sur rendez-vous. Vous recevez une confirmation de désinscription (Abmeldebestätigung).",
+          "officialUrl": "https://service.berlin.de/dienstleistung/356639/",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport (copie en cas d'envoi par courrier)",
+            "Formulaire « Abmeldung bei der Meldebehörde » signé (envoi par courrier)"
+          ]
+        },
+        {
+          "title": "Arrêter le Rundfunkbeitrag",
+          "detail": "Si vous partez durablement à l'étranger et quittez entièrement le logement, vous pouvez vous désinscrire en fournissant la preuve de votre Abmeldung. Si des colocataires restent, l'un d'eux doit déclarer le logement.",
+          "officialUrl": "https://www.rundfunkbeitrag.de/buergerinnen-und-buerger/informationen/auslandsaufenthalt",
+          "requiredDocuments": ["Abmeldebestätigung de la commune"]
+        },
+        {
+          "title": "Résilier le Deutschlandticket",
+          "detail": "L'abonnement est résiliable chaque mois : arrêtez-le avant votre départ.",
+          "officialUrl": "https://www.bundesregierung.de/breg-de/service/fragen-und-anworten/deutschlandticket-2134074"
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie au retour",
+          "detail": "Si vous avez relevé du régime allemand, signalez votre départ à votre Krankenkasse, puis envoyez à votre CPAM le formulaire S1106.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "La déclaration de domicile suit une loi fédérale (Bundesmeldegesetz), mais chaque commune organise ses rendez-vous, ses formulaires et ses services en ligne. Les exemples cités viennent de Berlin et de Munich : vérifiez sur le site de votre commune.",
+    "Rendez-vous au Bürgeramt : ils peuvent manquer dans le délai de deux semaines. Brême (service.bremen.de) indique qu'il suffit alors de prendre rendez-vous à temps ; vérifiez la règle de votre commune.",
+    "Exception de courte durée (§ 27 BMG) : pour une personne qui vit habituellement à l'étranger et n'est pas déclarée en Allemagne, l'obligation de se déclarer ne s'applique qu'après trois mois. Pour un séjour de 6 à 12 mois, vérifiez auprès de votre commune si cette exception vous concerne ; sinon le délai est de deux semaines.",
+    "Démarches en ligne (Anmeldung, Abmeldung) : Berlin demande une carte eID compatible et un compte BundID. Il n'a pas été vérifié si une carte d'identité française suffit : prévoyez un rendez-vous sur place.",
+    "Stage obligatoire dans un cursus français : les exceptions allemandes (salaire minimum, exonération de cotisations sociales) visent les stages prévus par des règles d'études. Les pages consultées ne disent pas si un règlement d'études français est pris en compte : demandez confirmation à l'entreprise ou à une Krankenkasse.",
+    "Couverture maladie : rester à l'Assurance Maladie française (CEAM, formulaire S1) ou s'affilier à une Krankenkasse dépend de votre statut (stage dans le cadre d'études, contrat local, détachement). Demandez à votre CPAM et à une Krankenkasse avant le départ.",
+    "CEAM : ameli conseille de la demander au moins 15 jours avant le départ, service-public.fr indique 20 jours.",
+    "Fiscalité : la convention franco-allemande de 1959 a été modifiée par plusieurs avenants et les commentaires BOFiP cités datent de 2012 et 2014. Une arrivée ou un départ en cours d'année complique la situation : en cas de doute, interrogez votre Finanzamt et votre service des impôts français.",
+    "Les travailleurs frontaliers (domicile et travail en zone frontalière, retour quotidien) relèvent d'un régime fiscal particulier non détaillé ici (BOFiP BOI-INT-CVB-DEU-10-30).",
+    "Assurance responsabilité civile et assurance habitation : aucune source officielle allemande n'a été vérifiée. Vérifiez si vos contrats français vous couvrent en Allemagne.",
+    "Le portail fédéral make-it-in-germany.com n'a pas pu être consulté (page anti-robot) : aucun lien n'y renvoie.",
+    "Montants relevés le 23/11/2026 : salaire minimum 13,90 €/h (14,60 € au 1er janvier 2027), Deutschlandticket 63 €/mois (66,80 € au 1er janvier 2027), Rundfunkbeitrag 18,36 €/mois, seuils de l'assurance maladie 2026 (603 €/mois, 77 400 €/an). Ils changent régulièrement."
+  ]
+}

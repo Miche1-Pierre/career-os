@@ -1,5 +1,6 @@
 "use client";
 
+import { Approx } from "@/components/app/approx";
 import { useState } from "react";
 import Link from "next/link";
 import { CalendarDays, Home, MapPin, Plane, Plus } from "lucide-react";
@@ -72,10 +73,12 @@ export function MovesList({ moves, opportunities, autoCreate }: { moves: MoveVie
                       <Home className="size-3.5 text-muted-foreground" />
                       {chosen ? money(chosen.total, m.currency) : `${m.summary.open} actives`}
                     </div>
+                    {chosen && <Approx amount={chosen.total} currency={m.currency} className="block" />}
                   </div>
                   <div>
                     <div className="text-xs text-muted-foreground">{chosen ? "Épargne" : "Meilleure épargne"}</div>
                     <div className={cn("font-medium tabular-nums", savingsTone(savings))}>{savings === null ? "–" : `${signedMoney(savings, m.currency)}/mois`}</div>
+                    <Approx amount={savings} currency={m.currency} signed className="block" />
                   </div>
                 </div>
               </Link>

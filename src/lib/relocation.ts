@@ -218,6 +218,31 @@ export function walkMinutes(km: number): number {
   return Math.max(5, Math.round((km * 1.3 * 12) / 5) * 5);
 }
 
+/** A place that matters besides the workplace (sports club, station, school…). Coordinates may be given directly. */
+export const placeInputSchema = z.object({
+  label: z.string().trim().min(1).max(80),
+  address: z.string().trim().min(3).max(300),
+  lat: z.number().min(-90).max(90).nullish(),
+  lng: z.number().min(-180).max(180).nullish(),
+});
+export type PlaceInput = z.input<typeof placeInputSchema>;
+
+export interface PlaceTrip {
+  placeId: string;
+  label: string;
+  km: number;
+  walkMin: number;
+}
+
+/** Straight-line distance and walking time from a located listing to each place of the move. Pure. */
+export function placeTrips(from: { lat: number | null; lng: number | null }, places: { id: string; label: string; lat: number; lng: number }[]): PlaceTrip[] {
+  if (from.lat === null || from.lng === null) return [];
+  return places.map((p) => {
+    const km = distanceKm({ lat: from.lat!, lng: from.lng! }, p);
+    return { placeId: p.id, label: p.label, km, walkMin: walkMinutes(km) };
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Listing maths
 // ---------------------------------------------------------------------------

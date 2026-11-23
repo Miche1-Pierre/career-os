@@ -36,6 +36,7 @@ import type { ListingView } from "@/server/services/moves";
 import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/chat-dock";
 import { mapsDirections, money, savingsTone, signedMoney } from "./format";
+import { Approx } from "@/components/app/approx";
 
 const FURNISHED_LABEL = { YES: "Meublé", SEMI: "Semi-meublé", NO: "Non meublé", UNKNOWN: "Inconnu" } as const;
 
@@ -181,10 +182,12 @@ export function ListingSheet({
                 {(l.chargesInclude ?? []).length > 0 && <Row label="Les charges couvrent" muted>{l.chargesInclude.join(", ")}</Row>}
                 <Row label="Total">
                   <span className="heading-sm">{l.total !== null ? money(l.total, currency) : "–"}</span>
+                  <Approx amount={l.total} currency={currency} className="ml-2" />
                 </Row>
                 {l.budget && (
                   <Row label="Épargne chaque mois">
                     <span className={cn("heading-sm", savingsTone(l.budget.savings))}>{signedMoney(l.budget.savings, currency)}</span>
+                    <Approx amount={l.budget.savings} currency={currency} signed className="ml-2" />
                   </Row>
                 )}
                 <Row label="Garantie">{l.deposit !== null ? money(l.deposit, currency) : l.depositText ?? ask}</Row>
@@ -223,6 +226,11 @@ export function ListingSheet({
                     <span className="text-muted-foreground">Ajoute l’adresse</span>
                   )}
                 </Row>
+                {l.trips.map((t) => (
+                  <Row key={t.placeId} label={t.label}>
+                    {t.km.toLocaleString("fr-FR")} km · ~{t.walkMin} min à pied
+                  </Row>
+                ))}
               </div>
               {directions && (
                 <Button variant="link" size="sm" asChild className="mt-1">

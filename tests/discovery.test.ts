@@ -1,3 +1,4 @@
+import { EXPORT_SCHEMA_VERSION } from "@/lib/constants";
 import { beforeAll, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 import { createTestDb, useTempStorage } from "./helpers/db";
@@ -154,7 +155,7 @@ describe("saved searches (database)", () => {
     await createSearch({ domain: "JOBS", name: "Plus tard", criteria: { keywords: ["data"] }, schedule: "WEEKLY" }, USER);
     expect(await runDueSearches(new Date())).toBeNull(); // next run is in a week
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(4);
+    expect(file.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(file.counts.savedSearches).toBe(3);
     expect(file.counts.researchRuns).toBe(4);
   });

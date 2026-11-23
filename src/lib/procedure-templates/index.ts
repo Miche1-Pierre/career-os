@@ -7,8 +7,13 @@ import frGeneric from "./fr-generic.json";
 import frCa from "./fr-ca.json";
 import frBe from "./fr-be.json";
 import frUs from "./fr-us.json";
+import frLu from "./fr-lu.json";
+import frNl from "./fr-nl.json";
+import frDe from "./fr-de.json";
+import frGb from "./fr-gb.json";
+import frCh from "./fr-ch.json";
 
-const RAW: unknown[] = [frGeneric, frBe, frCa, frUs];
+const RAW: unknown[] = [frGeneric, frBe, frLu, frCh, frNl, frDe, frGb, frCa, frUs];
 
 export const PROCEDURE_TEMPLATES: ProcedureTemplate[] = RAW.map((t) => procedureTemplateSchema.parse(t));
 
