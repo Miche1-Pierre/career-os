@@ -117,6 +117,7 @@ jobs:
           icacls $layout /deny '*S-1-1-0:(CI)(WD,AD,DC)' | Out-Null
           $env:CAREER_OS_HOME = $home_
           $env:CAREER_OS_NO_BROWSER = '1'
+          $env:CAREER_OS_NO_DIALOG = '1'
           $p = Start-Process (Join-Path $layout 'CareerOS.exe') -PassThru
           $settings = Join-Path $home_ 'data\app\settings.env'
           $url = $null; $ok = $false

@@ -9,7 +9,7 @@ Partner Center → Soumission → Options de soumission → **Notes pour la cert
 ```text
 No account or sign-in is needed. Career OS runs entirely on the user's PC.
 
-How it works: CareerOS.exe (no window) starts a bundled Node.js server and a local database bound to 127.0.0.1 only (port 3300 by default), then opens the app in the default web browser. User data, settings and daily backups are stored in Documents\CareerOS (kept on uninstall). The app stops by itself about 10 minutes after its last browser tab is closed; launching it again while it runs just reopens the browser tab.
+How it works: CareerOS.exe (no window) starts a bundled Node.js server and a local database bound to 127.0.0.1 only (port 3300 by default), then opens the app in the default web browser. On the first launch of each version, a small "Préparation de Career OS…" window shows for a few seconds: the app's files ship inside the package as app.zip (MSIX does not accept the bracketed folder names, like [id], that the app's web pages use) and are unpacked once into the package's own local storage. Nothing is downloaded. User data, settings and daily backups are stored in Documents\CareerOS (kept on uninstall). The app stops by itself about 10 minutes after its last browser tab is closed; launching it again while it runs just reopens the browser tab.
 
 Suggested test path:
 1. Launch Career OS from the Start menu. The welcome wizard opens in the browser.
