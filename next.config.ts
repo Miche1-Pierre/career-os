@@ -29,7 +29,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // The Docker image runs the self-contained server (.next/standalone, set by the Dockerfile). The local install runs
+  // `next start`, which does not support that output, so it gets a regular build.
+  output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   poweredByHeader: false,
   serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability", "@huggingface/transformers", "onnxruntime-node", "sharp", "@react-pdf/renderer"],
   // Dictation (local Whisper): transformers.js loads onnxruntime-node through createRequire, which file tracing does not

@@ -12,6 +12,8 @@ RUN npm ci --no-audit --no-fund
 FROM ${NODE_IMAGE} AS build
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
+# Self-contained server in .next/standalone (copied into the runtime image below).
+ENV NEXT_OUTPUT=standalone
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build && node scripts/build-scripts.mjs
