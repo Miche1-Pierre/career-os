@@ -42,6 +42,7 @@ import type {
 } from "@/lib/schemas";
 import type { BudgetPlan, Furnished, HousingType, ListingContacts, ListingSource, ListingStatus, MoveStatus, ListingPick } from "@/lib/relocation";
 import type { ProcedureCategory, ProcedureSource, ProcedureStatus } from "@/lib/procedures";
+import type { DiscoveryDomain, Schedule } from "@/lib/discovery";
 
 // ---------------------------------------------------------------------------
 // Column helpers
@@ -716,6 +717,72 @@ export const procedureSteps = pgTable(
 
 export type Procedure = typeof procedures.$inferSelect;
 export type ProcedureStep = typeof procedureSteps.$inferSelect;
+
+// ---------------------------------------------------------------------------
+// Discovery engine (spec v2, P4): saved searches and their runs
+// ---------------------------------------------------------------------------
+
+export const savedSearches = pgTable(
+  "saved_searches",
+  {
+    id: pk(),
+    domain: text("domain").$type<DiscoveryDomain>().notNull(),
+    name: text("name").notNull(),
+    /** Housing searches belong to an installation project. */
+    moveId: uuid("move_id").references(() => moves.id, { onDelete: "cascade" }),
+    criteria: jsonObject<Record<string, unknown>>("criteria"),
+    /** Source keys (lib/discovery DISCOVERY_SOURCES); empty = every source that fits. */
+    sources: textArray("sources"),
+    useAgent: boolean("use_agent").notNull().default(false),
+    schedule: text("schedule").$type<Schedule>().notNull().default("OFF"),
+    lastRunAt: ts("last_run_at"),
+    nextRunAt: ts("next_run_at"),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("saved_searches_next_idx").on(t.nextRunAt)],
+);
+
+export interface RunSourceResult {
+  key: string;
+  name: string;
+  ok: boolean;
+  found: number;
+  reason?: string | null;
+}
+
+export interface RunSuggestion {
+  name: string;
+  url: string;
+  why: string;
+}
+
+export const researchRuns = pgTable(
+  "research_runs",
+  {
+    id: pk(),
+    searchId: uuid("search_id").references(() => savedSearches.id, { onDelete: "cascade" }),
+    domain: text("domain").$type<DiscoveryDomain>().notNull(),
+    status: text("status").$type<"RUNNING" | "DONE" | "ERROR">().notNull().default("RUNNING"),
+    trigger: text("trigger").$type<"MANUAL" | "SCHEDULE" | "CHAT">().notNull().default("MANUAL"),
+    startedAt: createdAt(),
+    finishedAt: ts("finished_at"),
+    model: text("model"),
+    sources: jsonList<RunSourceResult>("sources"),
+    resultsFound: integer("results_found").notNull().default(0),
+    resultsNew: integer("results_new").notNull().default(0),
+    /** Created inbox items (jobs) or listings (housing). */
+    createdIds: textArray("created_ids"),
+    suggestions: jsonList<RunSuggestion>("suggestions"),
+    report: text("report"),
+    error: text("error"),
+  },
+  (t) => [index("research_runs_search_idx").on(t.searchId, t.startedAt)],
+);
+
+export type SavedSearch = typeof savedSearches.$inferSelect;
+export type ResearchRun = typeof researchRuns.$inferSelect;
 
 // ---------------------------------------------------------------------------
 // In-app chat (Claude Code with the Career OS tools)

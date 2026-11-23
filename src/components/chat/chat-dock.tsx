@@ -98,6 +98,7 @@ function suggestionsFor(path: string): string[] {
   if (path.startsWith("/calendar")) return ["Qu'est-ce que j'ai cette semaine ?", "Ajoute un entretien : "];
   if (path.startsWith("/documents")) return ["Quel CV ai-je envoyé à BlackFin ?"];
   if (path.startsWith("/analytics") || path.startsWith("/dashboard")) return ["Résume mes statistiques du mois", "Quel canal me donne le plus de réponses ?"];
+  if (path.startsWith("/searches")) return ["Crée une recherche d'offres AI engineer à Bruxelles", "Lance mes recherches", "Quelles entreprises IA à Bruxelles ont une page carrières Greenhouse ou Lever ?"];
   if (path.startsWith("/settings")) return ["Lis mon CV et remplis mon profil"];
   return ["Qu'est-ce que je dois faire aujourd'hui ?", "Rédige mes relances en retard", "Ajoute cette offre : "];
 }
