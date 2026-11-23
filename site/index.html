@@ -12,8 +12,7 @@
     <meta property="og:image" content="https://career-os-chi-two.vercel.app/og.png" />
     <link rel="canonical" href="https://career-os-chi-two.vercel.app/" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#1a1918" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#1d43c4" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,239 +21,361 @@
     <style>
       :root {
         --bg: #ffffff;
-        --bg-soft: #faf9f7;
-        --bg-muted: #f3f1ee;
-        --fg: #1c1917;
-        --fg-muted: #57534e;
-        --fg-faint: #a8a29e;
-        --border: #e7e5e4;
-        --blue: #2f6bf6;
-        --blue-soft: #eef3ff;
-        --green: #418b5c;
-        --amber: #ffaa0d;
-        --red: #e14322;
-        --pink: #f99bc3;
-        --ink: #1c1917;
-        --ink-fg: #f5f5f4;
-        --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 24px 60px -24px rgb(0 0 0 / 0.22);
+        --bg-soft: #f7f8fb;
+        --tint: #eef3ff;
+        --tint-2: #e1eaff;
+        --card: #ffffff;
+        --fg: #15161a;
+        --fg-muted: #565b66;
+        --fg-faint: #9aa0ab;
+        --border: #e6e8ee;
+        --accent: #2f6bf6;
+        --accent-strong: #1d43c4;
+        --navy: #0c1532;
+        --navy-2: #131e45;
+        --navy-line: rgb(255 255 255 / 0.09);
+        --on-dark: #eef1f8;
+        --on-dark-muted: #a3aec8;
+        --on-dark-accent: #9cb9ff;
+        --green: #2f8a57;
+        --green-bg: #e7f5ec;
+        --amber: #b26a00;
+        --amber-bg: #fff3dc;
+        --blue-bg: #eaf0ff;
+        --shadow: 0 1px 2px rgb(16 24 40 / 0.05), 0 24px 56px -24px rgb(16 24 40 / 0.25);
         --halo: linear-gradient(100deg, #418b5c, #ffaa0d 24%, #e14322 46%, #f99bc3 66%, #2f6bf6 86%, #418b5c);
-        --wrap: 1180px;
+        --radius: 20px;
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #1a1918;
-          --bg-soft: #201f1d;
-          --bg-muted: #292725;
-          --fg: #f5f5f4;
-          --fg-muted: #b8b2ad;
-          --fg-faint: #78716c;
-          --border: #34312e;
-          --blue-soft: #1c2742;
-          --ink: #0f0e0d;
-          --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 24px 60px -24px rgb(0 0 0 / 0.7);
+          --bg: #0f1013;
+          --bg-soft: #15171c;
+          --tint: #141c33;
+          --tint-2: #1b2645;
+          --card: #17191f;
+          --fg: #f1f2f5;
+          --fg-muted: #a9aebb;
+          --fg-faint: #6c7280;
+          --border: #272a33;
+          --accent: #5b8cff;
+          --green-bg: #15301f;
+          --amber-bg: #33270f;
+          --blue-bg: #18244a;
+          --green: #6fce93;
+          --amber: #f3b54a;
+          --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 24px 56px -24px rgb(0 0 0 / 0.8);
           color-scheme: dark;
         }
       }
       * { box-sizing: border-box; }
-      html { scroll-behavior: smooth; scroll-padding-top: 72px; }
-      body {
-        margin: 0;
-        font-family: Geist, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-        background: var(--bg);
-        color: var(--fg);
-        line-height: 1.55;
-        -webkit-font-smoothing: antialiased;
-        overflow-x: hidden;
-      }
+      html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+      body { margin: 0; font-family: Geist, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--fg); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
       a { color: inherit; }
       img { display: block; max-width: 100%; height: auto; }
-      .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
-      section { padding: 112px 0; }
-      h1, h2, h3 { letter-spacing: -0.025em; margin: 0; }
-      h2 { font-size: clamp(30px, 4.2vw, 46px); line-height: 1.08; font-weight: 600; }
-      .eyebrow { font-size: 13px; font-weight: 600; color: var(--blue); margin-bottom: 14px; letter-spacing: 0.01em; }
-      .sub { color: var(--fg-muted); font-size: 18px; max-width: 620px; margin: 16px 0 0; }
-      .grad { background: var(--halo); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
-      .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-
-      /* Buttons */
-      .btn {
-        display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 20px; border-radius: 12px;
-        font: inherit; font-weight: 550; font-size: 15px; text-decoration: none; cursor: pointer;
-        border: 1px solid var(--border); background: var(--bg); color: var(--fg); transition: transform .15s, background .15s, border-color .15s;
-      }
-      .btn:hover { border-color: var(--fg-faint); }
-      .btn:active { transform: translateY(1px); }
-      .btn-primary { background: var(--blue); border-color: var(--blue); color: #fff; }
-      .btn-primary:hover { background: #2559d6; border-color: #2559d6; }
-      .btn svg { width: 18px; height: 18px; flex: none; }
+      button { font: inherit; }
+      .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+      section { padding: 104px 0; }
+      h1, h2, h3, h4 { margin: 0; letter-spacing: -0.03em; font-weight: 550; }
+      h2 { font-size: clamp(32px, 4.4vw, 50px); line-height: 1.06; max-width: 980px; }
+      h2 em { font-style: normal; color: var(--accent); }
+      .lead { color: var(--fg-muted); font-size: 18px; max-width: 560px; margin: 18px 0 0; }
+      .link { color: var(--accent); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; padding: 0; cursor: pointer; font-size: 15px; }
+      .link:hover { text-decoration: underline; text-underline-offset: 3px; }
+      .link::after { content: "→"; }
+      svg.i { width: 18px; height: 18px; flex: none; }
       .gh { fill: currentColor; }
 
-      /* Header */
-      header.top {
-        position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 82%, transparent);
-        backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); border-bottom: 1px solid transparent;
-        transition: border-color .2s;
-      }
-      header.top.scrolled { border-bottom-color: var(--border); }
-      .top .wrap { display: flex; align-items: center; height: 64px; gap: 24px; }
-      .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; text-decoration: none; font-size: 16px; }
-      .brand svg { width: 44px; height: 17px; }
-      .nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
-      .nav a { text-decoration: none; color: var(--fg-muted); font-size: 14.5px; padding: 8px 12px; border-radius: 9px; display: inline-flex; align-items: center; gap: 7px; }
-      .nav a:hover { color: var(--fg); background: var(--bg-muted); }
-      .nav a svg { width: 17px; height: 17px; }
-      .nav .btn { height: 38px; padding: 0 15px; font-size: 14px; color: #fff; margin-left: 8px; }
-      .nav .btn:hover { background: #2559d6; color: #fff; }
+      /* Pills (buttons) */
+      .pill { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 20px; border-radius: 99px; font-weight: 550; font-size: 15px; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: transform .15s, background .15s, box-shadow .15s; white-space: nowrap; }
+      .pill:active { transform: translateY(1px); }
+      .pill-white { background: #fff; color: #10204f; box-shadow: 0 6px 20px -8px rgb(0 0 0 / .35); }
+      .pill-white:hover { background: #f2f5ff; }
+      .pill-ghost { background: rgb(255 255 255 / .14); color: #fff; border-color: rgb(255 255 255 / .28); }
+      .pill-ghost:hover { background: rgb(255 255 255 / .22); }
+      .pill svg { width: 17px; height: 17px; }
+
+      /* Header: transparent over the blue hero, solid once scrolled */
+      header.top { position: fixed; inset: 0 0 auto; z-index: 60; transition: background .25s, box-shadow .25s, color .25s; color: #fff; }
+      header.top.solid { background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: saturate(1.6) blur(14px); -webkit-backdrop-filter: saturate(1.6) blur(14px); box-shadow: 0 1px 0 var(--border); color: var(--fg); }
+      .top .wrap { display: flex; align-items: center; height: 68px; gap: 28px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16.5px; text-decoration: none; }
+      .brand svg { width: 46px; height: 18px; }
+      .nav { display: flex; gap: 2px; margin: 0 auto; }
+      .nav a { text-decoration: none; font-size: 14.5px; padding: 8px 13px; border-radius: 99px; opacity: .88; }
+      .nav a:hover { opacity: 1; background: rgb(127 127 127 / .14); }
+      .top-cta { display: flex; align-items: center; gap: 6px; }
+      .top-cta .gha { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; font-size: 14.5px; padding: 8px 12px; border-radius: 99px; }
+      .top-cta .gha:hover { background: rgb(127 127 127 / .14); }
+      .top-cta .gha svg { width: 18px; height: 18px; }
+      .top-cta .pill { height: 38px; padding: 0 16px; font-size: 14px; }
+      header.top.solid .pill-white { background: var(--accent); color: #fff; box-shadow: none; }
 
       /* Hero */
-      .hero { padding: 84px 0 0; text-align: center; position: relative; }
-      .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 99px; background: var(--bg-muted); color: var(--fg-muted); font-size: 13.5px; font-weight: 500; }
-      .pill i { width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-      .hero h1 { font-size: clamp(40px, 6.6vw, 76px); line-height: 1.02; font-weight: 650; margin: 22px auto 0; max-width: 940px; letter-spacing: -0.035em; }
-      .hero .lead { font-size: clamp(17px, 2vw, 20px); color: var(--fg-muted); max-width: 640px; margin: 22px auto 0; }
-      .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 34px; }
-      .fine { color: var(--fg-faint); font-size: 13.5px; margin-top: 16px; }
-      .hero-shot { position: relative; margin: 64px auto 0; max-width: 1180px; padding: 0 24px; }
-      .hero-shot::before {
-        content: ""; position: absolute; inset: 8% 6% -2%; background: var(--halo); filter: blur(70px); opacity: .32; border-radius: 40px; z-index: 0;
-      }
-
-      /* Window frame around real screenshots */
-      .frame { position: relative; z-index: 1; border-radius: 14px; background: var(--bg); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }
-      .frame-bar { display: flex; align-items: center; gap: 7px; height: 34px; padding: 0 14px; border-bottom: 1px solid var(--border); background: var(--bg-soft); }
-      .frame-bar span { width: 10px; height: 10px; border-radius: 50%; background: var(--border); }
-      .frame-bar b { margin: 0 auto; transform: translateX(-24px); font-size: 12px; font-weight: 500; color: var(--fg-faint); }
+      .hero { position: relative; background: radial-gradient(1200px 500px at 50% -10%, #5d8dff 0%, transparent 60%), linear-gradient(180deg, #1636a8 0%, #2457e6 48%, #3d77fa 100%); color: #fff; text-align: center; padding: 150px 0 0; overflow: hidden; }
+      .hero::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgb(255 255 255 / .5) 1px, transparent 1.5px); background-size: 140px 140px; opacity: .18; -webkit-mask-image: linear-gradient(#000, transparent 70%); mask-image: linear-gradient(#000, transparent 70%); }
+      .hero .wrap { position: relative; }
+      .hero h1 { font-size: clamp(42px, 6.8vw, 80px); line-height: 1.02; letter-spacing: -0.04em; font-weight: 600; max-width: 900px; margin: 0 auto; }
+      .hero p { font-size: clamp(17px, 2vw, 20px); color: rgb(255 255 255 / .82); max-width: 620px; margin: 22px auto 0; }
+      .hero .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+      .hero .fine { font-size: 13.5px; color: rgb(255 255 255 / .6); margin-top: 16px; }
+      .waves { position: relative; display: block; width: 100%; height: 230px; margin-top: 10px; }
+      .hero-shot { position: relative; z-index: 2; margin-top: -190px; }
+      .frame { border-radius: 14px; overflow: hidden; background: #fff; border: 1px solid var(--border); box-shadow: var(--shadow); }
+      .frame-bar { display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 14px; background: #f7f7f8; border-bottom: 1px solid #e8e8ec; }
+      .frame-bar span { width: 10px; height: 10px; border-radius: 50%; background: #dcdce1; }
+      .frame-bar b { margin: 0 auto; transform: translateX(-24px); font-size: 12px; font-weight: 500; color: #9a9aa3; }
       .frame img { width: 100%; aspect-ratio: 1440 / 900; background: #fff; }
 
-      /* Promise strip: inline statements, no boxes */
-      .strip { padding: 72px 0 0; }
-      .strip ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); }
-      .strip li { padding: 6px 28px; border-left: 1px solid var(--border); }
-      .strip li:first-child { border-left: 0; padding-left: 0; }
-      .strip strong { display: block; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
-      .strip span { display: block; color: var(--fg-muted); font-size: 14.5px; margin-top: 4px; }
+      /* Sites grid */
+      .sites { padding: 72px 0 0; }
+      .sites-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+      .sites-head h3 { font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
+      .grid-sites { margin-top: 20px; display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+      .grid-sites span { height: 78px; display: grid; place-items: center; text-align: center; padding: 0 10px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); color: var(--fg-muted); font-weight: 600; font-size: 15.5px; letter-spacing: -0.02em; }
+      .grid-sites span:nth-child(6n) { border-right: 0; }
+      .grid-sites span:nth-last-child(-n + 6) { border-bottom: 0; }
+      .grid-sites span:nth-child(3n + 1) { font-weight: 700; }
+      .grid-sites span:nth-child(4n + 2) { font-weight: 500; font-style: italic; }
+      .sites .note { font-size: 12.5px; color: var(--fg-faint); margin-top: 10px; }
 
-      /* Features: menu + live screenshot */
-      #fonctionnalites { padding-top: 128px; }
-      .f-head { display: flex; align-items: end; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
-      .f-head .sub { margin-top: 16px; }
-      .f-grid { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 48px; margin-top: 56px; align-items: start; }
-      .f-menu { position: sticky; top: 88px; display: flex; flex-direction: column; gap: 2px; }
-      .f-group { font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--fg-faint); margin: 18px 0 6px 12px; }
-      .f-group:first-child { margin-top: 0; }
-      .f-tab {
-        position: relative; display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; font: inherit; font-size: 14.5px;
-        color: var(--fg-muted); background: none; border: 0; padding: 7px 12px; border-radius: 9px; cursor: pointer; overflow: hidden;
-      }
-      .f-tab:hover { color: var(--fg); background: var(--bg-muted); }
-      .f-tab.on { color: var(--fg); background: var(--bg-muted); font-weight: 550; }
-      .f-tab svg { width: 16px; height: 16px; flex: none; opacity: .75; }
-      .f-tab .bar { position: absolute; left: 12px; right: 12px; bottom: 2px; height: 2px; border-radius: 2px; background: var(--blue); transform: scaleX(0); transform-origin: left; opacity: 0; }
-      .f-tab.run .bar { opacity: .7; animation: fill var(--d, 6s) linear forwards; }
-      @keyframes fill { to { transform: scaleX(1); } }
-      .f-tab:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
-      .f-copy { min-height: 118px; }
-      .f-copy h3 { font-size: 26px; font-weight: 600; line-height: 1.2; }
-      .f-copy p { color: var(--fg-muted); font-size: 16.5px; margin: 10px 0 0; max-width: 680px; }
-      .f-copy[hidden] { display: none; }
-      .f-viewer .frame { margin-top: 24px; }
+      /* Contrast */
+      .versus { display: grid; grid-template-columns: 1fr 1fr; margin-top: 64px; }
+      .versus > div { padding: 0 48px 0 0; }
+      .versus > div + div { padding: 0 0 0 48px; border-left: 1px solid var(--border); }
+      .vs-title { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 500; color: var(--fg-faint); }
+      .vs-title .mark { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--bg-soft); color: var(--fg-faint); }
+      .versus > div + div .vs-title { color: var(--fg); }
+      .versus > div + div .vs-title .mark { background: #fff; border: 1px solid var(--border); }
+      .scatter { list-style: none; padding: 0; margin: 26px 0 0; }
+      .scatter li { display: flex; align-items: center; gap: 12px; padding: 6px 0; color: var(--fg-muted); font-size: 15.5px; }
+      .scatter li::before { content: ""; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid currentColor; opacity: .6; flex: none; }
+      .scatter li:nth-child(n + 4) { opacity: .55; }
+      .scatter li:nth-child(n + 6) { opacity: .28; }
+      .wins { list-style: none; padding: 0; margin: 18px 0 0; }
+      .wins li { display: flex; align-items: center; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border); }
+      .wins li:last-child { border-bottom: 0; }
+      .wins h4 { font-size: 20px; letter-spacing: -0.02em; }
+      .wins p { margin: 2px 0 0; color: var(--fg-muted); font-size: 14.5px; }
+      .wins .chips { margin-left: auto; display: flex; }
+      .wins .chips i { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg); display: grid; place-items: center; font-style: normal; font-size: 12px; color: #fff; margin-left: -6px; }
+      .big { margin-top: 40px; font-size: clamp(52px, 7vw, 76px); font-weight: 600; letter-spacing: -0.045em; line-height: 1; }
+      .big + small { display: block; color: var(--fg-muted); font-size: 14.5px; margin-top: 8px; }
+      .versus > div:first-child .big { color: var(--fg-faint); opacity: .55; }
+      .versus > div + div .big { color: var(--accent); }
+
+      /* Dark problem section */
+      .dark { background: radial-gradient(900px 400px at 85% 0%, #1d2b66 0%, transparent 60%), var(--navy); color: var(--on-dark); }
+      .dark h2 em { color: var(--on-dark-accent); }
+      .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 56px; }
+      .dcard { background: linear-gradient(180deg, var(--navy-2), #0f1838); border: 1px solid var(--navy-line); border-radius: var(--radius); padding: 24px 24px 0; overflow: hidden; display: flex; flex-direction: column; }
+      .dcard h3 { font-size: 18px; letter-spacing: -0.015em; }
+      .dcard p { color: var(--on-dark-muted); font-size: 14.5px; margin: 8px 0 22px; }
+      .dviz { margin-top: auto; height: 190px; border-radius: 14px 14px 0 0; border: 1px solid var(--navy-line); border-bottom: 0; background: rgb(255 255 255 / .03); position: relative; overflow: hidden; }
+      .marquee { display: flex; flex-direction: column; gap: 9px; padding: 18px 0; }
+      .marquee div { display: flex; gap: 8px; width: max-content; animation: drift 26s linear infinite; }
+      .marquee div:nth-child(2) { animation-direction: reverse; animation-duration: 30s; }
+      .marquee div:nth-child(3) { animation-duration: 34s; }
+      .marquee span { font-size: 12.5px; padding: 6px 11px; border-radius: 99px; background: rgb(255 255 255 / .07); border: 1px solid var(--navy-line); color: #d6dcef; white-space: nowrap; }
+      @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+      .qbox { position: absolute; inset: 22px 28px 0; border-radius: 12px 12px 0 0; background: rgb(255 255 255 / .04); border: 1px solid var(--navy-line); display: grid; place-items: center; align-content: center; gap: 6px; }
+      .qbox b { font-size: 78px; line-height: 1; background: var(--halo); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 700; }
+      .qbox small { color: var(--on-dark-muted); font-size: 12.5px; }
+      .files { position: absolute; inset: 18px 18px 0; border-radius: 12px 12px 0 0; background: rgb(255 255 255 / .04); border: 1px solid var(--navy-line); padding: 12px 14px; font-size: 12.5px; }
+      .files header { display: flex; justify-content: space-between; color: var(--on-dark-muted); margin-bottom: 8px; }
+      .files div { display: flex; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--navy-line); color: #dfe4f3; }
+      .files div span:last-child { color: var(--on-dark-muted); }
+
+      /* Product panel */
+      .panel { margin-top: 48px; background: linear-gradient(180deg, var(--tint), var(--tint-2)); border-radius: 28px; padding: clamp(18px, 4vw, 48px); }
+
+      /* Start with: curves */
+      .flow { display: grid; grid-template-columns: minmax(0, 1fr) 180px minmax(0, 0.9fr); align-items: center; margin-top: 56px; }
+      .flow ul { list-style: none; padding: 0; margin: 0; }
+      .flow li { height: 104px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--border); }
+      .flow li:last-child { border-bottom: 0; }
+      .flow li div { flex: 1; }
+      .flow h4 { font-size: 21px; letter-spacing: -0.02em; }
+      .flow p { margin: 3px 0 0; color: var(--fg-muted); font-size: 14.5px; }
+      .flow .ico { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--blue-bg); color: var(--accent); flex: none; }
+      .flow svg.curves { width: 100%; height: 312px; overflow: visible; }
+      .flow .out h3 { font-size: clamp(28px, 3.2vw, 38px); color: var(--accent); line-height: 1.05; letter-spacing: -0.035em; }
+      .flow .out p { color: var(--fg-muted); margin: 10px 0 0; font-size: 15px; }
+      .then { margin-top: 64px; padding-top: 26px; border-top: 1px solid var(--border); }
+      .then small { color: var(--fg-muted); font-size: 14px; }
+      .then ol { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px 26px; }
+      .then li { font-size: clamp(22px, 2.6vw, 30px); letter-spacing: -0.03em; color: var(--fg-faint); opacity: .7; transition: color .4s, opacity .4s; }
+      .then li.on { color: var(--accent); opacity: 1; }
+
+      /* Bento */
+      .bento { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 52px; border: 1px solid var(--border); border-radius: 22px; overflow: hidden; background: var(--card); }
+      .cell { padding: 26px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); display: flex; flex-direction: column; min-height: 330px; }
+      .cell.wide { grid-column: span 2; }
+      .bento .cell:nth-child(2), .bento .cell:nth-child(5), .bento .cell:nth-child(7) { border-right: 0; }
+      .bento .cell:nth-child(n + 6) { border-bottom: 0; }
+      .cell .k { display: flex; align-items: center; gap: 7px; color: var(--fg-muted); font-size: 13.5px; }
+      .cell .k svg { width: 15px; height: 15px; }
+      .cell h3 { font-size: 21px; letter-spacing: -0.02em; margin-top: 12px; }
+      .cell > p { color: var(--fg-muted); font-size: 14.5px; margin: 6px 0 0; max-width: 420px; }
+      .viz { margin-top: auto; padding-top: 22px; }
+      .prompt { display: flex; align-items: center; gap: 10px; padding: 10px 10px 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); font-size: 14px; position: relative; }
+      .prompt::before { content: ""; position: absolute; inset: -1px; border-radius: 13px; padding: 1px; background: var(--halo); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .9; }
+      .prompt span { flex: 1; }
+      .prompt i { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 14px; }
+      .cvimg { margin-top: 14px; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; height: 210px; -webkit-mask-image: linear-gradient(#000 65%, transparent); mask-image: linear-gradient(#000 65%, transparent); }
+      .cvimg img { width: 100%; }
+      .rows div { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px; background: var(--bg); }
+      .rows div + div { margin-top: 7px; }
+      .rows.plain div { border: 0; border-bottom: 1px solid var(--border); border-radius: 0; background: none; padding: 9px 2px; }
+      .rows.plain div + div { margin-top: 0; }
+      .rows.plain div:last-child { border-bottom: 0; }
+      .tag { font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 99px; white-space: nowrap; }
+      .t-ok { background: var(--green-bg); color: var(--green); }
+      .t-ask { background: var(--blue-bg); color: var(--accent); }
+      .t-warn { background: var(--amber-bg); color: var(--amber); }
+      .t-no { background: var(--bg-soft); color: var(--fg-faint); }
+      .t-auto { color: var(--fg-faint); font-size: 12.5px; }
+      .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      .tools span { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border: 1px solid var(--border); border-radius: 10px; font-size: 13.5px; font-weight: 500; background: var(--bg); }
+      .tools svg { width: 15px; height: 15px; color: var(--accent); }
+      .stat { font-size: 38px; font-weight: 600; letter-spacing: -0.04em; }
+      .stat small { font-size: 13px; color: var(--fg-muted); font-weight: 400; letter-spacing: 0; margin-left: 6px; }
+      .spark { width: 100%; height: 70px; margin-top: 6px; display: block; }
+      .stat-foot { display: flex; gap: 14px; font-size: 12.5px; color: var(--fg-muted); margin-top: 6px; }
+      .chat { border: 1px solid var(--border); border-radius: 14px; padding: 14px; background: var(--bg); display: grid; gap: 10px; }
+      .me { justify-self: end; background: var(--accent); color: #fff; padding: 8px 13px; border-radius: 14px 14px 4px 14px; font-size: 14px; }
+      .bot { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+      .bot .av { width: 30px; height: 30px; border-radius: 9px; background: #fff; border: 1px solid var(--border); display: grid; place-items: center; flex: none; }
+      .bot .av svg { width: 22px; height: 9px; }
+      .bot blockquote { margin: 6px 0 0; padding-left: 10px; border-left: 2px solid var(--border); color: var(--fg-muted); font-size: 13px; }
+      .bot .acts { display: flex; gap: 6px; margin-top: 10px; }
+      .bot .acts span { font-size: 12.5px; padding: 5px 11px; border-radius: 8px; border: 1px solid var(--border); font-weight: 500; }
+      .bot .acts span:first-child { background: var(--green); border-color: var(--green); color: #fff; }
+      .chips-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+      .chips-row span { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: var(--bg-soft); border: 1px solid var(--border); color: var(--fg-muted); }
+
+      /* Feature card (blue) */
+      .fx { margin-top: 48px; border-radius: 28px; background: radial-gradient(800px 380px at 10% 0%, #4c80ff 0%, transparent 60%), linear-gradient(160deg, #1b3fc0, #2a5df0); color: #fff; padding: 36px 36px 0; position: relative; overflow: hidden; }
+      .fx::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgb(255 255 255 / .55) 1px, transparent 1.5px); background-size: 120px 120px; opacity: .12; pointer-events: none; }
+      .fx-main { position: relative; display: grid; grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.4fr); gap: 36px; align-items: center; }
+      .fx-copy[hidden], .fx-pills[hidden] { display: none; }
+      .fx-copy .g { font-size: 12.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgb(255 255 255 / .65); }
+      .fx-copy h3 { font-size: clamp(26px, 2.8vw, 34px); line-height: 1.1; margin-top: 10px; letter-spacing: -0.035em; }
+      .fx-copy p { color: rgb(255 255 255 / .84); font-size: 16px; margin: 12px 0 0; }
+      .fx-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 24px; }
+      .fx-pill { border: 1px solid rgb(255 255 255 / .28); background: rgb(255 255 255 / .08); color: #fff; padding: 6px 12px; border-radius: 99px; font-size: 13.5px; cursor: pointer; }
+      .fx-pill:hover { background: rgb(255 255 255 / .16); }
+      .fx-pill.on { background: #fff; color: #1b3fc0; border-color: #fff; font-weight: 550; }
+      .fx-view .frame { border: 0; box-shadow: 0 30px 70px -30px rgb(0 0 0 / .6); }
       .f-shot { position: relative; overflow: hidden; aspect-ratio: 1440 / 900; background: #fff; }
       .f-layer { position: absolute; inset: 0; transform-origin: 0 0; transition: transform 1.15s cubic-bezier(.22,.8,.2,1); --z: 1; }
       .f-layer img { width: 100%; height: 100%; aspect-ratio: auto; transition: opacity .22s ease, filter .22s ease; }
       .f-shot.swap img { opacity: 0; filter: blur(4px); }
-      .f-spot {
-        position: absolute; border-radius: calc(12px / var(--z)); pointer-events: none; opacity: 0;
-        box-shadow: 0 0 0 4000px rgb(20 18 16 / 0.34); transition: left .95s cubic-bezier(.22,.8,.2,1), top .95s cubic-bezier(.22,.8,.2,1), width .95s cubic-bezier(.22,.8,.2,1), height .95s cubic-bezier(.22,.8,.2,1), opacity .5s ease;
-      }
-      .f-spot::before {
-        content: ""; position: absolute; inset: calc(-3px / var(--z)); border-radius: inherit; padding: calc(3px / var(--z)); background: var(--halo); background-size: 200% 100%;
-        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: slide 4s linear infinite;
-      }
-      .f-spot::after { content: ""; position: absolute; inset: calc(-3px / var(--z)); border-radius: inherit; box-shadow: 0 0 calc(28px / var(--z)) calc(4px / var(--z)) rgb(47 107 246 / 0.35); animation: pulse 2.2s ease-in-out infinite; }
+      .f-spot { position: absolute; border-radius: calc(12px / var(--z)); pointer-events: none; opacity: 0; box-shadow: 0 0 0 4000px rgb(12 21 50 / .38); transition: left .95s cubic-bezier(.22,.8,.2,1), top .95s cubic-bezier(.22,.8,.2,1), width .95s cubic-bezier(.22,.8,.2,1), height .95s cubic-bezier(.22,.8,.2,1), opacity .5s; }
+      .f-spot::before { content: ""; position: absolute; inset: calc(-3px / var(--z)); border-radius: inherit; padding: calc(3px / var(--z)); background: var(--halo); background-size: 200% 100%; -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; animation: slide 4s linear infinite; }
+      .f-spot::after { content: ""; position: absolute; inset: calc(-3px / var(--z)); border-radius: inherit; box-shadow: 0 0 calc(28px / var(--z)) calc(4px / var(--z)) rgb(47 107 246 / .4); animation: pulse 2.2s ease-in-out infinite; }
       .f-shot.focusing .f-spot { opacity: 1; }
       @keyframes slide { to { background-position: 200% 0; } }
       @keyframes pulse { 50% { opacity: .35; } }
-      .f-note { margin-top: 14px; font-size: 13px; color: var(--fg-faint); }
+      .fx-groups { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); margin: 34px -36px 0; border-top: 1px solid rgb(255 255 255 / .16); }
+      .fx-group { position: relative; background: none; border: 0; color: rgb(255 255 255 / .62); padding: 20px 10px 22px; font-size: 15.5px; font-weight: 550; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .fx-group + .fx-group { border-left: 1px solid rgb(255 255 255 / .1); }
+      .fx-group svg { width: 17px; height: 17px; }
+      .fx-group:hover { color: #fff; }
+      .fx-group.on { color: #fff; background: rgb(255 255 255 / .07); }
+      .fx-group i { position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: #fff; transform: scaleX(0); transform-origin: left; }
+      .fx-group.on i { transform: scaleX(1); }
+      .fx-group.run i { transform: scaleX(0); animation: fill var(--d, 6s) linear forwards; }
+      @keyframes fill { to { transform: scaleX(1); } }
+      .fx-note { font-size: 12.5px; color: var(--fg-faint); margin-top: 12px; }
 
-      /* Claude: split, typographic list */
-      #claude .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 72px; align-items: center; }
-      .asks { list-style: none; padding: 0; margin: 36px 0 0; border-top: 1px solid var(--border); }
-      .asks li { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); }
-      .asks q { flex: 1; font-size: 17px; quotes: "« " " »"; }
-      .copy {
-        display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px; border-radius: 8px; border: 1px solid var(--border);
-        background: var(--bg); color: var(--fg-muted); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; flex: none; transition: all .15s;
-      }
+      /* Example cards */
+      .cases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+      .case { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); display: flex; flex-direction: column; }
+      .case header { padding: 22px 24px 18px; border-bottom: 1px solid var(--border); }
+      .case header .who { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 16px; }
+      .case header .who span { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: var(--blue-bg); color: var(--accent); }
+      .case header small { display: block; color: var(--fg-muted); font-size: 14px; margin-top: 8px; }
+      .case dl { margin: 0; padding: 6px 24px; flex: 1; }
+      .case dl div { padding: 14px 0; border-bottom: 1px solid var(--border); }
+      .case dl div:last-child { border-bottom: 0; }
+      .case dt { font-size: 24px; font-weight: 600; letter-spacing: -0.03em; }
+      .case dl div:first-child dt { font-size: 34px; color: var(--accent); }
+      .case dd { margin: 2px 0 0; color: var(--fg-muted); font-size: 14px; }
+      .case footer { padding: 16px 24px 20px; border-top: 1px solid var(--border); }
+      .cases-note { font-size: 12.5px; color: var(--fg-faint); margin-top: 12px; }
+
+      /* Dark hub panel */
+      .hub { border-radius: 28px; background: radial-gradient(700px 300px at 50% 0%, #22337a 0%, transparent 70%), var(--navy); color: var(--on-dark); text-align: center; padding: 72px 28px 0; position: relative; overflow: hidden; }
+      .hub::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgb(255 255 255 / .6) 1px, transparent 1.5px); background-size: 160px 160px; opacity: .14; }
+      .hub h2 { margin: 0 auto; position: relative; }
+      .hub h2 em { color: var(--on-dark-accent); }
+      .hub .lead { color: var(--on-dark-muted); margin: 18px auto 0; position: relative; }
+      .hub .link { color: var(--on-dark-accent); margin-top: 18px; position: relative; }
+      .hub-map { position: relative; max-width: 760px; height: 220px; margin: 36px auto 0; }
+      .hub-map svg.lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .orb { position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffffff 0%, #eef2ff 50%, #b8caff 100%); display: grid; place-items: center; box-shadow: 0 0 0 14px rgb(91 140 255 / .14), 0 0 0 30px rgb(91 140 255 / .07), 0 0 60px 10px rgb(91 140 255 / .45); }
+      .orb svg { width: 52px; height: 20px; }
+      .hub-map span { position: absolute; font-size: 15px; font-weight: 550; display: flex; align-items: center; gap: 8px; white-space: nowrap; transform: translateY(-50%); }
+      .hub-map span::after { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px #9db6ff; }
+      .hub-map span.r { flex-direction: row-reverse; }
+      .hub-chips { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; }
+      .hub-chips span { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; padding: 7px 13px; border-radius: 99px; border: 1px solid rgb(255 255 255 / .14); background: rgb(255 255 255 / .05); }
+      .hub-chips svg { width: 14px; height: 14px; color: #9db6ff; }
+      .hub .waves { height: 120px; margin: 40px -28px 0; width: calc(100% + 56px); }
+
+      /* Levels */
+      .levels { margin-top: 48px; border: 1px solid var(--border); border-radius: 24px; padding: 36px 32px 26px; background: linear-gradient(180deg, var(--card), var(--bg-soft)); }
+      .stairs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; align-items: end; }
+      .step-card { border: 1px solid var(--border); border-radius: 14px; background: var(--card); padding: 12px 14px; display: flex; flex-direction: column; }
+      .step-card small { color: var(--fg-faint); font-size: 12px; font-weight: 600; }
+      .step-card b { font-size: 17px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; }
+      .stairs > div:nth-child(1) .step-card { height: 92px; }
+      .stairs > div:nth-child(2) .step-card { height: 132px; }
+      .stairs > div:nth-child(3) .step-card { height: 172px; border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: linear-gradient(180deg, var(--blue-bg), var(--card)); }
+      .stairs > div:nth-child(4) .step-card { height: 212px; border-color: var(--accent); background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 22%, var(--card)), var(--card)); }
+      .stairs p { margin: 14px 0 0; color: var(--fg-muted); font-size: 15px; }
+      .brackets { display: grid; grid-template-columns: 1fr 3fr; gap: 18px; margin-top: 18px; font-size: 13.5px; text-align: center; }
+      .brackets span { border-top: 2px solid var(--border); padding-top: 8px; color: var(--fg-muted); }
+      .brackets span + span { border-color: var(--accent); color: var(--fg); font-weight: 550; }
+      .after-levels { margin-top: 18px; }
+
+      /* Start here (install) */
+      .starts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 48px; }
+      .start { border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); overflow: hidden; display: flex; flex-direction: column; }
+      .start .top-viz { height: 190px; background: linear-gradient(180deg, var(--tint), var(--tint-2)); position: relative; overflow: hidden; display: grid; place-items: center; padding: 0 22px; }
+      .start .body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+      .start .body small { color: var(--fg-muted); font-size: 13px; }
+      .start h3 { font-size: 19px; letter-spacing: -0.02em; margin-top: 4px; }
+      .start .body p { color: var(--fg-muted); font-size: 14.5px; margin: 8px 0 16px; }
+      .start .body .link { margin-top: auto; }
+      .appwin { width: 82%; max-width: 270px; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; transform: translateY(26px); }
+      .appwin .bar { display: flex; gap: 5px; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+      .appwin .bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+      .appwin .tabs { display: flex; gap: 4px; padding: 10px 10px 0; }
+      .appwin .tabs span { font-size: 12px; padding: 4px 10px; border-radius: 8px; color: var(--fg-muted); }
+      .appwin .tabs span.on { background: var(--blue-bg); color: var(--accent); font-weight: 600; }
+      .appwin .lines { padding: 12px 10px 40px; display: grid; gap: 7px; }
+      .appwin .lines i { height: 7px; border-radius: 4px; background: var(--bg-soft); border: 1px solid var(--border); }
+      .appwin .lines i:nth-child(2) { width: 70%; }
+      .appwin .lines i:nth-child(3) { width: 85%; }
+      .start .top-viz .shot { width: 88%; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); transform: translateY(30px); }
+      .say { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); position: relative; width: 100%; box-shadow: var(--shadow); }
+      .say::before { content: ""; position: absolute; inset: -1px; border-radius: 15px; padding: 1px; background: var(--halo); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+      .say span { flex: 1; font-size: 14.5px; font-weight: 500; word-break: break-word; text-align: left; }
+      .copy { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px; border-radius: 9px; border: 1px solid var(--border); background: var(--card); color: var(--fg-muted); font-size: 13px; font-weight: 500; cursor: pointer; flex: none; transition: color .15s, border-color .15s; }
       .copy:hover { color: var(--fg); border-color: var(--fg-faint); }
       .copy svg { width: 14px; height: 14px; }
       .copy .ok { display: none; }
       .copy.done { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, transparent); }
       .copy.done .ok { display: block; }
       .copy.done .ic { display: none; }
-      .claude-shot { position: relative; }
-      .claude-shot::before { content: ""; position: absolute; inset: 18% 4% 22%; background: var(--halo); filter: blur(60px); opacity: .28; }
-      .claude-shot img { position: relative; border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow); background: #fff; }
-      .also { margin-top: 26px; color: var(--fg-muted); font-size: 15px; }
-
-      /* Journey: a line with stops */
-      .journey { padding: 24px 0 112px; }
-      .journey ol { list-style: none; margin: 48px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); position: relative; }
-      .journey ol::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--halo); opacity: .55; border-radius: 2px; }
-      .journey li { position: relative; padding: 36px 20px 0 0; }
-      .journey li::before { content: ""; position: absolute; top: 2px; left: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--blue); }
-      .journey li:nth-child(1)::before { border-color: var(--green); }
-      .journey li:nth-child(2)::before { border-color: var(--amber); }
-      .journey li:nth-child(3)::before { border-color: var(--red); }
-      .journey li:nth-child(4)::before { border-color: var(--pink); }
-      .journey strong { font-size: 20px; font-weight: 600; letter-spacing: -0.015em; }
-      .journey p { margin: 6px 0 0; color: var(--fg-muted); font-size: 15px; }
-
-      /* Privacy: dark full-bleed band */
-      .band { background: var(--ink); color: var(--ink-fg); padding: 120px 0; position: relative; overflow: hidden; }
-      .band::after { content: ""; position: absolute; left: -10%; right: -10%; bottom: -160px; height: 260px; background: var(--halo); filter: blur(90px); opacity: .35; }
-      .band h2 { font-size: clamp(36px, 5.6vw, 68px); max-width: 900px; line-height: 1.02; }
-      .band .sub { color: #a8a29e; max-width: 680px; font-size: 19px; }
-      .band ul { list-style: none; padding: 0; margin: 56px 0 0; display: flex; flex-wrap: wrap; gap: 14px 40px; position: relative; z-index: 1; }
-      .band li { display: flex; align-items: center; gap: 10px; font-size: 16px; }
-      .band li svg { width: 20px; height: 20px; color: #7fc79a; flex: none; }
-
-      /* Install: numbered steps + real onboarding screenshot */
-      #installer .split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr); gap: 72px; align-items: start; margin-top: 56px; }
-      .steps { list-style: none; margin: 0; padding: 0; counter-reset: s; }
-      .steps li { position: relative; padding: 0 0 40px 72px; counter-increment: s; }
-      .steps li::before {
-        content: counter(s); position: absolute; left: 0; top: -4px; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center;
-        font-weight: 650; font-size: 18px; background: var(--blue-soft); color: var(--blue);
-      }
-      .steps li:not(:last-child)::after { content: ""; position: absolute; left: 21px; top: 50px; bottom: 6px; width: 2px; background: var(--border); }
-      .steps h3 { font-size: 21px; font-weight: 600; }
-      .steps p { margin: 6px 0 0; color: var(--fg-muted); font-size: 16px; }
-      .steps .btn { margin-top: 14px; height: 40px; font-size: 14px; }
-      .say {
-        margin-top: 14px; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 18px; border-radius: 14px;
-        background: var(--bg-soft); border: 1px solid var(--border); position: relative;
-      }
-      .say::before { content: ""; position: absolute; inset: -1px; border-radius: 15px; padding: 1px; background: var(--halo); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .8; pointer-events: none; }
-      .say span { flex: 1; font-size: 16px; font-weight: 500; word-break: break-word; }
-      details.pro { margin-top: 14px; font-size: 14.5px; color: var(--fg-muted); }
-      details.pro summary { cursor: pointer; width: fit-content; }
-      details.pro .say { background: var(--bg); }
-      details.pro .say span { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; font-weight: 400; }
-      .install-shot { position: sticky; top: 96px; }
-      .install-shot img { border-radius: 18px; border: 1px solid var(--border); box-shadow: var(--shadow); background: #fff; }
-      .install-shot p { font-size: 13px; color: var(--fg-faint); margin: 12px 0 0; text-align: center; }
-
-      /* Versions: two columns with a rule */
-      .versions { display: grid; grid-template-columns: 1fr 1fr; margin-top: 48px; border-top: 1px solid var(--border); }
-      .versions > div { padding: 36px 40px 8px 0; }
-      .versions > div + div { padding: 36px 0 8px 40px; border-left: 1px solid var(--border); }
-      .versions h3 { font-size: 22px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-      .versions p { color: var(--fg-muted); margin: 10px 0 20px; max-width: 460px; }
-      .tag { font-size: 12px; font-weight: 600; padding: 3px 9px; border-radius: 99px; background: var(--bg-muted); color: var(--fg-muted); letter-spacing: 0; }
-      .tag.now { background: color-mix(in srgb, var(--green) 14%, transparent); color: var(--green); }
-      .alt { font-size: 14px; color: var(--fg-muted); margin-top: 14px; }
+      .extra { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+      .extra > div { border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; font-size: 14.5px; color: var(--fg-muted); }
+      .extra b { color: var(--fg); font-weight: 600; }
+      .extra .say { margin-top: 12px; box-shadow: none; }
+      .extra .say::before { display: none; }
+      .extra .say span { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; font-weight: 400; }
 
       /* FAQ */
       .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 40px; }
@@ -265,389 +386,678 @@
       .faq details[open] summary::after { transform: rotate(45deg); }
       .faq p { color: var(--fg-muted); margin: 10px 0 0; font-size: 15.5px; }
 
-      /* Final call */
-      .final { text-align: center; padding: 120px 0; background: var(--bg-soft); border-top: 1px solid var(--border); }
-      .final h2 { max-width: 760px; margin: 0 auto; }
-      footer { padding: 32px 0 40px; color: var(--fg-faint); font-size: 14px; }
-      footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
-      footer a { text-decoration: none; }
-      footer a:hover { color: var(--fg); }
-      footer nav { display: flex; gap: 20px; }
+      /* Final call + footer */
+      .final { border-radius: 28px; background: radial-gradient(900px 400px at 50% -20%, #6a97ff 0%, transparent 60%), linear-gradient(180deg, #1b40c6, #3069f5); color: #fff; text-align: center; padding: 76px 24px 0; overflow: hidden; position: relative; }
+      .final h2 { margin: 0 auto; font-size: clamp(34px, 5vw, 58px); }
+      .final p { color: rgb(255 255 255 / .82); font-size: 18px; margin: 16px auto 0; max-width: 520px; }
+      .final .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+      .final .mascot { position: relative; z-index: 2; width: 112px; height: 112px; margin: 36px auto -56px; border-radius: 30px; background: #fff; display: grid; place-items: center; box-shadow: 0 18px 40px -12px rgb(0 0 0 / .45); }
+      .final .mascot svg { width: 74px; height: 28px; }
+      .final .waves { height: 130px; margin: 0 -24px; width: calc(100% + 48px); }
+      footer.foot { margin: 72px 16px 16px; border-radius: 28px; background: radial-gradient(600px 300px at 85% 10%, #22357f 0%, transparent 65%), var(--navy); color: var(--on-dark); overflow: hidden; position: relative; }
+      .foot-top { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; padding: 64px 0 40px; border-bottom: 1px solid var(--navy-line); }
+      .foot-top h2 { font-size: clamp(32px, 4vw, 46px); }
+      .foot-top .cta { display: flex; gap: 10px; margin-top: 26px; flex-wrap: wrap; }
+      .foot-top .promo b { display: block; font-size: 17px; }
+      .foot-top .promo p { color: var(--on-dark-muted); margin: 8px 0 18px; font-size: 15px; }
+      .foot-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 36px 0 20px; }
+      .foot-cols h4 { font-size: 13px; color: var(--on-dark-muted); font-weight: 500; letter-spacing: 0; }
+      .foot-cols ul { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 9px; font-size: 14px; }
+      .foot-cols a, .foot-cols button { color: var(--on-dark); text-decoration: none; background: none; border: 0; padding: 0; cursor: pointer; font-size: 14px; text-align: left; }
+      .foot-cols a:hover, .foot-cols button:hover { text-decoration: underline; text-underline-offset: 3px; }
+      .foot .waves { height: 90px; margin-top: 10px; }
+      .foot-bottom { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; padding: 0 24px 26px; margin-top: -50px; font-size: 13px; color: rgb(255 255 255 / .75); }
+      .foot-bottom a { display: inline-flex; color: #fff; }
+      .foot-bottom svg { width: 20px; height: 20px; }
 
-      /* Reveal on scroll */
+      /* Reveal */
       .rv { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
       .rv.in { opacity: 1; transform: none; }
 
-      @media (max-width: 980px) {
-        section { padding: 88px 0; }
-        .nav a.opt { display: none; }
-        .strip ul { grid-template-columns: 1fr 1fr; gap: 24px 0; }
-        .strip li:nth-child(3) { border-left: 0; padding-left: 0; }
-        .f-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; margin-top: 36px; }
-        .f-menu { position: sticky; top: 64px; z-index: 5; flex-direction: row; overflow-x: auto; gap: 6px; padding: 10px 24px; margin: 0 -24px; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(10px); scrollbar-width: none; }
-        .f-menu::-webkit-scrollbar { display: none; }
-        .f-group { display: none; }
-        .f-tab { width: auto; flex: none; white-space: nowrap; border: 1px solid var(--border); border-radius: 99px; padding: 7px 14px; }
-        .f-tab.on { border-color: var(--fg); }
-        .f-copy { min-height: 0; }
-        #claude .split, #installer .split { grid-template-columns: minmax(0, 1fr); gap: 48px; }
-        .install-shot { position: static; max-width: 560px; }
-        .journey ol { grid-template-columns: minmax(0, 1fr); gap: 26px; }
-        .journey ol::before { left: 7px; right: auto; top: 6px; bottom: 6px; width: 2px; height: auto; }
-        .journey li { padding: 0 0 0 40px; }
-        .versions, .faq { grid-template-columns: minmax(0, 1fr); }
-        .versions > div + div { border-left: 0; border-top: 1px solid var(--border); padding-left: 0; }
+      @media (max-width: 1020px) {
+        .nav { display: none; }
+        .top-cta { margin-left: auto; }
+        .grid-sites { grid-template-columns: repeat(3, 1fr); }
+        .grid-sites span:nth-child(6n) { border-right: 1px solid var(--border); }
+        .grid-sites span:nth-child(3n) { border-right: 0; }
+        .grid-sites span:nth-last-child(-n + 6) { border-bottom: 1px solid var(--border); }
+        .grid-sites span:nth-last-child(-n + 3) { border-bottom: 0; }
+        .versus { grid-template-columns: minmax(0, 1fr); gap: 48px; }
+        .versus > div, .versus > div + div { padding: 0; border: 0; }
+        .cards3, .cases, .starts { grid-template-columns: minmax(0, 1fr); }
+        .flow { grid-template-columns: minmax(0, 1fr); }
+        .flow svg.curves { display: none; }
+        .flow .out { margin-top: 28px; padding-top: 24px; border-top: 2px solid var(--accent); }
+        .bento { grid-template-columns: minmax(0, 1fr); }
+        .cell.wide { grid-column: auto; }
+        .cell, .bento .cell:nth-child(n) { border-right: 0; border-bottom: 1px solid var(--border); min-height: 0; }
+        .bento .cell:last-child { border-bottom: 0; }
+        .fx { padding: 26px 20px 0; }
+        .fx-main { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+        .fx-groups { margin: 28px -20px 0; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+        .fx-group { font-size: 12px; padding: 14px 2px 16px; flex-direction: column; gap: 4px; }
+        .hub-map span { font-size: 13px; }
+        .stairs { grid-template-columns: repeat(2, 1fr); }
+        .brackets { grid-template-columns: minmax(0, 1fr); }
+        .extra, .faq { grid-template-columns: minmax(0, 1fr); }
+        .foot-top { grid-template-columns: minmax(0, 1fr); }
+        .foot-cols { grid-template-columns: repeat(2, 1fr); }
       }
-      @media (max-width: 560px) {
+      @media (max-width: 600px) {
         .wrap { padding: 0 16px; }
-        .f-menu { padding: 10px 16px; margin: 0 -16px; }
-        .hero { padding-top: 56px; }
-        .hero-shot { padding: 0 16px; margin-top: 44px; }
-        .frame-bar { height: 26px; }
-        .strip ul { grid-template-columns: minmax(0, 1fr); }
-        .strip li { border-left: 0; padding: 0; }
-        .nav .btn { display: none; }
-        .asks li { flex-wrap: wrap; }
-        .steps li { padding-left: 60px; }
-        .band { padding: 88px 0; }
+        section { padding: 80px 0; }
+        .hero { padding-top: 120px; }
+        .waves { height: 150px; }
+        .hero-shot { margin-top: -110px; }
+        .frame-bar { height: 24px; }
+        .top-cta .gha span { display: none; }
+        .grid-sites { grid-template-columns: repeat(2, 1fr); }
+        .grid-sites span:nth-child(n) { border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); font-size: 14px; height: 64px; }
+        .grid-sites span:nth-child(2n) { border-right: 0; }
+        .grid-sites span:nth-last-child(-n + 2) { border-bottom: 0; }
+        .hub { padding: 56px 18px 0; }
+        .hub .waves { margin: 32px -18px 0; width: calc(100% + 36px); }
+        .hub-map { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding-top: 124px; }
+        .hub-map svg.lines { display: none; }
+        .orb { top: 0; margin-top: 0; }
+        .hub-map span, .hub-map span.r { position: static; transform: none; justify-content: center; white-space: normal; flex-direction: row; }
+        .hub-map span::after { display: none; }
+        .stairs { grid-template-columns: minmax(0, 1fr); }
+        .stairs > div .step-card, .stairs > div:nth-child(n) .step-card { height: auto; min-height: 64px; }
+        footer.foot { margin: 56px 8px 8px; }
       }
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .rv { opacity: 1; transform: none; transition: none; }
         .f-layer, .f-spot { transition: none; }
-        .f-spot::before, .f-spot::after { animation: none; }
+        .f-spot::before, .f-spot::after, .marquee div { animation: none; }
       }
     </style>
   </head>
   <body>
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <symbol id="logo" viewBox="0 0 62 24"><path d="M0 12 A12 12 0 0 1 23.314 8 L12 8 L12 12 Z" fill="#418B5C" /><path d="M23.314 16 A12 12 0 0 1 0 12 L12 12 L12 16 Z" fill="#FFAA0D" /><path d="M39 0 A12 12 0 0 0 39 24 L39 16.75 A4.75 4.75 0 0 1 39 7.25 Z" fill="#E14322" /><path d="M39 0 A12 12 0 0 1 39 24 L39 16.75 A4.75 4.75 0 0 0 39 7.25 Z" fill="#F99BC3" /><rect x="54" y="12" width="8" height="12" rx="1" fill="#2F6BF6" /></symbol>
       <symbol id="i-gh" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></symbol>
       <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
       <symbol id="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol>
-      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
-      <symbol id="i-radar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19.07 4.93A10 10 0 1 0 22 12"/><path d="M16.24 7.76A6 6 0 1 0 18 12"/><path d="m12 12 7-7"/></symbol>
-      <symbol id="i-inbox" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
-      <symbol id="i-cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
-      <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
-      <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
-      <symbol id="i-board" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></symbol>
-      <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
-      <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
-      <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
-      <symbol id="i-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></symbol>
-      <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
-      <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 22s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="10" r="2.5"/></symbol>
-      <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
-      <symbol id="i-wallet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14.5" r="1.2" fill="currentColor"/></symbol>
-      <symbol id="i-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h12M9 12h12M9 18h12"/><path d="m3 6 1 1 2-2M3 12l1 1 2-2M3 18l1 1 2-2"/></symbol>
-      <symbol id="i-people" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M21.5 20a6.5 6.5 0 0 0-4-6"/></symbol>
-      <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M8 16v-4M12 16V8M16 16v-7"/></symbol>
-      <symbol id="i-scale" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 21h10M5 7h14"/><path d="m5 7-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/></symbol>
       <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="m8 12.5 2.7 2.7L16.5 9"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+      <symbol id="i-brief" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+      <symbol id="i-cap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v5"/></symbol>
+      <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+      <symbol id="i-cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
+      <symbol id="i-plug" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/></symbol>
+      <symbol id="i-key" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 9-9M17 6l3 3"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3v18h18"/><path d="M8 16v-4M12 16V8M16 16v-7"/></symbol>
+      <symbol id="i-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+      <symbol id="i-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></symbol>
+      <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+      <symbol id="i-table" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></symbol>
+      <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></symbol>
+      <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 22s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="10" r="2.5"/></symbol>
     </svg>
 
     <header class="top" id="top">
       <div class="wrap">
-        <a class="brand" href="#" aria-label="Career OS, haut de page">
-          <svg viewBox="0 0 62 24" aria-hidden="true"><path d="M0 12 A12 12 0 0 1 23.314 8 L12 8 L12 12 Z" fill="#418B5C" /><path d="M23.314 16 A12 12 0 0 1 0 12 L12 12 L12 16 Z" fill="#FFAA0D" /><path d="M39 0 A12 12 0 0 0 39 24 L39 16.75 A4.75 4.75 0 0 1 39 7.25 Z" fill="#E14322" /><path d="M39 0 A12 12 0 0 1 39 24 L39 16.75 A4.75 4.75 0 0 0 39 7.25 Z" fill="#F99BC3" /><rect x="54" y="12" width="8" height="12" rx="1" fill="#2F6BF6" /></svg>
-          Career OS
-        </a>
+        <a class="brand" href="#" aria-label="Career OS, haut de page"><svg><use href="#logo" /></svg>Career OS</a>
         <nav class="nav" aria-label="Sections">
-          <a class="opt" href="#fonctionnalites">Fonctionnalités</a>
-          <a class="opt" href="#claude">Avec Claude</a>
-          <a class="opt" href="#faq">Questions</a>
-          <a href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>GitHub</a>
-          <a class="btn btn-primary" href="#installer">Installer</a>
+          <a href="#fonctionnalites">Fonctionnalités</a>
+          <a href="#exemples">Exemples</a>
+          <a href="#claude">Avec Claude</a>
+          <a href="#installer">Installer</a>
+          <a href="#faq">Questions</a>
         </nav>
+        <div class="top-cta">
+          <a class="gha" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg><span>GitHub</span></a>
+          <a class="pill pill-white" href="#installer">Installer</a>
+        </div>
       </div>
     </header>
 
     <main>
+      <!-- Hero -->
       <div class="hero">
         <div class="wrap">
-          <span class="pill"><i></i> Gratuit · tes données restent sur ton ordinateur</span>
-          <h1>Toute ta recherche,<br /><span class="grad">au même endroit</span>.</h1>
-          <p class="lead">Offres, candidatures, relances, CV, entretiens, et même ton installation dans une nouvelle ville. Tu demandes, Claude prépare. Toi, tu décides.</p>
+          <h1>Toute ta recherche,<br />au même endroit.</h1>
+          <p>Offres, candidatures, relances, CV, entretiens, et même ton installation dans une nouvelle ville. Tu demandes, Claude prépare. Toi, tu décides.</p>
           <div class="cta">
-            <a class="btn btn-primary" href="#installer">Installer Career OS</a>
-            <a class="btn" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>
+            <a class="pill pill-white" href="#installer">Installer Career OS</a>
+            <a class="pill pill-ghost" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>
           </div>
-          <p class="fine">Windows, Mac et Linux · fonctionne avec ton abonnement Claude</p>
+          <p class="fine">Gratuit · Windows, Mac et Linux · tes données restent sur ton ordinateur</p>
         </div>
-        <div class="hero-shot">
-          <div class="frame">
-            <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><b>Career OS</b></div>
-            <img src="/screens/home.webp" width="1440" height="900" fetchpriority="high" alt="L'accueil de Career OS : « Bonjour Camille, on cherche quoi ? », une grande barre de discussion entourée d'un halo coloré, des raccourcis et les recherches enregistrées." />
-          </div>
+        <svg class="waves" viewBox="0 0 1440 230" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 120 C 240 60 480 70 720 110 S 1200 170 1440 96 V230 H0Z" fill="rgb(255 255 255 / .12)" />
+          <path d="M0 160 C 320 110 600 140 860 128 S 1260 96 1440 140 V230 H0Z" fill="rgb(255 255 255 / .2)" />
+          <path d="M0 196 C 360 172 720 212 1080 190 S 1380 180 1440 186 V230 H0Z" fill="var(--bg)" />
+        </svg>
+      </div>
+      <div class="wrap hero-shot">
+        <div class="frame">
+          <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><b>Career OS</b></div>
+          <img src="/screens/home.webp" width="1440" height="900" fetchpriority="high" alt="L'accueil de Career OS : « Bonjour Camille, on cherche quoi ? », une grande barre de discussion entourée d'un halo coloré, des raccourcis et les recherches enregistrées." />
         </div>
       </div>
 
-      <div class="strip">
-        <div class="wrap">
-          <ul class="rv">
-            <li><strong>Rien ne part sans toi</strong><span>Claude prépare les messages, c'est toi qui les envoies.</span></li>
-            <li><strong>Jamais d'information inventée</strong><span>Chaque détail vient de l'annonce, avec la phrase exacte.</span></li>
-            <li><strong>Tes fichiers chez toi</strong><span>Rangés dans ton dossier Documents, sauvegardés chaque jour.</span></li>
-            <li><strong>Gratuit</strong><span>L'assistant utilise ton abonnement Claude, rien de plus.</span></li>
-          </ul>
+      <!-- Sites -->
+      <div class="sites">
+        <div class="wrap rv">
+          <div class="sites-head">
+            <h3>Tes recherches passent par les sites que tu connais déjà</h3>
+            <button class="link" data-goto="veille">Voir les recherches</button>
+          </div>
+          <div class="grid-sites">
+            <span>LinkedIn</span><span>Indeed</span><span>Welcome to the Jungle</span><span>HelloWork</span><span>France Travail</span><span>jobs.ch</span>
+            <span>Leboncoin</span><span>PAP</span><span>La Carte des Colocs</span><span>HousingAnywhere</span><span>Spotahome</span><span>Idealista</span>
+          </div>
+          <p class="note">Career OS prépare ta recherche et t'ouvre la bonne page. Il n'est affilié à aucun de ces sites.</p>
         </div>
       </div>
 
-      <section id="fonctionnalites">
+      <!-- Contrast -->
+      <section>
         <div class="wrap">
-          <div class="f-head rv">
+          <h2 class="rv">Des favoris, des tableurs, des notes.<br /><em>Career OS suit tout jusqu'au bout.</em></h2>
+          <div class="versus rv">
             <div>
-              <div class="eyebrow">Fonctionnalités</div>
-              <h2>Tout ce qu'il faut,<br />de la première recherche à l'emménagement.</h2>
+              <div class="vs-title"><span class="mark"><svg class="i" style="width:15px;height:15px"><use href="#i-file" /></svg></span>Ta recherche, aujourd'hui</div>
+              <ul class="scatter">
+                <li>Des offres en favoris</li>
+                <li>Un tableur à jour… il y a deux semaines</li>
+                <li>Des CV « final », « final-v2 », « final-OK »</li>
+                <li>Des relances notées sur ton téléphone</li>
+                <li>Des annonces de logement dans tes e-mails</li>
+                <li>Des démarches dans un coin de ta tête</li>
+              </ul>
+              <div class="big">6 endroits</div>
+              <small>à garder en tête en même temps</small>
             </div>
-            <p class="sub">Choisis une fonctionnalité pour la voir dans l'application, avec des données d'exemple.</p>
+            <div>
+              <div class="vs-title"><span class="mark"><svg style="width:22px;height:9px"><use href="#logo" /></svg></span>Avec Career OS</div>
+              <ul class="wins">
+                <li><div><h4>Tout au même endroit</h4><p>Offres, CV, entretiens, logement et démarches.</p></div><span class="chips"><i style="background:#418b5c">✓</i><i style="background:#ffaa0d">✓</i><i style="background:#2f6bf6">✓</i></span></li>
+                <li><div><h4>Claude qui prépare</h4><p>Recherches, relances, analyses et entretiens.</p></div><span class="chips"><i style="background:#e14322">✎</i><i style="background:#f99bc3">✎</i></span></li>
+                <li><div><h4>Toi qui décides</h4><p>Rien ne part sans ta validation.</p></div><span class="chips"><i style="background:#1c1917">✓</i></span></li>
+              </ul>
+              <div class="big">1 endroit</div>
+              <small>sur ton ordinateur, sauvegardé chaque jour</small>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div class="f-grid">
-            <div class="f-menu" role="tablist" aria-label="Fonctionnalités" aria-orientation="vertical">
-              <div class="f-group" aria-hidden="true">Rechercher</div>
-              <button class="f-tab on" role="tab" aria-selected="true" aria-controls="f-panel" data-f="phrase" data-img="/screens/home-form.webp" data-focus="487,339,708,671" data-alt="Le formulaire de recherche d'offres ouvert dans la discussion, sur l'accueil."><svg><use href="#i-search" /></svg>Une phrase suffit<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="veille" data-img="/screens/searches.webp" data-focus="280,496,1121,200;280,344,1121,140" data-alt="La page Recherches : deux recherches d'offres et une recherche de logement, avec leur fréquence et les sites consultés."><svg><use href="#i-radar" /></svg>Recherches automatiques<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="import" data-img="/screens/inbox-item.webp" data-focus="280,334,677,128;981,192,420,641" data-alt="Une annonce collée, analysée : les points à vérifier à gauche, le texte d'origine à droite."><svg><use href="#i-inbox" /></svg>Import rapide<i class="bar"></i></button>
-
-              <div class="f-group" aria-hidden="true">Préparer</div>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="cv" data-img="/screens/cv-editor.webp" data-focus="475,154,714,1010;497,798,672,86" data-alt="L'éditeur de CV : la page A4 au centre, les blocs à ajouter à gauche, la barre Claude en bas."><svg><use href="#i-cv" /></svg>CV façon Canva<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="documents" data-img="/screens/documents.webp" data-focus="281,436,1119,61" data-alt="La page Documents : CV, lettres et relevés, avec leur version et le nombre de candidatures où ils ont servi."><svg><use href="#i-folder" /></svg>Documents<i class="bar"></i></button>
-
-              <div class="f-group" aria-hidden="true">Candidater</div>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="journee" data-img="/screens/today.webp" data-focus="280,402,741,208;281,687,739,62" data-alt="La page Aujourd'hui : relances en retard, entretiens, dates limites et actions logement."><svg><use href="#i-sun" /></svg>Ta journée<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="tableau" data-img="/screens/board.webp" data-focus="1189,289,270,166" data-alt="Le tableau des candidatures par étape, avec une relance en retard signalée en rouge."><svg><use href="#i-board" /></svg>Tableau des candidatures<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="relances" data-img="/screens/application.webp" data-focus="563,236,271,162" data-alt="La fiche d'une candidature : date de candidature, prochaine relance, date limite et rémunération."><svg><use href="#i-bell" /></svg>Relances au bon moment<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="entretiens" data-img="/screens/interviews.webp" data-focus="280,536,777,98" data-alt="L'onglet Entretiens d'une candidature : un entretien technique planifié et un entretien RH réussi."><svg><use href="#i-chat" /></svg>Entretiens<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="analyse" data-img="/screens/analysis.webp" data-focus="280,231,777,141;280,474,777,100" data-alt="L'analyse d'une offre : correspondances, écarts potentiels et questions à poser."><svg><use href="#i-spark" /></svg>Analyse d'offre<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="offre" data-img="/screens/offer.webp" data-focus="297,545,743,714" data-alt="Les conditions d'une offre reçue : contrat, salaire brut et net, date de début, heures par semaine."><svg><use href="#i-scale" /></svg>Offre et contrat<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="calendrier" data-img="/screens/calendar.webp" data-focus="281,694,1119,113" data-alt="Le calendrier du mois : entretiens, relances, dates limites et visites de logement."><svg><use href="#i-cal" /></svg>Calendrier<i class="bar"></i></button>
-
-              <div class="f-group" aria-hidden="true">S'installer</div>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="carte" data-img="/screens/move-map.webp" data-focus="280,462,1121,520" data-alt="Les annonces de logement sur une carte de Paris, autour du futur lieu de travail."><svg><use href="#i-map" /></svg>Logements sur la carte<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="comparatif" data-img="/screens/move-housing.webp" data-focus="281,365,1119,369;531,706,108,16" data-alt="Le comparatif des logements : coût total par mois, épargne restante, trajet, bail et statut."><svg><use href="#i-home" /></svg>Comparatif des logements<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="budget" data-img="/screens/move-budget.webp" data-focus="1021,316,380,530" data-alt="Le budget d'une installation : revenus, dépenses, épargne chaque mois et argent à prévoir avant d'emménager."><svg><use href="#i-wallet" /></svg>Budget<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="demarches" data-img="/screens/move-procedures.webp" data-focus="281,405,1119,278" data-alt="Les démarches pour s'installer en Suisse : douane, permis, assurance maladie, avec leurs échéances."><svg><use href="#i-list" /></svg>Démarches<i class="bar"></i></button>
-
-              <div class="f-group" aria-hidden="true">Bilan</div>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="reseau" data-img="/screens/contacts.webp" data-focus="280,264,1121,256" data-alt="La liste des contacts : recruteurs, managers et professeurs, avec leur organisation."><svg><use href="#i-people" /></svg>Contacts et entreprises<i class="bar"></i></button>
-              <button class="f-tab" role="tab" aria-selected="false" aria-controls="f-panel" tabindex="-1" data-f="stats" data-img="/screens/analytics.webp" data-focus="1038,456,363,396" data-alt="Les statistiques : candidatures envoyées, taux de réponse, entonnoir jusqu'aux offres."><svg><use href="#i-chart" /></svg>Statistiques<i class="bar"></i></button>
+      <!-- Problem -->
+      <section class="dark">
+        <div class="wrap">
+          <h2 class="rv">Chercher un emploi, c'est un deuxième emploi.<br /><em>Et tout finit éparpillé.</em></h2>
+          <div class="cards3">
+            <div class="dcard rv">
+              <h3>Des offres partout</h3>
+              <p>Chaque site a ses alertes, ses favoris et ses doublons. Difficile de savoir ce que tu as déjà vu.</p>
+              <div class="dviz">
+                <div class="marquee" aria-hidden="true">
+                  <div><span>Product manager · Paris</span><span>Stage data · Lyon</span><span>VIE · Singapour</span><span>Alternance RH</span><span>Master IA · Lausanne</span><span>Product manager · Paris</span><span>Stage data · Lyon</span><span>VIE · Singapour</span><span>Alternance RH</span><span>Master IA · Lausanne</span></div>
+                  <div><span>Coloc · Ixelles</span><span>Studio meublé · Paris 10e</span><span>CDI · Bordeaux</span><span>Doctorat · Grenoble</span><span>Coloc · Ixelles</span><span>Studio meublé · Paris 10e</span><span>CDI · Bordeaux</span><span>Doctorat · Grenoble</span></div>
+                  <div><span>Stage UX · Nantes</span><span>Chef de projet · Lille</span><span>T2 · République</span><span>Data analyst · Genève</span><span>Stage UX · Nantes</span><span>Chef de projet · Lille</span><span>T2 · République</span><span>Data analyst · Genève</span></div>
+                  <div><span>Master finance · Paris</span><span>VIE · Montréal</span><span>Freelance produit</span><span>Studio · Bruxelles</span><span>Master finance · Paris</span><span>VIE · Montréal</span><span>Freelance produit</span><span>Studio · Bruxelles</span></div>
+                </div>
+              </div>
             </div>
+            <div class="dcard rv">
+              <h3>Des relances oubliées</h3>
+              <p>Postulé il y a trois semaines ? Relancé ? Quand ? Sans rappel, les bonnes candidatures s'éteignent.</p>
+              <div class="dviz"><div class="qbox"><b>?</b><small>Dernière relance</small></div></div>
+            </div>
+            <div class="dcard rv">
+              <h3>Des fichiers en vrac</h3>
+              <p>Quel CV as-tu envoyé, et à qui ? La bonne version finit toujours au fond de Téléchargements.</p>
+              <div class="dviz">
+                <div class="files" aria-hidden="true">
+                  <header><span>Téléchargements</span><span>Modifié</span></header>
+                  <div><span>CV-final.pdf</span><span>12 sept.</span></div>
+                  <div><span>CV-final-v2.pdf</span><span>3 oct.</span></div>
+                  <div><span>CV-final-OK.pdf</span><span>3 oct.</span></div>
+                  <div><span>Lettre (1).docx</span><span>hier</span></div>
+                  <div><span>Lettre (2).docx</span><span>hier</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div class="f-viewer" id="f-panel" role="tabpanel" aria-live="polite">
-              <div class="f-copy" data-for="phrase"><h3>Une phrase suffit</h3><p>Dis ce que tu cherches dans la barre de discussion. Career OS ouvre le bon formulaire, déjà rempli : postes, villes, télétravail, entreprises à suivre. Tu ajustes, tu lances.</p></div>
-              <div class="f-copy" data-for="veille" hidden><h3>Recherches automatiques</h3><p>Tes recherches tournent chaque jour ou chaque semaine. Les nouvelles offres arrivent dans « À trier », les logements directement dans ton projet d'installation. Pour les sites qu'on ne peut pas consulter, un lien direct t'attend.</p></div>
-              <div class="f-copy" data-for="import" hidden><h3>Import rapide</h3><p>Colle une annonce, un lien ou l'e-mail d'un recruteur. Claude remplit la fiche, montre d'où vient chaque information et signale ce qu'il reste à vérifier avant d'enregistrer.</p></div>
-              <div class="f-copy" data-for="cv" hidden><h3>CV façon Canva</h3><p>Déplace, aligne et écris directement sur la page, avec des guides d'alignement. Ou demande à Claude : « raccourcis le profil », « traduis en anglais », « tiens sur une page ». Chaque export garde sa version.</p></div>
-              <div class="f-copy" data-for="documents" hidden><h3>Documents</h3><p>CV, lettres et diplômes rangés dans ton dossier, avec toutes leurs versions. Tu sais toujours quelle version exacte tu as envoyée, et à qui.</p></div>
-              <div class="f-copy" data-for="journee" hidden><h3>Ta journée</h3><p>Chaque matin, l'essentiel : relances en retard, entretiens à venir, dates limites, documents manquants et prochaines étapes de ton installation.</p></div>
-              <div class="f-copy" data-for="tableau" hidden><h3>Tableau des candidatures</h3><p>Emplois, stages, alternances, VIE, masters : chaque candidature à son étape. Un glisser-déposer pour avancer, et les relances en retard sautent aux yeux.</p></div>
-              <div class="f-copy" data-for="relances" hidden><h3>Relances au bon moment</h3><p>Quand tu postules, la relance se planifie toute seule ; après un entretien, elle se décale. Claude rédige le message, tu l'envoies quand tu veux.</p></div>
-              <div class="f-copy" data-for="entretiens" hidden><h3>Entretiens</h3><p>Date, lien de visio, interlocuteurs, questions préparées avec Claude à partir de l'annonce et de ton parcours, puis tes notes après l'échange.</p></div>
-              <div class="f-copy" data-for="analyse" hidden><h3>Analyse d'offre</h3><p>Ce qui correspond à ton profil, ce qui manque, les questions à poser en entretien. Une analyse qui décrit sans juger : la décision reste la tienne.</p></div>
-              <div class="f-copy" data-for="offre" hidden><h3>Offre et contrat</h3><p>Salaire, date de début, télétravail, période d'essai : les conditions au même endroit. Claude relit ton contrat et cite la phrase exacte de chaque clause qu'il commente.</p></div>
-              <div class="f-copy" data-for="calendrier" hidden><h3>Calendrier</h3><p>Entretiens, dates limites, relances, visites de logement : un seul calendrier, que tu peux ajouter à ton agenda habituel.</p></div>
-              <div class="f-copy" data-for="carte" hidden><h3>Logements sur la carte</h3><p>Les annonces autour de ton futur lieu de travail, avec le temps de trajet. Ajoute tes lieux importants, une salle de sport ou une école, pour voir la distance depuis chaque logement.</p></div>
-              <div class="f-copy" data-for="comparatif" hidden><h3>Comparatif des logements</h3><p>Loyer, charges, trajet et épargne restante pour chaque annonce. Celles hors budget ou disponibles trop tard sont signalées. Claude prépare le premier message au propriétaire.</p></div>
-              <div class="f-copy" data-for="budget" hidden><h3>Budget</h3><p>Ton salaire, tes dépenses, le logement choisi : ce qu'il te reste chaque mois, et l'argent à prévoir avant d'emménager.</p></div>
-              <div class="f-copy" data-for="demarches" hidden><h3>Démarches</h3><p>La liste des démarches pour partir en Belgique, en Suisse, au Luxembourg, aux Pays-Bas, en Allemagne, au Royaume-Uni, au Canada ou aux États-Unis, avec les liens officiels et les dates à respecter.</p></div>
-              <div class="f-copy" data-for="reseau" hidden><h3>Contacts et entreprises</h3><p>Recruteurs, managers, professeurs : qui tu as contacté, quand, et pour quelle candidature. Les entreprises et écoles que tu suis, au même endroit.</p></div>
-              <div class="f-copy" data-for="stats" hidden><h3>Statistiques</h3><p>Taux de réponse, délais, entretiens, offres : des chiffres simples pour voir où tu en es, sans conclusions à ta place.</p></div>
+      <!-- Product -->
+      <section>
+        <div class="wrap">
+          <h2 class="rv">Career OS rassemble tes offres, tes documents et Claude <em>pour que tu avances chaque jour.</em></h2>
+          <div class="panel rv">
+            <div class="frame">
+              <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><b>Career OS</b></div>
+              <img src="/screens/today.webp" width="1440" height="900" loading="lazy" alt="La page Aujourd'hui : relances en retard, entretiens à venir, dates limites et prochaines étapes de l'installation." />
+            </div>
+          </div>
+        </div>
+      </section>
 
-              <div class="frame">
-                <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><b>Career OS</b></div>
-                <div class="f-shot">
-                  <div class="f-layer">
-                    <img src="/screens/home-form.webp" width="1440" height="900" loading="lazy" alt="Le formulaire de recherche d'offres ouvert dans la discussion, sur l'accueil." />
-                    <div class="f-spot"></div>
+      <!-- Start with -->
+      <section style="padding-top: 0">
+        <div class="wrap">
+          <div class="rv">
+            <h2>Commence par une recherche.</h2>
+            <p class="lead">Dis ce que tu cherches. Career OS trouve, trie et range, puis te suit jusqu'à la réponse.</p>
+          </div>
+          <div class="flow rv">
+            <ul>
+              <li><div><h4>Offres d'emploi</h4><p>CDI, stages, alternances, VIE, freelance.</p></div><span class="ico"><svg class="i"><use href="#i-brief" /></svg></span></li>
+              <li><div><h4>Formations</h4><p>Masters, écoles, doctorats, avec leurs dates limites.</p></div><span class="ico"><svg class="i"><use href="#i-cap" /></svg></span></li>
+              <li><div><h4>Logements</h4><p>Colocations, studios et appartements près de ton futur travail.</p></div><span class="ico"><svg class="i"><use href="#i-home" /></svg></span></li>
+            </ul>
+            <svg class="curves" viewBox="0 0 180 312" preserveAspectRatio="none" aria-hidden="true">
+              <defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#2f6bf6" stop-opacity=".25" /><stop offset="1" stop-color="#2f6bf6" /></linearGradient></defs>
+              <path d="M0 52 C 90 52 90 156 176 156" fill="none" stroke="url(#cg)" stroke-width="2" />
+              <path d="M0 156 L 176 156" fill="none" stroke="url(#cg)" stroke-width="2" />
+              <path d="M0 260 C 90 260 90 156 176 156" fill="none" stroke="url(#cg)" stroke-width="2" />
+              <circle cx="176" cy="156" r="5" fill="#2f6bf6" />
+            </svg>
+            <div class="out">
+              <h3>Des candidatures suivies jusqu'à la réponse</h3>
+              <p>Rangées dans ton tableau, avec les bons documents et les relances planifiées.</p>
+            </div>
+          </div>
+          <div class="then rv">
+            <small>Puis, à mesure que ça avance</small>
+            <ol id="then">
+              <li class="on">Candidature</li><li>Relance</li><li>Entretien</li><li>Offre</li><li>Contrat</li><li>Installation</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bento -->
+      <section style="padding-top: 0">
+        <div class="wrap">
+          <h2 class="rv">Tout ce qu'il faut pour ta recherche, <em>dans une seule application.</em></h2>
+          <div class="bento rv">
+            <div class="cell wide">
+              <div class="k"><svg><use href="#i-cv" /></svg>CV</div>
+              <h3>Ton CV façon Canva, ou par Claude</h3>
+              <p>Déplace et aligne directement sur la page. Ou demande, en une phrase.</p>
+              <div class="viz">
+                <div class="prompt"><span>Raccourcis le profil à trois lignes et garde une seule page</span><i>↑</i></div>
+                <div class="cvimg"><img src="/screens/cv-crop.webp" width="1400" height="728" loading="lazy" alt="Un CV dans l'éditeur de Career OS." /></div>
+              </div>
+            </div>
+            <div class="cell">
+              <div class="k"><svg><use href="#i-shield" /></svg>Fiabilité</div>
+              <h3>Rien d'inventé</h3>
+              <p>Claude ne remplit un champ que s'il le trouve dans l'annonce, et montre la phrase.</p>
+              <div class="viz rows">
+                <div><span>Salaire : 55 000 – 68 000 €</span><span class="tag t-ok">Cité</span></div>
+                <div><span>Télétravail : 2 jours</span><span class="tag t-ok">Cité</span></div>
+                <div><span>Date limite : année absente</span><span class="tag t-warn">À vérifier</span></div>
+              </div>
+            </div>
+            <div class="cell">
+              <div class="k"><svg><use href="#i-plug" /></svg>Tes outils</div>
+              <h3>Branché sur ton quotidien</h3>
+              <p>Ton agenda, tes fichiers, tes tableaux : Career OS s'y raccorde.</p>
+              <div class="viz tools">
+                <span><svg><use href="#i-cal" /></svg>Agenda</span>
+                <span><svg><use href="#i-folder" /></svg>Documents</span>
+                <span><svg><use href="#i-table" /></svg>Excel</span>
+                <span><svg><use href="#i-file" /></svg>PDF</span>
+                <span><svg><use href="#i-map" /></svg>Carte</span>
+                <span><svg><use href="#i-spark" /></svg>Claude</span>
+              </div>
+            </div>
+            <div class="cell">
+              <div class="k"><svg><use href="#i-key" /></svg>Contrôle</div>
+              <h3>Tu gardes la main</h3>
+              <p>Claude sait ce qu'il peut faire seul, et ce qu'il doit te demander.</p>
+              <div class="viz rows plain">
+                <div><span>Lire tes candidatures</span><span class="tag t-ok">Oui</span></div>
+                <div><span>Préparer un brouillon</span><span class="tag t-ok">Oui</span></div>
+                <div><span>Clôturer une candidature</span><span class="tag t-ask">Te demande</span></div>
+                <div><span>Envoyer un e-mail</span><span class="tag t-no">Jamais</span></div>
+              </div>
+            </div>
+            <div class="cell">
+              <div class="k"><svg><use href="#i-chart" /></svg>Bilan</div>
+              <h3>Tes chiffres, sans jugement</h3>
+              <p>Réponses, délais, entretiens : pour voir où tu en es.</p>
+              <div class="viz">
+                <div class="stat">60 %<small>de réponses (exemple)</small></div>
+                <svg class="spark" viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 58 L40 54 L80 56 L120 44 L160 46 L200 30 L240 34 L300 12 V70 H0Z" fill="var(--accent)" opacity=".1" /><path d="M0 58 L40 54 L80 56 L120 44 L160 46 L200 30 L240 34 L300 12" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" /></svg>
+                <div class="stat-foot"><span>Délai moyen 7 j</span><span>Entretiens 40 %</span></div>
+              </div>
+            </div>
+            <div class="cell wide">
+              <div class="k"><svg><use href="#i-chat" /></svg>Claude</div>
+              <h3>Claude sur chaque page</h3>
+              <p>Demande, il prépare. Tu relis, tu copies, tu envoies quand tu veux.</p>
+              <div class="viz">
+                <div class="chat">
+                  <div class="me">Rédige la relance pour Roche</div>
+                  <div class="bot">
+                    <span class="av"><svg><use href="#logo" /></svg></span>
+                    <div>
+                      <b>Brouillon prêt.</b> J'ai repris la date de ta candidature et le nom de ton contact.
+                      <blockquote>Bonjour Monsieur Weber, je me permets de revenir vers vous au sujet de ma candidature…</blockquote>
+                      <div class="acts"><span>Copier</span><span>Modifier</span></div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <p class="f-note">Captures de l'application avec des données d'exemple.</p>
+            </div>
+            <div class="cell">
+              <div class="k"><svg><use href="#i-history" /></svg>Sauvegardes</div>
+              <h3>Rien ne se perd</h3>
+              <p>Une sauvegarde chaque jour, une corbeille, un export complet.</p>
+              <div class="viz rows plain">
+                <div><span><b>Sauvegarde</b> · aujourd'hui</span><span class="tag t-ok">À jour</span></div>
+                <div><span><b>Sauvegarde</b> · hier</span><span class="t-auto">automatique</span></div>
+                <div><span><b>Sauvegarde</b> · dimanche</span><span class="t-auto">automatique</span></div>
+              </div>
+              <div class="chips-row"><span>Export</span><span>Corbeille</span><span>Restauration</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="claude" style="background: var(--bg-soft); border-top: 1px solid var(--border)">
-        <div class="wrap split">
-          <div class="rv">
-            <div class="eyebrow">Avec Claude</div>
-            <h2>Parle-lui comme à un assistant.</h2>
-            <p class="sub">La barre de discussion est sur chaque page. Claude lit tes candidatures, prépare ce qu'il faut et te demande avant de changer quoi que ce soit d'important.</p>
-            <ul class="asks">
-              <li><q>Ajoute cette offre :</q><button class="copy" data-copy="Ajoute cette offre : "><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></li>
-              <li><q>Qu'est-ce que je dois faire aujourd'hui ?</q><button class="copy" data-copy="Qu'est-ce que je dois faire aujourd'hui ?"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></li>
-              <li><q>Prépare mon entretien de jeudi</q><button class="copy" data-copy="Prépare mon entretien de jeudi"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></li>
-              <li><q>Rédige mes relances en retard</q><button class="copy" data-copy="Rédige mes relances en retard"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></li>
-              <li><q>Compare mes trois meilleurs logements</q><button class="copy" data-copy="Compare mes trois meilleurs logements"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></li>
-            </ul>
-            <p class="also">Tu peux aussi lui transférer un e-mail de recruteur : il met la candidature à jour, ajoute l'entretien au calendrier et prépare ta réponse.</p>
+      <!-- Features -->
+      <section id="fonctionnalites" style="padding-top: 0">
+        <div class="wrap">
+          <h2 class="rv">Chaque fonctionnalité, <em>en vrai.</em></h2>
+          <div class="fx rv" id="fx">
+            <div class="fx-main">
+              <div class="fx-text" aria-live="polite">
+                <div class="fx-copy" data-for="phrase"><span class="g">Rechercher</span><h3>Une phrase suffit</h3><p>Dis ce que tu cherches dans la barre de discussion. Career OS ouvre le bon formulaire, déjà rempli : postes, villes, télétravail, entreprises à suivre.</p></div>
+                <div class="fx-copy" data-for="veille" hidden><span class="g">Rechercher</span><h3>Recherches automatiques</h3><p>Tes recherches tournent chaque jour ou chaque semaine. Les offres arrivent dans « À trier », les logements dans ton projet d'installation.</p></div>
+                <div class="fx-copy" data-for="import" hidden><span class="g">Rechercher</span><h3>Import rapide</h3><p>Colle une annonce, un lien ou l'e-mail d'un recruteur. Claude remplit la fiche, montre d'où vient chaque information et signale ce qu'il reste à vérifier.</p></div>
+                <div class="fx-copy" data-for="cv" hidden><span class="g">Préparer</span><h3>CV façon Canva</h3><p>Déplace, aligne et écris directement sur la page. Ou demande à Claude : « raccourcis le profil », « traduis en anglais », « tiens sur une page ».</p></div>
+                <div class="fx-copy" data-for="documents" hidden><span class="g">Préparer</span><h3>Documents</h3><p>CV, lettres et diplômes rangés dans ton dossier, avec leurs versions. Tu sais quelle version exacte tu as envoyée, et à qui.</p></div>
+                <div class="fx-copy" data-for="journee" hidden><span class="g">Candidater</span><h3>Ta journée</h3><p>Chaque matin, l'essentiel : relances en retard, entretiens, dates limites, documents manquants et étapes de ton installation.</p></div>
+                <div class="fx-copy" data-for="tableau" hidden><span class="g">Candidater</span><h3>Tableau des candidatures</h3><p>Chaque candidature à son étape. Un glisser-déposer pour avancer, et les relances en retard sautent aux yeux.</p></div>
+                <div class="fx-copy" data-for="relances" hidden><span class="g">Candidater</span><h3>Relances au bon moment</h3><p>Quand tu postules, la relance se planifie ; après un entretien, elle se décale. Claude rédige le message, tu l'envoies quand tu veux.</p></div>
+                <div class="fx-copy" data-for="entretiens" hidden><span class="g">Candidater</span><h3>Entretiens</h3><p>Date, lien de visio, interlocuteurs, questions préparées avec Claude, puis tes notes après l'échange.</p></div>
+                <div class="fx-copy" data-for="analyse" hidden><span class="g">Candidater</span><h3>Analyse d'offre</h3><p>Ce qui correspond à ton profil, ce qui manque, les questions à poser. Une analyse qui décrit sans juger : la décision reste la tienne.</p></div>
+                <div class="fx-copy" data-for="offre" hidden><span class="g">Candidater</span><h3>Offre et contrat</h3><p>Salaire, date de début, télétravail, période d'essai au même endroit. Claude relit ton contrat et cite chaque clause qu'il commente.</p></div>
+                <div class="fx-copy" data-for="calendrier" hidden><span class="g">Candidater</span><h3>Calendrier</h3><p>Entretiens, dates limites, relances, visites : un seul calendrier, à ajouter à ton agenda habituel.</p></div>
+                <div class="fx-copy" data-for="carte" hidden><span class="g">S'installer</span><h3>Logements sur la carte</h3><p>Les annonces autour de ton futur lieu de travail, avec le temps de trajet, et tes lieux importants.</p></div>
+                <div class="fx-copy" data-for="comparatif" hidden><span class="g">S'installer</span><h3>Comparatif des logements</h3><p>Loyer, charges, trajet et épargne restante pour chaque annonce. Celles hors budget ou disponibles trop tard sont signalées.</p></div>
+                <div class="fx-copy" data-for="budget" hidden><span class="g">S'installer</span><h3>Budget</h3><p>Ton salaire, tes dépenses, le logement choisi : ce qu'il te reste chaque mois, et ce qu'il faut prévoir avant d'emménager.</p></div>
+                <div class="fx-copy" data-for="demarches" hidden><span class="g">S'installer</span><h3>Démarches</h3><p>Pour partir en Belgique, en Suisse, au Luxembourg, aux Pays-Bas, en Allemagne, au Royaume-Uni, au Canada ou aux États-Unis, avec les liens officiels.</p></div>
+                <div class="fx-copy" data-for="reseau" hidden><span class="g">Bilan</span><h3>Contacts et entreprises</h3><p>Recruteurs, managers, professeurs : qui tu as contacté, quand, et pour quelle candidature.</p></div>
+                <div class="fx-copy" data-for="stats" hidden><span class="g">Bilan</span><h3>Statistiques</h3><p>Taux de réponse, délais, entretiens, offres : des chiffres simples, sans conclusions à ta place.</p></div>
+
+                <div class="fx-pills" data-group="rechercher">
+                  <button class="fx-pill on" data-f="phrase" data-img="/screens/home-form.webp" data-focus="487,339,708,671" data-alt="Le formulaire de recherche d'offres ouvert dans la discussion.">Une phrase suffit</button>
+                  <button class="fx-pill" data-f="veille" data-img="/screens/searches.webp" data-focus="280,496,1121,200;280,344,1121,140" data-alt="Les recherches enregistrées, avec leur fréquence et les sites consultés.">Recherches automatiques</button>
+                  <button class="fx-pill" data-f="import" data-img="/screens/inbox-item.webp" data-focus="280,334,677,128;981,192,420,641" data-alt="Une annonce collée et analysée, avec les points à vérifier et le texte d'origine.">Import rapide</button>
+                </div>
+                <div class="fx-pills" data-group="preparer" hidden>
+                  <button class="fx-pill" data-f="cv" data-img="/screens/cv-editor.webp" data-focus="475,154,714,1010;497,798,672,86" data-alt="L'éditeur de CV avec la page A4 et la barre Claude.">CV façon Canva</button>
+                  <button class="fx-pill" data-f="documents" data-img="/screens/documents.webp" data-focus="281,436,1119,61" data-alt="Les documents rangés avec leurs versions.">Documents</button>
+                </div>
+                <div class="fx-pills" data-group="candidater" hidden>
+                  <button class="fx-pill" data-f="journee" data-img="/screens/today.webp" data-focus="280,402,741,208;281,687,739,62" data-alt="La page Aujourd'hui.">Ta journée</button>
+                  <button class="fx-pill" data-f="tableau" data-img="/screens/board.webp" data-focus="1189,289,270,166" data-alt="Le tableau des candidatures par étape.">Tableau</button>
+                  <button class="fx-pill" data-f="relances" data-img="/screens/application.webp" data-focus="563,236,271,162" data-alt="La fiche d'une candidature avec sa prochaine relance.">Relances</button>
+                  <button class="fx-pill" data-f="entretiens" data-img="/screens/interviews.webp" data-focus="280,536,777,98" data-alt="Les entretiens d'une candidature.">Entretiens</button>
+                  <button class="fx-pill" data-f="analyse" data-img="/screens/analysis.webp" data-focus="280,231,777,141;280,474,777,100" data-alt="L'analyse d'une offre.">Analyse d'offre</button>
+                  <button class="fx-pill" data-f="offre" data-img="/screens/offer.webp" data-focus="297,545,743,714" data-alt="Les conditions d'une offre reçue.">Offre et contrat</button>
+                  <button class="fx-pill" data-f="calendrier" data-img="/screens/calendar.webp" data-focus="281,694,1119,113" data-alt="Le calendrier du mois.">Calendrier</button>
+                </div>
+                <div class="fx-pills" data-group="installer" hidden>
+                  <button class="fx-pill" data-f="carte" data-img="/screens/move-map.webp" data-focus="280,462,1121,520" data-alt="Les logements sur une carte de Paris.">Carte</button>
+                  <button class="fx-pill" data-f="comparatif" data-img="/screens/move-housing.webp" data-focus="281,365,1119,369;531,706,108,16" data-alt="Le comparatif des logements.">Comparatif</button>
+                  <button class="fx-pill" data-f="budget" data-img="/screens/move-budget.webp" data-focus="1021,316,380,530" data-alt="Le budget d'une installation.">Budget</button>
+                  <button class="fx-pill" data-f="demarches" data-img="/screens/move-procedures.webp" data-focus="281,405,1119,278" data-alt="Les démarches pour s'installer en Suisse.">Démarches</button>
+                </div>
+                <div class="fx-pills" data-group="bilan" hidden>
+                  <button class="fx-pill" data-f="reseau" data-img="/screens/contacts.webp" data-focus="280,264,1121,256" data-alt="La liste des contacts.">Contacts</button>
+                  <button class="fx-pill" data-f="stats" data-img="/screens/analytics.webp" data-focus="1038,456,363,396" data-alt="Les statistiques.">Statistiques</button>
+                </div>
+              </div>
+              <div class="fx-view">
+                <div class="frame">
+                  <div class="frame-bar" aria-hidden="true"><span></span><span></span><span></span><b>Career OS</b></div>
+                  <div class="f-shot">
+                    <div class="f-layer">
+                      <img src="/screens/home-form.webp" width="1440" height="900" loading="lazy" alt="Le formulaire de recherche d'offres ouvert dans la discussion." />
+                      <div class="f-spot"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fx-groups" role="tablist" aria-label="Groupes de fonctionnalités">
+              <button class="fx-group on" role="tab" aria-selected="true" data-group="rechercher"><svg><use href="#i-search" /></svg>Rechercher<i></i></button>
+              <button class="fx-group" role="tab" aria-selected="false" data-group="preparer"><svg><use href="#i-cv" /></svg>Préparer<i></i></button>
+              <button class="fx-group" role="tab" aria-selected="false" data-group="candidater"><svg><use href="#i-brief" /></svg>Candidater<i></i></button>
+              <button class="fx-group" role="tab" aria-selected="false" data-group="installer"><svg><use href="#i-home" /></svg>S'installer<i></i></button>
+              <button class="fx-group" role="tab" aria-selected="false" data-group="bilan"><svg><use href="#i-chart" /></svg>Bilan<i></i></button>
+            </div>
           </div>
-          <div class="claude-shot rv">
-            <img src="/screens/composer.webp" width="1780" height="750" loading="lazy" alt="La barre de discussion de Career OS, avec des suggestions comme « Qu'est-ce que je dois faire aujourd'hui ? » et des raccourcis." />
+          <p class="fx-note">Captures de l'application avec des données d'exemple.</p>
+        </div>
+      </section>
+
+      <!-- Examples -->
+      <section id="exemples" style="padding-top: 0">
+        <div class="wrap">
+          <div class="rv">
+            <h2>Des projets concrets.</h2>
+            <p class="lead">Ce que Camille, notre candidate d'exemple, suit dans Career OS.</p>
+          </div>
+          <div class="cases">
+            <article class="case rv">
+              <header><div class="who"><span><svg class="i" style="width:16px;height:16px"><use href="#i-brief" /></svg></span>Recherche d'emploi</div><small>Product manager, santé numérique</small></header>
+              <dl>
+                <div><dt>5</dt><dd>candidatures envoyées</dd></div>
+                <div><dt>60 %</dt><dd>de réponses reçues</dd></div>
+                <div><dt>1</dt><dd>offre à étudier</dd></div>
+              </dl>
+              <footer><button class="link" data-goto="tableau">Voir le tableau</button></footer>
+            </article>
+            <article class="case rv">
+              <header><div class="who"><span><svg class="i" style="width:16px;height:16px"><use href="#i-home" /></svg></span>Installation à Paris</div><small>Après l'offre, trouver où vivre</small></header>
+              <dl>
+                <div><dt>+1 752 €</dt><dd>d'épargne par mois avec le logement le moins cher</dd></div>
+                <div><dt>5</dt><dd>logements comparés</dd></div>
+                <div><dt>42 jours</dt><dd>avant l'arrivée</dd></div>
+              </dl>
+              <footer><button class="link" data-goto="comparatif">Voir le comparatif</button></footer>
+            </article>
+            <article class="case rv">
+              <header><div class="who"><span><svg class="i" style="width:16px;height:16px"><use href="#i-cap" /></svg></span>Master à Lausanne</div><small>Partir étudier en Suisse</small></header>
+              <dl>
+                <div><dt>24</dt><dd>démarches listées, avec leurs liens officiels</dd></div>
+                <div><dt>8</dt><dd>pays couverts par les listes de démarches</dd></div>
+                <div><dt>CHF → €</dt><dd>montants convertis à titre indicatif</dd></div>
+              </dl>
+              <footer><button class="link" data-goto="demarches">Voir les démarches</button></footer>
+            </article>
+          </div>
+          <p class="cases-note">Chiffres tirés des données d'exemple de l'application.</p>
+        </div>
+      </section>
+
+      <!-- Hub -->
+      <section style="padding-top: 0">
+        <div class="wrap">
+          <div class="hub rv">
+            <h2>Un seul centre pour toute ta recherche.<br /><em>Sur ton ordinateur.</em></h2>
+            <p class="lead">Career OS s'installe chez toi. Tes documents restent dans ton dossier, une sauvegarde est faite chaque jour, et Claude ne lit que ce qu'il faut pour te répondre.</p>
+            <a class="link" href="#installer">Voir comment l'installer</a>
+            <div class="hub-map" aria-hidden="true">
+              <svg class="lines" viewBox="0 0 760 220" preserveAspectRatio="none">
+                <path d="M200 60 C 300 60 300 110 380 110" fill="none" stroke="rgb(157 182 255 / .55)" stroke-width="1.5" stroke-dasharray="3 5" vector-effect="non-scaling-stroke" />
+                <path d="M200 160 C 300 160 300 110 380 110" fill="none" stroke="rgb(157 182 255 / .55)" stroke-width="1.5" stroke-dasharray="3 5" vector-effect="non-scaling-stroke" />
+                <path d="M560 60 C 460 60 460 110 380 110" fill="none" stroke="rgb(157 182 255 / .55)" stroke-width="1.5" stroke-dasharray="3 5" vector-effect="non-scaling-stroke" />
+                <path d="M560 160 C 460 160 460 110 380 110" fill="none" stroke="rgb(157 182 255 / .55)" stroke-width="1.5" stroke-dasharray="3 5" vector-effect="non-scaling-stroke" />
+              </svg>
+              <div class="orb"><svg><use href="#logo" /></svg></div>
+              <span style="right:73.7%;top:60px">Offres et candidatures</span>
+              <span style="right:73.7%;top:160px">CV et documents</span>
+              <span class="r" style="left:73.7%;top:60px">Entretiens et relances</span>
+              <span class="r" style="left:73.7%;top:160px">Logement et démarches</span>
+            </div>
+            <div class="hub-chips">
+              <span><svg><use href="#i-check" /></svg>Aucun compte à créer</span>
+              <span><svg><use href="#i-check" /></svg>Une sauvegarde chaque jour</span>
+              <span><svg><use href="#i-check" /></svg>Export en un clic</span>
+              <span><svg><use href="#i-check" /></svg>Rien ne part sans toi</span>
+              <span><svg><use href="#i-check" /></svg>Windows, Mac et Linux</span>
+            </div>
+            <svg class="waves" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0 60 C 300 20 560 40 820 56 S 1260 84 1440 40 V120 H0Z" fill="rgb(91 140 255 / .18)" />
+              <path d="M0 86 C 360 64 700 100 1040 82 S 1360 70 1440 80 V120 H0Z" fill="rgb(91 140 255 / .32)" />
+            </svg>
           </div>
         </div>
       </section>
 
-      <div class="journey">
-        <div class="wrap rv">
-          <div class="eyebrow">Le parcours</div>
-          <h2>Cinq étapes, un seul outil.</h2>
-          <ol>
-            <li><strong>Trouver</strong><p>Les offres et les formations qui te correspondent, sans faire le tour des sites.</p></li>
-            <li><strong>Postuler</strong><p>Le bon CV, la bonne lettre, et la trace de ce que tu as envoyé.</p></li>
-            <li><strong>Relancer</strong><p>Au bon moment, avec un message déjà prêt.</p></li>
-            <li><strong>Décider</strong><p>Les offres comparées clairement, le contrat relu.</p></li>
-            <li><strong>S'installer</strong><p>Logement, budget, démarches : la suite est prête.</p></li>
-          </ol>
+      <!-- Levels -->
+      <section id="claude" style="padding-top: 0">
+        <div class="wrap">
+          <h2 class="rv">Va aussi loin que tu veux avec Claude, <em>de la saisie à la veille automatique.</em></h2>
+          <div class="levels rv">
+            <div class="stairs">
+              <div><div class="step-card"><small>Niveau 1</small><b>À la main</b></div><p>Tu remplis. Career OS range, rappelle et compte.</p></div>
+              <div><div class="step-card"><small>Niveau 2</small><b>Import</b></div><p>Tu colles une annonce. Claude remplit la fiche.</p></div>
+              <div><div class="step-card"><small>Niveau 3</small><b>Assisté</b></div><p>Claude prépare relances, analyses et entretiens. Tu valides.</p></div>
+              <div><div class="step-card"><small>Niveau 4</small><b>En veille</b></div><p>Tes recherches tournent seules. Tu tries ce qui arrive.</p></div>
+            </div>
+            <div class="brackets"><span>Sans abonnement Claude</span><span>Avec ton abonnement Claude</span></div>
+          </div>
+          <p class="after-levels rv"><a class="link" href="#faq">Faut-il un abonnement ? Les réponses</a></p>
         </div>
-      </div>
+      </section>
 
-      <div class="band">
-        <div class="wrap rv">
-          <div class="eyebrow" style="color:#8fb3ff">Tes données</div>
-          <h2>Ta recherche t'appartient.<br />Elle reste chez toi.</h2>
-          <p class="sub">Career OS s'installe sur ton ordinateur. Tes documents vont dans ton dossier Documents, une sauvegarde est faite chaque jour, et Career OS ne reçoit rien de toi : tout reste sur ta machine. Quand tu poses une question à Claude, il ne lit que ce qu'il faut pour te répondre.</p>
-          <ul>
-            <li><svg><use href="#i-check" /></svg>Aucun compte à créer</li>
-            <li><svg><use href="#i-check" /></svg>Aucun message envoyé à ta place</li>
-            <li><svg><use href="#i-check" /></svg>Tout s'exporte en un clic</li>
-            <li><svg><use href="#i-check" /></svg>Une sauvegarde chaque jour</li>
-          </ul>
-        </div>
-      </div>
-
-      <section id="installer">
+      <!-- Start here: install -->
+      <section id="installer" style="padding-top: 0">
         <div class="wrap">
           <div class="rv">
-            <div class="eyebrow">Installer</div>
-            <h2>Claude l'installe pour toi.</h2>
-            <p class="sub">Pas de réglages à faire : tu colles un message, tu réponds à quelques questions, et Career OS s'ouvre.</p>
+            <h2>Prêt ? <em>Commence ici.</em></h2>
+            <p class="lead">Claude installe Career OS pour toi. Pas de réglages : tu colles un message, tu réponds à quelques questions.</p>
           </div>
-          <div class="split">
-            <ol class="steps">
-              <li>
+          <div class="starts">
+            <article class="start rv">
+              <div class="top-viz"><div class="appwin" aria-hidden="true"><div class="bar"><i></i><i></i><i></i></div><div class="tabs"><span>Discussion</span><span class="on">Code</span></div><div class="lines"><i></i><i></i><i></i></div></div></div>
+              <div class="body">
+                <small>Étape 1</small>
                 <h3>Ouvre Claude</h3>
-                <p>Installe l'application Claude, connecte-toi avec ton abonnement Pro ou Max, puis ouvre l'onglet <strong>Code</strong> et choisis un dossier, par exemple Documents.</p>
-                <a class="btn" href="https://claude.ai/download" rel="noopener">Télécharger Claude</a>
-              </li>
-              <li>
+                <p>Installe l'application Claude, connecte-toi avec ton abonnement Pro ou Max, ouvre l'onglet Code et choisis un dossier, par exemple Documents.</p>
+                <a class="link" href="https://claude.ai/download" rel="noopener">Télécharger Claude</a>
+              </div>
+            </article>
+            <article class="start rv">
+              <div class="top-viz"><div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div></div>
+              <div class="body">
+                <small>Étape 2</small>
                 <h3>Colle ce message</h3>
-                <p>Copie-le, colle-le dans Claude, puis envoie.</p>
-                <div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
-                <details class="pro">
-                  <summary>Tu utilises déjà Claude Code ?</summary>
-                  <div class="say"><span>claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"</span><button class="copy" data-copy='claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"'><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
-                </details>
-              </li>
-              <li>
+                <p>Copie-le, colle-le dans Claude et envoie. Claude récupère Career OS et prépare tout.</p>
+              </div>
+            </article>
+            <article class="start rv">
+              <div class="top-viz"><img class="shot" src="/screens/welcome-crop.webp" width="960" height="630" loading="lazy" alt="Le premier lancement de Career OS : prénom, nom, e-mail, téléphone et ville." /></div>
+              <div class="body">
+                <small>Étape 3</small>
                 <h3>Réponds à ses questions</h3>
-                <p>Ton prénom, ton e-mail, ce que tu cherches, où ranger tes documents. Claude prépare tout, remplit ton profil à partir de ton CV et crée un raccourci sur ton bureau.</p>
-              </li>
-              <li>
-                <h3>C'est prêt</h3>
-                <p>Career OS s'ouvre sur un accueil en quatre étapes. Commence avec tes vraies candidatures, ou découvre l'outil avec des exemples.</p>
-              </li>
-            </ol>
-            <div class="install-shot rv">
-              <img src="/screens/welcome.webp" width="1440" height="1220" loading="lazy" alt="Le premier lancement de Career OS : « Bienvenue dans Career OS », avec prénom, nom, e-mail, téléphone et ville." />
-              <p>Le premier lancement, aux couleurs de l'application.</p>
+                <p>Ton prénom, ton e-mail, ce que tu cherches. Claude remplit ton profil à partir de ton CV, crée un raccourci et Career OS s'ouvre.</p>
+                <a class="link" href="#faq">Questions fréquentes</a>
+              </div>
+            </article>
+          </div>
+          <div class="extra rv">
+            <div>
+              <b>Déjà habitué à Claude Code ?</b> Lance directement :
+              <div class="say"><span>claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"</span><button class="copy" data-copy='claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"'><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
+            </div>
+            <div>
+              <b>Bientôt sur le Microsoft Store.</b> Career OS en application Windows, installée en un clic, avec Claude pour t'aider.
+              <p style="margin:12px 0 0">Tu préfères télécharger d'abord ? <a href="https://github.com/Miche1-Pierre/career-os/archive/refs/heads/main.zip">Télécharge le dossier</a>, ouvre-le dans Claude et écris « installe Career OS ».</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="telecharger" style="padding-top: 0">
-        <div class="wrap">
-          <div class="rv">
-            <div class="eyebrow">Versions</div>
-            <h2>Deux façons de l'avoir.</h2>
-          </div>
-          <div class="versions rv">
-            <div>
-              <h3>Avec Claude <span class="tag now">Disponible</span></h3>
-              <p>Sur Windows, Mac et Linux. Claude installe, configure et met à jour Career OS pour toi : demande-lui simplement « mets à jour Career OS ».</p>
-              <a class="btn btn-primary" href="#installer">Installer avec Claude</a>
-              <p class="alt">Tu préfères télécharger d'abord ? <a href="https://github.com/Miche1-Pierre/career-os/archive/refs/heads/main.zip">Télécharge le dossier</a>, ouvre-le dans Claude et écris « installe Career OS ».</p>
-            </div>
-            <div>
-              <h3>Microsoft Store <span class="tag">Bientôt</span></h3>
-              <p>Career OS en application Windows : un clic pour l'installer depuis le Microsoft Store, tes données dans ton dossier personnel. Claude reste là pour t'aider.</p>
-              <span class="btn" aria-disabled="true" style="opacity:.55; cursor:default">Bientôt sur le Microsoft Store</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      <!-- FAQ -->
       <section id="faq" style="padding-top: 0">
         <div class="wrap">
-          <div class="rv">
-            <div class="eyebrow">Questions</div>
-            <h2>Bon à savoir.</h2>
-          </div>
+          <h2 class="rv">Bon à savoir.</h2>
           <div class="faq">
             <div>
-              <details>
-                <summary>C'est vraiment gratuit ?</summary>
-                <p>Oui. Career OS ne coûte rien. L'assistant utilise ton abonnement Claude, sans frais en plus.</p>
-              </details>
-              <details>
-                <summary>Faut-il un abonnement Claude ?</summary>
-                <p>Pour l'installation guidée et l'assistant, oui : Claude Pro ou Max. Sans l'assistant, l'application fonctionne quand même : tu remplis simplement les fiches toi-même.</p>
-              </details>
-              <details>
-                <summary>Où sont mes données ?</summary>
-                <p>Sur ton ordinateur, dans le dossier Documents/CareerOS : tes documents, tes candidatures et une sauvegarde par jour. Rien n'est envoyé ailleurs, sauf ce que tu demandes à Claude de lire pour te répondre.</p>
-              </details>
-              <details>
-                <summary>Claude peut-il postuler ou envoyer des e-mails à ma place ?</summary>
-                <p>Non. Il prépare les brouillons, les recherches et les analyses. C'est toi qui envoies, et il te demande avant toute décision importante.</p>
-              </details>
+              <details><summary>C'est vraiment gratuit ?</summary><p>Oui. Career OS ne coûte rien. L'assistant utilise ton abonnement Claude, sans frais en plus.</p></details>
+              <details><summary>Faut-il un abonnement Claude ?</summary><p>Pour l'installation guidée et l'assistant, oui : Claude Pro ou Max. Sans l'assistant, l'application fonctionne quand même : tu remplis simplement les fiches toi-même.</p></details>
+              <details><summary>Où sont mes données ?</summary><p>Sur ton ordinateur, dans le dossier Documents/CareerOS : tes documents, tes candidatures et une sauvegarde par jour. Rien n'est envoyé ailleurs, sauf ce que tu demandes à Claude de lire pour te répondre.</p></details>
+              <details><summary>Claude peut-il postuler ou envoyer des e-mails à ma place ?</summary><p>Non. Il prépare les brouillons, les recherches et les analyses. C'est toi qui envoies, et il te demande avant toute décision importante.</p></details>
             </div>
             <div>
-              <details>
-                <summary>Et si Claude se trompe ?</summary>
-                <p>Il ne remplit un champ que s'il trouve l'information dans l'annonce, et il montre la phrase d'où elle vient. Ce qui manque reste vide, et tu vérifies avant d'enregistrer.</p>
-              </details>
-              <details>
-                <summary>Ça marche sur Mac ?</summary>
-                <p>Oui, sur Windows, Mac et Linux. Le raccourci sur le bureau est pour l'instant prévu pour Windows ; sur Mac, Claude t'indique comment ouvrir l'application.</p>
-              </details>
-              <details>
-                <summary>Comment mettre à jour ?</summary>
-                <p>Demande à Claude « mets à jour Career OS ». Tes candidatures et tes documents ne bougent pas.</p>
-              </details>
-              <details>
-                <summary>Et si je change d'ordinateur ?</summary>
-                <p>Copie ton dossier CareerOS sur le nouvel ordinateur, puis demande à Claude d'installer Career OS en lui indiquant ce dossier : tu retrouves tout.</p>
-              </details>
+              <details><summary>Et si Claude se trompe ?</summary><p>Il ne remplit un champ que s'il trouve l'information dans l'annonce, et il montre la phrase d'où elle vient. Ce qui manque reste vide, et tu vérifies avant d'enregistrer.</p></details>
+              <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Le raccourci sur le bureau est pour l'instant prévu pour Windows ; sur Mac, Claude t'indique comment ouvrir l'application.</p></details>
+              <details><summary>Comment mettre à jour ?</summary><p>Demande à Claude « mets à jour Career OS ». Tes candidatures et tes documents ne bougent pas.</p></details>
+              <details><summary>Et si je change d'ordinateur ?</summary><p>Copie ton dossier CareerOS sur le nouvel ordinateur, puis demande à Claude d'installer Career OS en lui indiquant ce dossier : tu retrouves tout.</p></details>
             </div>
           </div>
         </div>
       </section>
 
-      <div class="final">
-        <div class="wrap rv">
-          <h2>Prêt à ranger ta recherche ?</h2>
-          <p class="sub" style="margin: 16px auto 0">Dix minutes avec Claude, et tout est au même endroit.</p>
-          <div class="cta">
-            <a class="btn btn-primary" href="#installer">Installer Career OS</a>
-            <a class="btn" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>
+      <!-- Final call -->
+      <section style="padding-top: 0; padding-bottom: 0">
+        <div class="wrap">
+          <div class="final rv">
+            <h2>Range ta recherche avec Claude.</h2>
+            <p>Dix minutes pour l'installer, et tout est au même endroit.</p>
+            <div class="cta">
+              <a class="pill pill-white" href="#installer">Installer Career OS</a>
+              <a class="pill pill-ghost" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>
+            </div>
+            <div class="mascot" aria-hidden="true"><svg><use href="#logo" /></svg></div>
+            <svg class="waves" viewBox="0 0 1440 130" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M0 50 C 280 10 560 30 820 50 S 1260 80 1440 30 V130 H0Z" fill="rgb(255 255 255 / .14)" />
+              <path d="M0 80 C 360 56 700 96 1040 76 S 1360 64 1440 72 V130 H0Z" fill="rgb(255 255 255 / .22)" />
+              <path d="M0 108 C 400 94 760 124 1100 104 S 1380 98 1440 102 V130 H0Z" fill="rgb(12 21 50 / .35)" />
+            </svg>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
-    <footer>
+    <footer class="foot">
       <div class="wrap">
-        <span>© 2026 Career OS</span>
-        <nav aria-label="Pied de page">
-          <a href="#fonctionnalites">Fonctionnalités</a>
-          <a href="#installer">Installer</a>
-          <a href="#faq">Questions</a>
-          <a href="https://github.com/Miche1-Pierre/career-os" rel="noopener">GitHub</a>
-        </nav>
+        <div class="foot-top">
+          <div>
+            <h2>Toute ta recherche,<br />au même endroit.</h2>
+            <div class="cta">
+              <a class="pill pill-white" href="#installer">Installer Career OS</a>
+              <a class="pill pill-ghost" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>GitHub</a>
+            </div>
+          </div>
+          <div class="promo">
+            <b>Nouveau : l'éditeur de CV</b>
+            <p>Déplace, aligne, et demande à Claude d'adapter ton CV à une offre.</p>
+            <button class="pill pill-ghost" data-goto="cv">Voir l'éditeur →</button>
+          </div>
+        </div>
+        <div class="foot-cols">
+          <div><h4>Produit</h4><ul><li><a href="#fonctionnalites">Fonctionnalités</a></li><li><a href="#exemples">Exemples</a></li><li><a href="#claude">Avec Claude</a></li><li><a href="#installer">Installer</a></li></ul></div>
+          <div><h4>Chercher</h4><ul><li><button data-goto="veille">Recherches automatiques</button></li><li><button data-goto="import">Import rapide</button></li><li><button data-goto="tableau">Candidatures</button></li><li><button data-goto="analyse">Analyse d'offre</button></li></ul></div>
+          <div><h4>S'installer</h4><ul><li><button data-goto="carte">Logements</button></li><li><button data-goto="budget">Budget</button></li><li><button data-goto="demarches">Démarches</button></li><li><button data-goto="offre">Offre et contrat</button></li></ul></div>
+          <div><h4>Aide</h4><ul><li><a href="#faq">Questions</a></li><li><a href="https://github.com/Miche1-Pierre/career-os" rel="noopener">Code sur GitHub</a></li><li><a href="https://github.com/Miche1-Pierre/career-os/archive/refs/heads/main.zip">Télécharger le dossier</a></li></ul></div>
+        </div>
+      </div>
+      <svg class="waves" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 40 C 300 10 600 30 860 42 S 1280 66 1440 30 V90 H0Z" fill="rgb(91 140 255 / .16)" />
+        <path d="M0 64 C 380 46 720 80 1060 62 S 1370 54 1440 60 V90 H0Z" fill="rgb(91 140 255 / .3)" />
+      </svg>
+      <div class="foot-bottom">
+        <span>© 2026 Career OS · non affilié aux sites cités</span>
+        <a href="https://github.com/Miche1-Pierre/career-os" rel="noopener" aria-label="Career OS sur GitHub"><svg class="gh"><use href="#i-gh" /></svg></a>
       </div>
     </footer>
 
@@ -655,9 +1065,10 @@
       (() => {
         const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        // Header border once scrolled
+        // Header: transparent over the hero, solid afterwards
         const top = document.getElementById("top");
-        const onScroll = () => top.classList.toggle("scrolled", scrollY > 8);
+        const hero = document.querySelector(".hero");
+        const onScroll = () => top.classList.toggle("solid", scrollY > hero.offsetHeight - 120);
         addEventListener("scroll", onScroll, { passive: true });
         onScroll();
 
@@ -692,13 +1103,25 @@
           }),
         );
 
-        // Features: real screenshots with a spotlight that zooms on what each feature is about.
+        // Stages cycling ("Puis, à mesure que ça avance")
+        const stages = [...document.querySelectorAll("#then li")];
+        if (!reduce) {
+          let s = 0;
+          setInterval(() => {
+            stages[s].classList.remove("on");
+            s = (s + 1) % stages.length;
+            stages[s].classList.add("on");
+          }, 1500);
+        }
+
+        // Features: real screenshots, spotlight + zoom on the part each feature is about
         const W = 1440, H = 900, STEP = 2800, LEAD = 600, OUT = 1100;
-        const section = document.getElementById("fonctionnalites");
-        const menu = section.querySelector(".f-menu");
-        const tabs = [...section.querySelectorAll(".f-tab")];
-        const copies = [...section.querySelectorAll(".f-copy")];
-        const shot = section.querySelector(".f-shot");
+        const fx = document.getElementById("fx");
+        const pills = [...fx.querySelectorAll(".fx-pill")];
+        const groups = [...fx.querySelectorAll(".fx-group")];
+        const pillSets = [...fx.querySelectorAll(".fx-pills")];
+        const copies = [...fx.querySelectorAll(".fx-copy")];
+        const shot = fx.querySelector(".f-shot");
         const layer = shot.querySelector(".f-layer");
         const img = layer.querySelector("img");
         const spot = layer.querySelector(".f-spot");
@@ -707,112 +1130,81 @@
         const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
         const later = (fn, ms) => timers.push(setTimeout(fn, ms));
         const stop = () => { timers.forEach(clearTimeout); timers = []; };
-        const steps = (t) => (t.dataset.focus || "").split(";").filter(Boolean).map((s) => s.split(",").map(Number));
+        const steps = (p) => (p.dataset.focus || "").split(";").filter(Boolean).map((s) => s.split(",").map(Number));
+        const groupOf = (p) => p.closest(".fx-pills").dataset.group;
 
         function zoomOut() {
           layer.style.transform = "none";
           layer.style.setProperty("--z", 1);
           shot.classList.remove("focusing");
         }
-
         function focusOn([x, y, w, h]) {
           const pad = 10;
           const x0 = clamp(x - pad, 4, W), y0 = clamp(y - pad, 4, H), x1 = clamp(x + w + pad, 0, W - 4), y1 = clamp(y + h + pad, 0, H - 4);
           const rw = x1 - x0, rh = y1 - y0;
           Object.assign(spot.style, { left: (x0 / W) * 100 + "%", top: (y0 / H) * 100 + "%", width: (rw / W) * 100 + "%", height: (rh / H) * 100 + "%" });
-          const max = innerWidth < 720 ? 2.1 : 1.7;
-          const z = reduce ? 1 : clamp(Math.min((0.84 * W) / rw, (0.84 * H) / rh), 1, max);
+          const z = reduce ? 1 : clamp(Math.min((0.84 * W) / rw, (0.84 * H) / rh), 1, innerWidth < 720 ? 2.1 : 1.7);
           const tx = clamp(W / 2 - (x0 + rw / 2) * z, W - W * z, 0);
           const ty = clamp(H / 2 - (y0 + rh / 2) * z, H - H * z, 0);
           layer.style.setProperty("--z", z);
           layer.style.transform = `translate(${(tx / W) * 100}%, ${(ty / H) * 100}%) scale(${z})`;
           shot.classList.add("focusing");
         }
-
-        function duration(t) {
-          const n = steps(t).length;
-          return 220 + LEAD + (n ? n * STEP + OUT : 3500);
-        }
+        const duration = (p) => { const n = steps(p).length; return 220 + LEAD + (n ? n * STEP + OUT : 3500); };
 
         function play(list, k) {
           if (!list.length) return later(done, 3500);
           later(() => focusOn(list[k]), k === 0 ? LEAD : 0);
           later(() => {
             if (k + 1 < list.length) play(list, k + 1);
-            else {
-              zoomOut();
-              later(done, OUT);
-            }
+            else { zoomOut(); later(done, OUT); }
           }, (k === 0 ? LEAD : 0) + STEP);
         }
-
         function done() {
           if (auto) show(current + 1);
-          else later(() => play(steps(tabs[current]), 0), 900);
+          else later(() => play(steps(pills[current]), 0), 900);
         }
-
         function show(i) {
           stop();
-          current = (i + tabs.length) % tabs.length;
-          const t = tabs[current];
-          tabs.forEach((x, k) => {
-            const on = k === current;
-            x.classList.toggle("on", on);
-            x.setAttribute("aria-selected", on);
-            x.tabIndex = on ? 0 : -1;
-            x.classList.remove("run");
+          current = (i + pills.length) % pills.length;
+          const p = pills[current], g = groupOf(p);
+          pills.forEach((x) => x.classList.toggle("on", x === p));
+          pillSets.forEach((s) => (s.hidden = s.dataset.group !== g));
+          copies.forEach((c) => (c.hidden = c.dataset.for !== p.dataset.f));
+          groups.forEach((t) => {
+            const on = t.dataset.group === g;
+            t.classList.toggle("on", on);
+            t.setAttribute("aria-selected", on);
+            t.classList.remove("run");
+            if (on && auto) { void t.offsetWidth; t.style.setProperty("--d", duration(p) + "ms"); t.classList.add("run"); }
           });
-          copies.forEach((c) => (c.hidden = c.dataset.for !== t.dataset.f));
-          if (menu.scrollWidth > menu.clientWidth) menu.scrollTo({ left: t.offsetLeft - 16, behavior: reduce ? "auto" : "smooth" });
-          if (auto) {
-            void t.offsetWidth;
-            t.style.setProperty("--d", duration(t) + "ms");
-            t.classList.add("run");
-          }
           zoomOut();
           shot.classList.add("swap");
           later(async () => {
-            if (!img.src.endsWith(t.dataset.img)) {
-              img.src = t.dataset.img;
-              try { await img.decode(); } catch {}
-            }
-            img.alt = t.dataset.alt;
+            if (!img.src.endsWith(p.dataset.img)) { img.src = p.dataset.img; try { await img.decode(); } catch {} }
+            img.alt = p.dataset.alt;
             shot.classList.remove("swap");
-            if (visible) play(steps(t), 0);
+            if (visible) play(steps(p), 0);
           }, 220);
-          const next = tabs[(current + 1) % tabs.length];
-          new Image().src = next.dataset.img;
+          new Image().src = pills[(current + 1) % pills.length].dataset.img;
         }
-
-        tabs.forEach((t, i) =>
-          t.addEventListener("click", () => {
-            auto = false;
-            tabs.forEach((x) => x.classList.remove("run"));
-            show(i);
+        const pick = (i) => { auto = false; groups.forEach((t) => t.classList.remove("run")); show(i); };
+        pills.forEach((p, i) => p.addEventListener("click", () => pick(i)));
+        groups.forEach((t) => t.addEventListener("click", () => pick(pills.findIndex((p) => groupOf(p) === t.dataset.group))));
+        document.querySelectorAll("[data-goto]").forEach((b) =>
+          b.addEventListener("click", () => {
+            const i = pills.findIndex((p) => p.dataset.f === b.dataset.goto);
+            if (i < 0) return;
+            pick(i);
+            document.getElementById("fonctionnalites").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
           }),
         );
-        menu.addEventListener("keydown", (e) => {
-          const d = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-          if (!d) return;
-          e.preventDefault();
-          auto = false;
-          show(current + d);
-          tabs[current].focus();
-        });
-
-        new IntersectionObserver(
-          ([e]) => {
-            const was = visible;
-            visible = e.isIntersecting;
-            if (visible && !was) show(current);
-            if (!visible && was) {
-              stop();
-              zoomOut();
-              tabs[current].classList.remove("run");
-            }
-          },
-          { threshold: 0.35 },
-        ).observe(shot);
+        new IntersectionObserver(([e]) => {
+          const was = visible;
+          visible = e.isIntersecting;
+          if (visible && !was) show(current);
+          if (!visible && was) { stop(); zoomOut(); groups.forEach((t) => t.classList.remove("run")); }
+        }, { threshold: 0.35 }).observe(shot);
       })();
     </script>
   </body>
