@@ -860,3 +860,62 @@
 .macos-sidebar [data-slot="sidebar-menu-button"][data-size] + [data-slot="sidebar-menu-badge"] {
   top: 4px;
 }
+
+/* Gelasio, the CV serif: same files as the PDF so the editor measures text like the export. */
+@font-face {
+  font-family: "Gelasio";
+  src: url("/fonts/gelasio/gelasio-latin-400-normal.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Gelasio";
+  src: url("/fonts/gelasio/gelasio-latin-400-italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: block;
+}
+@font-face {
+  font-family: "Gelasio";
+  src: url("/fonts/gelasio/gelasio-latin-700-normal.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Gelasio";
+  src: url("/fonts/gelasio/gelasio-latin-700-italic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: block;
+}
+
+/* Text boxes of the CV editor: laid out like the PDF (no ligatures, no hyphenation, kerning on). */
+.cv-text {
+  font-variant-ligatures: none;
+  font-kerning: normal;
+  hyphens: manual;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  text-rendering: geometricPrecision;
+}
+.cv-text a {
+  color: inherit;
+  text-decoration: none;
+}
+/* List rows: the marker hangs in an 8 pt column, like the PDF. Drawn by CSS so editing never touches it. */
+.cv-li {
+  padding-left: 8px;
+}
+.cv-li::before {
+  content: "-";
+  display: inline-block;
+  width: 8px;
+  margin-left: -8px;
+  font-weight: 400;
+  font-style: normal;
+}
+.cv-li-bullet::before {
+  content: "•";
+}

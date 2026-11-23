@@ -47,3 +47,20 @@ export async function translateVariantAction(id: string, target: CvLang) {
 export async function adaptSummaryAction(id: string, opportunityId: string) {
   return runAction(async () => cv.adaptSummary(id, opportunityId), { revalidate: false });
 }
+
+export async function renameVariantAction(id: string, name: string) {
+  return runAction(async () => ({ id: (await cv.renameVariant(id, name, USER)).id }));
+}
+
+/** Autosave of the editor: no page revalidation (the editor holds the state). */
+export async function saveDesignAction(id: string, design: unknown) {
+  return runAction(() => cv.saveDesign(id, design), { revalidate: false });
+}
+
+export async function createBlankVariantAction(name: string, lang: CvLang) {
+  return runAction(async () => ({ id: (await cv.createBlankVariant(name, lang, USER)).id }));
+}
+
+export async function editCvWithClaudeAction(id: string, input: { instruction: string; design: unknown; opportunityId?: string | null }) {
+  return runAction(() => cv.editDesignWithClaude(id, input), { revalidate: false });
+}

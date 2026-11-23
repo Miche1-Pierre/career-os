@@ -11,7 +11,7 @@ import { boldRuns, splitRole, type CvBlock, type CvEntryView, type CvHeader, typ
 const FONT_DIR = path.join(/*turbopackIgnore: true*/ process.cwd(), "public", "fonts", "gelasio");
 
 const g = globalThis as unknown as { __careerOsCvFonts?: boolean };
-function registerFonts() {
+export function registerFonts() {
   if (g.__careerOsCvFonts) return;
   g.__careerOsCvFonts = true;
   Font.register({
