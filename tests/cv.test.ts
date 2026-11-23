@@ -5,7 +5,9 @@ import { USER } from "@/server/context";
 import * as s from "@/server/db/schema";
 import { boldRuns, cvBlockSchema, exportFileName, splitRole, stripBold, variantPlainText, type CvEntryView } from "@/lib/cv";
 import { kitMissing } from "@/lib/kit";
-import { renderCvPdf } from "@/server/cv/template";
+import { createElement } from "react";
+import { renderToBuffer } from "@react-pdf/renderer";
+import { CvDocument, pdfPageCount, renderCvPdf } from "@/server/cv/template";
 import { exportVariant, importCvSeed, listEntries, listVariants } from "@/server/services/cv";
 import { getDocument } from "@/server/services/documents";
 import { applyWithKit, updateKit } from "@/server/services/kit";
@@ -51,6 +53,29 @@ describe("cv logic", () => {
     const { extractText, getDocumentProxy } = await import("unpdf");
     const { text } = await extractText(await getDocumentProxy(new Uint8Array(pdf)), { mergePages: true });
     for (const word of ["fiables", "workflows", "efficaces", "trafic", "Safex"]) expect(text).toContain(word);
+    expect(pdfPageCount(pdf)).toBe(1);
+  }, 60_000);
+
+  it("tightens the layout to keep a slightly long CV on one page, and never drops content", async () => {
+    const line = "Conçu et livré une fonctionnalité de bout en bout avec des tests et une mise en production suivie.";
+    const doc = (bullets: number) => ({
+      title: "Long",
+      header: { name: "Pierre MICHEL", title: "Engineer", lines: ["France"], links: [] },
+      sections: [{ kind: "ENTRIES" as const, title: "EXPÉRIENCE", entries: ["e1"] }],
+      entries: [entry("e1", "Head of Engineering, Plania", Array.from({ length: bullets }, (_, i) => `${line} (${i + 1})`))],
+    });
+    // 66 one-line bullets are just over one page at the normal density...
+    const d = doc(66);
+    const normal = createElement(CvDocument, { ...d, entries: new Map(d.entries.map((e) => [e.id, e])), style: { titleStyle: "BOLD_ITALIC", summaryItalic: false } });
+    expect(pdfPageCount(await renderToBuffer(normal as Parameters<typeof renderToBuffer>[0]))).toBe(2);
+    // ...and fit on one once tightened.
+    expect(pdfPageCount(await renderCvPdf(d))).toBe(1);
+    // Far too long: it stays on two pages rather than shrinking the text further or cutting it.
+    const long = await renderCvPdf(doc(90));
+    expect(pdfPageCount(long)).toBe(2);
+    const { extractText, getDocumentProxy } = await import("unpdf");
+    const { text } = await extractText(await getDocumentProxy(new Uint8Array(long)), { mergePages: true });
+    expect(text).toContain("(90)");
   }, 60_000);
 
   it("lists what the kit still misses", () => {
