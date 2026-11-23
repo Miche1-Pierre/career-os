@@ -7,6 +7,7 @@ import fs from "node:fs";
 import Anthropic from "@anthropic-ai/sdk";
 import type { z } from "zod";
 import { claudeVersion, resolveClaudeBin, runClaude } from "../../../bridge/claude-runner.mjs";
+import { claudeInstallOffered } from "./install-claude";
 import { AppError } from "@/server/context";
 import { getSettings } from "@/server/services/settings";
 import { toStructuredOutputSchema } from "./json-schema";
@@ -46,6 +47,8 @@ export interface AIStatus {
   setup: string | null;
   /** API key in use, if any: pasted in the app or set in `.env` (only a hint, never the key). */
   apiKey?: { source: "app" | "env"; hint: string | null } | null;
+  /** Claude Code is missing and the app can install it (Microsoft Store version). */
+  install?: "claude-code" | null;
 }
 
 interface ProviderCall {
@@ -120,9 +123,12 @@ const claudeCodeProvider: Provider = {
           mode,
           model,
           detail: inDocker() ? "Claude Code CLI not found in this environment." : "Claude Code n'est pas installé sur cet ordinateur : il fait tourner le chat, les recherches et les analyses.",
+          install: claudeInstallOffered() ? "claude-code" : null,
           setup: inDocker()
             ? "Rebuild the image with INSTALL_CLAUDE_CLI=true, or use the host bridge (npm run bridge)."
-            : env("CLAUDE_REQUIRES_KEY") === "true"
+            : claudeInstallOffered()
+              ? "Installe Claude Code, le programme gratuit d'Anthropic qui fait tourner l'assistant : bouton « Installer Claude Code »."
+              : env("CLAUDE_REQUIRES_KEY") === "true"
               ? "Relance la commande d'installation de Career OS : elle l'ajoute."
               : "Demande à Claude « installe Claude Code pour Career OS », ou lance : npm i -g @anthropic-ai/claude-code",
         };
@@ -325,6 +331,7 @@ export async function aiStatus(options: { fresh?: boolean } = {}): Promise<AISta
 
 export function invalidateAiStatus() {
   delete statusCache.__careerOsAiStatus;
+  delete versionCache.__careerOsClaudeVersion;
 }
 
 const schemaCache = new WeakMap<z.ZodType, Record<string, unknown>>();

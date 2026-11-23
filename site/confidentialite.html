@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Confidentialité · Career OS</title>
+    <meta name="description" content="Ce que Career OS garde sur ton ordinateur, et ce qui part sur Internet seulement quand tu utilises une fonction." />
+    <link rel="canonical" href="https://get-career-os.vercel.app/confidentialite" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #fbfaf9;
+        --fg: #1c1917;
+        --muted: #57534e;
+        --line: #e7e5e4;
+        --accent: #1d43c4;
+        --card: #ffffff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1a1918;
+          --fg: #f5f5f4;
+          --muted: #a8a29e;
+          --line: #33302d;
+          --accent: #9db6ff;
+          --card: #232120;
+        }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.65 Geist, system-ui, sans-serif; }
+      main { max-width: 720px; margin: 0 auto; padding: 48px 16px 72px; }
+      a { color: var(--accent); }
+      .back { font-size: 14px; text-decoration: none; }
+      h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.15; margin: 20px 0 8px; font-weight: 600; letter-spacing: -0.02em; }
+      h2 { font-size: 20px; margin: 36px 0 8px; font-weight: 600; }
+      p, li { color: var(--muted); }
+      strong { color: var(--fg); font-weight: 550; }
+      ul { padding-left: 20px; display: grid; gap: 8px; }
+      .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-top: 16px; }
+      .date { font-size: 14px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="/">← Career OS</a>
+      <h1>Confidentialité</h1>
+      <p class="date">Mise à jour le 23 novembre 2026</p>
+
+      <div class="card">
+        <p><strong>En bref :</strong> Career OS fonctionne sur ton ordinateur. Tes candidatures, tes documents, tes logements et ton budget restent chez toi. Personne d'autre, ni l'auteur de Career OS, ne les reçoit. Pas de compte à créer, pas de publicité, pas de mesure d'audience.</p>
+      </div>
+
+      <h2>Ce qui reste sur ton ordinateur</h2>
+      <p>Tout ce que tu saisis ou ajoutes est rangé dans le dossier <strong>Documents\CareerOS</strong> : tes documents, ta base de candidatures et une sauvegarde automatique par jour. Désinstaller Career OS ne supprime pas ce dossier. Pour tout effacer, supprime-le.</p>
+
+      <h2>Ce qui part sur Internet, seulement quand tu utilises la fonction</h2>
+      <ul>
+        <li><strong>L'assistant Claude</strong> (facultatif, si tu l'actives) : tes messages et les informations utiles pour y répondre sont envoyés à Anthropic, l'entreprise qui fait fonctionner Claude. La <a href="https://www.anthropic.com/legal/privacy" rel="noopener">politique de confidentialité d'Anthropic</a> s'applique. Ta clé Claude reste enregistrée sur ton ordinateur.</li>
+        <li><strong>Les recherches d'offres et de logements</strong> : Career OS consulte les sites que tu choisis, comme le ferait ton navigateur.</li>
+        <li><strong>Les cartes</strong> : les fonds de carte viennent d'OpenStreetMap. Les adresses que tu tapes sont envoyées à des services de recherche d'adresses (Photon de komoot, Nominatim d'OpenStreetMap) pour les placer sur la carte.</li>
+        <li><strong>Les logos d'entreprises</strong> : le nom du site de l'entreprise est demandé à des services d'icônes publics (Google, DuckDuckGo, svgl) pour afficher son logo.</li>
+        <li><strong>Les taux de change</strong> : téléchargés depuis la Banque centrale européenne, sans rien envoyer de toi.</li>
+        <li><strong>La dictée vocale</strong> : ta voix est transcrite sur ton ordinateur. Le modèle de reconnaissance est téléchargé une fois, la première fois que tu t'en sers.</li>
+      </ul>
+
+      <h2>Mises à jour</h2>
+      <p>Installé depuis le Microsoft Store, Career OS est mis à jour par le Store. Installé avec la commande du site, il se met à jour quand tu relances la commande.</p>
+
+      <h2>Signaler un problème</h2>
+      <p>Une réponse de l'assistant fausse ou inappropriée, une question sur tes données : utilise le lien « Signaler » sous les réponses de l'assistant, ou écris sur <a href="https://github.com/Miche1-Pierre/career-os/issues" rel="noopener">la page des signalements</a>. Ces messages sont publics : n'y mets pas d'informations personnelles.</p>
+    </main>
+  </body>
+</html>

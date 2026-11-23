@@ -23,7 +23,7 @@ interface Props {
   followUpDays: number;
   businessDays: boolean;
   library: { hostRoot: string; exists: boolean; writable: boolean; folders: string[] };
-  ai: Pick<AIStatus, "available" | "apiKey" | "detail">;
+  ai: Pick<AIStatus, "available" | "apiKey" | "detail" | "install">;
   hasDemo: boolean;
 }
 
@@ -68,7 +68,7 @@ function ChipsInput({ value, onChange, placeholder, id }: { value: string[]; onC
 export function WelcomeWizard(props: Props) {
   const { library, ai, hasDemo } = props;
   const [step, setStep] = useState(0);
-  const [aiState, setAiState] = useState<Pick<AIStatus, "available" | "apiKey" | "detail">>(ai);
+  const [aiState, setAiState] = useState<Pick<AIStatus, "available" | "apiKey" | "detail" | "install">>(ai);
   const [firstName, setFirstName] = useState(props.firstName);
   const [lastName, setLastName] = useState(props.lastName);
   const [email, setEmail] = useState(props.email);
@@ -284,7 +284,9 @@ export function WelcomeWizard(props: Props) {
                       <p className="text-xs text-muted-foreground">
                         {aiState.available
                           ? "La barre de discussion est en bas de chaque page."
-                          : "Colle ta clé Claude : il pourra chercher des offres et des logements, analyser et préparer pour toi. Tu peux aussi le faire plus tard dans Paramètres → IA."}
+                          : aiState.install === "claude-code"
+                            ? "Installe Claude Code puis colle ta clé Claude : il pourra chercher des offres et des logements, analyser et préparer pour toi. Facultatif, tout le reste marche sans."
+                            : "Colle ta clé Claude : il pourra chercher des offres et des logements, analyser et préparer pour toi. Tu peux aussi le faire plus tard dans Paramètres → IA."}
                       </p>
                     </div>
                   </div>

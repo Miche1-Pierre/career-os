@@ -4,7 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useLayoutEffect, use
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowUp, AtSign, Check, ChevronDown, History, Loader2, MapPin, Mic, Plus, Sparkles, Square, Wrench, X } from "lucide-react";
+import { ArrowUp, AtSign, Check, ChevronDown, Flag, History, Loader2, MapPin, Mic, Plus, Sparkles, Square, Wrench, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -962,6 +962,18 @@ function MessageView({ m, onNavigate }: { m: UiMessage; onNavigate: (href: strin
       ) : null}
       {m.streaming && m.content && <Loader2 className="size-3.5 animate-spin text-muted-foreground" />}
       {m.error && <p className="rounded-lg bg-warning-50 px-3 py-2 text-sm text-warning-700">{m.error}</p>}
+      {!m.streaming && m.content && (
+        <a href={REPORT_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-faint hover:text-muted-foreground" title="Réponse fausse, choquante ou inappropriée ? Signale-la.">
+          <Flag className="size-3" /> Signaler
+        </a>
+      )}
     </div>
   );
 }
+
+/** Reporting an assistant answer (required for generated content): a prefilled issue, with no conversation content. */
+const REPORT_URL = `https://github.com/Miche1-Pierre/career-os/issues/new?${new URLSearchParams({
+  title: "Réponse de l'assistant à signaler",
+  labels: "ia",
+  body: "Décris ce qui ne va pas dans la réponse (fausse, choquante, inappropriée…).\n\nN'y colle pas d'informations personnelles : ce signalement est public.",
+})}`;

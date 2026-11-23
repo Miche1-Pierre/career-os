@@ -18,6 +18,8 @@ export function resolveClaudeBin() {
           path.join(process.env.APPDATA ?? "", "npm", "node_modules", "@anthropic-ai", "claude-code", "bin", "claude.exe"),
           path.join(home, ".local", "bin", "claude.exe"),
           path.join(process.env.LOCALAPPDATA ?? "", "Programs", "claude", "claude.exe"),
+          // winget install Anthropic.ClaudeCode (the Microsoft Store version of Career OS offers it)
+          path.join(process.env.LOCALAPPDATA ?? "", "Microsoft", "WinGet", "Links", "claude.exe"),
         ]
       : [path.join(home, ".local", "bin", "claude"), "/usr/local/bin/claude", "/usr/bin/claude", path.join(home, ".npm-global", "bin", "claude")];
   for (const candidate of candidates) {
