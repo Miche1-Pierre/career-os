@@ -31,7 +31,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
-  serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability", "@huggingface/transformers", "onnxruntime-node", "sharp"],
+  serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability", "@huggingface/transformers", "onnxruntime-node", "sharp", "@react-pdf/renderer"],
   // Dictation (local Whisper): transformers.js loads onnxruntime-node through createRequire, which file tracing does not
   // follow; ship it with the Linux binaries only (the image is Linux; macOS / Windows builds are ~220 MB).
   outputFileTracingIncludes: {
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/:path*", headers: base },
       // Served documents (PDF viewer) set their own policy.
-      { source: "/:path((?!api/files/).*)", headers: csp },
+      { source: "/:path((?!api/files/|api/cv/).*)", headers: csp },
     ];
   },
 };

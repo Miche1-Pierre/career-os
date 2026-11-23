@@ -176,7 +176,7 @@ export const emailTemplateSchema = z.object({
   id: z.string().max(60),
   name: z.string().trim().min(1).max(120),
   language: z.enum(["fr", "en"]).default("fr"),
-  purpose: z.enum(["FOLLOW_UP", "THANK_YOU", "NETWORKING", "WITHDRAW", "OTHER"]).default("OTHER"),
+  purpose: z.enum(["FOLLOW_UP", "THANK_YOU", "NETWORKING", "WITHDRAW", "APPLICATION", "LINKEDIN", "SPONTANEOUS", "OTHER"]).default("OTHER"),
   subject: z.string().max(300),
   body: z.string().max(10_000),
 });
@@ -188,7 +188,7 @@ export const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Relance candidature (FR)",
     language: "fr",
     purpose: "FOLLOW_UP",
-    subject: "Suivi de ma candidature — {{title}}",
+    subject: "Suivi de ma candidature : {{title}}",
     body:
       "Bonjour {{contactFirstName}},\n\nJe me permets de revenir vers vous concernant ma candidature au poste de {{title}} chez {{organization}}, envoyée le {{appliedDate}}.\n\nJe reste très intéressé par cette opportunité et disponible pour un échange à votre convenance.\n\nBien cordialement,\n{{userName}}",
   },
@@ -206,7 +206,7 @@ export const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Remerciement après entretien (FR)",
     language: "fr",
     purpose: "THANK_YOU",
-    subject: "Merci pour notre échange — {{title}}",
+    subject: "Merci pour notre échange : {{title}}",
     body:
       "Bonjour {{contactFirstName}},\n\nMerci pour le temps que vous m'avez accordé aujourd'hui. Notre échange a renforcé mon intérêt pour le poste de {{title}} chez {{organization}}.\n\nJe reste à votre disposition pour toute information complémentaire.\n\nBien cordialement,\n{{userName}}",
   },
@@ -215,11 +215,74 @@ export const DEFAULT_EMAIL_TEMPLATES: EmailTemplate[] = [
     name: "Relance formation (FR)",
     language: "fr",
     purpose: "FOLLOW_UP",
-    subject: "Candidature — {{title}}",
+    subject: "Candidature : {{title}}",
     body:
       "Madame, Monsieur,\n\nJ'ai déposé ma candidature pour la formation {{title}} ({{organization}}) le {{appliedDate}}. Je souhaiterais savoir si mon dossier est complet et connaître le calendrier prévu pour les réponses.\n\nJe vous remercie par avance.\n\nCordialement,\n{{userName}}",
   },
 ];
+
+/** Templates added later: appended to saved template lists once (bootstrap "messageTemplates"). */
+export const ADDED_EMAIL_TEMPLATES: EmailTemplate[] = [
+  {
+    id: "application-fr",
+    name: "Envoi de candidature (FR)",
+    language: "fr",
+    purpose: "APPLICATION",
+    subject: "Candidature : {{title}}",
+    body:
+      "Bonjour {{contactFirstName}},\n\nJe vous adresse ma candidature au poste de {{title}} chez {{organization}}. Vous trouverez mon CV en pièce jointe.\n\n{{headline}}, je serais ravi d'échanger avec vous sur ce poste.\n\nBien cordialement,\n{{userName}}",
+  },
+  {
+    id: "application-en",
+    name: "Envoi de candidature (EN)",
+    language: "en",
+    purpose: "APPLICATION",
+    subject: "Application: {{title}}",
+    body:
+      "Hello {{contactFirstName}},\n\nPlease find attached my application for the {{title}} position at {{organization}}.\n\n{{headline}}: I would be glad to discuss how I can contribute to the team.\n\nBest regards,\n{{userName}}",
+  },
+  {
+    id: "linkedin-fr",
+    name: "Message LinkedIn (FR)",
+    language: "fr",
+    purpose: "LINKEDIN",
+    subject: "",
+    body: "Bonjour {{contactFirstName}}, je m'intéresse au poste de {{title}} chez {{organization}}. {{headline}}, j'aimerais échanger quelques minutes avec vous. Bonne journée, {{userName}}",
+  },
+  {
+    id: "linkedin-en",
+    name: "Message LinkedIn (EN)",
+    language: "en",
+    purpose: "LINKEDIN",
+    subject: "",
+    body: "Hi {{contactFirstName}}, I'm interested in the {{title}} role at {{organization}}. {{headline}}: would you have a few minutes to talk? Best, {{userName}}",
+  },
+  {
+    id: "spontaneous-fr",
+    name: "Candidature spontanée (FR)",
+    language: "fr",
+    purpose: "SPONTANEOUS",
+    subject: "Candidature spontanée : {{organization}}",
+    body:
+      "Bonjour {{contactFirstName}},\n\nJe suis {{headline}} et je suis votre travail chez {{organization}} avec intérêt. Je me permets de vous proposer ma candidature pour rejoindre votre équipe ; vous trouverez mon CV en pièce jointe.\n\nSeriez-vous disponible pour un court échange ?\n\nBien cordialement,\n{{userName}}",
+  },
+  {
+    id: "thank-you-en",
+    name: "Remerciement après entretien (EN)",
+    language: "en",
+    purpose: "THANK_YOU",
+    subject: "Thank you: {{title}}",
+    body:
+      "Hello {{contactFirstName}},\n\nThank you for your time today. Our conversation strengthened my interest in the {{title}} role at {{organization}}.\n\nPlease let me know if you need anything else from me.\n\nBest regards,\n{{userName}}",
+  },
+];
+
+/** Subjects of the first defaults, before the long dash was removed from French emails. */
+export const LEGACY_TEMPLATE_SUBJECTS: Record<string, [string, string]> = {
+  "follow-up-fr": ["Suivi de ma candidature — {{title}}", "Suivi de ma candidature : {{title}}"],
+  "thank-you-fr": ["Merci pour notre échange — {{title}}", "Merci pour notre échange : {{title}}"],
+  "program-follow-up-fr": ["Candidature — {{title}}", "Candidature : {{title}}"],
+};
 
 export const onboardingSettingsSchema = z.object({
   completedAt: z.string().nullable().default(null),
@@ -233,7 +296,7 @@ export const settingsSchema = z.object({
   ai: aiSettingsSchema.prefault({}),
   automation: automationSettingsSchema.prefault({}),
   templates: templatesSettingsSchema.prefault({}),
-  emailTemplates: z.array(emailTemplateSchema).max(50).default(DEFAULT_EMAIL_TEMPLATES),
+  emailTemplates: z.array(emailTemplateSchema).max(50).default([...DEFAULT_EMAIL_TEMPLATES, ...ADDED_EMAIL_TEMPLATES]),
   customSources: z.array(z.string().trim().min(1).max(100)).max(50).default([]),
   onboarding: onboardingSettingsSchema.prefault({}),
 });

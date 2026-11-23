@@ -171,6 +171,20 @@ pourquoi, suggestions, nombre de résultats et de nouveaux.
   Doublons écartés par URL canonique et par entreprise + titre + ville.
 - Planification quotidienne ou hebdomadaire : la tâche de fond lance au plus une recherche à la fois.
 
+### CV structurés et kit de candidature
+
+- **CV** (`src/lib/cv.ts`, `src/server/services/cv.ts`, page `/cv`) : entrées réutilisables par langue (`cv_entries`)
+  et variantes (`cv_variants` : en-tête, sections ordonnées, entrées choisies, compétences, style). Le PDF vient d'un
+  gabarit fixe (`src/server/cv/template.tsx`, @react-pdf/renderer, police Gelasio, équivalent libre de Georgia), sans
+  IA : même contenu, même PDF ; ligatures désactivées pour que les ATS lisent le texte. Chaque export est une nouvelle
+  version figée du document CV de la bibliothèque (jamais d'écrasement), éventuellement jointe à une candidature. IA en
+  option : traduire une variante (nouvelle variante « à relire »), adapter l'accroche à une offre (proposition).
+- **Messages** : modèles avec variables (`{{title}}`, `{{organization}}`, `{{contactFirstName}}`, `{{headline}}`,
+  `{{applyUrl}}`…) pour l'envoi de candidature, LinkedIn, candidature spontanée, relances, remerciements ;
+  « Personnaliser avec Claude » produit un brouillon à partir de l'offre, du profil et du CV.
+- **Kit de candidature** (`details.kit`) : version du CV, lettre, canal, lien ; « J'ai postulé » joint les documents,
+  note le canal et passe la candidature en Postulé (relances automatiques).
+
 ### Dictée
 
 Le micro de la barre de chat enregistre (MediaRecorder, niveau affiché en direct), puis le navigateur rééchantillonne
@@ -181,7 +195,7 @@ enregistrement. Variables : `TRANSCRIBE=off`, `TRANSCRIBE_MODEL`, `TRANSCRIBE_LA
 
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
-- `.mcp.json` enregistre le serveur MCP `career-os` → 48 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget, démarches, recherches,
+- `.mcp.json` enregistre le serveur MCP `career-os` → 50 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget, démarches, recherches, CV,
   follow_up, add_interview, attach_document, inbox…, save_analysis…).
 - `CLAUDE.md` + skills `.claude/skills/*` décrivent les workflows (importer, traiter l'Inbox, relances, préparation
   d'entretien, analyse). Claude extrait lui-même, avec provenance, et crée les objets via MCP — sans clé API.
