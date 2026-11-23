@@ -4,6 +4,7 @@ import { USER } from "@/server/context";
 import { runAction } from "@/server/action-utils";
 import type { BudgetPlan, ListingInput, ListingPatch, ListingStatus, MoveInput } from "@/lib/relocation";
 import * as mv from "@/server/services/moves";
+import * as proc from "@/server/services/procedures";
 
 export async function createMoveAction(input: MoveInput) {
   return runAction(async () => ({ id: (await mv.createMove(input, USER)).id }));
@@ -63,4 +64,47 @@ export async function deleteListingAction(id: string) {
 
 export async function draftListingMessageAction(id: string, language: "fr" | "en") {
   return runAction(() => mv.draftListingMessage(id, language), { revalidate: false });
+}
+
+// Administrative procedures (P3)
+
+export async function addTemplateProceduresAction(moveId: string, templateKeys?: string[]) {
+  return runAction(async () => proc.addProceduresFromTemplates(moveId, templateKeys ?? null, USER));
+}
+
+export async function researchProceduresAction(moveId: string) {
+  return runAction(async () => proc.researchProcedures(moveId, USER));
+}
+
+export async function addProcedureAction(moveId: string, input: Record<string, unknown>) {
+  return runAction(async () => proc.addProcedures(moveId, [input], USER, "USER"));
+}
+
+export async function updateProcedureAction(id: string, patch: Record<string, unknown>) {
+  return runAction(async () => {
+    await proc.updateProcedure(id, patch, USER);
+    return null;
+  });
+}
+
+export async function deleteProcedureAction(id: string) {
+  return runAction(async () => proc.deleteProcedure(id, USER));
+}
+
+export async function addStepAction(procedureId: string, input: Record<string, unknown>) {
+  return runAction(async () => {
+    await proc.addStep(procedureId, input);
+    return null;
+  });
+}
+
+export async function updateStepAction(stepId: string, patch: Record<string, unknown>) {
+  return runAction(async () => {
+    await proc.updateStep(stepId, patch);
+    return null;
+  });
+}
+
+export async function deleteStepAction(stepId: string) {
+  return runAction(async () => proc.deleteStep(stepId));
 }

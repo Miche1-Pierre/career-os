@@ -49,6 +49,8 @@ import { attachDocument, listDocuments } from "@/server/services/documents";
 import { applyActions, captureActionSchema, convertToNote, createCapture, getInboxItem, listInbox, setInboxArchived, storedResult, submitAnalysis, analysisContext } from "@/server/services/inbox";
 import { saveAnalysis } from "@/server/services/analysis";
 import { readContract, saveContractAnalysis, updateOffer } from "@/server/services/offers";
+import { addProcedures, addProceduresFromTemplates, listProcedures, procedureTemplatesFor, updateProcedure, updateStep } from "@/server/services/procedures";
+import { PROCEDURE_STATUSES } from "@/lib/procedures";
 import { contractAnalysisSchema, offerPatchSchema } from "@/lib/offer";
 import { getSettings, patchSettingsSection } from "@/server/services/settings";
 import { listStages } from "@/server/services/stages";
@@ -667,6 +669,44 @@ export const TOOLS: McpTool[] = [
   // -------------------------------------------------------------------------
   // Relocation: moves (installation projects), housing listings, budget
   // -------------------------------------------------------------------------
+  tool({
+    name: "procedures_list",
+    title: "Administrative procedures of a move",
+    description: "Procedures of an installation project (visa, residence registration, health, tax, bank, transport, insurance…) with status, due date, official link and steps. toCheck = found by research and not yet verified by the user. Also returns the templates that fit the move.",
+    input: z.object({ moveId: z.string().uuid() }),
+    readOnly: true,
+    handler: async ({ moveId }) => ({ procedures: await listProcedures(moveId), templates: await procedureTemplatesFor(moveId), url: `${moveUrl(moveId)}?tab=procedures` }),
+  }),
+  tool({
+    name: "add_procedures",
+    title: "Add administrative procedures to a move",
+    description:
+      "Either apply versioned templates (templateKeys, e.g. FR-GENERIC, FR-BE, FR-CA, FR-US; empty = the ones that fit the destination) or add procedures you researched: each {title, category (VISA|RESIDENCE|HEALTH|TAX|BANK|TRANSPORT|INSURANCE|OTHER), summary, dueDate YYYY-MM-DD, officialUrl (https, an official page you actually read), sources [{label,url}], steps [{title, detail, officialUrl, requiredDocuments[]}]}. Researched procedures are marked 'to check' for the user. Only official sources; never invent deadlines or rules. Duplicates (same title) are skipped.",
+    input: z.object({ moveId: z.string().uuid(), templateKeys: z.array(z.string()).optional(), procedures: z.array(z.record(z.string(), z.unknown())).max(30).optional() }),
+    handler: async ({ moveId, templateKeys, procedures: list }, ctx) => {
+      const fromTemplates = templateKeys !== undefined || !list?.length ? await addProceduresFromTemplates(moveId, templateKeys ?? null, ctx) : { added: 0, templates: [] };
+      const custom = list?.length ? await addProcedures(moveId, list, ctx, "AI") : { added: 0 };
+      return { addedFromTemplates: fromTemplates.added, templates: fromTemplates.templates, addedResearched: custom.added, url: `${moveUrl(moveId)}?tab=procedures` };
+    },
+  }),
+  tool({
+    name: "procedure_update",
+    title: "Update an administrative procedure",
+    description: "Change a procedure's status (TODO|IN_PROGRESS|WAITING|DONE|NOT_NEEDED), due date, notes or official link, and tick its steps ({stepId, done}). The status follows the steps when all are ticked.",
+    input: z.object({
+      procedureId: z.string().uuid(),
+      status: z.enum(PROCEDURE_STATUSES).optional(),
+      dueDate: z.string().nullable().optional(),
+      notes: z.string().nullable().optional(),
+      officialUrl: z.string().nullable().optional(),
+      steps: z.array(z.object({ stepId: z.string().uuid(), done: z.boolean() })).max(20).optional(),
+    }),
+    handler: async ({ procedureId, steps, ...patch }, ctx) => {
+      for (const s of steps ?? []) await updateStep(s.stepId, { done: s.done });
+      const row = Object.keys(patch).length ? await updateProcedure(procedureId, patch, ctx) : null;
+      return { updated: true, status: row?.status ?? null, url: row ? `${moveUrl(row.moveId)}?tab=procedures` : null };
+    },
+  }),
   tool({
     name: "list_moves",
     title: "Installation projects",

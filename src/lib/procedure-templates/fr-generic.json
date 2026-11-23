@@ -1,0 +1,453 @@
+{
+  "key": "FR-GENERIC",
+  "from": "FR",
+  "to": "*",
+  "title": "Quitter la France (tout pays)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "identity-documents",
+      "title": "Vérifier passeport et carte d'identité",
+      "category": "OTHER",
+      "summary": "Vérifiez que vos titres restent valides pendant tout le séjour : ils ne sont pas fabriqués sur place et les délais varient selon le lieu et la période.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/N360",
+      "steps": [
+        {
+          "title": "Vérifier les exigences du pays de destination",
+          "detail": "Consultez la rubrique Entrée / séjour de la fiche pays : une durée minimale de validité après l'entrée est parfois exigée.",
+          "officialUrl": "https://www.diplomatie.gouv.fr/fr/conseils-aux-voyageurs",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Renouveler le passeport",
+          "detail": "Possible l'année qui précède l'expiration, dans n'importe quelle mairie équipée, souvent sur rendez-vous. Timbre fiscal de 86 €, délais plus longs avant l'été, retrait en personne sous 3 mois.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F21091",
+          "requiredDocuments": [
+            "Passeport actuel",
+            "Photo d'identité de moins de 6 mois",
+            "Justificatif de domicile de moins d'1 an",
+            "Timbre fiscal de 86 €",
+            "Numéro de pré-demande en ligne (facultatif)"
+          ]
+        },
+        {
+          "title": "Renouveler la carte d'identité",
+          "detail": "Possible l'année qui précède l'expiration et gratuit si vous présentez l'ancienne carte ; comptez plusieurs semaines de fabrication.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F21089",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Se méfier d'une carte d'identité prolongée de 5 ans",
+          "detail": "Une carte délivrée à un majeur et encore valide au 1er janvier 2014 est prolongée de 5 ans, mais tous les pays ne l'acceptent pas : utilisez de préférence un passeport valide.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F32303",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "housing-france",
+      "title": "Libérer ou sous-louer votre logement en France",
+      "category": "RESIDENCE",
+      "summary": "Donnez congé en respectant le préavis, faites l'état des lieux de sortie, puis résiliez énergie et assurance habitation.",
+      "appliesIf": "si vous êtes locataire en France",
+      "when": -90,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F32360",
+      "steps": [
+        {
+          "title": "Envoyer le congé au bailleur",
+          "detail": "Préavis de 3 mois en location vide, réduit à 1 mois en zone tendue ou dans certains cas (premier emploi, mutation, perte d'emploi) si la lettre le précise avec justificatif ; 1 mois en meublé. Envoi en recommandé avec AR, par commissaire de justice ou en main propre contre récépissé.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F32360",
+          "requiredDocuments": [
+            "Lettre de congé",
+            "Justificatif du motif de préavis réduit, le cas échéant"
+          ]
+        },
+        {
+          "title": "Faire l'état des lieux de sortie",
+          "detail": "Il se fait à la remise des clés, avec le bailleur ou son représentant ; fixez la date par recommandé. En cas de refus d'une partie, un commissaire de justice peut l'établir, frais partagés.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33671",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Ou sous-louer avec l'accord écrit du bailleur",
+          "detail": "Dans le parc privé, l'accord écrit porte sur la sous-location et sur le loyer, qui ne peut pas dépasser le vôtre au m². La sous-location d'un logement social entier est interdite.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2449",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Résilier l'électricité et le gaz",
+          "detail": "Prévenez vos fournisseurs de la date de départ, relevez les index le jour J et indiquez l'adresse d'envoi de la facture finale. Sans résiliation, vous restez redevable de l'abonnement et des consommations.",
+          "officialUrl": "https://www.energie-info.fr/fiche_pratique/je-demenage-jemmenage-les-demarches-pour-lelectricite-et-le-gaz-naturel/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Résilier l'assurance habitation",
+          "detail": "Le déménagement permet de résilier sans attendre l'échéance : demande dans les 3 mois avec un justificatif, effet 1 mois après réception. Après 1 an de contrat, la résiliation est possible à tout moment.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F19083",
+          "requiredDocuments": [
+            "Justificatif du déménagement"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "international-driving-permit",
+      "title": "Demander un permis de conduire international",
+      "category": "TRANSPORT",
+      "summary": "Inutile dans l'UE, l'EEE, en Suisse et au Royaume-Uni ; ailleurs, certains pays l'exigent en complément du permis français.",
+      "appliesIf": "si vous comptez conduire hors UE, EEE, Suisse et Royaume-Uni",
+      "when": -30,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F11534",
+      "steps": [
+        {
+          "title": "Vérifier les règles du pays",
+          "detail": "Le permis français peut suffire, parfois pour une durée limitée (1 an au Maroc ou en Tunisie, 6 mois en Turquie selon service-public.gouv.fr) ; sinon un permis international est requis.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F11534",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Faire la demande en ligne avant le départ",
+          "detail": "Demande sur le site de l'ANTS, au moins 1 mois avant le départ, réservée aux personnes ayant leur résidence normale en France. Frais de 7,25 €.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/R50828",
+          "requiredDocuments": [
+            "Justificatif d'identité",
+            "Justificatif de domicile de moins de 6 mois",
+            "Permis de conduire en cours de validité",
+            "E-photo de moins de 6 mois"
+          ]
+        },
+        {
+          "title": "Conduire avec les deux permis",
+          "detail": "Le permis international est valable 3 ans, ou moins si votre permis national expire avant, et se présente toujours avec le permis français.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ],
+      "skipFor": [
+        "EUROPE"
+      ]
+    },
+    {
+      "key": "france-travail",
+      "title": "Prévenir France Travail",
+      "category": "OTHER",
+      "summary": "Contactez France Travail le plus tôt possible avant le départ : les allocations versées à tort devront être remboursées.",
+      "appliesIf": "si vous êtes inscrit à France Travail",
+      "when": null,
+      "officialUrl": "https://www.francetravail.fr/candidat/vos-droits-et-demarches/vos-changements-de-situation/reprise-dactivite-professionnell.html",
+      "steps": [
+        {
+          "title": "Déclarer votre reprise d'emploi",
+          "detail": "Si vous ne souhaitez pas rester inscrit, déclarez-la au plus vite dans votre espace personnel : Mon suivi d'inscription, puis Signaler un changement de situation.",
+          "officialUrl": "https://www.francetravail.fr/candidat/vos-droits-et-demarches/vos-changements-de-situation/reprise-dactivite-professionnell.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer toute absence de plus de 7 jours",
+          "detail": "Tant que vous restez inscrit, une absence de plus de 7 jours se déclare avant de partir : en ligne, par mail à votre conseiller ou au 39 49.",
+          "officialUrl": "https://www.francetravail.fr/candidat/vos-droits-et-demarches/vos-changements-de-situation/declarer-une-absence.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "caf",
+      "title": "Signaler votre départ à la Caf",
+      "category": "OTHER",
+      "summary": "Informez votre Caf ou votre MSA avant le départ et demandez l'effet du séjour sur vos droits, notamment l'aide au logement.",
+      "appliesIf": "si vous percevez une aide de la Caf ou de la MSA",
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2485",
+      "steps": [
+        {
+          "title": "Déclarer le départ et la nouvelle adresse",
+          "detail": "Faites-le avant de partir depuis votre espace en ligne Caf ou MSA, et demandez quelles aides sont maintenues pendant le séjour.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "health-insurance-status",
+      "title": "Faire le point sur votre Assurance maladie",
+      "category": "HEALTH",
+      "summary": "Votre couverture dépend de votre statut : un salarié détaché reste affilié en France, un salarié sous contrat local (expatrié) relève du régime du pays d'accueil.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger",
+      "steps": [
+        {
+          "title": "Identifier votre situation",
+          "detail": "Détachement, expatriation, stage ou PVT : les règles changent selon le statut et selon l'accord de sécurité sociale entre la France et le pays.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/index.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Expatrié : déclarer le transfert de résidence",
+          "detail": "Envoyez à votre caisse la « Déclaration de transfert de résidence hors de France » dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": [
+            "Formulaire de déclaration de transfert de résidence hors de France",
+            "Carte Vitale",
+            "Carte européenne d'assurance maladie"
+          ]
+        },
+        {
+          "title": "Détaché : conserver le formulaire A1",
+          "detail": "Votre employeur obtient le formulaire A1 auprès de l'Urssaf ; si vous vivez dans le pays de détachement, demandez aussi le formulaire S1 à votre caisse.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-detachement-etranger",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Stagiaire étudiant : vérifier votre couverture",
+          "detail": "La protection dépend du pays et du montant de la gratification : au-delà de 15 % du plafond horaire de la Sécurité sociale, la couverture française des accidents du travail n'est plus maintenue.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/index.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "complementary-cover",
+      "title": "Revoir mutuelle et assurances santé",
+      "category": "INSURANCE",
+      "summary": "Décidez du sort de votre mutuelle et vérifiez que vous serez couvert à l'étranger, y compris pour un rapatriement.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F20314",
+      "steps": [
+        {
+          "title": "Résilier ou garder votre mutuelle",
+          "detail": "Un contrat individuel se résilie à l'échéance annuelle ou à tout moment après un an d'engagement ; la procédure figure dans les conditions générales.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F20314",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Étudier l'adhésion à la Caisse des Français de l'étranger",
+          "detail": "Expatrié, vous pouvez adhérer à la CFE en plus du régime local, en cotisant aux deux, pour éviter délais de carence et trimestres de retraite perdus au retour.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prévoir une assurance santé et rapatriement",
+          "detail": "Une assurance rapatriement est recommandée : celle d'une carte bancaire ne couvre qu'un séjour de moins de 3 mois. Dans un pays sans accord de sécurité sociale, une assurance santé spécifique peut être utile.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2485",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "La CEAM atteste vos droits à l'Assurance maladie française lors de séjours temporaires en Europe ; pour vivre dans un autre pays européen, c'est le formulaire S1 qui s'utilise.",
+      "appliesIf": "séjour dans l'UE, l'EEE, en Suisse ou au Royaume-Uni en restant affilié à l'Assurance maladie française",
+      "when": -20,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34441",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Gratuite et individuelle, elle se demande au moins 20 jours avant le départ (15 jours selon ameli.fr) et vaut 2 ans maximum, sans dépasser la durée de vos droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Télécharger un certificat provisoire si le départ est proche",
+          "detail": "En cas de demande trop tardive, un certificat provisoire valable 3 mois se télécharge immédiatement sur votre compte ameli.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        },
+        {
+          "title": "Renouveler la carte si elle expire pendant le séjour",
+          "detail": "Le renouvellement peut être demandé 2 mois avant la fin de validité.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ],
+      "onlyFor": [
+        "EUROPE"
+      ]
+    },
+    {
+      "key": "vote",
+      "title": "Organiser votre vote pendant l'absence",
+      "category": "OTHER",
+      "summary": "Faites une procuration avant de partir si vous restez inscrit dans votre commune, ou inscrivez-vous sur la liste électorale consulaire une fois sur place.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F16904",
+      "steps": [
+        {
+          "title": "Faire une procuration avant le départ",
+          "detail": "Demande en ligne sur Maprocuration avec FranceConnect, puis vérification d'identité au commissariat ou à la gendarmerie, ou en ligne avec une identité numérique France Identité certifiée. Elle peut couvrir jusqu'à 1 an si vous êtes inscrit dans une commune.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1604",
+          "requiredDocuments": [
+            "Pièce d'identité",
+            "Numéro de référence Maprocuration"
+          ]
+        },
+        {
+          "title": "Choisir entre liste communale et liste consulaire",
+          "detail": "La liste consulaire permet de voter depuis l'étranger aux présidentielle, législatives, européennes et référendums ; les municipales, départementales et régionales exigent une inscription dans une commune.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F16904",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "taxes",
+      "title": "Signaler votre départ aux impôts",
+      "category": "TAX",
+      "summary": "Communiquez votre adresse à l'étranger et faites le point sur votre résidence fiscale : si elle reste en France, vous y êtes imposable sur tous vos revenus.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F31442",
+      "steps": [
+        {
+          "title": "Créer votre espace et signaler la nouvelle adresse",
+          "detail": "Créez votre espace particulier sur impots.gouv.fr avant de partir et emportez vos identifiants ; signalez votre adresse à l'étranger par la messagerie sécurisée.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier votre résidence fiscale",
+          "detail": "Vous restez résident si votre foyer, votre activité professionnelle principale ou le centre de vos intérêts économiques est en France, sous réserve de la convention fiscale avec le pays d'accueil.",
+          "officialUrl": "https://www.impots.gouv.fr/non-resident-de-france",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer les revenus de l'année du départ",
+          "detail": "L'année suivante, déclarez sur le formulaire 2042 les revenus du 1er janvier à la date de départ (revenus étrangers via le 2047), et sur le 2042-NR les revenus de source française perçus après le départ.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F31442",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer les comptes ouverts à l'étranger",
+          "detail": "Tant que vous êtes domicilié fiscalement en France, déclarez chaque compte ouvert, utilisé ou clos à l'étranger avec votre déclaration de revenus ; l'amende est de 1 500 € par compte non déclaré.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34342",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "bank",
+      "title": "Organiser vos comptes bancaires",
+      "category": "BANK",
+      "summary": "Un compte en France ou dans un pays de la zone SEPA est nécessaire pour payer vos impôts en ligne : prévenez votre banque de votre départ.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2485",
+      "steps": [
+        {
+          "title": "Informer la banque de votre nouvelle adresse",
+          "detail": "Si vous gardez vos comptes, communiquez votre adresse à l'étranger ; pour les clôturer, suivez les conditions de votre convention de compte.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2485",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier carte, plafonds et frais",
+          "detail": "Assurez-vous que votre carte fonctionne hors de France et vérifiez vos plafonds de paiement et de retrait ; hors zone euro, chaque paiement entraîne une commission de change.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2404",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier vos placements",
+          "detail": "Certains placements sont réservés aux résidents fiscaux français : renseignez-vous auprès de votre banque avant de partir.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "phone-internet",
+      "title": "Adapter forfait mobile et box internet",
+      "category": "OTHER",
+      "summary": "Résiliez la box si vous quittez le logement et vérifiez ce que votre forfait mobile permet à l'étranger.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F22486",
+      "steps": [
+        {
+          "title": "Résilier la box internet",
+          "detail": "Sans engagement, la résiliation prend effet au plus tard 10 jours après la demande ; pendant l'engagement, des frais s'appliquent sauf motif légitime. Rendez le matériel selon le contrat.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F22486",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier l'itinérance de votre forfait mobile",
+          "detail": "Dans l'EEE, l'opérateur peut, après au moins 4 mois d'observation et une alerte, facturer des surcoûts plafonnés si vous passez plus de jours et consommez plus à l'étranger qu'en France. Hors EEE, les tarifs dépendent de votre opérateur.",
+          "officialUrl": "https://www.arcep.fr/demarches-et-services/litinerance-roaming-en-europe-au-sein-de-lespace-economique-europeen.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "mail-address",
+      "title": "Faire suivre le courrier et changer d'adresse",
+      "category": "OTHER",
+      "summary": "Souscrivez une réexpédition La Poste vers l'étranger et déclarez votre départ en ligne à l'Assurance maladie et aux impôts.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.laposte.fr/demenagement-absence",
+      "steps": [
+        {
+          "title": "Souscrire la réexpédition internationale",
+          "detail": "Service payant de La Poste, définitif (6 ou 12 mois, à partir de 134 €) ou temporaire (15 jours à 12 mois, à partir de 60 €), pour les envois jusqu'à 2 kg. Mise en place 3 jours ouvrables après la souscription.",
+          "officialUrl": "https://www.laposte.fr/demenagement-absence",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer le départ en ligne",
+          "detail": "Le téléservice de changement d'adresse permet, en cas de départ de France, de prévenir la CPAM et le service des impôts en une seule démarche.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/R11193",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Moins de 25 ans : prévenir le CSNJ",
+          "detail": "Après le recensement, toute absence de plus de 4 mois se déclare jusqu'à vos 25 ans ; en cas de départ à l'étranger, écrivez au CSNJ de Perpignan par mail ou avec le cerfa n°11718.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1241",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "consular-registry",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "RESIDENCE",
+      "summary": "Inscription gratuite, valable 5 ans et vivement recommandée : elle facilite les démarches consulaires et permet d'être contacté en cas d'urgence.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne une fois sur place",
+          "detail": "Connectez-vous avec un compte service-public ou FranceConnect (un compte par adulte) et déposez les justificatifs ; l'inscription peut aussi se faire à l'ambassade ou au consulat.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/R43248",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport français",
+            "Photo d'identité récente",
+            "Justificatif de résidence dans la circonscription consulaire"
+          ]
+        },
+        {
+          "title": "Décider de l'inscription sur la liste électorale consulaire",
+          "detail": "Elle est proposée lors de l'inscription au registre ; s'inscrire sur une nouvelle liste électorale vous radie automatiquement de la précédente, celle de votre commune par exemple.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Ce modèle couvre seulement les démarches côté France : visa, titre de séjour et affiliation sur place relèvent du modèle du pays de destination.",
+    "La couverture santé dépend du statut (détachement, contrat local, stage, VIE, PVT) et de l'accord de sécurité sociale avec le pays : vérifiez la fiche du pays sur cleiss.fr ou auprès de votre caisse.",
+    "La résidence fiscale s'apprécie au cas par cas selon le droit français et la convention fiscale : un séjour professionnel à l'étranger ne fait pas forcément perdre la résidence fiscale française ; en cas de doute, interrogez votre service des impôts.",
+    "Le site caf.fr n'a pas pu être consulté lors de la vérification : les règles de maintien des aides pendant un séjour à l'étranger sont à confirmer auprès de votre Caf.",
+    "Délai de commande de la CEAM : service-public.gouv.fr indique 20 jours avant le départ, ameli.fr 15 jours.",
+    "Le délai de traitement du permis international n'a pas pu être vérifié sur le site de l'ANTS ; service-public.gouv.fr conseille au moins 1 mois avant le départ.",
+    "La source ne précise pas si un premier emploi ou une mutation à l'étranger ouvre droit au préavis réduit d'1 mois : vérifiez auprès de l'Adil de votre département.",
+    "Un départ à l'étranger n'est pas cité parmi les motifs légitimes de résiliation sans frais d'une box ou d'un forfait : vérifiez auprès de votre opérateur.",
+    "Tarifs (timbre fiscal, La Poste, permis international) relevés le 2026-11-23 : ils peuvent évoluer."
+  ]
+}

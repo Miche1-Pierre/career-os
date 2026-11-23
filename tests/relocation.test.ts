@@ -206,7 +206,7 @@ describe("relocation data in backups", () => {
   it("exports moves and listings", async () => {
     const { exportAll } = await import("@/server/services/data-transfer");
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(2);
+    expect(file.schemaVersion).toBe(3);
     expect(file.counts.moves).toBe(1);
     expect(file.counts.housingListings).toBe(3);
   });

@@ -454,4 +454,4 @@ export const CONFIDENCES = ["HIGH", "MEDIUM", "LOW"] as const;
 export type Confidence = (typeof CONFIDENCES)[number];
 
 export const APP_NAME = "Career OS";
-export const EXPORT_SCHEMA_VERSION = 2;
+export const EXPORT_SCHEMA_VERSION = 3;

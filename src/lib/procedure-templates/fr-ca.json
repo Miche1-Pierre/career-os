@@ -1,0 +1,461 @@
+{
+  "key": "FR-CA",
+  "from": "FR",
+  "to": "CA",
+  "title": "France → Canada, Québec / Montréal (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "eic",
+      "title": "Obtenir un permis via Expérience internationale Canada (EIC)",
+      "category": "VISA",
+      "summary": "Programme d'IRCC ouvert aux Français de 18 à 35 ans : Vacances-travail (permis ouvert, 24 mois max), Jeunes professionnels (permis lié à un employeur, 24 mois max) ou Stage coop international (permis lié à un employeur, 12 mois max).",
+      "appliesIf": "citoyen français de 18 à 35 ans inclus, une seule participation par catégorie",
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic.html",
+      "steps": [
+        {
+          "title": "Vérifier l'admissibilité et choisir la catégorie",
+          "detail": "Après une première participation en Vacances-travail ou Jeunes professionnels, une seconde est possible en Stage coop international, et inversement. Un VIE au Canada passe par la catégorie Jeunes professionnels.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/admisibilite/admissibilite-par-pays-categorie.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Créer son profil EIC dans le compte IRCC",
+          "detail": "Le profil doit être soumis dans les 60 jours suivant sa création ; il entre dans un bassin en attendant une invitation à présenter une demande (IPD).",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/devenir-candidat.html",
+          "requiredDocuments": ["Passeport valide"]
+        },
+        {
+          "title": "Obtenir le numéro d'offre d'emploi de l'employeur",
+          "detail": "Jeunes professionnels et Stage coop : l'employeur soumet l'offre dans le Portail des employeurs et paie 230 $ CA de frais de conformité, puis vous donne un numéro commençant par A, avant que vous déposiez la demande.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/presenter-demande-permis-travail.html",
+          "requiredDocuments": ["Offre d'emploi ou contrat de travail signé"]
+        },
+        {
+          "title": "Accepter l'invitation et déposer la demande de permis",
+          "detail": "Vous avez 10 jours pour accepter l'IPD, puis exactement 20 jours pour soumettre la demande en ligne et payer les frais (frais EIC, plus 100 $ CA de permis ouvert en Vacances-travail). Un examen médical préalable est exigé dans certains cas (séjours dans certains pays, travail en santé, éducation ou garde d'enfants).",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/presenter-demande-permis-travail.html",
+          "requiredDocuments": ["Copie du passeport", "CV", "Certificats de police des autres pays où vous avez vécu 6 mois ou plus depuis vos 18 ans", "Résultats de l'examen médical si requis"]
+        },
+        {
+          "title": "Vérifier la règle du certificat de police français",
+          "detail": "Un citoyen français n'a pas à joindre de certificat de police français à sa demande, mais un agent d'IRCC peut en demander un plus tard (bulletin n°3 du casier judiciaire).",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/demande/medical-police/certificats-police/comment/france.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Recevoir la lettre d'introduction",
+          "detail": "Une fois la demande approuvée, IRCC émet une lettre d'introduction valable un an : il faut la présenter à la frontière au plus tard à sa date d'expiration.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/apres-avoir-presenter-demande-etapes-suivantes.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "permis-employeur",
+      "title": "Obtenir un permis lié à un employeur hors EIC",
+      "category": "VISA",
+      "summary": "Sans EIC, il faut en général une offre d'un employeur québécois ayant obtenu une étude d'impact sur le marché du travail (EIMT), un Certificat d'acceptation du Québec (CAQ) puis le permis d'IRCC.",
+      "appliesIf": "hors EIC (âge, participation déjà utilisée…), avec une offre d'emploi au Québec",
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/employeur-donne.html",
+      "steps": [
+        {
+          "title": "Faire obtenir l'EIMT par l'employeur",
+          "detail": "La plupart des emplois nécessitent une EIMT ; au Québec, l'employeur obtient une autorisation conjointe des gouvernements du Québec et du Canada.",
+          "officialUrl": "https://www.quebec.ca/immigration/travailler-quebec/travailleurs-temporaires/programme-travailleurs-etrangers-temporaires/apercu",
+          "requiredDocuments": ["Contrat de travail écrit avec l'employeur québécois"]
+        },
+        {
+          "title": "Obtenir le Certificat d'acceptation du Québec (CAQ)",
+          "detail": "Spécifique au Québec : le CAQ s'ajoute au permis fédéral. Il n'est pas exigé lorsqu'aucune EIMT conjointe n'est requise.",
+          "officialUrl": "https://www.quebec.ca/entreprises-et-travailleurs-autonomes/administrer-gerer/embauche-gestion-personnel/recruter/embaucher-immigrant/embaucher-travailleur-etranger-temporaire/comprendre-autorisations",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Demander le permis de travail à IRCC",
+          "detail": "Joignez les documents remis par l'employeur et suivez les instructions pour une demande présentée depuis l'étranger.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/employeur-donne.html",
+          "requiredDocuments": ["Lettre d'EIMT et annexe A", "CAQ", "Offre d'emploi", "Passeport"]
+        }
+      ]
+    },
+    {
+      "key": "biometrie",
+      "title": "Fournir ses données biométriques",
+      "category": "VISA",
+      "summary": "Empreintes digitales et photo sont exigées pour un permis de travail et valent 10 ans ; elles se donnent sur rendez-vous dans un centre de réception des demandes de visa (CRDV), à Paris ou à Lyon.",
+      "appliesIf": "après le dépôt de la demande de permis, sauf biométrie fournie depuis moins de 10 ans",
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/campagnes/biometrie.html",
+      "steps": [
+        {
+          "title": "Payer les frais de biométrie avec la demande",
+          "detail": "85 $ CA pour une personne seule, payés en même temps que les frais de la demande de permis.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/campagnes/biometrie.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prendre rendez-vous dans un CRDV",
+          "detail": "Réservez dès réception de la lettre d'instructions ; la prise de rendez-vous est gratuite, ne payez personne pour l'obtenir.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/biometrie/ou-fournir-donnees-biometriques.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Se présenter au rendez-vous",
+          "detail": "Le délai de traitement du permis ne court qu'une fois la biométrie fournie.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/biometrie/comment-fournir-donnees-biometriques.html",
+          "requiredDocuments": ["Lettre d'instructions pour la collecte des données biométriques", "Passeport valide"]
+        }
+      ]
+    },
+    {
+      "key": "attestation-se401q207",
+      "title": "Demander l'attestation SE 401-Q-207 à sa CPAM",
+      "category": "HEALTH",
+      "summary": "Délivrée au titre de l'entente de sécurité sociale France-Québec, cette attestation permet de s'inscrire à la RAMQ sans délai de carence avec un permis de travail lié à un employeur au Québec.",
+      "appliesIf": "permis lié à un employeur au Québec (Jeunes professionnels, Stage coop, EIMT), assuré en France au départ",
+      "when": null,
+      "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/quebec.html",
+      "steps": [
+        {
+          "title": "Demander le formulaire avant le départ",
+          "detail": "Adressez la demande à votre caisse d'assurance maladie ; l'attestation se joint ensuite, avec le permis de travail « fermé », à l'inscription à la RAMQ.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/quebec.html",
+          "requiredDocuments": ["Contrat ou offre d'emploi au Québec"]
+        },
+        {
+          "title": "Vérifier le type de permis",
+          "detail": "Avec un permis ouvert (Vacances-travail), vous n'êtes pas admissible à la RAMQ, même avec ce formulaire : une assurance privée doit couvrir tout le séjour.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/quebec.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Cas d'un stage effectué pendant les études",
+          "detail": "Pour un stage non rémunéré, la CPAM délivre plutôt le formulaire SE 401-Q-104 ; au-delà d'une gratification de 1 000 $ CA par mois, le protocole ne s'applique plus.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/quebec.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "assurance-privee",
+      "title": "Souscrire une assurance santé privée pour tout le séjour",
+      "category": "INSURANCE",
+      "summary": "L'EIC exige à l'arrivée une assurance couvrant soins, hospitalisation et rapatriement pour toute la durée du séjour ; elle couvre aussi l'absence de RAMQ (permis ouvert) ou le délai de carence.",
+      "appliesIf": "obligatoire pour l'EIC, recommandée dans les autres cas",
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+      "steps": [
+        {
+          "title": "Couvrir toute la durée prévue",
+          "detail": "Si l'assurance ne couvre pas tout le séjour, le permis EIC s'arrête à sa date de fin et ne pourra pas être prolongé ensuite.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Inclure le rapatriement",
+          "detail": "L'assurance maladie du Québec ne couvre pas le rapatriement : une assurance complémentaire reste nécessaire même si vous êtes admissible à la RAMQ.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/presenter-demande-permis-travail.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prévoir les médicaments",
+          "detail": "Les personnes de 18 ans ou plus en séjour temporaire au Québec ne sont pas admissibles au régime public d'assurance médicaments ; vérifiez le régime collectif de l'employeur ou une assurance privée.",
+          "officialUrl": "https://www.ramq.gouv.qc.ca/fr/citoyens/assurance-medicaments/connaitre-conditions-admissibilite-regime-public",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Comparer avec l'offre de la CFE",
+          "detail": "La Caisse des Français de l'Étranger propose des contrats santé pour expatriés (JeunExpat avant 30 ans, MondExpat ensuite) ; vérifiez qu'ils remplissent les exigences de l'EIC, dont le rapatriement.",
+          "officialUrl": "https://www.cfe.fr/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Souscrire sans tarder si vous le faites au Québec",
+          "detail": "Pour une assurance privée prise sur place, le gouvernement du Québec indique d'agir au plus tard dans les 5 premiers jours suivant l'arrivée.",
+          "officialUrl": "https://www.quebec.ca/immigration/travailler-quebec/travailleurs-temporaires/programme-travailleurs-etrangers-temporaires/apres-autorisations",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "impots-france",
+      "title": "Signaler son départ au fisc français",
+      "category": "TAX",
+      "summary": "Déclarez votre nouvelle adresse à votre dernier centre des finances publiques et déclarez l'année suivante les revenus de l'année du départ.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+      "steps": [
+        {
+          "title": "Créer son espace Finances publiques avant de partir",
+          "detail": "Il permet ensuite de signaler la nouvelle adresse et de déclarer en ligne depuis l'étranger.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Signaler la nouvelle adresse",
+          "detail": "Faites-le en ligne depuis l'espace Finances publiques, auprès de votre dernier centre des finances publiques.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer les revenus de l'année du départ",
+          "detail": "L'année suivante, déclarez sur la 2042 les revenus du 1er janvier à la date du départ, et ajoutez une 2042-NR si vous gardez des revenus de source française imposables en France.",
+          "officialUrl": "https://www.impots.gouv.fr/international-particulier/questions/aupres-de-qui-dois-je-declarer-mes-revenus",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Garder un compte en France ou en zone SEPA",
+          "detail": "Il est nécessaire pour payer en ligne un impôt dû en France.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "point-entree",
+      "title": "Activer son permis au point d'entrée",
+      "category": "VISA",
+      "summary": "À l'arrivée, l'agent des services frontaliers délivre le permis de travail sur présentation de la lettre d'introduction, s'il est convaincu que vous êtes admissible.",
+      "appliesIf": "EIC : avant l'expiration de la lettre d'introduction",
+      "when": 0,
+      "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+      "steps": [
+        {
+          "title": "Obtenir l'attestation de fonds",
+          "detail": "Attestation bancaire émise au plus tôt une semaine avant le départ, montrant au moins 2 500 $ CA pour les trois premiers mois.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+          "requiredDocuments": ["Attestation bancaire"]
+        },
+        {
+          "title": "Présenter les documents à l'agent",
+          "detail": "Gardez-les dans le bagage à main pour les montrer à l'arrivée.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+          "requiredDocuments": ["Passeport", "Lettre d'introduction", "Preuve d'assurance maladie", "Preuve de fonds", "Billet de retour ou fonds suffisants pour l'acheter", "Copies des documents joints à la demande de permis"]
+        },
+        {
+          "title": "Déclarer les espèces de 10 000 $ CA ou plus",
+          "detail": "Toute somme de 10 000 $ CA ou plus doit être déclarée à l'agent des services frontaliers.",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la durée du permis remis",
+          "detail": "Sa validité ne peut dépasser la durée prévue par l'accord, ni la date d'expiration du passeport, de la biométrie, de l'assurance ou du contrat (Jeunes professionnels, Stage coop).",
+          "officialUrl": "https://www.canada.ca/fr/immigration-refugies-citoyennete/services/travailler-canada/eic/arrivee-canada.html",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "nas",
+      "title": "Demander son numéro d'assurance sociale (NAS)",
+      "category": "OTHER",
+      "summary": "Le NAS est nécessaire pour travailler au Canada ; demandez-le dès que possible après l'arrivée, en ligne, par la poste ou dans un Centre Service Canada. Il commence par 9 et expire avec le permis.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/emploi-developpement-social/services/numero-assurance-sociale/residents-temporaires.html",
+      "steps": [
+        {
+          "title": "Faire la demande en ligne ou en personne",
+          "detail": "En ligne, le NAS est visible en environ 5 jours ouvrables ; par la poste, comptez environ 20 jours ouvrables. Les courriels d'IRCC ne sont pas acceptés comme justificatif.",
+          "officialUrl": "https://www.canada.ca/fr/emploi-developpement-social/services/numero-assurance-sociale/residents-temporaires.html",
+          "requiredDocuments": ["Permis de travail délivré par IRCC", "Passeport"]
+        },
+        {
+          "title": "Communiquer le NAS à l'employeur",
+          "detail": "Vous pouvez commencer à travailler dès le dépôt de la demande ; transmettez le numéro à l'employeur dès que vous l'avez.",
+          "officialUrl": "https://www.quebec.ca/immigration/travailler-quebec/travailleurs-temporaires/programme-travailleurs-etrangers-temporaires/apres-autorisations",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "ramq",
+      "title": "S'inscrire à l'assurance maladie du Québec (RAMQ)",
+      "category": "HEALTH",
+      "summary": "Spécifique au Québec : avec un permis de travail admissible valide plus de 6 mois, inscrivez-vous en ligne dès l'arrivée ; l'attestation SE 401-Q-207 évite le délai de carence de 3 mois maximum.",
+      "appliesIf": "permis lié à un employeur au Québec valide plus de 6 mois (le permis ouvert Vacances-travail n'est pas admissible)",
+      "when": null,
+      "officialUrl": "https://www.ramq.gouv.qc.ca/fr/citoyens/assurance-maladie/connaitre-conditions-admissibilite",
+      "steps": [
+        {
+          "title": "Vérifier l'admissibilité",
+          "detail": "Le permis spécifique à un employeur au Québec fait partie des permis admissibles ; il faut aussi ne pas quitter le Québec plus de 21 jours consécutifs.",
+          "officialUrl": "https://www.ramq.gouv.qc.ca/fr/definition/types-permis-travail-admissibles",
+          "requiredDocuments": null
+        },
+        {
+          "title": "S'inscrire en ligne une fois au Québec",
+          "detail": "L'inscription n'est possible qu'après l'arrivée ; les documents ni en français ni en anglais doivent être traduits à vos frais.",
+          "officialUrl": "https://www.ramq.gouv.qc.ca/fr/citoyens/assurance-maladie/inscrire",
+          "requiredDocuments": ["Permis de travail", "Attestation SE 401-Q-207"]
+        },
+        {
+          "title": "Comprendre le délai de carence",
+          "detail": "Sans attestation d'un pays signataire, la couverture commence après 3 mois maximum à partir de l'inscription, et les soins reçus avant ne sont pas remboursés.",
+          "officialUrl": "https://www.ramq.gouv.qc.ca/fr/citoyens/assurance-maladie/ententes-securite-sociale-autres-pays",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Recevoir la carte par la poste",
+          "detail": "La lettre d'admissibilité et la carte arrivent en 2 envois séparés à l'adresse indiquée dans le formulaire.",
+          "officialUrl": "https://www.ramq.gouv.qc.ca/fr/travailleurs-etudiants-etrangers-toute-famille-peut-inscrire",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "logement",
+      "title": "Se loger et signer un bail au Québec",
+      "category": "RESIDENCE",
+      "summary": "Prévoyez un hébergement temporaire pour l'arrivée, puis signez un bail sur le formulaire obligatoire du Tribunal administratif du logement (TAL), qui encadre les droits des locataires au Québec.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.tal.gouv.qc.ca/",
+      "steps": [
+        {
+          "title": "Prévoir une adresse dès l'arrivée",
+          "detail": "Une adresse au Québec sert à recevoir la carte RAMQ par la poste et à prouver la résidence pour l'échange du permis de conduire.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        },
+        {
+          "title": "Exiger le formulaire de bail du TAL",
+          "detail": "Il est obligatoire pour tout nouveau bail résidentiel ; pour un bail verbal, le locateur doit remettre l'« Écrit obligatoire » dans les 10 jours.",
+          "officialUrl": "https://www.tal.gouv.qc.ca/fr/signature-d-un-bail/qu-est-ce-qu-un-bail",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Refuser tout dépôt de garantie",
+          "detail": "Le locateur peut exiger d'avance au plus le premier mois de loyer, mais ni dépôt de garantie ni chèques postdatés.",
+          "officialUrl": "https://www.tal.gouv.qc.ca/fr/etre-locataire/paiement-du-loyer",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Protéger ses renseignements personnels",
+          "detail": "Le locateur peut voir une pièce d'identité sans la photocopier, et doit obtenir votre consentement pour une enquête de crédit.",
+          "officialUrl": "https://www.tal.gouv.qc.ca/fr/signature-d-un-bail/bail-et-protection-des-renseignements-personnels",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Anticiper un départ avant la fin du bail",
+          "detail": "La sous-location ou la cession du bail est possible en avisant le locateur par écrit.",
+          "officialUrl": "https://www.tal.gouv.qc.ca/fr/cession-d-un-bail-ou-sous-location",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire canadien",
+      "category": "BANK",
+      "summary": "Une personne qui n'est pas citoyenne canadienne peut ouvrir un compte en présentant des pièces d'identité originales ; un passage en succursale peut être nécessaire.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/agence-consommation-matiere-financiere/services/activites-bancaires/ouvrir-compte-banque.html",
+      "steps": [
+        {
+          "title": "Présenter ses pièces d'identité originales",
+          "detail": "Deux documents de sources fiables (le passeport étranger est accepté), ou un document plus la confirmation d'identité par un client en règle de la banque.",
+          "officialUrl": "https://www.canada.ca/fr/agence-consommation-matiere-financiere/services/activites-bancaires/ouvrir-compte-banque.html",
+          "requiredDocuments": ["Passeport", "Deuxième pièce d'identité originale"]
+        }
+      ]
+    },
+    {
+      "key": "consulat",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Facultative mais fortement recommandée pour un séjour de plus de 6 mois, l'inscription est gratuite, se fait en ligne sur Service-Public.fr et vaut 5 ans.",
+      "appliesIf": "séjour de plus de 6 mois (facultatif)",
+      "when": null,
+      "officialUrl": "https://ca.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne",
+          "detail": "Vous êtes rattaché au consulat compétent pour votre lieu de résidence (Montréal ou Québec pour la province).",
+          "officialUrl": "https://ca.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+          "requiredDocuments": ["Carte nationale d'identité ou passeport français", "Justificatif de résidence au Canada", "Photo d'identité récente"]
+        }
+      ]
+    },
+    {
+      "key": "permis-conduire",
+      "title": "Échanger son permis de conduire à la SAAQ",
+      "category": "TRANSPORT",
+      "summary": "Spécifique au Québec : un nouveau résident peut conduire 6 mois consécutifs avec son permis étranger, puis doit détenir un permis du Québec ; l'échange exige un droit de séjour au Canada de plus de 6 mois.",
+      "appliesIf": "si vous conduisez et que votre résidence principale est au Québec",
+      "when": 180,
+      "officialUrl": "https://saaq.gouv.qc.ca/permis-conduire/permis-canadien-etranger",
+      "steps": [
+        {
+          "title": "Demander un rendez-vous d'échange",
+          "detail": "Remplissez le formulaire en ligne dès l'installation ; la SAAQ vous recontacte dans les 20 jours ouvrables.",
+          "officialUrl": "https://saaq.gouv.qc.ca/rendez-vous/echange-permis",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Apporter les documents originaux",
+          "detail": "Les documents ni en français ni en anglais doivent être accompagnés d'une traduction officielle.",
+          "officialUrl": "https://saaq.gouv.qc.ca/permis-conduire/permis-canadien-etranger",
+          "requiredDocuments": ["Permis de conduire français", "Preuve du droit de séjour au Canada (permis de travail)", "Preuve de résidence au Québec", "Preuve de résidence en France si le permis a moins de 3 ans", "Relevé de conduite (recommandé)"]
+        },
+        {
+          "title": "Si votre résidence principale reste en France",
+          "detail": "Vous pouvez conduire 6 mois consécutifs avec le permis français, puis il faut un permis international, délivré uniquement dans le pays du permis.",
+          "officialUrl": "https://saaq.gouv.qc.ca/permis-conduire/permis-canadien-etranger",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "impots-canada-quebec",
+      "title": "Produire ses déclarations fédérale et québécoise",
+      "category": "TAX",
+      "summary": "Résident fiscal du Québec au 31 décembre, vous produisez deux déclarations distinctes, à l'Agence du revenu du Canada et à Revenu Québec, au plus tard le 30 avril de l'année suivante.",
+      "appliesIf": "si vous devenez résident fiscal du Canada (liens de résidence)",
+      "when": null,
+      "officialUrl": "https://www.canada.ca/fr/agence-revenu/services/impot/impot-international-non-residents/particuliers-depart-canada-entree-canada-non-residents/nouveaux-arrivants-canada-immigrants.html",
+      "steps": [
+        {
+          "title": "Déterminer son statut de résidence fiscale",
+          "detail": "Pour la plupart des nouveaux arrivants, la résidence fiscale commence le premier jour où ils vivent au Canada ; elle est distincte du statut d'immigration.",
+          "officialUrl": "https://www.canada.ca/fr/agence-revenu/services/impot/impot-international-non-residents/particuliers-depart-canada-entree-canada-non-residents/nouveaux-arrivants-canada-immigrants.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Produire la déclaration fédérale",
+          "detail": "À déposer au plus tard le 30 avril de l'année suivante.",
+          "officialUrl": "https://www.canada.ca/fr/agence-revenu/services/impot/impot-international-non-residents/particuliers-depart-canada-entree-canada-non-residents/nouveaux-arrivants-canada-immigrants.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Produire la déclaration du Québec",
+          "detail": "Spécifique au Québec : déclaration provinciale distincte à Revenu Québec, sur vos revenus mondiaux de toutes sources pour la période de résidence.",
+          "officialUrl": "https://www.revenuquebec.ca/fr/citoyens/votre-situation/statut-de-residence-et-obligations-fiscales/vous-etes-arrive-au-quebec/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Éviter la double imposition",
+          "detail": "Si vous êtes aussi résident fiscal français, appliquez les conventions fiscales conclues avec la France, ou à défaut le crédit pour impôt étranger.",
+          "officialUrl": "https://www.revenuquebec.ca/fr/citoyens/votre-situation/statut-de-residence-et-obligations-fiscales/vous-etes-arrive-au-quebec/",
+          "requiredDocuments": null
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "EIC : les bassins de la saison 2026 sont fermés (vérifié le 2026-11-23) ; les nouveaux profils seront possibles à la réouverture pour 2027. Quotas, frais et calendrier changent à chaque saison.",
+    "Le montant des frais de participation EIC ne s'affichait pas sur la page d'IRCC lors de la vérification : consultez la grille des frais avant de payer.",
+    "Le délai pour fournir la biométrie après la lettre d'instructions n'est pas précisé sur les pages consultées : suivez celui indiqué dans la lettre.",
+    "RAMQ : selon le CLEISS, un permis ouvert (Vacances-travail) ne donne pas accès à la RAMQ ; pour un Stage coop ou un stage court, l'admissibilité dépend du permis et de la gratification, à confirmer auprès de la RAMQ et du CLEISS.",
+    "VIE : il passe par la catégorie Jeunes professionnels de l'EIC, mais sa protection sociale relève du dispositif VIE ; à vérifier auprès de Business France.",
+    "Le volet Mobilité francophone (permis sans EIMT pour francophones) concerne uniquement les emplois hors Québec.",
+    "Permis de conduire : la page de la SAAQ ne liste pas les pays ayant une entente d'échange ; vérifiez auprès de la SAAQ les conditions applicables au permis français. Le repère de 180 jours correspond aux 6 mois de conduite autorisés.",
+    "Résidence fiscale : la date à laquelle vous devenez résident fiscal au Canada et non-résident en France dépend de vos liens personnels et économiques ; en cas de doute, interrogez l'ARC, Revenu Québec et votre centre des finances publiques."
+  ]
+}
