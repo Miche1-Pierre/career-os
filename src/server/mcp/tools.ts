@@ -51,6 +51,8 @@ import { saveAnalysis } from "@/server/services/analysis";
 import { readContract, saveContractAnalysis, updateOffer } from "@/server/services/offers";
 import { addProcedures, addProceduresFromTemplates, listProcedures, procedureTemplatesFor, updateProcedure, updateStep } from "@/server/services/procedures";
 import { PROCEDURE_STATUSES } from "@/lib/procedures";
+import { createSearch, listSearches, runSearch } from "@/server/services/discovery";
+import { DISCOVERY_SOURCES } from "@/lib/discovery";
 import { contractAnalysisSchema, offerPatchSchema } from "@/lib/offer";
 import { getSettings, patchSettingsSection } from "@/server/services/settings";
 import { listStages } from "@/server/services/stages";
@@ -669,6 +671,35 @@ export const TOOLS: McpTool[] = [
   // -------------------------------------------------------------------------
   // Relocation: moves (installation projects), housing listings, budget
   // -------------------------------------------------------------------------
+  tool({
+    name: "list_sources",
+    title: "Sources of the discovery engine",
+    description: "Job and housing sources: API connectors (Greenhouse, Lever, Ashby boards per company, Remotive, Arbeitnow, Adzuna with key), Claude web research, and sites the user must open himself (LinkedIn, Indeed, Immoweb…) with pre-filled search links. Also the saved searches with their last run.",
+    input: z.object({ domain: z.enum(["JOBS", "HOUSING"]).optional() }),
+    readOnly: true,
+    handler: async ({ domain }) => ({ sources: DISCOVERY_SOURCES.filter((s) => !domain || s.domain === domain), searches: (await listSearches()).filter((s) => !domain || s.domain === domain).map((s) => ({ id: s.id, domain: s.domain, name: s.name, criteria: s.criteria, schedule: s.schedule, useAgent: s.useAgent, lastRun: s.lastRun ? { at: s.lastRun.startedAt, status: s.lastRun.status, found: s.lastRun.resultsFound, new: s.lastRun.resultsNew, report: s.lastRun.report } : null })) }),
+  }),
+  tool({
+    name: "save_search",
+    title: "Create a saved search",
+    description:
+      "Save a job or housing search. JOBS criteria: keywords[], excludeKeywords[], locations[], countries[] (ISO), remoteOk, companies[{name, ats: greenhouse|lever|ashby, slug}], maxAgeDays. HOUSING criteria (moveId required): city, country, maxTotalMonthly, currency, furnished REQUIRED|PREFERRED|ANY, types[ROOM_COLIVING|ROOM_FLATSHARE|STUDIO|APARTMENT], from, to, near, notes. useAgent = let Claude search the web too (costs quota). schedule OFF|DAILY|WEEKLY.",
+    input: z.object({ domain: z.enum(["JOBS", "HOUSING"]), name: z.string(), moveId: z.string().uuid().optional(), criteria: z.record(z.string(), z.unknown()), sources: z.array(z.string()).optional(), useAgent: z.boolean().optional(), schedule: z.enum(["OFF", "DAILY", "WEEKLY"]).optional() }),
+    handler: async (input, ctx) => {
+      const row = await createSearch(input, ctx);
+      return { id: row.id, url: `${appUrl()}/searches` };
+    },
+  }),
+  tool({
+    name: "run_research",
+    title: "Run a saved search now",
+    description: "Runs a saved search: connectors, then Claude if the search allows it. New job postings go to the Inbox (not analyzed), new housing listings to the move as 'Nouveau'. Returns the honest report: sources read, sources blocked and why, suggestions.",
+    input: z.object({ searchId: z.string().uuid() }),
+    handler: async ({ searchId }, ctx) => {
+      const run = await runSearch(searchId, ctx, { trigger: "CHAT" });
+      return { status: run.status, found: run.resultsFound, new: run.resultsNew, sources: run.sources, suggestions: run.suggestions, report: run.report, error: run.error, url: `${appUrl()}/searches` };
+    },
+  }),
   tool({
     name: "procedures_list",
     title: "Administrative procedures of a move",

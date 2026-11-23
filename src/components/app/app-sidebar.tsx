@@ -18,6 +18,7 @@ import {
   Trash2,
   UserRound,
   Users,
+  Radar,
 } from "lucide-react";
 import {
   Sidebar,
@@ -91,7 +92,10 @@ export function AppSidebar() {
   const { open: openImport } = useQuickImport();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const apply: NavItem[] = [{ href: "/applications", label: "Candidatures", icon: Briefcase }];
+  const apply: NavItem[] = [
+    { href: "/applications", label: "Candidatures", icon: Briefcase },
+    { href: "/searches", label: "Recherches", icon: Radar },
+  ];
   if (badges.inbox > 0) apply.push({ href: "/inbox", label: "À trier", icon: Inbox, badge: badges.inbox });
   return (
     <Sidebar collapsible="icon" variant="sidebar">

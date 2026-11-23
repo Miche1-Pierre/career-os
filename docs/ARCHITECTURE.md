@@ -153,7 +153,23 @@ statut, échéance, lien officiel, sources, étapes à cocher (le statut suit le
 - **recherche Claude** (`procedures_research_v1`, recherche web autorisée pour cette seule tâche) pour n'importe quel
   pays : sources officielles uniquement, liens non https écartés, résultats marqués « à vérifier » jusqu'à relecture ;
 - saisie à la main.
-Les échéances ouvertes apparaissent dans Aujourd'hui. Export : `EXPORT_SCHEMA_VERSION` 3 (les exports v2 s'importent).
+Les échéances ouvertes apparaissent dans Aujourd'hui. Export : `EXPORT_SCHEMA_VERSION` 4 (les exports plus anciens s'importent).
+
+### Moteur de découverte (recherches)
+
+`src/server/services/discovery.ts` + `src/lib/discovery.ts`. Une recherche sauvegardée (`saved_searches`) porte sur des
+offres (mots-clés dans le titre, exclusions, lieux, pays, entreprises suivies) ou des logements (installation, budget
+total, meublé, types, dates). Chaque lancement (`research_runs`) garde un rapport : sources lues, sources bloquées et
+pourquoi, suggestions, nombre de résultats et de nouveaux.
+- **Connecteurs** (`src/server/discovery/connectors.ts`, API publiques sans clé) : pages carrières Greenhouse, Lever et
+  Ashby par entreprise, Remotive, Arbeitnow ; Adzuna avec une clé gratuite (`ADZUNA_APP_ID`, `ADZUNA_APP_KEY`).
+- **Agent Claude** (option par recherche, Sonnet, recherche web) : pages publiques uniquement, jamais de connexion ni de
+  contournement d'anti-robot ; les sites refusés sont listés. Pour le logement, il lit le détail de l'annonce et sépare
+  loyer, charges et garantie (citation du prix conservée dans la note).
+- **Liens pré-remplis** pour les sites à ouvrir soi-même (LinkedIn, Indeed, Welcome to the Jungle, Immoweb…).
+- Résultats : offres → Inbox (non analysées, aucun quota consommé) ; logements → annonces « Nouveau » de l'installation.
+  Doublons écartés par URL canonique et par entreprise + titre + ville.
+- Planification quotidienne ou hebdomadaire : la tâche de fond lance au plus une recherche à la fois.
 
 ### Dictée
 
@@ -165,7 +181,7 @@ enregistrement. Variables : `TRANSCRIBE=off`, `TRANSCRIBE_MODEL`, `TRANSCRIBE_LA
 
 ### Claude Code comme opérateur (« depuis une conversation ici »)
 
-- `.mcp.json` enregistre le serveur MCP `career-os` → 45 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget, démarches,
+- `.mcp.json` enregistre le serveur MCP `career-os` → 48 outils (today, search, create_opportunity, set_status, offre/contrat, moves/logement/budget, démarches, recherches,
   follow_up, add_interview, attach_document, inbox…, save_analysis…).
 - `CLAUDE.md` + skills `.claude/skills/*` décrivent les workflows (importer, traiter l'Inbox, relances, préparation
   d'entretien, analyse). Claude extrait lui-même, avec provenance, et crée les objets via MCP — sans clé API.

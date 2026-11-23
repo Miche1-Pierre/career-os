@@ -34,6 +34,8 @@ const TABLES: [string, Table][] = [
   ["housingListings", s.housingListings],
   ["procedures", s.procedures],
   ["procedureSteps", s.procedureSteps],
+  ["savedSearches", s.savedSearches],
+  ["researchRuns", s.researchRuns],
 ];
 
 export interface ExportFile {
@@ -87,6 +89,12 @@ function upgradeExport(file: ExportFile): ExportFile {
     file.data.procedures ??= [];
     file.data.procedureSteps ??= [];
     file.schemaVersion = 3;
+  }
+  // v3 → v4: discovery engine (savedSearches, researchRuns) added.
+  if (file.schemaVersion === 3) {
+    file.data.savedSearches ??= [];
+    file.data.researchRuns ??= [];
+    file.schemaVersion = 4;
   }
   return file;
 }

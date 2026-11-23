@@ -23,6 +23,8 @@ export interface StructuredRequest<T> {
   timeoutMs?: number;
   /** Research task: let the model search and read the web (Claude Code only). */
   webTools?: boolean;
+  /** Model suited to the task (e.g. "sonnet" for web research), used unless the user forced one in Settings. */
+  model?: string;
 }
 
 export interface StructuredMeta {
@@ -312,7 +314,7 @@ export async function generateStructured<T>(request: StructuredRequest<T>): Prom
     prompt: request.prompt,
     jsonSchema,
     task: request.task,
-    model: settings.ai.model || null,
+    model: settings.ai.model || (request.model && currentProvider().name === "claude-code" ? request.model : null) || null,
     effort: settings.ai.effort || env("AI_EFFORT") || null,
     timeoutMs: request.timeoutMs ?? 240_000,
     webTools: request.webTools ?? false,

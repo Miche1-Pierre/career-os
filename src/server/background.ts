@@ -3,8 +3,9 @@
  *  - resume analyses interrupted by a restart
  *  - periodic rules evaluation (deadlines, missing documents, ghosting, stale interviews)
  *  - automatic JSON backups to ./backups
+ *  - scheduled searches of the discovery engine (one at a time, never blocking the tick)
  */
-const g = globalThis as unknown as { __careerOsBackground?: boolean };
+const g = globalThis as unknown as { __careerOsBackground?: boolean; __careerOsDiscoveryTick?: boolean };
 
 export function startBackgroundServices() {
   if (g.__careerOsBackground) return;
@@ -20,6 +21,16 @@ export function startBackgroundServices() {
       const { autoBackupIfDue } = await import("./services/data-transfer");
       const backup = await autoBackupIfDue();
       if (backup) console.log(`[backup] automatic backup written: ${backup.name}`);
+      if (!g.__careerOsDiscoveryTick) {
+        g.__careerOsDiscoveryTick = true;
+        void import("./services/discovery")
+          .then(({ runDueSearches }) => runDueSearches())
+          .then((run) => run && console.log(`[discovery] scheduled search done: ${run.resultsNew} new`))
+          .catch((error) => console.error("[discovery] scheduled search failed:", error instanceof Error ? error.message : error))
+          .finally(() => {
+            g.__careerOsDiscoveryTick = false;
+          });
+      }
     } catch (error) {
       // The database may not be ready yet; the next tick will retry.
       console.error("[background] tick failed:", error instanceof Error ? error.message : error);
