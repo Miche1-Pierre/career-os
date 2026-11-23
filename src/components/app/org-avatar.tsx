@@ -37,6 +37,8 @@ const SIZES = {
 
 const PADDING = { sm: "p-0.5", md: "p-1", lg: "p-1.5", xl: "p-2" };
 
+const LOGO_REV = 2;
+
 export function OrgAvatar({
   name,
   size = "md",
@@ -53,7 +55,8 @@ export function OrgAvatar({
   website?: string | null;
 }) {
   const wantsLogo = !!orgId && website !== null && website !== "";
-  const src = wantsLogo ? `/api/logos/${orgId}${website ? `?v=${hash(website).toString(36)}` : ""}` : null;
+  // LOGO_REV busts the browser cache when the server finds better logos (bump it after such a change).
+  const src = wantsLogo ? `/api/logos/${orgId}?v=${website ? hash(website).toString(36) : "0"}.${LOGO_REV}` : null;
   return (
     <span aria-hidden className={cn("relative flex shrink-0 items-center justify-center overflow-hidden font-semibold tracking-tight select-none", SIZES[size], tintFor(name || "?"), className)}>
       {initials(name.replace(/[^\p{L}\p{N}\s]+/gu, " "))}
