@@ -375,7 +375,8 @@
       .extra b { color: var(--fg); font-weight: 600; }
       .extra .say { margin-top: 12px; box-shadow: none; }
       .extra .say::before { display: none; }
-      .extra .say span { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; font-weight: 400; }
+      .extra .say span { font-size: 13.5px; font-weight: 400; }
+      .say.cmd span { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13.5px; font-weight: 500; }
 
       /* FAQ */
       .faq { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 40px; }
@@ -943,44 +944,45 @@
         <div class="wrap">
           <div class="rv">
             <h2>Prêt ? <em>Commence ici.</em></h2>
-            <p class="lead">Claude installe Career OS pour toi. Pas de réglages : tu colles un message, tu réponds à quelques questions.</p>
+            <p class="lead">Sur Windows, une commande installe tout : pas de droits administrateur, rien à régler. Compte quelques minutes.</p>
           </div>
           <div class="starts">
             <article class="start rv">
-              <div class="top-viz"><div class="appwin" aria-hidden="true"><div class="bar"><i></i><i></i><i></i></div><div class="tabs"><span>Discussion</span><span class="on">Code</span></div><div class="lines"><i></i><i></i><i></i></div></div></div>
+              <div class="top-viz"><div class="appwin" aria-hidden="true"><div class="bar"><i></i><i></i><i></i></div><div class="tabs"><span>Applications installées</span><span class="on">Terminal</span></div><div class="lines"><i></i><i></i><i></i></div></div></div>
               <div class="body">
                 <small>Étape 1</small>
-                <h3>Ouvre Claude</h3>
-                <p>Installe l'application Claude, connecte-toi avec ton abonnement Pro ou Max, ouvre l'onglet Code et choisis un dossier, par exemple Documents.</p>
-                <a class="link" href="https://claude.ai/download" rel="noopener">Télécharger Claude</a>
+                <h3>Ouvre le Terminal</h3>
+                <p>Fais un clic droit sur le bouton Démarrer de Windows, puis choisis « Terminal » (ou « Windows PowerShell »).</p>
               </div>
             </article>
             <article class="start rv">
-              <div class="top-viz"><div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div></div>
+              <div class="top-viz"><div class="say cmd"><span>irm https://get-career-os.vercel.app/install.ps1 | iex</span><button class="copy" data-copy="irm https://get-career-os.vercel.app/install.ps1 | iex"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div></div>
               <div class="body">
                 <small>Étape 2</small>
-                <h3>Colle ce message</h3>
-                <p>Copie-le, colle-le dans Claude et envoie. Claude récupère Career OS et prépare tout.</p>
+                <h3>Colle cette commande</h3>
+                <p>Copie-la, colle-la dans le Terminal (clic droit), puis appuie sur Entrée. Career OS s'installe et s'ouvre tout seul, avec un raccourci sur ton bureau.</p>
+                <a class="link" href="/install.ps1" target="_blank" rel="noopener">Lire ce que fait la commande</a>
               </div>
             </article>
             <article class="start rv">
-              <div class="top-viz"><img class="shot" src="/screens/welcome-crop.webp" width="960" height="630" loading="lazy" alt="Le premier lancement de Career OS : prénom, nom, e-mail, téléphone et ville." /></div>
+              <div class="top-viz"><img class="shot" src="/screens/welcome-key.webp" width="543" height="170" loading="lazy" alt="La dernière étape du premier lancement : « Active l'assistant Claude », avec un champ pour coller sa clé." style="transform:none" /></div>
               <div class="body">
                 <small>Étape 3</small>
-                <h3>Réponds à ses questions</h3>
-                <p>Ton prénom, ton e-mail, ce que tu cherches. Claude remplit ton profil à partir de ton CV, crée un raccourci et Career OS s'ouvre.</p>
-                <a class="link" href="#faq">Questions fréquentes</a>
+                <h3>Colle ta clé Claude</h3>
+                <p>Au premier lancement, présente-toi en quatre écrans, puis colle ta clé Claude : l'assistant est prêt. Pas de clé ? L'app fonctionne quand même.</p>
+                <a class="link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Créer une clé Claude</a>
               </div>
             </article>
           </div>
           <div class="extra rv">
             <div>
-              <b>Déjà habitué à Claude Code ?</b> Lance directement :
-              <div class="say"><span>claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"</span><button class="copy" data-copy='claude "Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"'><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
+              <b>Sur Mac, Linux, ou avec Claude Code ?</b> Colle ce message dans Claude (onglet Code) : il installe et règle tout avec toi.
+              <div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
             </div>
             <div>
-              <b>Bientôt sur le Microsoft Store.</b> Career OS en application Windows, installée en un clic, avec Claude pour t'aider.
-              <p style="margin:12px 0 0">Tu préfères télécharger d'abord ? <a href="https://github.com/Miche1-Pierre/career-os/archive/refs/heads/main.zip">Télécharge le dossier</a>, ouvre-le dans Claude et écris « installe Career OS ».</p>
+              <b>Mettre à jour :</b> relance la même commande, tes données sont conservées.<br />
+              <b>Désinstaller :</b> Paramètres Windows → Applications → Career OS. Tes documents restent dans Documents/CareerOS.
+              <p style="margin:12px 0 0"><b>Bientôt sur le Microsoft Store</b>, pour installer en un clic.</p>
             </div>
           </div>
         </div>
@@ -999,8 +1001,9 @@
             </div>
             <div>
               <details><summary>Et si Claude se trompe ?</summary><p>Il ne remplit un champ que s'il trouve l'information dans l'annonce, et il montre la phrase d'où elle vient. Ce qui manque reste vide, et tu vérifies avant d'enregistrer.</p></details>
-              <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Le raccourci sur le bureau est pour l'instant prévu pour Windows ; sur Mac, Claude t'indique comment ouvrir l'application.</p></details>
-              <details><summary>Comment mettre à jour ?</summary><p>Demande à Claude « mets à jour Career OS ». Tes candidatures et tes documents ne bougent pas.</p></details>
+              <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Sur Windows, une commande suffit. Sur Mac et Linux, l'installation passe par Claude Code, qui t'indique ensuite comment ouvrir l'application.</p></details>
+              <details><summary>La commande est-elle sûre ?</summary><p>Elle télécharge Career OS depuis GitHub et Node.js depuis son site officiel, vérifie l'empreinte de chaque fichier, et installe tout dans ton dossier utilisateur, sans droits administrateur ni modification de Windows. Tu peux <a href="/install.ps1" target="_blank" rel="noopener">la lire</a> avant de la lancer.</p></details>
+              <details><summary>Comment mettre à jour ?</summary><p>Relance la commande d'installation (ou demande à Claude « mets à jour Career OS » si tu l'as installé avec lui). Tes candidatures et tes documents ne bougent pas.</p></details>
               <details><summary>Et si je change d'ordinateur ?</summary><p>Copie ton dossier CareerOS sur le nouvel ordinateur, puis demande à Claude d'installer Career OS en lui indiquant ce dossier : tu retrouves tout.</p></details>
             </div>
           </div>
@@ -1012,7 +1015,7 @@
         <div class="wrap">
           <div class="final rv">
             <h2>Range ta recherche avec Claude.</h2>
-            <p>Dix minutes pour l'installer, et tout est au même endroit.</p>
+            <p>Quelques minutes pour l'installer, et tout est au même endroit.</p>
             <div class="cta">
               <a class="pill pill-white" href="#installer">Installer Career OS</a>
               <a class="pill pill-ghost" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>

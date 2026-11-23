@@ -89,3 +89,26 @@ describe("Claude errors in plain French", () => {
     expect(explainClaudeError("Timeout after 600000 ms")).toBe("Timeout after 600000 ms");
   });
 });
+
+describe("Windows install: Claude Code without an account", () => {
+  it("asks for a key until one is pasted", async () => {
+    process.env.CLAUDE_REQUIRES_KEY = "true";
+    process.env.USERPROFILE = dir; // no .claude/.credentials.json here
+    process.env.HOME = dir;
+    const { claudeNeedsKey } = await import("@/server/ai/credentials");
+    expect(claudeNeedsKey()).toBe(true);
+    await saveAnthropicKey(KEY, { check: ok });
+    expect(claudeNeedsKey()).toBe(false);
+    removeAnthropicKey();
+    // Also logged in with a subscription on this computer: that login works for the app.
+    fs.mkdirSync(path.join(dir, ".claude"), { recursive: true });
+    fs.writeFileSync(path.join(dir, ".claude", ".credentials.json"), "{}");
+    expect(claudeNeedsKey()).toBe(false);
+  });
+
+  it("changes nothing for other installs", async () => {
+    const { claudeNeedsKey } = await import("@/server/ai/credentials");
+    delete process.env.CLAUDE_REQUIRES_KEY;
+    expect(claudeNeedsKey()).toBe(false);
+  });
+});

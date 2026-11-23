@@ -8,7 +8,7 @@ import { z } from "zod";
 import { db } from "@/server/db";
 import { chatMessages, chatThreads, housingListings, moves, opportunities, organizations, type ChatToolCall } from "@/server/db/schema";
 import { chatAvailable, claudeMode, inDocker } from "@/server/ai";
-import { claudeKeyEnv, explainClaudeError } from "@/server/ai/credentials";
+import { claudeKeyEnv, claudeNeedsKey, explainClaudeError, NEEDS_KEY_MESSAGE } from "@/server/ai/credentials";
 import { streamClaude } from "../../../bridge/claude-runner.mjs";
 import { AppError, notFound } from "@/server/context";
 import { getSettings } from "@/server/services/settings";
@@ -185,9 +185,7 @@ function chatModel() {
 
 export async function startChat(raw: unknown, requestOrigin: string, signal?: AbortSignal): Promise<ReadableStream<Uint8Array>> {
   const req = chatRequestSchema.parse(raw);
-  if (!chatAvailable()) {
-    throw new AppError("UNAVAILABLE", "Le chat a besoin de Claude : colle ta clé API Claude dans Paramètres → IA.");
-  }
+  if (!chatAvailable() || claudeNeedsKey()) throw new AppError("UNAVAILABLE", NEEDS_KEY_MESSAGE);
   const mode = claudeMode();
   if (!mode) throw new AppError("UNAVAILABLE", "Claude Code n'est pas configuré (Paramètres → IA).");
 
