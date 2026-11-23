@@ -125,6 +125,7 @@ const server = http.createServer(async (req, res) => {
       system: typeof body.system === "string" ? body.system : undefined,
       prompt: body.prompt,
       schema: body.schema && typeof body.schema === "object" ? body.schema : undefined,
+      webTools: body.webTools === true,
       model: pick(body.model, /^[a-z0-9.\-[\]]{1,60}$/i),
       fallbackModel: pick(body.fallbackModel, /^[a-z0-9.\-[\]]{1,60}$/i),
       effort: pick(body.effort, /^(low|medium|high|xhigh|max)$/),

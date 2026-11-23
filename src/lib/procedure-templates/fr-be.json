@@ -1,0 +1,369 @@
+{
+  "key": "FR-BE",
+  "from": "FR",
+  "to": "BE",
+  "title": "France → Belgique (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "cip",
+      "title": "Vérifier la convention d'immersion professionnelle",
+      "category": "OTHER",
+      "summary": "En Région bruxelloise, la CIP encadre un stage en entreprise de 1 à 6 mois. Le stage ne peut commencer qu'après validation du plan de formation.",
+      "appliesIf": "stage sous convention d'immersion professionnelle (CIP) en Région de Bruxelles-Capitale",
+      "when": null,
+      "officialUrl": "https://www.actiris.brussels/fr/employeurs/convention-d-immersion-professionnelle/",
+      "steps": [
+        {
+          "title": "Vérifier la validation du plan de formation",
+          "detail": "Le plan de formation doit être validé par Bruxelles Formation (ou le VDAB pour un stage en néerlandais) avant le début du stage. La réponse arrive dans les 10 jours ouvrables suivant la réception d'un dossier complet.",
+          "officialUrl": "https://www.actiris.brussels/fr/employeurs/convention-d-immersion-professionnelle/"
+        },
+        {
+          "title": "Contrôler la durée et l'indemnité",
+          "detail": "La CIP dure de 1 à 6 mois, jusqu'à 1 an avec une dérogation de Bruxelles Formation. Pour un stagiaire de 18 ans ou plus, l'indemnité minimale est la moitié du revenu minimum mensuel moyen garanti (RMMMG).",
+          "officialUrl": "https://www.actiris.brussels/fr/employeurs/convention-d-immersion-professionnelle/"
+        },
+        {
+          "title": "Vérifier l'assurance accidents du travail",
+          "detail": "L'entreprise doit vous assurer contre les accidents du travail et sur le chemin du travail. Le stagiaire en CIP n'est en principe pas assujetti à la sécurité sociale belge.",
+          "officialUrl": "https://www.actiris.brussels/fr/employeurs/convention-d-immersion-professionnelle/"
+        },
+        {
+          "title": "Garder un exemplaire signé de la convention",
+          "detail": "La commune demande une convention de stage pour inscrire un stagiaire qui séjourne plus de 3 mois.",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/residence-formalities-eu/more-than-90-days",
+          "requiredDocuments": ["Convention d'immersion professionnelle signée"]
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "La CEAM permet la prise en charge des soins devenus nécessaires pendant un séjour temporaire en Belgique, selon les règles belges.",
+      "appliesIf": "tant que vous restez affilié à l'Assurance Maladie française (à vérifier selon votre statut)",
+      "when": -20,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Ameli conseille de la demander au moins 15 jours avant le départ, en ligne, au 36 46 ou en point d'accueil. Elle est valable 2 ans au maximum, sans dépasser la durée de vos droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Utiliser le certificat provisoire si le départ est proche",
+          "detail": "Si vous partez dans moins de 15 jours, vous recevez un certificat provisoire de remplacement valable 3 mois.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Vérifier que la CEAM convient à votre séjour",
+          "detail": "La CEAM sert aux séjours temporaires et ne couvre pas les soins programmés. Si vous vous installez dans un autre pays européen, service-public.fr renvoie au formulaire S1.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34441"
+        },
+        {
+          "title": "Si vous êtes étudiant, lire la fiche stage du CLEISS",
+          "detail": "Pour un stage effectué dans le cadre d'études suivies en France, le CLEISS détaille la couverture maladie et accidents du travail. Selon le droit du pays d'accueil, un stagiaire peut y être considéré comme salarié.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        }
+      ]
+    },
+    {
+      "key": "residence-fiscale",
+      "title": "Clarifier votre résidence fiscale",
+      "category": "TAX",
+      "summary": "La France et la Belgique peuvent chacune vous considérer comme résident fiscal. En cas de conflit, la convention fiscale franco-belge tranche.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.impots.gouv.fr/resident-de-france",
+      "steps": [
+        {
+          "title": "Vérifier les critères du domicile fiscal français",
+          "detail": "Un seul critère suffit pour être domicilié fiscalement en France : foyer ou lieu de séjour principal, activité professionnelle principale, ou centre des intérêts économiques.",
+          "officialUrl": "https://www.impots.gouv.fr/resident-de-france"
+        },
+        {
+          "title": "Tenir compte de la présomption belge",
+          "detail": "Sauf preuve contraire, la Belgique présume que toute personne inscrite dans une commune y a son domicile fiscal. Elle doit alors y déclarer tous ses revenus, belges et étrangers.",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/taxes/"
+        },
+        {
+          "title": "Signaler votre nouvelle adresse aux impôts français",
+          "detail": "Indiquez votre nouvelle adresse à votre dernier centre des finances publiques depuis votre espace particulier. Prévenez aussi vos éventuels employeurs ou caisses de retraite en France.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer"
+        }
+      ]
+    },
+    {
+      "key": "bail",
+      "title": "Signer le bail et constituer la garantie locative",
+      "category": "OTHER",
+      "summary": "À Bruxelles, le Code bruxellois du logement encadre le bail, la garantie locative, l'état des lieux et l'enregistrement du contrat.",
+      "appliesIf": "location d'un logement en Région de Bruxelles-Capitale",
+      "when": null,
+      "officialUrl": "https://be.brussels/fr/logement/location/les-differentes-etapes-de-la-location",
+      "steps": [
+        {
+          "title": "Choisir le type de bail adapté",
+          "detail": "Le bail de résidence principale s'applique si le logement devient votre résidence principale. La Région propose des modèles, dont des baux de colocation et des baux étudiants.",
+          "officialUrl": "https://be.brussels/fr/logement/location/bail-dhabitation/contrat-de-bail-modeles-et-annexe"
+        },
+        {
+          "title": "Verser la garantie locative sur un compte à votre nom",
+          "detail": "Pour un bail conclu ou renouvelé depuis le 1er novembre 2024, la garantie ne peut pas dépasser deux mois de loyer. Le compte individualisé ouvert au nom du locataire est l'une des cinq formes prévues.",
+          "officialUrl": "https://be.brussels/fr/logement/location/bail-dhabitation/garantie-locative"
+        },
+        {
+          "title": "Faire l'état des lieux d'entrée",
+          "detail": "Ce document est obligatoire. Il se fait avant d'occuper le logement ou pendant le premier mois du bail.",
+          "officialUrl": "https://be.brussels/fr/logement/location/bail-dhabitation/etat-des-lieux"
+        },
+        {
+          "title": "Vérifier l'enregistrement du bail",
+          "detail": "Le bailleur doit enregistrer gratuitement le bail dans les deux mois suivant la signature, sur Irisrent (Région) et sur MyRent (fédéral). Vous pouvez aussi le faire vous-même.",
+          "officialUrl": "https://be.brussels/fr/logement/location/bail-dhabitation/enregistrement-bail-dhabitation"
+        }
+      ]
+    },
+    {
+      "key": "assurances",
+      "title": "Assurer le logement et votre responsabilité civile",
+      "category": "INSURANCE",
+      "summary": "À Bruxelles, le locataire doit être assuré contre l'incendie et les dégâts des eaux. L'assurance RC familiale n'est pas obligatoire mais elle est recommandée.",
+      "appliesIf": "bail bruxellois conclu ou renouvelé depuis le 1er novembre 2024 (pour l'assurance incendie)",
+      "when": 0,
+      "officialUrl": "https://be.brussels/fr/logement/location/les-differentes-etapes-de-la-location",
+      "steps": [
+        {
+          "title": "Souscrire une assurance incendie et dégâts des eaux",
+          "detail": "Souscrivez-la avant l'entrée dans les lieux, sauf accord contraire avec le bailleur. Vous devez fournir chaque année la preuve du paiement des primes.",
+          "officialUrl": "https://admin.be.brussels/en/bhg/document/download/3049",
+          "requiredDocuments": ["Contrat de bail"]
+        },
+        {
+          "title": "Vérifier votre assurance RC vie privée",
+          "detail": "La RC familiale couvre les dommages causés à des tiers dans la vie privée et n'est pas obligatoire en Belgique. Vérifiez si votre contrat français vous couvre en Belgique, sinon souscrivez-en une sur place.",
+          "officialUrl": "https://www.wikifin.be/fr/budget-payer-emprunter-et-assurer/sassurer/famille/rc-familiale"
+        }
+      ]
+    },
+    {
+      "key": "commune",
+      "title": "S'inscrire à la commune",
+      "category": "RESIDENCE",
+      "summary": "Pour un séjour de plus de 3 mois, un citoyen de l'UE doit s'inscrire à la commune de sa résidence dans les 3 mois suivant l'arrivée. Certaines communes, comme Ixelles, demandent de les contacter dans les 8 jours.",
+      "appliesIf": "séjour de plus de 3 mois",
+      "when": 8,
+      "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/residence-formalities-eu/more-than-90-days",
+      "steps": [
+        {
+          "title": "Contacter le service des étrangers de votre commune",
+          "detail": "Chacune des 19 communes bruxelloises a son propre service. À Ixelles, le Bureau des étrangers doit être contacté dans les 8 jours de l'entrée sur le territoire.",
+          "officialUrl": "https://www.ixelles.be/site/92-S-etablir-a-Ixelles"
+        },
+        {
+          "title": "Déposer un dossier complet pour l'annexe 19",
+          "detail": "Le dossier doit être complet au rendez-vous, sinon la demande n'est pas traitée, et des frais sont demandés. La commune vous remet ensuite une annexe 19 (demande d'attestation d'enregistrement).",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/residence-formalities-eu/more-than-90-days",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport en cours de validité",
+            "Contrat de bail",
+            "Preuve d'assurance maladie",
+            "Photos d'identité récentes",
+            "Contrat de travail, convention de stage ou preuve de moyens suffisants selon votre statut"
+          ]
+        },
+        {
+          "title": "Être joignable pour le contrôle de résidence",
+          "detail": "L'agent de quartier passe vérifier que vous habitez à l'adresse, parfois le soir ou le week-end. S'il ne vous rencontre jamais, un rapport négatif peut bloquer le dossier.",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/residence-formalities-eu/more-than-90-days"
+        },
+        {
+          "title": "Retirer votre carte EU",
+          "detail": "Après un contrôle positif, vous recevez une attestation provisoire (annexe 8 ter) puis la commune vous convoque pour commander la carte de séjour électronique EU, à retirer en personne.",
+          "officialUrl": "https://www.ixelles.be/site/686-Attestation-d-enregistrement-carte-EU"
+        },
+        {
+          "title": "Vous faire aider gratuitement si besoin",
+          "detail": "L'Expat Welcome Desk, service public régional gratuit, conseille sur l'inscription à la commune, le séjour, la sécurité sociale et les impôts.",
+          "officialUrl": "https://be.brussels/en/international-europe/expats-brussels/expat-welcome-desk"
+        }
+      ]
+    },
+    {
+      "key": "mutualite",
+      "title": "S'affilier à une mutualité belge",
+      "category": "HEALTH",
+      "summary": "En Belgique, le remboursement des soins passe par une mutualité ou par la CAAMI, caisse publique. L'affiliation est nécessaire pour avoir droit aux remboursements.",
+      "appliesIf": "si vous relevez de la sécurité sociale belge, notamment en emploi chez un employeur belge ; en CIP, à vérifier selon votre situation",
+      "when": null,
+      "officialUrl": "https://www.inami.fgov.be/fr/themes/soins-de-sante-cout-et-remboursement/assurabilite/s-affilier-a-une-mutualite",
+      "steps": [
+        {
+          "title": "Choisir une mutualité ou la CAAMI",
+          "detail": "Vous pouvez choisir l'une des cinq unions nationales de mutualités ou la CAAMI. La CAAMI ne propose pas d'assurance complémentaire et ne demande pas de cotisation si vous êtes en ordre avec la sécurité sociale belge.",
+          "officialUrl": "https://www.inami.fgov.be/fr/themes/soins-de-sante-cout-et-remboursement/assurabilite/s-affilier-a-une-mutualite"
+        },
+        {
+          "title": "Remplir le formulaire d'inscription",
+          "detail": "Pour une première affiliation en Belgique, un formulaire d'inscription suffit à la CAAMI. Les mutualités ont leurs propres démarches.",
+          "officialUrl": "https://www.caami-hziv.fgov.be/fr/membres/devenir-membre"
+        },
+        {
+          "title": "Déclarer votre transfert de résidence à la CPAM",
+          "detail": "Si vous partez travailler à l'étranger, envoyez la déclaration de transfert de résidence hors de France dans le mois qui suit la fin de votre résidence en France. Rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        },
+        {
+          "title": "Envisager la Caisse des Français de l'étranger (facultatif)",
+          "detail": "La CFE permet de garder une couverture française, en plus des cotisations obligatoires au régime belge.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire belge si nécessaire",
+      "category": "BANK",
+      "summary": "Un compte français en euros permet en principe les virements et prélèvements SEPA. Ouvrez un compte belge si on vous le demande ou si cela simplifie vos paiements.",
+      "appliesIf": "si votre compte français ne suffit pas",
+      "when": null,
+      "officialUrl": "https://www.wikifin.be/fr/budget-payer-emprunter-et-assurer/compte-vue/le-service-bancaire-de-base",
+      "steps": [
+        {
+          "title": "Vérifier si votre compte français peut servir",
+          "detail": "Pour un virement ou un prélèvement SEPA, un compte ne peut pas être refusé au seul motif qu'il est situé dans un autre pays de l'UE. Cette règle s'applique si l'autre partie accepte ces opérations depuis des comptes nationaux.",
+          "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/payments-transfers-cheques/index_fr.htm"
+        },
+        {
+          "title": "Demander le service bancaire de base en cas de refus",
+          "detail": "Toute personne résidant légalement dans l'UE peut demander ce compte de base à la banque de son choix. Il n'est pas forcément gratuit.",
+          "officialUrl": "https://www.wikifin.be/fr/budget-payer-emprunter-et-assurer/compte-vue/le-service-bancaire-de-base",
+          "requiredDocuments": ["Carte d'identité ou passeport"]
+        }
+      ]
+    },
+    {
+      "key": "stib",
+      "title": "Prendre un abonnement STIB",
+      "category": "TRANSPORT",
+      "summary": "À Bruxelles, les abonnements STIB se chargent sur une carte MOBIB personnelle, commandée en ligne ou dans une agence BOOTIK.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.stib-mivb.be/accueil/support-client/tarifs-et-titres-de-transport",
+      "steps": [
+        {
+          "title": "Commander une carte MOBIB personnelle",
+          "detail": "La carte coûte 6 € et reste valable 5 ans. La carte MOBIB basic, anonyme, ne permet de charger que des tickets.",
+          "officialUrl": "https://www.stib-mivb.be/acheter/tous-vos-deplacements-avec-la-carte-mobib"
+        },
+        {
+          "title": "Choisir et charger votre abonnement",
+          "detail": "Consultez les tarifs en vigueur sur le site de la STIB. Si vous avez 18 à 24 ans et êtes domicilié en Région bruxelloise, l'abonnement annuel STIB 18-24 ans coûte 12 €.",
+          "officialUrl": "https://www.stib-mivb.be/accueil/support-client/tarifs-et-titres-de-transport"
+        }
+      ]
+    },
+    {
+      "key": "registre-francais",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Facultative mais recommandée, l'inscription est gratuite et valable 5 ans. Elle facilite les démarches consulaires et permet d'être joint en cas d'urgence.",
+      "appliesIf": "facultatif",
+      "when": null,
+      "officialUrl": "https://be.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne sur service-public.fr",
+          "detail": "Faites la démarche en ligne avec les pièces scannées. Le consulat général de France à Bruxelles valide ensuite l'inscription.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+          "requiredDocuments": [
+            "Carte nationale d'identité ou passeport français",
+            "Justificatif de résidence en Belgique (bail, facture récente)",
+            "Photo d'identité de moins de 6 mois"
+          ]
+        },
+        {
+          "title": "Choisir où voter (facultatif)",
+          "detail": "Lors de l'inscription, vous pouvez indiquer que vous souhaitez voter depuis l'étranger. Une inscription sur une nouvelle liste électorale vous radie automatiquement de la précédente.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307"
+        }
+      ]
+    },
+    {
+      "key": "declaration-revenus",
+      "title": "Déclarer vos revenus en Belgique et en France",
+      "category": "TAX",
+      "summary": "Selon la convention franco-belge, les salaires privés sont en principe imposables dans l'État où le travail est exercé. Vos obligations déclaratives dépendent de votre résidence fiscale.",
+      "appliesIf": "revenus perçus pour un travail en Belgique",
+      "when": null,
+      "officialUrl": "https://bofip.impots.gouv.fr/doctrine/pgp/2522-PGP",
+      "steps": [
+        {
+          "title": "Vérifier la retenue d'impôt sur votre paie",
+          "detail": "Sur une paie belge, l'impôt sur le revenu est retenu sur le salaire et vous recevez un montant net.",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/taxes/"
+        },
+        {
+          "title": "Remplir la déclaration belge",
+          "detail": "Si vous êtes inscrit dans une commune, la Belgique vous présume résident fiscal : vous devez y déclarer l'ensemble de vos revenus lorsque vous recevez le formulaire annuel.",
+          "officialUrl": "https://www.commissioner.brussels/i-am-an-expat/taxes/"
+        },
+        {
+          "title": "Déclarer en France les revenus de l'année du départ",
+          "detail": "La déclaration de l'année du départ est obligatoire. Les revenus de source étrangère se déclarent sur le formulaire 2047.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer"
+        },
+        {
+          "title": "Joindre le formulaire 2047 si vous restez résident fiscal français",
+          "detail": "Si vous êtes domicilié en France et percevez des revenus hors de France, le formulaire 2047 se joint à votre déclaration d'ensemble des revenus.",
+          "officialUrl": "https://www.impots.gouv.fr/formulaire/2047/declaration-des-revenus-encaisses-letranger"
+        },
+        {
+          "title": "Comprendre l'élimination de la double imposition",
+          "detail": "Pour un résident de France, les revenus imposables en Belgique selon la convention sont exclus de la base de l'impôt français mais pris en compte pour calculer le taux d'imposition.",
+          "officialUrl": "https://bofip.impots.gouv.fr/doctrine/pgp/2579-PGP"
+        }
+      ]
+    },
+    {
+      "key": "depart",
+      "title": "Se désinscrire de la commune avant de partir",
+      "category": "RESIDENCE",
+      "summary": "En cas de départ définitif de Belgique, présentez-vous en personne à votre commune au plus tard la veille du départ.",
+      "appliesIf": "départ définitif de Belgique",
+      "when": null,
+      "officialUrl": "https://ibz.be/fr/single-digital-gateway/radiation-obligatoire-lors-du-depart-des-citoyens-de-lunion-et-des-membres",
+      "steps": [
+        {
+          "title": "Déclarer votre départ à la commune",
+          "detail": "Présentez-vous en personne au plus tard la veille du départ et rendez votre titre de séjour. La commune vous radie des registres de la population.",
+          "officialUrl": "https://ibz.be/fr/single-digital-gateway/radiation-obligatoire-lors-du-depart-des-citoyens-de-lunion-et-des-membres",
+          "requiredDocuments": ["Carte de séjour EU"]
+        },
+        {
+          "title": "Récupérer la garantie locative",
+          "detail": "Faites l'état des lieux de sortie avec le bailleur. La garantie et ses intérêts vous sont rendus dans les deux mois suivant votre départ si vous avez respecté vos obligations.",
+          "officialUrl": "https://be.brussels/fr/logement/location/bail-dhabitation/garantie-locative"
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie au retour",
+          "detail": "Si vous avez relevé du régime belge, prévenez-le de votre départ, puis envoyez à votre CPAM le formulaire S1106 de demande d'ouverture des droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Stage en CIP : selon Actiris, le stagiaire n'est en principe pas assujetti à la sécurité sociale belge. Savoir si la CEAM suffit, s'il faut un formulaire S1 ou une mutualité belge dépend de votre situation (résidence, autres revenus) : demandez à votre CPAM et à une mutualité avant le départ.",
+    "Depuis le 1er septembre 2025, le dossier de demande d'annexe 19 doit être complet dès le dépôt, selon les instructions fédérales sur les registres de la population. Certaines pages fédérales (ibz.be) mentionnent encore un délai de 3 mois pour fournir les justificatifs.",
+    "Délai d'inscription : la règle fédérale fixe un maximum de 3 mois après l'arrivée (amende administrative possible), mais certaines communes comme Ixelles demandent de se présenter dans les 8 jours. Vérifiez auprès de votre commune.",
+    "Les pièces exigées et les frais varient selon la commune et le statut (travailleur, stagiaire, moyens suffisants). Exemple relevé : la Ville de Bruxelles demande 25 € pour la demande et 30 € pour la carte.",
+    "CEAM : ameli conseille de la demander au moins 15 jours avant le départ, service-public.fr indique 20 jours. Elle couvre un séjour temporaire, pas une installation durable.",
+    "Résidence fiscale : la Belgique présume résidente toute personne inscrite dans une commune, et la France peut aussi vous considérer comme résident ; la convention franco-belge tranche. Le traitement fiscal de l'indemnité de CIP n'a pas été confirmé : renseignez-vous auprès du SPF Finances.",
+    "Une nouvelle convention fiscale franco-belge a été signée le 9 novembre 2021 pour remplacer celle de 1964 citée ici : vérifiez si elle est entrée en vigueur avant de vous fier à ces règles.",
+    "Les pages du SPF Finances (finances.belgium.be, MyMinfin) et de belgium.be n'ont pas pu être vérifiées (page anti-robot) : aucun lien direct vers l'administration fiscale belge n'est donné.",
+    "Le plafond de garantie de deux mois et l'assurance incendie obligatoire concernent les baux bruxellois conclus ou renouvelés depuis le 1er novembre 2024. Pour une chambre meublée en colocation ou une location courte, vérifiez le type de bail signé.",
+    "Les tarifs (STIB, carte MOBIB, frais communaux) ont été relevés le 23/11/2026 et peuvent changer."
+  ]
+}

@@ -32,6 +32,8 @@ const TABLES: [string, Table][] = [
   ["notifications", s.notifications],
   ["moves", s.moves],
   ["housingListings", s.housingListings],
+  ["procedures", s.procedures],
+  ["procedureSteps", s.procedureSteps],
 ];
 
 export interface ExportFile {
@@ -79,6 +81,12 @@ function upgradeExport(file: ExportFile): ExportFile {
     file.data.moves ??= [];
     file.data.housingListings ??= [];
     file.schemaVersion = 2;
+  }
+  // v2 → v3: administrative procedures (procedures, procedureSteps) added.
+  if (file.schemaVersion === 2) {
+    file.data.procedures ??= [];
+    file.data.procedureSteps ??= [];
+    file.schemaVersion = 3;
   }
   return file;
 }

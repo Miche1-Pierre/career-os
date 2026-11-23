@@ -22,12 +22,15 @@ import { cn } from "@/lib/utils";
 import { useChat } from "@/components/chat/chat-dock";
 import { HousingView } from "./housing-view";
 import { BudgetView } from "./budget-view";
+import { ProceduresView, type ProcedureTemplatesInfo } from "./procedures-view";
+import type { ProcedureView } from "@/server/services/procedures";
+import { OPEN_PROCEDURE_STATUSES } from "@/lib/procedures";
 import { ListingSheet } from "./listing-sheet";
 import { ListingFormDialog } from "./listing-form";
 import { MoveFormDialog } from "./move-form";
 import { money, savingsTone, signedMoney } from "./format";
 
-export function MoveDetail({ move, initialTab, initialListing }: { move: MoveView; initialTab: string; initialListing: string | null }) {
+export function MoveDetail({ move, procedures, templates, initialTab, initialListing }: { move: MoveView; procedures: ProcedureView[]; templates: ProcedureTemplatesInfo; initialTab: string; initialListing: string | null }) {
   const router = useRouter();
   const pathname = usePathname();
   const confirm = useConfirm();
@@ -159,6 +162,9 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
             Logement {move.summary.open > 0 && <span className="text-xs text-muted-foreground tabular-nums">{move.summary.open}</span>}
           </TabsTrigger>
           <TabsTrigger value="budget">Budget</TabsTrigger>
+          <TabsTrigger value="procedures">
+            Démarches {procedures.some((p) => OPEN_PROCEDURE_STATUSES.includes(p.status)) && <span className="text-xs text-muted-foreground tabular-nums">{procedures.filter((p) => OPEN_PROCEDURE_STATUSES.includes(p.status)).length}</span>}
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="overview" className="pt-5">
           <Overview move={move} onTab={changeTab} onOpenListing={(id) => (changeTab("housing"), openListing(id))} onEdit={() => setMoveFormOpen(true)} />
@@ -168,6 +174,9 @@ export function MoveDetail({ move, initialTab, initialListing }: { move: MoveVie
         </TabsContent>
         <TabsContent value="budget" className="pt-5">
           <BudgetView move={move} />
+        </TabsContent>
+        <TabsContent value="procedures" className="pt-5">
+          <ProceduresView moveId={move.id} country={move.country} procedures={procedures} templates={templates} />
         </TabsContent>
       </Tabs>
 

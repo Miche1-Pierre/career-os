@@ -21,6 +21,8 @@ export interface StructuredRequest<T> {
   /** Tolerant parser applied to the model output. */
   parse: (value: unknown) => T;
   timeoutMs?: number;
+  /** Research task: let the model search and read the web (Claude Code only). */
+  webTools?: boolean;
 }
 
 export interface StructuredMeta {
@@ -49,6 +51,7 @@ interface ProviderCall {
   model: string | null;
   effort: string | null;
   timeoutMs: number;
+  webTools?: boolean;
 }
 
 interface ProviderResult {
@@ -150,7 +153,7 @@ const claudeCodeProvider: Provider = {
       const res = await fetch(`${url}/v1/run`, {
         method: "POST",
         headers: { "content-type": "application/json", authorization: `Bearer ${env("CLAUDE_BRIDGE_TOKEN")}` },
-        body: JSON.stringify({ system: input.system, prompt: input.prompt, schema: input.jsonSchema, model, fallbackModel, effort: input.effort, timeoutMs: input.timeoutMs }),
+        body: JSON.stringify({ system: input.system, prompt: input.prompt, schema: input.jsonSchema, model, fallbackModel, effort: input.effort, timeoutMs: input.timeoutMs, webTools: input.webTools }),
         signal: AbortSignal.timeout(input.timeoutMs + 15_000),
       }).catch((error: unknown) => {
         throw new AppError("UNAVAILABLE", `Claude bridge unreachable: ${error instanceof Error ? error.message : error}`);
@@ -160,7 +163,7 @@ const claudeCodeProvider: Provider = {
       return { value: body.structured, model: body.model ?? model, costUsd: body.costUsd ?? null };
     }
     if (mode === "cli") {
-      const result = await runClaude({ system: input.system, prompt: input.prompt, schema: input.jsonSchema, model, fallbackModel, effort: input.effort, timeoutMs: input.timeoutMs });
+      const result = await runClaude({ system: input.system, prompt: input.prompt, schema: input.jsonSchema, model, fallbackModel, effort: input.effort, timeoutMs: input.timeoutMs, webTools: input.webTools });
       return { value: result.structured, model: result.model ?? model, costUsd: result.costUsd };
     }
     throw new AppError("UNAVAILABLE", "Claude Code is not configured");
@@ -312,6 +315,7 @@ export async function generateStructured<T>(request: StructuredRequest<T>): Prom
     model: settings.ai.model || null,
     effort: settings.ai.effort || env("AI_EFFORT") || null,
     timeoutMs: request.timeoutMs ?? 240_000,
+    webTools: request.webTools ?? false,
   });
   if (result.value == null) throw new AppError("UNAVAILABLE", "The AI returned no structured output");
   const data = request.parse(result.value);
