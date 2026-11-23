@@ -43,6 +43,7 @@ import type {
 import type { BudgetPlan, Furnished, HousingType, ListingContacts, ListingSource, ListingStatus, MoveStatus, ListingPick } from "@/lib/relocation";
 import type { ProcedureCategory, ProcedureSource, ProcedureStatus } from "@/lib/procedures";
 import type { DiscoveryDomain, Schedule } from "@/lib/discovery";
+import type { CvBlock, CvHeader, CvLang, CvSection, CvStyle } from "@/lib/cv";
 
 // ---------------------------------------------------------------------------
 // Column helpers
@@ -783,6 +784,50 @@ export const researchRuns = pgTable(
 
 export type SavedSearch = typeof savedSearches.$inferSelect;
 export type ResearchRun = typeof researchRuns.$inferSelect;
+
+// ---------------------------------------------------------------------------
+// Structured CV (spec v2, P5): reusable entries and variants
+// ---------------------------------------------------------------------------
+
+export const cvEntries = pgTable(
+  "cv_entries",
+  {
+    id: pk(),
+    section: text("section").$type<CvSection>().notNull(),
+    lang: text("lang").$type<CvLang>().notNull(),
+    group: text("group_key"),
+    title: text("title").notNull(),
+    dates: text("dates"),
+    subtitle: text("subtitle"),
+    bullets: textArray("bullets"),
+    position: integer("position").notNull().default(0),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+    deletedAt: ts("deleted_at"),
+  },
+  (t) => [index("cv_entries_section_idx").on(t.section, t.lang)],
+);
+
+export const cvVariants = pgTable("cv_variants", {
+  id: pk(),
+  name: text("name").notNull(),
+  lang: text("lang").$type<CvLang>().notNull(),
+  fileName: text("file_name"),
+  header: jsonObject<CvHeader>("header"),
+  sections: jsonList<CvBlock>("sections"),
+  style: jsonObject<CvStyle>("style"),
+  template: text("template").notNull().default("classic"),
+  /** Library document the exports are versions of (kind CV). */
+  documentId: uuid("document_id").references(() => documents.id, { onDelete: "set null" }),
+  lastExportedAt: ts("last_exported_at"),
+  position: integer("position").notNull().default(0),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+  deletedAt: ts("deleted_at"),
+});
+
+export type CvEntry = typeof cvEntries.$inferSelect;
+export type CvVariant = typeof cvVariants.$inferSelect;
 
 // ---------------------------------------------------------------------------
 // In-app chat (Claude Code with the Career OS tools)

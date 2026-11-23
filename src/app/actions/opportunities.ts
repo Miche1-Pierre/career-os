@@ -193,3 +193,26 @@ export async function analyzeContractAction(id: string, documentVersionId?: stri
     return { filled: result.filled };
   });
 }
+
+export async function draftMessageAction(opportunityId: string, input: { subject: string; body: string; language: "fr" | "en"; instructions?: string | null }) {
+  return runAction(async () => {
+    const { draftMessageWithAI } = await import("@/server/services/email-templates");
+    return draftMessageWithAI(opportunityId, input);
+  }, { revalidate: false });
+}
+
+export async function updateKitAction(opportunityId: string, patch: Record<string, unknown>) {
+  return runAction(async () => {
+    const { updateKit } = await import("@/server/services/kit");
+    await updateKit(opportunityId, patch, USER);
+    return null;
+  });
+}
+
+export async function applyWithKitAction(opportunityId: string) {
+  return runAction(async () => {
+    const { applyWithKit } = await import("@/server/services/kit");
+    const r = await applyWithKit(opportunityId, USER);
+    return { changed: r.changed, from: r.from, to: r.to };
+  });
+}

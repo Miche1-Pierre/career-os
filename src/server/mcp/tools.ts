@@ -53,6 +53,8 @@ import { addProcedures, addProceduresFromTemplates, listProcedures, procedureTem
 import { PROCEDURE_STATUSES } from "@/lib/procedures";
 import { createSearch, listSearches, runSearch } from "@/server/services/discovery";
 import { DISCOVERY_SOURCES } from "@/lib/discovery";
+import { exportVariant, listEntries, listVariants } from "@/server/services/cv";
+import { variantPlainText } from "@/lib/cv";
 import { contractAnalysisSchema, offerPatchSchema } from "@/lib/offer";
 import { getSettings, patchSettingsSection } from "@/server/services/settings";
 import { listStages } from "@/server/services/stages";
@@ -671,6 +673,25 @@ export const TOOLS: McpTool[] = [
   // -------------------------------------------------------------------------
   // Relocation: moves (installation projects), housing listings, budget
   // -------------------------------------------------------------------------
+  tool({
+    name: "cv_list",
+    title: "CV variants",
+    description: "The user's structured CV variants (AI Product FR/EN, Founding…) with their plain text, to choose the right one for an application or to quote facts from it.",
+    input: z.object({}),
+    readOnly: true,
+    handler: async () => {
+      const [variants, entries] = await Promise.all([listVariants(), listEntries()]);
+      const map = new Map(entries.map((e) => [e.id, e]));
+      return variants.map((v) => ({ id: v.id, name: v.name, lang: v.lang, lastExportedAt: v.lastExportedAt, text: variantPlainText({ header: v.header, sections: v.sections }, map) }));
+    },
+  }),
+  tool({
+    name: "cv_export",
+    title: "Export a CV variant to PDF",
+    description: "Renders a CV variant with the fixed template (no AI) and stores it as a new frozen version in the document library; with opportunityId, attaches it to that application as its CV.",
+    input: z.object({ variantId: z.string().uuid(), opportunityId: z.string().uuid().optional() }),
+    handler: async ({ variantId, opportunityId }, ctx) => ({ ...(await exportVariant(variantId, ctx, { opportunityId: opportunityId ?? null })), url: `${appUrl()}/cv` }),
+  }),
   tool({
     name: "list_sources",
     title: "Sources of the discovery engine",

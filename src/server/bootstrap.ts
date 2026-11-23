@@ -1,4 +1,5 @@
 import { and, eq, inArray, sql } from "drizzle-orm";
+import { ADDED_EMAIL_TEMPLATES, LEGACY_TEMPLATE_SUBJECTS } from "@/lib/settings-schema";
 import type { DBOrTx } from "@/server/db";
 import { goals, pipelineStages, savedViews, settings, tags, tasks } from "@/server/db/schema";
 import { DEFAULT_PIPELINES, interviewKindTitle, type PipelineKey } from "@/lib/constants";
@@ -28,7 +29,7 @@ const DEFAULT_VIEWS = [
   { name: "Bio-informatique", filters: { tags: ["Bio-informatique"] } },
 ];
 
-type BootstrapState = { tags?: boolean; views?: boolean; frLabels?: boolean };
+type BootstrapState = { tags?: boolean; views?: boolean; frLabels?: boolean; messageTemplates?: boolean };
 
 /** Idempotent first-run defaults. Never overwrites user customizations. */
 export async function bootstrapDefaults(tx: DBOrTx) {
@@ -39,6 +40,7 @@ export async function bootstrapDefaults(tx: DBOrTx) {
   let viewsCreated = 0;
   let labelsTranslated = 0;
   if (!state.frLabels) labelsTranslated = await translateLegacyDefaults(tx);
+  if (!state.messageTemplates) await addMessageTemplates(tx);
   if (!state.tags) {
     const inserted = await tx
       .insert(tags)
@@ -54,12 +56,28 @@ export async function bootstrapDefaults(tx: DBOrTx) {
       viewsCreated = DEFAULT_VIEWS.length;
     }
   }
-  const done: BootstrapState = { tags: true, views: true, frLabels: true };
+  const done: BootstrapState = { tags: true, views: true, frLabels: true, messageTemplates: true };
   await tx
     .insert(settings)
     .values({ key: "bootstrap", value: done })
     .onConflictDoUpdate({ target: settings.key, set: { value: done } });
   return { stagesCreated, tagsCreated, viewsCreated, labelsTranslated };
+}
+
+/**
+ * Saved template lists (customized by the user) get the templates added later, and the old long-dash subjects of the
+ * French defaults when they were never edited. Lists never saved use the defaults directly.
+ */
+async function addMessageTemplates(tx: DBOrTx) {
+  const [row] = await tx.select().from(settings).where(eq(settings.key, "emailTemplates"));
+  if (!row || !Array.isArray(row.value)) return;
+  const list = row.value as { id: string; subject?: string }[];
+  const next = list.map((t) => {
+    const legacy = LEGACY_TEMPLATE_SUBJECTS[t.id];
+    return legacy && t.subject === legacy[0] ? { ...t, subject: legacy[1] } : t;
+  });
+  for (const t of ADDED_EMAIL_TEMPLATES) if (!next.some((x) => x.id === t.id) && next.length < 50) next.push(t);
+  await tx.update(settings).set({ value: next }).where(eq(settings.key, "emailTemplates"));
 }
 
 // ---------------------------------------------------------------------------
