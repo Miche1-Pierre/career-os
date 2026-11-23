@@ -25,12 +25,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     // Vector logo from SVGL when the brand is listed there, else the website's icon.
     const host = websiteHost(org.website);
     const logo = (await getSvglLogo(org.name)) ?? (host ? await getLogo(host) : null);
-    if (!logo) return miss(host ? 86_400 : 3600);
+    // Short browser cache for misses: a logo found later shows up within minutes.
+    if (!logo) return miss(600);
     return new Response(new Uint8Array(logo.body), {
       headers: {
         "content-type": logo.contentType,
         "content-length": String(logo.body.byteLength),
-        "cache-control": "private, max-age=604800, stale-while-revalidate=2592000",
+        "cache-control": "private, max-age=86400, stale-while-revalidate=604800",
         "x-content-type-options": "nosniff",
         "content-security-policy": "default-src 'none'; sandbox",
         "cross-origin-resource-policy": "same-origin",

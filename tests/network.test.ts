@@ -215,6 +215,30 @@ describe("logos", () => {
     expect(logoSources("ulaval.ca")[4]).toBe("https://www.google.com/s2/favicons?domain=www.ulaval.ca&sz=128");
   });
 
+  it("looks again for a sharper icon after a few days, and keeps the small one otherwise", async () => {
+    const small = Buffer.from(PNG);
+    small.writeUInt32BE(16, 16);
+    const sharp = Buffer.from(PNG);
+    sharp.writeUInt32BE(180, 16);
+    let now = Date.now();
+    const first = { ...stubDeps({ "https://www.google.com/s2/favicons?domain=blurry.example&sz=128": () => new Response(small, { headers: { "content-type": "image/png" } }) }), now: () => now };
+    expect(imageWidth((await getLogo("blurry.example", first))!)).toBe(16);
+    // Within 3 days: served from the cache.
+    now += 2 * 86_400_000;
+    const cachedRun = { ...stubDeps({}), now: () => now };
+    expect(imageWidth((await getLogo("blurry.example", cachedRun))!)).toBe(16);
+    expect(cachedRun.calls).toHaveLength(0);
+    // After 3 days: looked up again; nothing better → the small one stays.
+    now += 2 * 86_400_000;
+    const nothingBetter = { ...stubDeps({}), now: () => now };
+    expect(imageWidth((await getLogo("blurry.example", nothingBetter))!)).toBe(16);
+    expect(nothingBetter.calls.length).toBeGreaterThan(0);
+    // Later, the site publishes a sharp icon: it replaces the small one.
+    now += 4 * 86_400_000;
+    const better = { ...stubDeps({ "https://blurry.example/apple-touch-icon.png": () => new Response(sharp, { headers: { "content-type": "image/png" } }) }), now: () => now };
+    expect(imageWidth((await getLogo("blurry.example", better))!)).toBe(180);
+  });
+
   it("measures icons and keeps looking until a sharp one is found", async () => {
     expect(imageWidth({ body: PNG, contentType: "image/png" })).toBe(PNG.readUInt32BE(16));
     const small = Buffer.from(PNG);
