@@ -18,7 +18,9 @@ This folder is used in three ways. Figure out which one the user wants:
 
 The app exposes an MCP server at `http://localhost:3000/api/mcp` (declared in `.mcp.json`). If its tools are
 missing, the app is probably stopped: tell the user to start it (desktop shortcut or `npm run local`; Docker mode:
-`docker compose up -d`), then `/mcp` → reconnect.
+`docker compose up -d`), then `/mcp` → reconnect. If the app answers on another port, don't edit `.mcp.json`: add a
+local override (`claude mcp add --scope local --transport http career-os http://localhost:<port>/api/mcp`, see skill
+`career-setup` §6).
 
 Rules — they matter more than speed:
 
