@@ -30,7 +30,7 @@ const plan: BudgetPlan = normalizeBudget({
   transitMonthly: 49,
   walkThresholdKm: 2,
   lines: [
-    { id: "judo", label: "Judo", amount: 50, kind: "EXPENSE" },
+    { id: "sport", label: "Sport", amount: 50, kind: "EXPENSE" },
     { id: "phone", label: "Phone", amount: 15, kind: "EXPENSE" },
     { id: "leisure", label: "Leisure", amount: 150, kind: "EXPENSE" },
   ],
@@ -58,7 +58,7 @@ describe("relocation maths", () => {
   });
 
   it("measures distances and walking times", () => {
-    // Avenue Louise 106 → Rue Jourdan 155 (Saint-Gilles): ≈ 0.7 km.
+    // Rue de la Loi 16 → Rue Jourdan 155 (Saint-Gilles): ≈ 0.7 km.
     const km = distanceKm({ lat: 50.8318, lng: 4.359 }, { lat: 50.8287, lng: 4.3504 });
     expect(km).toBeGreaterThan(0.5);
     expect(km).toBeLessThan(0.9);
@@ -89,11 +89,11 @@ describe("relocation maths", () => {
 
   it("drafts a first message that only asks for missing information", () => {
     const base = { title: "Nomad's House", url: null, rent: 865, charges: 0, allInclusive: true, chargesInclude: ["all bills"], deposit: null, depositText: null, minLeaseMonths: 6, availableFrom: null, housemates: null, furnished: "YES" as const };
-    const fr = draftFirstMessage(base, { language: "fr", firstName: "Pierre", city: "Bruxelles", arrivalDate: "2027-01-04", departureDate: "2027-07-02", reason: "un stage" });
+    const fr = draftFirstMessage(base, { language: "fr", firstName: "Camille", city: "Bruxelles", arrivalDate: "2027-01-04", departureDate: "2027-07-02", reason: "un stage" });
     expect(fr.body).toContain("du 4 janvier 2027 au 2 juillet 2027");
     expect(fr.questions.some((q) => q.includes("garantie"))).toBe(true);
     expect(fr.questions.some((q) => q.includes("charges"))).toBe(false);
-    expect(fr.body.endsWith("Pierre")).toBe(true);
+    expect(fr.body.endsWith("Camille")).toBe(true);
     const en = draftFirstMessage({ ...base, deposit: 1730, housemates: 5 }, { language: "en", firstName: null, city: null, arrivalDate: null, departureDate: null, reason: null });
     expect(en.questions).toHaveLength(1);
   });
@@ -114,10 +114,10 @@ describe("moves and housing (database)", () => {
   });
 
   it("creates a move from an accepted offer and finds it again", async () => {
-    const { opportunity } = await createOpportunity({ type: "INTERNSHIP", title: "AI Transformation Intern", organizationName: "BlackFin", locationCity: "Bruxelles", locationCountry: "Belgique" }, USER);
+    const { opportunity } = await createOpportunity({ type: "INTERNSHIP", title: "AI Transformation Intern", organizationName: "Acme", locationCity: "Bruxelles", locationCountry: "Belgique" }, USER);
     await changeStatus(opportunity!.id, { status: "OFFER" }, USER);
     const m = await createMoveFromOpportunity(opportunity!.id, USER);
-    expect(m.title).toBe("BlackFin · Bruxelles");
+    expect(m.title).toBe("Acme · Bruxelles");
     expect(m.city).toBe("Bruxelles");
     const again = await createMoveFromOpportunity(opportunity!.id, USER);
     expect(again.id).toBe(m.id);
@@ -196,10 +196,10 @@ describe("moves and housing (database)", () => {
 describe("geocoding queries", () => {
   it("tries the postcode alone when the postal locality is not what OSM knows", async () => {
     const { geocodeCandidates } = await import("@/server/services/geocode");
-    const q = geocodeCandidates("Avenue Louise 106, 1050 Ixelles", "Bruxelles", "Belgique");
-    expect(q[0]).toBe("Avenue Louise 106, 1050 Ixelles, Bruxelles, Belgique");
-    expect(q).toContain("Avenue Louise 106, 1050");
-    expect(q).toContain("Avenue Louise 106, Bruxelles");
+    const q = geocodeCandidates("Rue de la Loi 16, 1050 Ixelles", "Bruxelles", "Belgique");
+    expect(q[0]).toBe("Rue de la Loi 16, 1050 Ixelles, Bruxelles, Belgique");
+    expect(q).toContain("Rue de la Loi 16, 1050");
+    expect(q).toContain("Rue de la Loi 16, Bruxelles");
   });
 });
 

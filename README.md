@@ -104,7 +104,7 @@ skills (`.claude/skills/`). Lancez Claude Code dans `C:\Candidature` (`claude`, 
 - « Voici l'email reçu de Siemens : … » → Claude propose les mises à jour (statut, entretien, contact) et les applique
 - « Ajoute un entretien technique avec Zefir mardi 14h » · « Prépare mon entretien chez Owkin »
 - « Lis mon CV (`documents/CV/CV.pdf`) et remplis mon profil »
-- « J'ai signé chez BlackFin, prépare mon installation » · « Ajoute cette coloc : *(lien)* » · « Compare les logements »
+- « J'ai signé chez Acme, prépare mon installation » · « Ajoute cette coloc : *(lien)* » · « Compare les logements »
 
 Claude extrait les informations avec leur **provenance** (citation exacte de la source, ou « déduit »), vérifie
 les doublons, crée les fiches et vous donne leur lien. Il demande confirmation avant toute action irréversible et

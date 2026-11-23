@@ -60,7 +60,7 @@ export function BudgetView({ move }: { move: MoveView }) {
               <NumberInput id="b-income" value={plan.income} onChange={(v) => set("income", v ?? 0)} />
             </FormField>
             <FormField label="Note" htmlFor="b-inote" className="sm:col-span-2">
-              <Input id="b-inote" value={plan.incomeNote ?? ""} onChange={(e) => set("incomeNote", e.target.value || null)} placeholder="1 600 € annoncés, 1 500 € par prudence" />
+              <Input id="b-inote" value={plan.incomeNote ?? ""} onChange={(e) => set("incomeNote", e.target.value || null)} placeholder="2 000 € annoncés, 1 900 € par prudence" />
             </FormField>
           </div>
         </section>

@@ -31,7 +31,7 @@ async function lookup(query: string): Promise<{ lat: number; lng: number } | nul
 
 /**
  * Query variants, most precise first. Postal localities often differ from what OSM stores (e.g. « 1050 Ixelles »
- * vs « Bruxelles » for Avenue Louise), so we also try with the postcode alone and with the city.
+ * vs « Bruxelles » for some central streets), so we also try with the postcode alone and with the city.
  */
 export function geocodeCandidates(address: string, city?: string | null, country?: string | null): string[] {
   const clean = (s: string) => s.trim().replace(/\s+/g, " ").replace(/\s*,\s*/g, ", ");

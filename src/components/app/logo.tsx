@@ -1,7 +1,7 @@
 import { cn } from "cn";
 
 /**
- * Career OS mark — same visual language as the portfolio logo (pierre-michel):
+ * Career OS mark — same visual language as the author's portfolio logo:
  * letterforms built from flat geometric primitives, one bright color per shape.
  * "CO" + a block cursor (the OS wink): C = notched disc (green/yellow),
  * O = split ring (red/pink), cursor = half-height blue bar.

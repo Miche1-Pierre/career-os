@@ -27,13 +27,13 @@ import { renderDesignPdf } from "@/server/cv/design-pdf";
 const entry = (id: string, title: string, bullets: string[]): CvEntryView => ({ id, section: "EXPERIENCE", lang: "fr", group: null, title, dates: "mai 2026 - août 2026", subtitle: null, bullets });
 
 const flow = () => ({
-  header: { name: "Pierre MICHEL", title: "AI Product Engineer", lines: ["France", "pierre@example.com"], links: ["github.com/exemple"] },
+  header: { name: "Camille MARTIN", title: "AI Product Engineer", lines: ["France", "camille@example.com"], links: ["github.com/exemple"] },
   sections: [
     { kind: "TEXT" as const, title: "PROFIL", text: "Développeur full-stack orienté produit, des fonctionnalités fiables." },
     { kind: "ENTRIES" as const, title: "EXPÉRIENCE", entries: ["e1"] },
     { kind: "SKILLS" as const, title: "COMPÉTENCES", lines: [{ label: "IA", text: "LLM, RAG" }], columns: 1 as const },
   ],
-  entries: new Map([["e1", entry("e1", "Head of Engineering, Plania (TechGuys), Montréal", ["Refonte de l'architecture d'un SaaS de 13 000 utilisateurs", "**Safex** : 60 % du trafic"])]]),
+  entries: new Map([["e1", entry("e1", "Head of Engineering, Globex, Montréal", ["Refonte de l'architecture d'un SaaS de 13 000 utilisateurs", "**Initech** : 60 % du trafic"])]]),
   style: { titleStyle: "ROLE_BOLD" as const, summaryItalic: true },
 });
 
@@ -41,15 +41,15 @@ const text = (id: string, x: number, y: number, h: number, t = "texte"): TextEle
 
 describe("rich text", () => {
   it("reads bold, italic and links, paragraph by paragraph", () => {
-    expect(parseRuns("**Safex** : *agent* [site](https://safex.example)")).toEqual([
-      { text: "Safex", bold: true, italic: false, href: null },
+    expect(parseRuns("**Initech** : *agent* [site](https://initech.example)")).toEqual([
+      { text: "Initech", bold: true, italic: false, href: null },
       { text: " : ", bold: false, italic: false, href: null },
       { text: "agent", bold: false, italic: true, href: null },
       { text: " ", bold: false, italic: false, href: null },
-      { text: "site", bold: false, italic: false, href: "https://safex.example" },
+      { text: "site", bold: false, italic: false, href: "https://initech.example" },
     ]);
     expect(paragraphs("a\n\nb")).toHaveLength(3);
-    expect(plainText("**Head**, Plania\n[GitHub](https://github.com/x)")).toBe("Head, Plania\nGitHub");
+    expect(plainText("**Head**, Globex\n[GitHub](https://github.com/x)")).toBe("Head, Globex\nGitHub");
     // A lone asterisk is text, not italic.
     expect(parseRuns("5 * 3")).toEqual([{ text: "5 * 3", bold: false, italic: false, href: null }]);
   });
@@ -66,7 +66,7 @@ describe("layout of an existing CV", () => {
     // Entry title (role in bold) and its dates share a line, dates on the right.
     const title = byRole("entry-title") as TextElement;
     const dates = byRole("dates") as TextElement;
-    expect(title.text).toBe("**Head of Engineering,** Plania (TechGuys), Montréal");
+    expect(title.text).toBe("**Head of Engineering,** Globex, Montréal");
     expect(dates.y).toBe(title.y);
     expect(dates.x + dates.w).toBeCloseTo(PAGE_W - 44, 0);
     expect((byRole("summary") as TextElement).style.italic).toBe(true);
@@ -157,7 +157,7 @@ describe("PDF of a design", () => {
         {
           id: "p",
           elements: [
-            { ...text("n", 44, 30, 20, "Pierre **MICHEL**"), style: { ...text("n", 0, 0, 0).style, font: "helvetica", size: 18 } },
+            { ...text("n", 44, 30, 20, "Camille **MICHEL**"), style: { ...text("n", 0, 0, 0).style, font: "helvetica", size: 18 } },
             { ...text("b", 44, 80, 40, "Des fonctionnalités fiables\nDes workflows efficaces"), list: "dash" },
             { type: "line", id: "l", x: 44, y: 70, w: 500, h: 0.6, color: "#9a9a9a" },
             { type: "rect", id: "r", x: 400, y: 20, w: 100, h: 40, fill: "#eef2ff", stroke: null, strokeWidth: 0, radius: 6 },
@@ -165,13 +165,13 @@ describe("PDF of a design", () => {
         },
       ],
     };
-    const pdf = await renderDesignPdf(design, { title: "Test", author: "Pierre" });
+    const pdf = await renderDesignPdf(design, { title: "Test", author: "Camille" });
     const raw = pdf.toString("latin1");
     expect(raw.match(/\/Type\s*\/Page[^s]/g)).toHaveLength(1);
     expect(raw).toMatch(/Helvetica-Bold/);
     const { extractText, getDocumentProxy } = await import("unpdf");
     const { text: content } = await extractText(await getDocumentProxy(new Uint8Array(pdf)), { mergePages: true });
-    for (const w of ["Pierre", "MICHEL", "fiables", "workflows", "efficaces"]) expect(content).toContain(w);
+    for (const w of ["Camille", "MICHEL", "fiables", "workflows", "efficaces"]) expect(content).toContain(w);
   }, 60_000);
 });
 
@@ -187,10 +187,10 @@ describe("CV editor data (database)", () => {
     const design: CvDesign = { version: 1, pages: [{ id: "p", elements: [text("t", 44, 40, 12, "Bonjour")] }] };
     await saveDesign(v.id, design);
     await expect(saveDesign(v.id, { version: 2 })).rejects.toThrow();
-    const renamed = await renameVariant(v.id, "CV-Pierre-Michel-Stage IA", USER);
-    expect(renamed.fileName).toBe("CV-Pierre-Michel-Stage-IA.pdf");
+    const renamed = await renameVariant(v.id, "CV-Camille-Martin-Stage IA", USER);
+    expect(renamed.fileName).toBe("CV-Camille-Martin-Stage-IA.pdf");
     const exported = await exportVariant(v.id, USER);
-    expect(exported.fileName).toBe("CV-Pierre-Michel-Stage-IA.pdf");
+    expect(exported.fileName).toBe("CV-Camille-Martin-Stage-IA.pdf");
     expect((await getVariant(v.id)).design).toMatchObject({ pages: [{ elements: [{ text: "Bonjour" }] }] });
     const cards = await listCvCards();
     expect(cards.find((c) => c.id === v.id)?.versions).toHaveLength(1);

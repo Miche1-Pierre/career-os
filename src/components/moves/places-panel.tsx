@@ -48,7 +48,7 @@ export function PlacesPanel({ move }: { move: MoveView }) {
         </ul>
       )}
       <div className="grid gap-2 sm:grid-cols-[180px_minmax(0,1fr)_auto]">
-        <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Nom (ex. Club de judo)" maxLength={80} />
+        <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Nom (ex. Salle de sport)" maxLength={80} />
         <PlaceInput
           value={address}
           near={near}

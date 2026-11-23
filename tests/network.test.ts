@@ -345,7 +345,7 @@ describe("logos", () => {
 // CV import (pure parts)
 // ---------------------------------------------------------------------------
 
-const CV_TEXT = `Pierre Exemple
+const CV_TEXT = `Camille Exemple
 Ingénieur logiciel full-stack
 Profil : développeur passionné par la santé numérique, 5 ans d'expérience en TypeScript et Python.
 Compétences : TypeScript, React, Node.js, PostgreSQL, Python, Docker
@@ -371,8 +371,8 @@ describe("CV import", () => {
 
   it("cleans the extraction and marks what is not in the CV", () => {
     const raw: CvProfileExtraction = {
-      fullName: "  Pierre Exemple ",
-      email: "pierre@exemple.fr",
+      fullName: "  Camille Exemple ",
+      email: "camille@exemple.fr",
       phone: null,
       location: "Lyon, France",
       headline: "Ingénieur logiciel full-stack",
@@ -387,7 +387,7 @@ describe("CV import", () => {
       dealBreakers: [],
     };
     const { proposed, unverified } = buildCvProposal(raw, CV_TEXT);
-    expect(proposed.fullName).toBe("Pierre Exemple");
+    expect(proposed.fullName).toBe("Camille Exemple");
     expect(proposed.summary).toBe("");
     expect(proposed.skills).toEqual(["TypeScript", "React", "Kubernetes"]);
     expect(unverified.items.skills).toEqual(["Kubernetes"]);
@@ -400,7 +400,7 @@ describe("CV import", () => {
   it("proposes safe defaults and merges accepted fields without losing data", () => {
     const current: Profile = { ...emptyProfile(), headline: "Mon titre", skills: ["Go", "React"] };
     const proposal: CvProposal = {
-      proposed: { fullName: "Pierre Exemple", email: "", phone: "", location: "", headline: "Ingénieur logiciel", summary: "", yearsOfExperience: 5, skills: ["React", "TypeScript", "Kubernetes"], languages: [], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
+      proposed: { fullName: "Camille Exemple", email: "", phone: "", location: "", headline: "Ingénieur logiciel", summary: "", yearsOfExperience: 5, skills: ["React", "TypeScript", "Kubernetes"], languages: [], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
       unverified: { text: [], yearsOfExperience: false, items: { skills: ["Kubernetes"] } },
       warnings: [],
       meta: { provider: "claude-code", model: "haiku", promptVersion: "cv_profile_import_v1", durationMs: 1, characters: 1, truncated: false, pageCount: 1 },
@@ -411,7 +411,7 @@ describe("CV import", () => {
     expect(choices.lists.skills).toEqual({ accept: true, mode: "merge", included: ["React", "TypeScript"] }); // unverified item left out
     expect(choices.lists.languages.accept).toBe(false);
     const next = applyCvChoices(current, proposal, choices);
-    expect(next).toMatchObject({ fullName: "Pierre Exemple", headline: "Mon titre", yearsOfExperience: 5, skills: ["Go", "React", "TypeScript"] });
+    expect(next).toMatchObject({ fullName: "Camille Exemple", headline: "Mon titre", yearsOfExperience: 5, skills: ["Go", "React", "TypeScript"] });
     expect(countProfileChanges(current, next)).toBe(3);
     const replaced = applyCvChoices(current, proposal, { ...choices, lists: { ...choices.lists, skills: { accept: true, mode: "replace", included: ["TypeScript"] } } });
     expect(replaced.skills).toEqual(["TypeScript"]);
