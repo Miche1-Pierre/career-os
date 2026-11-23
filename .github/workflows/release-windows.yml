@@ -91,3 +91,67 @@ jobs:
           } else {
             gh release create $tag @files --target $env:GITHUB_SHA --title "Career OS $version" --notes "Installation sur Windows : https://get-career-os.vercel.app" --latest
           }
+
+      # ── Microsoft Store package, after the install command's release so a failure here never holds it back. ──
+      # Identity from the repository variables (Settings → Secrets and variables → Actions → Variables), copied from
+      # Partner Center → Product identity. Without them the package gets a test identity and stays out of the release.
+      - name: Microsoft Store package (MSIX)
+        shell: pwsh
+        env:
+          MSIX_IDENTITY_NAME: ${{ vars.MSIX_IDENTITY_NAME }}
+          MSIX_PUBLISHER: ${{ vars.MSIX_PUBLISHER }}
+          MSIX_PUBLISHER_DISPLAY_NAME: ${{ vars.MSIX_PUBLISHER_DISPLAY_NAME }}
+        run: |
+          $parts = ((Get-Content package.json -Raw | ConvertFrom-Json).version -replace '[-+].*$', '').Split('.')
+          # Each Store submission needs a higher version: major.minor.<run number>.0
+          $env:MSIX_VERSION = "$($parts[0]).$($parts[1]).$env:GITHUB_RUN_NUMBER.0"
+          node scripts/package-msix.mjs
+          if (-not (Get-ChildItem release/career-os-*-x64.msix -ErrorAction SilentlyContinue)) { throw 'no .msix produced (makeappx missing?)' }
+
+      - name: Smoke test the Store layout (launcher, read-only app folder)
+        shell: pwsh
+        run: |
+          $layout = Resolve-Path release/msix/layout
+          $home_ = Join-Path $env:RUNNER_TEMP 'store-home\CareerOS'
+          # The Store installs the app in a folder where nothing can be created: forbid it here too.
+          icacls $layout /deny '*S-1-1-0:(CI)(WD,AD,DC)' | Out-Null
+          $env:CAREER_OS_HOME = $home_
+          $env:CAREER_OS_NO_BROWSER = '1'
+          $p = Start-Process (Join-Path $layout 'CareerOS.exe') -PassThru
+          $settings = Join-Path $home_ 'data\app\settings.env'
+          $url = $null; $ok = $false
+          for ($i = 0; $i -lt 120; $i++) {
+            if (-not $url -and (Test-Path $settings)) { $url = ((Get-Content $settings | Where-Object { $_ -match '^APP_URL=' }) -split '=', 2)[1] }
+            if ($url) { try { if ((Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 "$url/api/health").StatusCode -eq 200) { $ok = $true; break } } catch { } }
+            Start-Sleep -Seconds 2
+          }
+          $welcome = if ($ok) { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 30 "$url/welcome").StatusCode } else { 0 }
+          $beat = if ($ok) { (Invoke-WebRequest -UseBasicParsing -TimeoutSec 10 "$url/api/health?beat=1").StatusCode } else { 0 }
+          # A second launch while it runs must just show it and exit cleanly (no second database).
+          $second = Start-Process (Join-Path $layout 'CareerOS.exe') -PassThru
+          $null = $second.WaitForExit(60000)
+          $secondCode = if ($second.HasExited) { $second.ExitCode } else { 'still running' }
+          Get-Content (Join-Path $home_ 'data\app\career-os.log') -ErrorAction SilentlyContinue | Select-Object -Last 30
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          icacls $layout /remove:d '*S-1-1-0' | Out-Null
+          if (-not $ok -or $welcome -ne 200 -or $beat -ne 204) { throw "Store layout smoke test failed (health $ok, welcome $welcome, beat $beat)" }
+          if (-not (Test-Path (Join-Path $home_ 'data\app\.heartbeat'))) { throw 'the heartbeat file was not written' }
+          if ($secondCode -ne 0) { throw "a second launch did not exit cleanly ($secondCode)" }
+
+      - name: Keep the Store package
+        uses: actions/upload-artifact@v4
+        with:
+          name: career-os-msix
+          path: release/career-os-*-x64.msix
+          if-no-files-found: error
+
+      - name: Add the Store package to the release
+        if: ${{ vars.MSIX_IDENTITY_NAME != '' }}
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          Copy-Item (Get-ChildItem release/career-os-*-x64.msix | Select-Object -First 1).FullName release/career-os-store-x64.msix
+          gh release upload "v$version" release/career-os-store-x64.msix --clobber

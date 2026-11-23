@@ -41,7 +41,7 @@ copy(".next/static");
 copy("public");
 copy("drizzle");
 copy("dist");
-for (const f of ["start-local.mjs", "local-db.mjs", "career-os.ico", "uninstall-windows.ps1"]) copy(path.join("scripts", f));
+for (const f of ["start-local.mjs", "local-db.mjs", "app-home.mjs", "career-os.ico", "uninstall-windows.ps1"]) copy(path.join("scripts", f));
 // The local database server is started by start-local.mjs, outside Next.js: its packages are not traced.
 for (const pkg of ["@electric-sql/pglite", "@electric-sql/pglite-socket"]) copy(path.join("node_modules", pkg));
 for (const f of ["LICENSE", "THIRD_PARTY_NOTICES.md"]) copy(f);

@@ -19,6 +19,7 @@ import { changeStatus } from "@/server/services/opportunities";
 import { evaluatePeriodicRules } from "@/server/services/rules";
 import { aiStatus, invalidateAiStatus } from "@/server/ai";
 import { removeAnthropicKey, saveAnthropicKey } from "@/server/ai/credentials";
+import { CLAUDE_CODE_SETUP_URL, claudeInstallOffered, startClaudeCodeInstall } from "@/server/ai/install-claude";
 import { accessToken, safeEqual, SESSION_COOKIE, sessionValue } from "@/server/security";
 
 export async function updateSettingsAction(section: SettingsSection, value: unknown) {
@@ -88,7 +89,24 @@ export async function deleteDemoAction() {
 }
 
 export async function testAiAction() {
-  return runAction(() => aiStatus({ fresh: true }), { revalidate: false });
+  return runAction(
+    async () => {
+      invalidateAiStatus();
+      return aiStatus({ fresh: true });
+    },
+    { revalidate: false },
+  );
+}
+
+/** Microsoft Store version: opens the window that installs Claude Code (winget asks for consent itself). */
+export async function installClaudeCodeAction() {
+  return runAction(
+    async () => {
+      if (!claudeInstallOffered()) throw new AppError("VALIDATION", "L'installation de Claude Code depuis l'app n'est proposée que dans la version Microsoft Store.");
+      return { started: startClaudeCodeInstall(), url: CLAUDE_CODE_SETUP_URL };
+    },
+    { revalidate: false },
+  );
 }
 
 /** Claude API key pasted in the app: checked with Anthropic, stored on this computer, used right away. */
