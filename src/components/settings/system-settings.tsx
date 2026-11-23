@@ -164,7 +164,7 @@ export function DocumentsSettings({ library, dataDir, maxUploadMb }: { library: 
           Copies figées (snapshots) de chaque version : <code className="rounded-md bg-muted px-1 font-mono text-xs break-all">{dataDir}</code> — elles garantissent que vous pourrez toujours rouvrir ce que vous avez réellement envoyé. Taille maximale d’un fichier : {maxUploadMb} Mo.
         </p>
       </div>
-      <CodeBlock>{"# .env — changez le dossier, puis : docker compose up -d\nDOCUMENTS_DIR=C:/Users/Pierre/Documents/Candidatures\nMAX_UPLOAD_MB=25"}</CodeBlock>
+      <CodeBlock>{"# .env — changez le dossier, puis : docker compose up -d\nDOCUMENTS_DIR=C:/Users/vous/Documents/CareerOS/documents\nMAX_UPLOAD_MB=25"}</CodeBlock>
       <p className="text-xs text-muted-foreground">
         Organisation suggérée : CV/, Cover Letters/, Academic/, Certificates/. Utilisez <Link href="/documents" className="underline">Documents → Analyser le dossier</Link> pour enregistrer les fichiers et repérer ceux qui ont changé.
       </p>

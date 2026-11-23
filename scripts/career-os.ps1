@@ -10,7 +10,7 @@
 param([switch]$NoBrowser, [switch]$NoBridge)
 
 $ErrorActionPreference = 'Continue'
-$Proj = 'C:\Candidature'
+$Proj = Split-Path -Parent $PSScriptRoot
 $Url  = 'http://localhost:3000'
 $Docker = 'docker'
 

@@ -27,6 +27,8 @@ export async function renderEmailTemplate(opportunityId: string, templateId?: st
     contactName: contact?.fullName ?? "",
     appliedDate: opp.appliedAt ? formatISODate(opp.appliedAt, "long", locale) : "",
     userName: settings.profile.fullName || settings.general.userName || "",
+    userEmail: settings.profile.email || "",
+    userPhone: settings.profile.phone || "",
     headline: settings.profile.headline || "",
     applyUrl: opp.url ?? "",
     today: formatISODate(todayISO(settings.general.timezone), "long", locale),

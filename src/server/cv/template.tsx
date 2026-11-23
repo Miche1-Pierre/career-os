@@ -1,5 +1,5 @@
 /**
- * PDF template "classic": reproduces Pierre's current CVs (serif, "| SECTION" headings with a rule, bold italic entry
+ * PDF template "classic": reproduces a classic one-page CV (serif, "| SECTION" headings with a rule, bold italic entry
  * titles with right-aligned dates, dash bullets). Rendered by @react-pdf/renderer, without AI: same content, same PDF.
  *
  * Font: Gelasio (SIL Open Font License), metric-compatible with Georgia used by the original CVs.

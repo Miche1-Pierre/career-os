@@ -35,7 +35,7 @@ describe("@ mentions (database)", () => {
     await importCvSeed(
       {
         entries: [],
-        variants: [{ key: "ai-fr", name: "AI Product (FR)", lang: "fr", header: { name: "Pierre MICHEL", title: "AI", lines: [], links: [] }, sections: [] }],
+        variants: [{ key: "ai-fr", name: "AI Product (FR)", lang: "fr", header: { name: "Camille MARTIN", title: "AI", lines: [], links: [] }, sections: [] }],
       },
       USER,
     );

@@ -6,7 +6,7 @@
  *     its free key) read by deterministic code;
  *  B. the Claude agent (web search + fetch, official public pages only, strict output) for what has no connector;
  *  C. sites behind a login or that forbid automated access (LinkedIn, Indeed, Immoweb…): pre-filled search links that
- *     Pierre opens himself, then imports with "Ajoute cette offre" / the browser.
+ *     the user opens themselves, then imports with "Ajoute cette offre" / the browser.
  */
 import { z } from "zod";
 import { isISODate } from "./dates";

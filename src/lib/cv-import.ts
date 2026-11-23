@@ -8,13 +8,16 @@ import { normalizeText } from "./text";
 /** Server Actions accept 4 MB bodies (next.config.ts), multipart overhead included. */
 export const CV_MAX_BYTES = 4 * 1024 * 1024 - 64 * 1024;
 
-export const PROFILE_TEXT_FIELDS = ["fullName", "headline", "summary"] as const;
+export const PROFILE_TEXT_FIELDS = ["fullName", "email", "phone", "location", "headline", "summary"] as const;
 export const PROFILE_LIST_FIELDS = ["skills", "languages", "education", "targetRoles", "targetDomains", "preferredLocations", "dealBreakers"] as const;
 export type ProfileTextField = (typeof PROFILE_TEXT_FIELDS)[number];
 export type ProfileListField = (typeof PROFILE_LIST_FIELDS)[number];
 
 export const PROFILE_FIELD_LABELS: Record<keyof Profile, string> = {
   fullName: "Nom complet",
+  email: "E-mail",
+  phone: "Téléphone",
+  location: "Ville",
   headline: "Titre",
   summary: "Résumé",
   yearsOfExperience: "Années d’expérience",

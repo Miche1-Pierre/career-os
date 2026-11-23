@@ -3,7 +3,11 @@
 Personal career operating system of the user (jobs, internships, VIE, masters/formations, PhDs).
 Next.js 16 + PostgreSQL (Drizzle) + shadcn/ui, running with Docker Compose on http://localhost:3000.
 
-This folder is used in two ways. Figure out which one the user wants:
+This folder is used in three ways. Figure out which one the user wants:
+
+0. **Installing Career OS** (fresh download, no `.env`, app not answering, or « installe / configure Career OS »):
+   follow the skill `career-setup` (asks who the user is, Docker or local mode, folders, `.env`, build, profile, CV,
+   shortcut). Personal data always lives outside the repository (`~/Documents/CareerOS` by default).
 
 1. **Operating Career OS** (most conversations): the user pastes a job posting, an email, notes, asks what to do
    today, wants a follow-up drafted… → use the `career-os` MCP tools. Do **not** edit code or query the database
@@ -13,7 +17,8 @@ This folder is used in two ways. Figure out which one the user wants:
 ## Operating Career OS (MCP server `career-os`)
 
 The app exposes an MCP server at `http://localhost:3000/api/mcp` (declared in `.mcp.json`). If its tools are
-missing, the app is probably stopped: tell the user to run `docker compose up -d` (then `/mcp` → reconnect).
+missing, the app is probably stopped: tell the user to start it (desktop shortcut or `npm run local`; Docker mode:
+`docker compose up -d`), then `/mcp` → reconnect.
 
 Rules — they matter more than speed:
 
@@ -65,7 +70,10 @@ Typical requests and the tools to use:
   (`src/server/mcp/*`). Pure, client-safe logic lives in `src/lib/*` (dates, follow-ups, duplicates, schemas).
 - AI: `src/server/ai/*` — provider abstraction (claude-code CLI/bridge, anthropic, openai, none), versioned prompts,
   deterministic verification of AI output (`verify.ts`).
-- Commands: `npm run dev` (needs `docker compose up -d db`), `npm test`, `npm run typecheck`, `npm run lint`,
+- Two runtimes, same code: Docker (PostgreSQL container) or local mode (`scripts/local-db.mjs`: PGlite stored in
+  `CAREER_OS_DB_DIR`, served on 127.0.0.1:`DB_PORT` with the PostgreSQL protocol; `npm run local` starts it, migrates,
+  then runs the app). One process owns the local database folder: never open it twice.
+- Commands: `npm run dev` (needs `docker compose up -d db`, or `npm run db:local`), `npm test`, `npm run typecheck`, `npm run lint`,
   `npm run db:generate` after schema changes (migrations in `drizzle/`, applied at container start).
 - Local dev DB: `postgres://careeros:careeros@localhost:5433/careeros` (see `.env`).
 - Don't break the MCP tool contracts or the export format (`EXPORT_SCHEMA_VERSION`) without a migration.

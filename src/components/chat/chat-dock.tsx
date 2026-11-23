@@ -105,7 +105,7 @@ function suggestionsFor(path: string): string[] {
   if (path.startsWith("/companies") || path.startsWith("/institutions")) return ["Trouve des entreprises IA à Bruxelles", "Quelles entreprises ont le plus de candidatures ?"];
   if (path.startsWith("/contacts")) return ["Qui dois-je recontacter ?", "Ajoute ce contact : "];
   if (path.startsWith("/calendar")) return ["Qu'est-ce que j'ai cette semaine ?", "Ajoute un entretien : "];
-  if (path.startsWith("/documents")) return ["Quel CV ai-je envoyé à BlackFin ?"];
+  if (path.startsWith("/documents")) return ["Quel CV ai-je envoyé pour ma dernière candidature ?"];
   if (path.startsWith("/analytics") || path.startsWith("/dashboard")) return ["Résume mes statistiques du mois", "Quel canal me donne le plus de réponses ?"];
   if (path.startsWith("/searches")) return ["Crée une recherche d'offres AI engineer à Bruxelles", "Lance mes recherches", "Quelles entreprises IA à Bruxelles ont une page carrières Greenhouse ou Lever ?"];
   if (path.startsWith("/settings")) return ["Lis mon CV et remplis mon profil"];

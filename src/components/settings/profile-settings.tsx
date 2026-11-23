@@ -114,6 +114,17 @@ export function ProfileSettings({ value, icons: initialIcons }: { value: Profile
           <FormField label={PROFILE_FIELD_LABELS.yearsOfExperience}>
             <NumberInput value={v.yearsOfExperience} onChange={(n) => setV({ ...v, yearsOfExperience: n })} />
           </FormField>
+          <div className="grid gap-4 @md:col-span-2 @md:grid-cols-3">
+            <FormField label={PROFILE_FIELD_LABELS.email}>
+              <Input type="email" value={v.email} onChange={(e) => setV({ ...v, email: e.target.value })} placeholder="prenom.nom@exemple.fr" />
+            </FormField>
+            <FormField label={PROFILE_FIELD_LABELS.phone}>
+              <Input value={v.phone} onChange={(e) => setV({ ...v, phone: e.target.value })} />
+            </FormField>
+            <FormField label={PROFILE_FIELD_LABELS.location}>
+              <Input value={v.location} onChange={(e) => setV({ ...v, location: e.target.value })} placeholder="Lyon, France" />
+            </FormField>
+          </div>
           <FormField label={PROFILE_FIELD_LABELS.headline} className="@md:col-span-2">
             <Input value={v.headline} onChange={(e) => setV({ ...v, headline: e.target.value })} placeholder="Ingénieur full-stack — HealthTech et IA" />
           </FormField>
