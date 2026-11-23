@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { CareerOsMark } from "@/components/app/logo";
 import { PlaceInput } from "@/components/app/place-input";
+import { ApiKeyField } from "@/components/app/api-key-field";
 import { completeOnboardingAction } from "@/app/actions/settings";
+import type { AIStatus } from "@/server/ai";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -21,7 +23,7 @@ interface Props {
   followUpDays: number;
   businessDays: boolean;
   library: { hostRoot: string; exists: boolean; writable: boolean; folders: string[] };
-  ai: { available: boolean };
+  ai: Pick<AIStatus, "available" | "apiKey" | "detail">;
   hasDemo: boolean;
 }
 
@@ -66,6 +68,7 @@ function ChipsInput({ value, onChange, placeholder, id }: { value: string[]; onC
 export function WelcomeWizard(props: Props) {
   const { library, ai, hasDemo } = props;
   const [step, setStep] = useState(0);
+  const [aiState, setAiState] = useState<Pick<AIStatus, "available" | "apiKey" | "detail">>(ai);
   const [firstName, setFirstName] = useState(props.firstName);
   const [lastName, setLastName] = useState(props.lastName);
   const [email, setEmail] = useState(props.email);
@@ -267,10 +270,28 @@ export function WelcomeWizard(props: Props) {
                   </button>
                 ))}
               </div>
-              <p className="flex items-center gap-2 rounded-2xl bg-muted-background px-4 py-3 text-sm text-muted-foreground">
-                <Sparkles className="size-4 shrink-0 text-highlight-500" />
-                {ai.available ? "Claude est prêt à t'aider : la barre de discussion est en bas de chaque page." : "Claude n'est pas encore connecté. L'application fonctionne déjà ; tu pourras l'activer plus tard dans les paramètres."}
-              </p>
+              {aiState.available && aiState.apiKey?.source !== "app" ? (
+                <p className="flex items-center gap-2 rounded-2xl bg-muted-background px-4 py-3 text-sm text-muted-foreground">
+                  <Sparkles className="size-4 shrink-0 text-highlight-500" />
+                  Claude est prêt à t&apos;aider : la barre de discussion est en bas de chaque page.
+                </p>
+              ) : (
+                <div className="space-y-3 rounded-2xl bg-muted-background p-4">
+                  <div className="flex items-start gap-2">
+                    <Sparkles className="mt-0.5 size-4 shrink-0 text-highlight-500" />
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{aiState.available ? "Claude est prêt à t'aider" : "Active l'assistant Claude"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {aiState.available
+                          ? "La barre de discussion est en bas de chaque page."
+                          : "Colle ta clé Claude : il pourra chercher des offres et des logements, analyser et préparer pour toi. Tu peux aussi le faire plus tard dans Paramètres → IA."}
+                      </p>
+                    </div>
+                  </div>
+                  <ApiKeyField status={aiState} onChange={setAiState} compact />
+                  {aiState.apiKey?.source === "app" && !aiState.available && <p className="text-xs text-warning-700">{aiState.detail}</p>}
+                </div>
+              )}
             </div>
           )}
 
