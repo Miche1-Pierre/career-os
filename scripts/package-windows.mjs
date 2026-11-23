@@ -48,6 +48,50 @@ for (const f of ["LICENSE", "THIRD_PARTY_NOTICES.md"]) copy(f);
 // The installer writes the real .env; a copied one from the build machine must never ship.
 fs.rmSync(path.join(stage, ".env"), { force: true });
 
+// Next.js links some server packages (.next/node_modules/<name>-<hash> → node_modules/<name>). Where the build may
+// create symbolic links (CI runners), they end up in the archive, and Windows cannot recreate them when a normal user
+// extracts it: replace every link with a real copy of its target.
+function removeLink(p) {
+  try {
+    fs.unlinkSync(p);
+  } catch {
+    fs.rmdirSync(p); // directory symlink or junction on Windows (removes the link, never the target)
+  }
+}
+function materializeLinks(dir) {
+  let count = 0;
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    const stat = fs.lstatSync(p);
+    if (stat.isSymbolicLink()) {
+      const target = fs.realpathSync(p);
+      removeLink(p);
+      fs.cpSync(target, p, { recursive: true, dereference: true });
+      count += 1 + (fs.statSync(p).isDirectory() ? materializeLinks(p) : 0);
+    } else if (stat.isDirectory()) {
+      count += materializeLinks(p);
+    }
+  }
+  return count;
+}
+const links = materializeLinks(stage);
+if (links) log(`${links} lien(s) remplacé(s) par des copies`);
+const leftover = (function find(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const p = path.join(dir, entry.name);
+    if (fs.lstatSync(p).isSymbolicLink()) return p;
+    if (entry.isDirectory()) {
+      const hit = find(p);
+      if (hit) return hit;
+    }
+  }
+  return null;
+})(stage);
+if (leftover) {
+  console.error(`[package] lien restant dans l'archive : ${leftover}`);
+  process.exit(1);
+}
+
 const version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
 fs.writeFileSync(path.join(stage, "VERSION"), `${version}\n`);
 
