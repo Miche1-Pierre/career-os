@@ -34,10 +34,30 @@ export async function patchSettingsAction(section: SettingsSection, patch: Recor
   });
 }
 
-export async function completeOnboardingAction(options: { loadDemo?: boolean; userName?: string; followUpDays?: number; businessDays?: boolean } = {}) {
+export async function completeOnboardingAction(
+  options: {
+    loadDemo?: boolean;
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    location?: string;
+    targetRoles?: string[];
+    targetDomains?: string[];
+    preferredLocations?: string[];
+    followUpDays?: number;
+    businessDays?: boolean;
+  } = {},
+) {
   const result = await runAction(async () => {
     const settings = await getSettings();
-    if (options.userName !== undefined) await patchSettingsSection("general", { userName: options.userName }, USER);
+    if (options.firstName !== undefined) await patchSettingsSection("general", { userName: options.firstName }, USER);
+    const fullName = [options.firstName, options.lastName].filter((x) => x && x.trim()).join(" ").trim();
+    const profilePatch: Record<string, unknown> = {};
+    if (fullName) profilePatch.fullName = fullName;
+    for (const key of ["email", "phone", "location"] as const) if (options[key] !== undefined) profilePatch[key] = options[key];
+    for (const key of ["targetRoles", "targetDomains", "preferredLocations"] as const) if (options[key]?.length) profilePatch[key] = options[key];
+    if (Object.keys(profilePatch).length) await patchSettingsSection("profile", profilePatch as never, USER);
     if (options.followUpDays !== undefined || options.businessDays !== undefined) {
       const days = options.followUpDays ?? settings.followUp.defaultDays.JOB;
       await patchSettingsSection(
@@ -54,7 +74,7 @@ export async function completeOnboardingAction(options: { loadDemo?: boolean; us
     await updateSettingsSection("onboarding", { ...onboarding, completedAt: new Date().toISOString() }, USER);
     return null;
   });
-  if (result.ok) redirect("/today");
+  if (result.ok) redirect("/");
   return result;
 }
 

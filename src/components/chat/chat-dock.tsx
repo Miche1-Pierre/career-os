@@ -830,12 +830,19 @@ function VoiceWave({ sinkRef }: { sinkRef: React.RefObject<((level: number) => v
   useEffect(() => {
     const history = new Array<number>(WAVE_BARS).fill(0);
     let last = 0;
+    // Adapts to the microphone: the background noise becomes the baseline, the voice fills the height (a quiet
+    // microphone would otherwise keep every bar near the floor).
+    let floor = 1;
+    let peak = 0;
     sinkRef.current = (level) => {
       const now = performance.now();
       if (now - last < 55) return;
       last = now;
+      floor = Math.min(level, floor + 0.002);
+      peak = Math.max(level, peak * 0.985, floor + 0.05);
+      const norm = Math.max(0, Math.min(1, (level - floor) / (peak - floor)));
       history.shift();
-      history.push(level);
+      history.push(0.08 + 0.92 * Math.pow(norm, 0.85));
       history.forEach((v, i) => {
         const el = bars.current[i];
         if (el) el.style.transform = `scaleY(${Math.max(0.1, Math.min(1, v))})`;

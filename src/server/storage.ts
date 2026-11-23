@@ -217,6 +217,17 @@ export async function isLibraryWritable(): Promise<boolean> {
   }
 }
 
+/** Creates the documents library and its usual sub-folders when they are missing (first start). Never throws. */
+export async function ensureLibraryFolders(folders: string[] = []) {
+  try {
+    await fs.mkdir(storageConfig.documentsRoot, { recursive: true });
+    for (const f of folders) await fs.mkdir(path.join(storageConfig.documentsRoot, f), { recursive: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function libraryStatus() {
   const root = storageConfig.documentsRoot;
   let exists = false;
