@@ -9,7 +9,7 @@ export type PlaceSearchMode = "city" | "address";
 export interface PlaceHit {
   /** A city, a street address, or a named place (club, station, school…). */
   kind: "city" | "address" | "poi";
-  /** Text put in the field ("Avenue Louise 106, 1050 Ixelles" or "Bruxelles"). */
+  /** Text put in the field ("Rue de la Loi 16, 1000 Bruxelles" or "Bruxelles"). */
   label: string;
   /** Main line of the suggestion (street and number, place name or city). */
   title: string;
@@ -43,7 +43,7 @@ export interface PhotonFeature {
   };
 }
 
-/** Countries that write the number before the street ("106 avenue…"); elsewhere it comes after ("Avenue Louise 106"). */
+/** Countries that write the number before the street ("12 rue…"); elsewhere it comes after ("Rue de la Loi 16"). */
 const NUMBER_FIRST = new Set(["FR", "GB", "IE", "US", "CA", "AU", "NZ", "LU", "SG"]);
 
 /** One Photon result as a suggestion, or null when it has no coordinates or nothing to show. */

@@ -17,20 +17,68 @@ Mono-utilisateur, local, vos données restent chez vous (PostgreSQL + dossiers s
 
 ---
 
-## Démarrage rapide
+## Installer
 
-Prérequis : [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+### Avec Claude Code (recommandé)
+
+1. Téléchargez le projet : `git clone https://github.com/Miche1-Pierre/career-os.git` (ou le ZIP depuis GitHub).
+2. Ouvrez le dossier avec [Claude Code](https://claude.com/claude-code) : `cd career-os` puis `claude`.
+3. Dites-lui **« installe Career OS »**.
+
+Claude suit la procédure [`career-setup`](.claude/skills/career-setup/SKILL.md) :
+- il vous demande votre nom, votre e-mail, ce que vous cherchez et où ranger vos données ;
+- il crée les dossiers et la configuration, construit et lance l'application ;
+- il remplit votre profil à partir de votre CV ;
+- il crée un raccourci sur le bureau (Windows).
+
+Sans Docker par défaut : la base de données est un dossier sur votre disque.
+
+### À la main
+
+**Sans Docker** (Node 22 ou plus) :
+1. Copiez `.env.example` en `.env`.
+2. Renseignez la section « Local » : `CAREER_OS_DB_DIR`, `DATABASE_URL`, `DOCUMENTS_ROOT`…
+3. Lancez :
+
+```bash
+npm ci
+npm run build:local   # une fois, puis après chaque mise à jour
+npm run local         # démarre la base locale puis l'application
+```
+
+La base est PostgreSQL compilé en WebAssembly ([PGlite](https://pglite.dev)), enregistrée dans `CAREER_OS_DB_DIR` et
+servie sur `127.0.0.1:DB_PORT` : l'application s'y connecte comme à un PostgreSQL classique. Un seul processus tient
+le dossier ; fermez la fenêtre (ou Ctrl+C) pour arrêter proprement. Windows : `scripts/career-os-local.ps1` lance tout
+dans une fenêtre réduite et ouvre le navigateur.
+
+**Avec Docker** ([Docker Desktop](https://www.docker.com/products/docker-desktop/)) :
 
 ```bash
 docker compose up -d
 ```
 
-Ouvrez **http://localhost:3000**. Le premier build prend quelques minutes ; les migrations de la base sont
-appliquées automatiquement à chaque démarrage. L'assistant d'accueil propose de renseigner votre profil et, si vous
-le souhaitez, de charger des données de démonstration (supprimables en un clic : *Settings → Data*).
-
 | Commande | Effet |
 |---|---|
+| `docker compose up -d` | Démarre (ou redémarre) Career OS |
+| `docker compose up -d --build` | Reconstruit l'image après une mise à jour du code |
+| `docker compose logs -f app` | Journaux de l'application |
+| `docker compose down` | Arrête tout : **les données sont conservées** (volume `postgres_data`) |
+| `docker compose down -v` | ⚠️ Arrête **et supprime la base de données** |
+
+Ouvrez **http://localhost:3000**. Les migrations s'appliquent seules à chaque démarrage. L'assistant d'accueil propose
+de renseigner votre profil et, si vous le souhaitez, de charger des données de démonstration (supprimables en un clic :
+*Paramètres → Données*). Par défaut l'app n'écoute que sur `127.0.0.1` : elle n'est pas accessible depuis le réseau.
+
+### Où sont mes données ?
+
+Tout ce qui vous concerne reste chez vous, hors du dossier du projet (par défaut `Documents/CareerOS`) :
+- `documents/` : vos fichiers (CV, lettres, diplômes…) ;
+- `data/` : la base en mode local ;
+- `backups/` : une sauvegarde JSON complète chaque jour.
+
+En Docker, la base vit dans le volume `postgres_data`. Mettre à jour le code ne touche jamais à ces dossiers.
+
+---|---|
 | `docker compose up -d` | Démarre (ou redémarre) Career OS |
 | `docker compose up -d --build` | Reconstruit l'image après une mise à jour du code |
 | `docker compose logs -f app` | Journaux de l'application |
@@ -56,7 +104,7 @@ skills (`.claude/skills/`). Lancez Claude Code dans `C:\Candidature` (`claude`, 
 - « Voici l'email reçu de Siemens : … » → Claude propose les mises à jour (statut, entretien, contact) et les applique
 - « Ajoute un entretien technique avec Zefir mardi 14h » · « Prépare mon entretien chez Owkin »
 - « Lis mon CV (`documents/CV/CV.pdf`) et remplis mon profil »
-- « J'ai signé chez BlackFin, prépare mon installation » · « Ajoute cette coloc : *(lien)* » · « Compare les logements »
+- « J'ai signé chez Acme, prépare mon installation » · « Ajoute cette coloc : *(lien)* » · « Compare les logements »
 
 Claude extrait les informations avec leur **provenance** (citation exacte de la source, ou « déduit »), vérifie
 les doublons, crée les fiches et vous donne leur lien. Il demande confirmation avant toute action irréversible et

@@ -60,7 +60,7 @@ export function WelcomeWizard({ userName: initialName, followUpDays: initialDays
             </p>
             <div className="space-y-1.5">
               <Label htmlFor="name">Comment vous appeler ?</Label>
-              <Input id="name" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Pierre" autoFocus />
+              <Input id="name" value={userName} onChange={(e) => setUserName(e.target.value)} placeholder="Camille" autoFocus />
               <p className="text-xs text-muted-foreground">Utilisé dans les messages d’accueil et les modèles d’e-mail.</p>
             </div>
           </div>

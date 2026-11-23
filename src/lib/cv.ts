@@ -61,7 +61,7 @@ export const cvStyleSchema = z.object({
 });
 export type CvStyle = z.infer<typeof cvStyleSchema>;
 
-/** Splits an entry title for the ROLE_BOLD style: "Head of Engineering," + " Plania (TechGuys), Montréal". Pure. */
+/** Splits an entry title for the ROLE_BOLD style: "Head of Engineering," + " Acme, Lyon". Pure. */
 export function splitRole(title: string): [string, string] {
   const i = title.indexOf(",");
   return i < 0 ? [title, ""] : [title.slice(0, i + 1), title.slice(i + 1)];
@@ -91,7 +91,7 @@ export interface CvEntryView {
   bullets: string[];
 }
 
-/** File-safe version of a CV name: "CV Pierre Michel (AI)" → "CV-Pierre-Michel-(AI)". Pure. */
+/** File-safe version of a CV name: "CV Camille Martin (AI)" → "CV-Camille-Martin-(AI)". Pure. */
 export function fileBase(name: string): string {
   const base = name
     .normalize("NFD")
@@ -103,7 +103,7 @@ export function fileBase(name: string): string {
   return base || "CV";
 }
 
-/** File name of an export: the CV's name ("CV-Pierre-Michel-AIProduct-FR.pdf"); versions live in Documents. Pure. */
+/** File name of an export: the CV's name ("CV-Camille-Martin-Product-FR.pdf"); versions live in Documents. Pure. */
 export function exportFileName(variant: { name: string; fileName?: string | null }): string {
   return `${fileBase(variant.fileName || variant.name)}.pdf`;
 }

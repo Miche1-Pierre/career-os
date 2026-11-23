@@ -94,7 +94,7 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
         </DialogHeader>
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField label="Nom" htmlFor="m-title" required className="sm:col-span-2">
-            <Input id="m-title" value={s.title} onChange={(e) => set("title", e.target.value)} placeholder="BlackFin · Bruxelles" autoFocus />
+            <Input id="m-title" value={s.title} onChange={(e) => set("title", e.target.value)} placeholder="Acme · Lyon" autoFocus />
           </FormField>
           <FormField label="Ville" htmlFor="m-city">
             <PlaceInput
@@ -130,7 +130,7 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
               near={s.cityCoords}
               onChange={(v) => setS((x) => ({ ...x, workAddress: v, workCoords: null }))}
               onSelect={(p) => set("workCoords", { lat: p.lat, lng: p.lng })}
-              placeholder="Avenue Louise 106, 1050 Ixelles"
+              placeholder="12 rue de la République, 69002 Lyon"
             />
           </FormField>
           <FormField label="Devise" htmlFor="m-cur" hint={s.currencyTouched ? undefined : "Suit le pays"}>

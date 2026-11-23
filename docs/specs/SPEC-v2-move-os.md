@@ -1,7 +1,7 @@
 # Spec v2 — De la recherche à l'installation
 
 > Statut : **brouillon pour revue** (22/11/2026). Rien n'est implémenté.
-> Objectif : que Career OS suive Pierre de la première recherche d'opportunité jusqu'à son installation sur place,
+> Objectif : que Career OS suive l'utilisateur de la première recherche d'opportunité jusqu'à son installation sur place,
 > puis enchaîne sur la suivante. Tout en local, dans la même application, avec Claude comme assistant.
 
 ---
@@ -16,11 +16,11 @@ Aujourd'hui, Career OS couvre **trouver → postuler → suivre → décider**. 
  messages types      formations…)        canal, relances        offre, contrat     budget, voyage           prochaine cible
 ```
 
-Quatre nouveaux blocs, dans l'ordre de valeur pour Pierre :
+Quatre nouveaux blocs, dans l'ordre de valeur pour l'utilisateur :
 
-| # | Bloc | Ce que ça apporte | Exemple concret (BlackFin) |
+| # | Bloc | Ce que ça apporte | Exemple concret (stage chez Acme) |
 |---|---|---|---|
-| 1 | **Projet d'installation** (« Move ») | Créé quand une offre est signée : destination, dates, adresse du lieu de travail, salaire net, checklist | Bruxelles, 04/01 → 02/07/2027, 106 av. Louise, 1 600 €/mois |
+| 1 | **Projet d'installation** (« Move ») | Créé quand une offre est signée : destination, dates, adresse du lieu de travail, salaire net, checklist | Bruxelles, 04/01 → 02/07/2027, 12 rue de l'Exemple, 1 800 €/mois |
 | 2 | **Logement** | Recherches sauvegardées, annonces (scrapées, importées ou collées), shortlist, contacts, visites, comparaison | Le fichier Excel actuel, mais vivant, avec statuts et relances |
 | 3 | **Budget** | Plan mensuel + coûts ponctuels, épargne visée, comparaison des logements par épargne restante | « Cohabs Saint-Gilles → 236 €/mois d'épargne » |
 | 4 | **Démarches** | Checklists par pays (visa, domiciliation, santé, banque…) avec documents et échéances | France → Belgique : commune, CEAM, compte… ; France → Canada : permis, NAS, RAMQ |
@@ -32,14 +32,14 @@ Et deux blocs transverses qui renforcent l'existant :
 | 5 | **Moteur de découverte** | Claude (et des connecteurs) cherchent des offres d'emploi **et** des logements selon des critères, alimentent la base, disent ce qu'ils n'ont pas pu atteindre et où chercher à la place |
 | 6 | **Matériaux** | CV structuré → PDF généré (variantes FR/EN/rôle), messages d'accroche, lettres, « kit de candidature » par opportunité |
 
-**Principes inchangés** : déterministe d'abord, l'IA propose / l'utilisateur dispose, rien ne se perd, **jamais d'envoi automatique** (on prépare, Pierre envoie).
+**Principes inchangés** : déterministe d'abord, l'IA propose / l'utilisateur dispose, rien ne se perd, **jamais d'envoi automatique** (on prépare, l'utilisateur envoie).
 
-### Retours de Pierre (22/11) intégrés
+### Retours utilisateur (22/11) intégrés
 
 | Sujet | Décision |
 |---|---|
 | Lisibilité du parcours | Le parcours est **linéaire** : on l'affiche comme une suite de blocs (Préparer → Chercher → Postuler → Décider → S'installer → Vivre là-bas) avec une **frise d'avancement** par opportunité et par Move. Chaque écran ne montre que son bloc (§ 8). |
-| Un seul endroit pour demander | **Chat intégré** dans l'app, disponible partout (§ 3bis). On lui demande de lancer une recherche, il propose, Pierre valide, il exécute, les résultats arrivent dans le chat **et** dans les écrans. |
+| Un seul endroit pour demander | **Chat intégré** dans l'app, disponible partout (§ 3bis). On lui demande de lancer une recherche, il propose, l'utilisateur valide, il exécute, les résultats arrivent dans le chat **et** dans les écrans. |
 | Connexion IA | **Claude d'abord** (abonnement de l'utilisateur, via Claude Code). **Codex (OpenAI)** ensuite : le CLI Codex se connecte avec un compte ChatGPT, donc même principe, à brancher en phase ultérieure. |
 | Choix du modèle | **Automatique par tâche**, invisible pour l'utilisateur (§ 3.3). Pas de limite imposée par défaut. |
 | Quota | Afficher l'usage du forfait Claude (fenêtre de 5 h, quota hebdomadaire) **si Claude Code l'expose** ; sinon estimation locale à partir des runs. Alerte quand on approche de la limite. |
@@ -56,7 +56,7 @@ Et deux blocs transverses qui renforcent l'existant :
 
 ## 1. Parcours utilisateur cible
 
-1. **Préparer** — Pierre remplit son profil, ses variantes de CV (AI Product FR, Founding EN…) et ses messages types.
+1. **Préparer** — l'utilisateur remplit son profil, ses variantes de CV (AI Product FR, Founding EN…) et ses messages types.
    Il exporte un CV en PDF en un clic, la version envoyée est figée (comme aujourd'hui pour les documents).
 2. **Chercher** — Il crée une recherche « Forward Deployed Engineer · Bruxelles, Paris, remote EU · CDI ou stage ».
    Le moteur ramène des offres dans l'Inbox avec provenance ; ce qui n'est pas atteignable (LinkedIn) devient un lien
@@ -67,7 +67,7 @@ Et deux blocs transverses qui renforcent l'existant :
    checklist de relecture du contrat (durée, préavis, congés, propriété intellectuelle…), contrat signé archivé.
 5. **S'installer** — L'offre acceptée propose « Créer le projet d'installation ». Le Move regroupe :
    logement (recherche → shortlist → contact → visites → choix), budget, démarches, voyage, documents.
-6. **Vivre là-bas** — Le budget passe en suivi réel léger, et Pierre peut définir sa **prochaine cible** :
+6. **Vivre là-bas** — Le budget passe en suivi réel léger, et l'utilisateur peut définir sa **prochaine cible** :
    le cycle recommence (recherche sauvegardée, alertes).
 
 ---
@@ -116,7 +116,7 @@ moves                       projet d'installation
   arrivalDate, departureDate?, workPlaceId → places,
   status (PLANNING | SEARCHING_HOUSING | READY | MOVED | DONE), notes
 
-places                      adresses géocodées réutilisables (bureau, logements, club de judo…)
+places                      adresses géocodées réutilisables (bureau, logements, club de sport…)
   id, label, address, city, country, lat, lng, geocodeSource, kind (WORK | HOUSING | POI)
 
 housing_searches            critères d'une recherche logement (liée à un move)
@@ -164,7 +164,7 @@ research_runs               journal de chaque recherche (IA ou connecteur)
 
 message_drafts              brouillons (jamais envoyés par l'app)
   id, target (OPPORTUNITY|LISTING|CONTACT), targetId, channel (EMAIL|WHATSAPP|SMS|APP|LINKEDIN|FORM),
-  language, subject, body, templateKey, status (DRAFT|SENT_MANUALLY|REPLIED), sentAt (déclaré par Pierre)
+  language, subject, body, templateKey, status (DRAFT|SENT_MANUALLY|REPLIED), sentAt (déclaré par l'utilisateur)
 
 cv_profiles / cv_variants   CV structuré (sections, entrées, langues) + variantes (ordre, sélection, accroche)
 templates                   messages types et lettres (variables {{company}}, {{role}}, {{dates}}…)
@@ -183,7 +183,7 @@ polymorphe (`targetType`, `targetId`) au lieu du seul `opportunityId`.
 |---|---|---|---|
 | **A. Connecteurs** | Code déterministe par source : API officielles (ex. France Travail, Adzuna, Jooble pour l'emploi), pages publiques + JSON-LD / microdonnées, sitemaps/RSS. Réutilise `capture/safe-fetch` (anti-SSRF, timeouts). | Sources stables et autorisées | Gratuit, rapide |
 | **B. Agent Claude** | `claude -p` via le bridge, **outils limités à WebSearch + WebFetch**, sortie JSON stricte (schéma Zod), citations vérifiées contre les pages récupérées | Sources sans connecteur, pays nouveaux, « trouve-moi des colocs meublées à Montréal < 1 100 CAD » | Quota Claude, borné |
-| **C. Assisté navigateur** | Pierre ouvre ses favoris (Immoweb, LinkedIn…) ; Claude in Chrome ou une future extension envoie la page à `POST /api/v1/capture` | Sites derrière login / anti-bot | Manuel, déclenché par Pierre |
+| **C. Assisté navigateur** | L'utilisateur ouvre ses favoris (Immoweb, LinkedIn…) ; Claude in Chrome ou une future extension envoie la page à `POST /api/v1/capture` | Sites derrière login / anti-bot | Manuel, déclenché par Pierre |
 
 ### 3.2 Règles
 
@@ -244,12 +244,12 @@ Nouveaux résultats → Inbox (offres) ou liste « Nouveaux » du logement + not
    statut. Un badge par critère bloquant (bail 12 mois, non meublé, dispo trop tard) au lieu d'une colonne chacun.
    Tri par défaut : critères OK, puis épargne.
 2. **Pipeline** — Kanban par statut (Nouveau → À contacter → Contacté → Réponse → Visite → Choisi), glisser-déposer.
-3. **Carte** — points sur fond OpenStreetMap, lieu de travail et POI (club de judo), rayon de marche.
+3. **Carte** — points sur fond OpenStreetMap, lieu de travail et POI (club de sport), rayon de marche.
 
 **Fiche annonce** (panneau latéral, pas une nouvelle page) :
 coûts détaillés (loyer, charges et ce qu'elles couvrent, garantie, frais, **total**), conditions (dispo, bail,
 meublé), la maison (colocs, profil, salle de bain), trajet, contacts dans l'ordre **app → email → téléphone/WhatsApp**,
-brouillon de message, visites, notes, avis « parents OK ».
+brouillon de message, visites, notes, avis « famille OK ».
 
 **Comparer** : 2 à 4 annonces côte à côte, différences surlignées.
 
@@ -257,9 +257,9 @@ brouillon de message, visites, notes, avis « parents OK ».
 
 - « Préparer un message » génère un brouillon depuis un modèle (FR/EN selon l'annonce) avec les questions manquantes
   (dates, bail minimum, ce que couvrent les charges, garantie, colocs) **déduites des champs vides** de la fiche.
-- Boutons : copier, ouvrir le mail pré-rempli, ouvrir WhatsApp (`wa.me`) pré-rempli, ouvrir le site. Pierre envoie ;
+- Boutons : copier, ouvrir le mail pré-rempli, ouvrir WhatsApp (`wa.me`) pré-rempli, ouvrir le site. L'utilisateur envoie ;
   il marque « envoyé », une relance J+3 se crée (règle existante).
-- **Planificateur de visites « one-shot »** : Pierre choisit un jour (ex. samedi 12/12), l'outil propose un ordre de
+- **Planificateur de visites « one-shot »** : l'utilisateur choisit un jour (ex. samedi 12/12), l'outil propose un ordre de
   visites par proximité et des créneaux de 45 min, puis prépare les messages de proposition de créneau.
 - Checklist de visite (état, bruit, cuisine partagée, propreté des communs, ambiance, colocs rencontrés).
 
@@ -275,11 +275,11 @@ brouillon de message, visites, notes, avis « parents OK ».
 ### 4.3 Partage famille
 
 Export de la shortlist en **Excel** (format du fichier actuel) et **PDF lisible**, ou lien en lecture seule
-(si déployé sur VPS). Case « validé par les parents » par annonce.
+(si déployé sur VPS). Case « validé par la famille » par annonce.
 
 ### 4.4 Reprise de l'existant
 
-Import de `documents/Logement/Logements-Bruxelles-2027.xlsx` dans un Move « BlackFin Bruxelles » à la mise en
+Import de `documents/Logement/Logements-Bruxelles-2027.xlsx` dans un Move « Acme Bruxelles » à la mise en
 service (statuts, contacts, notes, colonnes « Mon top »).
 
 ---
@@ -287,7 +287,7 @@ service (statuts, contacts, notes, colonnes « Mon top »).
 ## 5. Budget
 
 - **Entrées** : salaire net (saisi ou depuis l'offre), avantages fléchés (chèques-repas → uniquement nourriture).
-  Option « revenu prudent » (ex. 1 500 € au lieu de 1 600 €).
+  Option « revenu prudent » (ex. 1 700 € au lieu de 1 800 €).
 - **Dépenses mensuelles** par catégorie : logement (lié à l'annonce choisie ou comparée), courses, transport
   (calculé : 0 si trajet à pied < seuil, sinon abonnement local), sport, téléphone, loisirs/imprévus, autres.
 - **Coûts ponctuels** : garantie, frais de dossier, premier mois, voyage, achats d'installation → « argent à avoir
@@ -296,7 +296,7 @@ service (statuts, contacts, notes, colonnes « Mon top »).
 - Vue « une ligne par logement » : épargne/mois si je prends celui-là (la colonne de l'Excel, en direct).
 - Multi-devises : montants dans la devise du Move, conversion indicative (taux BCE du jour, mis en cache) pour comparer.
 - Calculs 100 % déterministes et testés. Aucun calcul fiscal inventé : le net est saisi ou estimé avec la source
-  indiquée (« selon BlackFin »).
+  indiquée (« selon l'employeur »).
 
 ---
 
@@ -402,7 +402,7 @@ Règles UX :
 ## 11. Sécurité et vie privée
 
 - Aucun envoi de message, aucune candidature, aucun paiement fait par l'app.
-- Aucun mot de passe de site tiers stocké ; le niveau C (navigateur) est toujours déclenché par Pierre.
+- Aucun mot de passe de site tiers stocké ; le niveau C (navigateur) est toujours déclenché par l'utilisateur.
 - Pièces sensibles (passeport, RIB) : dans la bibliothèque locale uniquement, jamais envoyées à l'IA sauf action
   explicite ; masquage dans les exports partagés.
 - Les données envoyées aux sites et aux API ne contiennent pas d'informations personnelles (requêtes génériques).
@@ -444,7 +444,7 @@ Validées le 22/11 :
 
 Encore ouvertes :
 1. **APIs d'emploi** gratuites avec clé (Adzuna, France Travail) : c'est toi qui crées les comptes développeur, en P4.
-2. **Partage avec tes parents** : export Excel/PDF en P1 ; lien en lecture seule seulement si l'app est déployée.
+2. **Partage avec la famille** : export Excel/PDF en P1 ; lien en lecture seule seulement si l'app est déployée.
 3. **CV** : je reconstruis les gabarits à partir de tes PDF actuels (pas de source disponible), tu valides le rendu.
 4. **Langue de l'UI** : anglais (actuel) ou français ?
 5. **Branche et merge** : une PR par phase vers `dev`, puis `dev → main` une fois la PR relue et les tests verts.

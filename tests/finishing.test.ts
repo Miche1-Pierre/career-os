@@ -56,28 +56,28 @@ describe("place suggestions", () => {
     const city = formatPhotonFeature({ geometry: { coordinates: [4.35, 50.85] }, properties: { name: "Bruxelles", type: "city", state: "Région de Bruxelles-Capitale", countrycode: "BE", country: "Belgium" } }, "city")!;
     expect(city).toMatchObject({ kind: "city", label: "Bruxelles", subtitle: "Région de Bruxelles-Capitale, Belgique", countryCode: "BE", lat: 50.85, lng: 4.35 });
 
-    const be = formatPhotonFeature({ geometry: { coordinates: [4.36, 50.83] }, properties: { street: "Avenue Louise", housenumber: "106", postcode: "1050", city: "Ixelles", countrycode: "BE", type: "house" } }, "address")!;
-    expect(be.label).toBe("Avenue Louise 106, 1050 Ixelles");
+    const be = formatPhotonFeature({ geometry: { coordinates: [4.36, 50.83] }, properties: { street: "Rue de la Loi", housenumber: "16", postcode: "1000", city: "Bruxelles", countrycode: "BE", type: "house" } }, "address")!;
+    expect(be.label).toBe("Rue de la Loi 16, 1000 Bruxelles");
     expect(be.kind).toBe("address");
     // Photon files a house number as osm_key "place" / osm_value "house": still an address, not a city.
-    const house = formatPhotonFeature({ geometry: { coordinates: [4.36, 50.83] }, properties: { osm_key: "place", osm_value: "house", type: "house", housenumber: "106", street: "Avenue Louise", city: "Bruxelles", postcode: "1050", countrycode: "BE" } }, "address")!;
-    expect(house).toMatchObject({ kind: "address", label: "Avenue Louise 106, 1050 Bruxelles" });
+    const house = formatPhotonFeature({ geometry: { coordinates: [4.36, 50.83] }, properties: { osm_key: "place", osm_value: "house", type: "house", housenumber: "16", street: "Rue de la Loi", city: "Bruxelles", postcode: "1000", countrycode: "BE" } }, "address")!;
+    expect(house).toMatchObject({ kind: "address", label: "Rue de la Loi 16, 1000 Bruxelles" });
 
     const fr = formatPhotonFeature({ geometry: { coordinates: [2.35, 48.85] }, properties: { street: "rue de Rivoli", housenumber: "12", postcode: "75004", city: "Paris", countrycode: "FR", type: "house" } }, "address")!;
     expect(fr.label).toBe("12 rue de Rivoli, 75004 Paris");
 
-    const poi = formatPhotonFeature({ geometry: { coordinates: [4.37, 50.82] }, properties: { name: "Judo Club Ixelles", street: "Rue Gray", housenumber: "8", postcode: "1050", city: "Ixelles", countrycode: "BE", osm_key: "leisure", osm_value: "sports_centre", type: "house" } }, "address")!;
-    expect(poi).toMatchObject({ kind: "poi", title: "Judo Club Ixelles", label: "Judo Club Ixelles, Rue Gray 8, 1050 Ixelles", subtitle: "Rue Gray 8, 1050 Ixelles, Belgique" });
+    const poi = formatPhotonFeature({ geometry: { coordinates: [4.37, 50.82] }, properties: { name: "Fitness Club Ixelles", street: "Rue Gray", housenumber: "8", postcode: "1050", city: "Ixelles", countrycode: "BE", osm_key: "leisure", osm_value: "sports_centre", type: "house" } }, "address")!;
+    expect(poi).toMatchObject({ kind: "poi", title: "Fitness Club Ixelles", label: "Fitness Club Ixelles, Rue Gray 8, 1050 Ixelles", subtitle: "Rue Gray 8, 1050 Ixelles, Belgique" });
 
     expect(formatPhotonFeature({ properties: { name: "Nowhere" } }, "address")).toBeNull();
   });
 
   it("gives the walking time from a listing to each place", () => {
-    const trips = placeTrips({ lat: 50.8275, lng: 4.3517 }, [{ id: "p1", label: "Judo", lat: 50.8366, lng: 4.3668 }]);
+    const trips = placeTrips({ lat: 50.8275, lng: 4.3517 }, [{ id: "p1", label: "Sport", lat: 50.8366, lng: 4.3668 }]);
     expect(trips).toHaveLength(1);
     expect(trips[0].km).toBeGreaterThan(1);
     expect(trips[0].walkMin).toBeGreaterThanOrEqual(15);
-    expect(placeTrips({ lat: null, lng: null }, [{ id: "p1", label: "Judo", lat: 1, lng: 1 }])).toEqual([]);
+    expect(placeTrips({ lat: null, lng: null }, [{ id: "p1", label: "Sport", lat: 1, lng: 1 }])).toEqual([]);
   });
 });
 
@@ -129,12 +129,12 @@ describe("places, currency and read-only sharing (database)", () => {
   });
 
   it("adds places with coordinates and computes walking times from listings", async () => {
-    const move = await createMove({ title: "Bruxelles", city: "Bruxelles", country: "Belgique", workAddress: "Avenue Louise 106", workLat: 50.8327, workLng: 4.3609 }, USER);
-    const place = await addPlace(move.id, { label: "Club de judo", address: "Rue Gray 8, 1050 Ixelles", lat: 50.8366, lng: 4.3768 }, USER);
+    const move = await createMove({ title: "Bruxelles", city: "Bruxelles", country: "Belgique", workAddress: "Rue de la Loi 16", workLat: 50.8327, workLng: 4.3609 }, USER);
+    const place = await addPlace(move.id, { label: "Salle de sport", address: "Rue Gray 8, 1000 Bruxelles", lat: 50.8366, lng: 4.3768 }, USER);
     await upsertListing({ moveId: move.id, title: "Coloc Saint-Gilles", rent: 650, charges: 100, lat: 50.8275, lng: 4.3517, furnished: "YES" }, USER);
     let view = await getMove(move.id);
     expect(view.places).toHaveLength(1);
-    expect(view.listings[0].trips).toEqual([expect.objectContaining({ placeId: place.id, label: "Club de judo" })]);
+    expect(view.listings[0].trips).toEqual([expect.objectContaining({ placeId: place.id, label: "Salle de sport" })]);
     // Without coordinates and without geocoding (tests), an address is refused rather than stored unplaced.
     await expect(addPlace(move.id, { label: "Gare", address: "Gare du Midi" }, USER)).rejects.toThrow(/introuvable/);
     await removePlace(move.id, place.id, USER);
@@ -144,7 +144,7 @@ describe("places, currency and read-only sharing (database)", () => {
   });
 
   it("shares the open shortlist read-only, without contacts, notes or income, until revoked", async () => {
-    const move = await createMove({ title: "BlackFin", city: "Bruxelles", country: "Belgique", arrivalDate: "2027-01-04", departureDate: "2027-07-02" }, USER);
+    const move = await createMove({ title: "Acme", city: "Bruxelles", country: "Belgique", arrivalDate: "2027-01-04", departureDate: "2027-07-02" }, USER);
     await updateBudget(move.id, { income: 1500, housingTarget: 600 }, USER);
     const { listing } = await upsertListing(
       { moveId: move.id, title: "Cohabs Ixelles", url: "https://cohabs.com/x", rent: 700, charges: 50, furnished: "YES", minLeaseMonths: 6, notes: "Gérant sympa, appeler le soir", contacts: { email: "owner@example.com", phone: "+32 470 00 00 00" } },
@@ -154,7 +154,7 @@ describe("places, currency and read-only sharing (database)", () => {
     expect(share.token).toMatch(/^[A-Za-z0-9_-]{32}$/);
 
     const shared = (await getSharedMove(share.token))!;
-    expect(shared.title).toBe("BlackFin");
+    expect(shared.title).toBe("Acme");
     expect(shared.listings).toHaveLength(1);
     const l = shared.listings[0];
     expect(l).toMatchObject({ title: "Cohabs Ixelles", total: 750, savings: null });

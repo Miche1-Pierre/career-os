@@ -20,12 +20,12 @@ const entry = (id: string, title: string, bullets: string[] = []): CvEntryView =
 
 describe("cv logic", () => {
   it("names exports with the date, splits roles and reads bold markers", () => {
-    expect(exportFileName({ name: "AI Product (FR)", fileName: "CV-Pierre-Michel-AIProduct-FR.pdf" })).toBe("CV-Pierre-Michel-AIProduct-FR.pdf");
+    expect(exportFileName({ name: "AI Product (FR)", fileName: "CV-Camille-Martin-AIProduct-FR.pdf" })).toBe("CV-Camille-Martin-AIProduct-FR.pdf");
     expect(exportFileName({ name: "Mon CV général" })).toBe("Mon-CV-general.pdf");
-    expect(splitRole("Head of Engineering, Plania (TechGuys), Montréal")).toEqual(["Head of Engineering,", " Plania (TechGuys), Montréal"]);
+    expect(splitRole("Head of Engineering, Globex, Montréal")).toEqual(["Head of Engineering,", " Globex, Montréal"]);
     expect(splitRole("Taskforce")).toEqual(["Taskforce", ""]);
-    expect(boldRuns("**Safex** (transporteur) : agent IA")).toEqual([
-      { text: "Safex", bold: true },
+    expect(boldRuns("**Initech** (transporteur) : agent IA")).toEqual([
+      { text: "Initech", bold: true },
       { text: " (transporteur) : agent IA", bold: false },
     ]);
     expect(stripBold("un **LIMS** pharmaceutique")).toBe("un LIMS pharmaceutique");
@@ -34,25 +34,25 @@ describe("cv logic", () => {
 
   it("gives the plain text of a variant", () => {
     const text = variantPlainText(
-      { header: { name: "Pierre MICHEL", title: "AI Product Engineer", lines: ["France"], links: [] }, sections: [{ kind: "TEXT", title: "PROFIL", text: "Développeur" }, { kind: "ENTRIES", title: "EXPÉRIENCE", entries: ["e1"] }, { kind: "BULLETS", title: "FOCUS", bullets: ["**LIMS** : stocks"] }] },
-      new Map([["e1", entry("e1", "Head of Engineering, Plania", ["Refonte"])]]),
+      { header: { name: "Camille MARTIN", title: "AI Product Engineer", lines: ["France"], links: [] }, sections: [{ kind: "TEXT", title: "PROFIL", text: "Développeur" }, { kind: "ENTRIES", title: "EXPÉRIENCE", entries: ["e1"] }, { kind: "BULLETS", title: "FOCUS", bullets: ["**LIMS** : stocks"] }] },
+      new Map([["e1", entry("e1", "Head of Engineering, Globex", ["Refonte"])]]),
     );
-    expect(text).toContain("Head of Engineering, Plania (mai 2026 - août 2026)");
+    expect(text).toContain("Head of Engineering, Globex (mai 2026 - août 2026)");
     expect(text).toContain("- LIMS : stocks");
   });
 
   it("renders a PDF whose text an ATS can read (no fi/fl ligatures)", async () => {
     const pdf = await renderCvPdf({
       title: "Test",
-      header: { name: "Pierre MICHEL", title: "AI Product Engineer", lines: ["France"], links: ["github.com/exemple"] },
+      header: { name: "Camille MARTIN", title: "AI Product Engineer", lines: ["France"], links: ["github.com/exemple"] },
       sections: [{ kind: "TEXT", title: "PROFIL", text: "Des fonctionnalités fiables et des workflows efficaces." }, { kind: "ENTRIES", title: "EXPÉRIENCE", entries: ["e1"] }],
-      entries: [entry("e1", "Head of Engineering, Plania", ["**Safex** : trafic multiplié"])],
+      entries: [entry("e1", "Head of Engineering, Globex", ["**Initech** : trafic multiplié"])],
       style: { titleStyle: "ROLE_BOLD", summaryItalic: true },
     });
     expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
     const { extractText, getDocumentProxy } = await import("unpdf");
     const { text } = await extractText(await getDocumentProxy(new Uint8Array(pdf)), { mergePages: true });
-    for (const word of ["fiables", "workflows", "efficaces", "trafic", "Safex"]) expect(text).toContain(word);
+    for (const word of ["fiables", "workflows", "efficaces", "trafic", "Initech"]) expect(text).toContain(word);
     expect(pdfPageCount(pdf)).toBe(1);
   }, 60_000);
 
@@ -60,9 +60,9 @@ describe("cv logic", () => {
     const line = "Conçu et livré une fonctionnalité de bout en bout avec des tests et une mise en production suivie.";
     const doc = (bullets: number) => ({
       title: "Long",
-      header: { name: "Pierre MICHEL", title: "Engineer", lines: ["France"], links: [] },
+      header: { name: "Camille MARTIN", title: "Engineer", lines: ["France"], links: [] },
       sections: [{ kind: "ENTRIES" as const, title: "EXPÉRIENCE", entries: ["e1"] }],
-      entries: [entry("e1", "Head of Engineering, Plania", Array.from({ length: bullets }, (_, i) => `${line} (${i + 1})`))],
+      entries: [entry("e1", "Head of Engineering, Globex", Array.from({ length: bullets }, (_, i) => `${line} (${i + 1})`))],
     });
     // 66 one-line bullets are just over one page at the normal density...
     const d = doc(66);
@@ -95,7 +95,7 @@ describe("cv and application kit (database)", () => {
     const result = await importCvSeed(
       {
         entries: [
-          { key: "plania-fr", section: "EXPERIENCE", lang: "fr", group: "plania", title: "Head of Engineering, Plania (TechGuys), Montréal", dates: "mai 2026 - août 2026", bullets: ["Refonte de l'architecture"] },
+          { key: "globex-fr", section: "EXPERIENCE", lang: "fr", group: "globex", title: "Head of Engineering, Globex, Montréal", dates: "mai 2026 - août 2026", bullets: ["Refonte de l'architecture"] },
           { key: "mns-fr", section: "EDUCATION", lang: "fr", group: "mns", title: "Bachelor Développeur Full Stack, MNS", dates: "2023 - 2026", subtitle: "titre RNCP niveau 6, bac+3", bullets: [] },
         ],
         variants: [
@@ -104,10 +104,10 @@ describe("cv and application kit (database)", () => {
             name: "AI Product (FR)",
             lang: "fr",
             fileName: "CV-Test-AIProduct-FR.pdf",
-            header: { name: "Pierre MICHEL", title: "AI Product Engineer", lines: ["France"], links: [] },
+            header: { name: "Camille MARTIN", title: "AI Product Engineer", lines: ["France"], links: [] },
             sections: [
               { kind: "TEXT", title: "PROFIL", text: "Développeur full-stack." },
-              { kind: "ENTRIES", title: "EXPÉRIENCE PROFESSIONNELLE", entries: ["plania-fr"] },
+              { kind: "ENTRIES", title: "EXPÉRIENCE PROFESSIONNELLE", entries: ["globex-fr"] },
               { kind: "SKILLS", title: "COMPÉTENCES", aside: "Français (natif)", lines: [{ label: "IA", text: "LLM, RAG" }], columns: 2 },
               { kind: "ENTRIES", title: "FORMATION", entries: ["mns-fr"] },
             ],
@@ -119,7 +119,7 @@ describe("cv and application kit (database)", () => {
     expect(result).toEqual({ entries: 2, variants: 1 });
     const [variant] = await listVariants();
     const entries = await listEntries();
-    expect((variant.sections[1] as { entries: string[] }).entries).toEqual([entries.find((e) => e.group === "plania")!.id]);
+    expect((variant.sections[1] as { entries: string[] }).entries).toEqual([entries.find((e) => e.group === "globex")!.id]);
 
     const { opportunity } = await createOpportunity({ type: "JOB", title: "AI Engineer", organizationName: "Acme", status: "TO_APPLY" }, USER);
     const first = await exportVariant(variant.id, USER);
@@ -142,7 +142,7 @@ describe("cv and application kit (database)", () => {
   }, 60_000);
 
   it("fills the new message templates and adds them to saved lists once", async () => {
-    await patchSettingsSection("profile", { fullName: "Pierre Michel", headline: "Développeur full-stack orienté IA" }, USER);
+    await patchSettingsSection("profile", { fullName: "Camille Martin", headline: "Développeur full-stack orienté IA" }, USER);
     const { opportunity } = await createOpportunity({ type: "JOB", title: "Product Engineer", organizationName: "Beta", status: "TO_APPLY", url: "https://beta.example/jobs/1" }, USER);
     const linkedin = await renderEmailTemplate(opportunity!.id, "linkedin-fr");
     expect(linkedin.body).toContain("Développeur full-stack orienté IA, j'aimerais échanger");

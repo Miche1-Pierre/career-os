@@ -10,26 +10,26 @@ import { handleMcpPayload } from "@/server/mcp/server";
 
 const CONTRACT = `CONVENTION D'IMMERSION PROFESSIONNELLE
 Article 2. La convention prend cours le 4 janvier 2027 et se termine le 2 juillet 2027.
-Article 4. Le stagiaire preste 38 heures par semaine au 106 avenue Louise, 1050 Ixelles.
-Article 6. L'entreprise verse une indemnité mensuelle de 1.600 euros nets ainsi que des chèques-repas d'une valeur de 10 euros par jour presté.
+Article 4. Le stagiaire preste 38 heures par semaine au 16 rue de la Loi, 1000 Bruxelles.
+Article 6. L'entreprise verse une indemnité mensuelle de 1.800 euros nets ainsi que des chèques-repas d'une valeur de 10 euros par jour presté.
 Article 9. Il peut être mis fin à la convention d'un commun accord, sans préavis.
 Article 11. Les absences ne sont pas rémunérées.`;
 
 function analysis(overrides: Partial<ContractAnalysis> = {}): ContractAnalysis {
   const term = (value: string | null, evidence: string | null, article: string | null = null) => ({ value, evidence, article });
   return {
-    summary: "Convention de six mois, 38 h par semaine, indemnité nette de 1 600 €.",
+    summary: "Convention de six mois, 38 h par semaine, indemnité nette de 1 800 €.",
     contractLabel: "Convention d'immersion professionnelle",
     terms: {
       startDate: term("2027-01-04", "La convention prend cours le 4 janvier 2027", "Art. 2"),
       endDate: term("2027-07-02", "se termine le 2 juillet 2027", "Art. 2"),
       hoursPerWeek: term("38", "Le stagiaire preste 38 heures par semaine", "Art. 4"),
       salaryGross: term(null, null),
-      salaryNet: term("1.600", "une indemnité mensuelle de 1.600 euros nets", "Art. 6"),
+      salaryNet: term("1.800", "une indemnité mensuelle de 1.800 euros nets", "Art. 6"),
       trialPeriod: term(null, null),
       noticePeriod: term("Sans préavis, fin d'un commun accord", "d'un commun accord, sans préavis", "Art. 9"),
       paidLeave: term("25 jours", "vingt-cinq jours de congés payés par an", "Art. 12"), // not in the text
-      workAddress: term("106 avenue Louise, 1050 Ixelles", "au 106 avenue Louise, 1050 Ixelles", "Art. 4"),
+      workAddress: term("16 rue de la Loi, 1000 Bruxelles", "au 16 rue de la Loi, 1000 Bruxelles", "Art. 4"),
       remote: term(null, null),
       mealVoucherPerDay: term("10", "chèques-repas d'une valeur de 10 euros par jour presté", "Art. 6"),
     },
@@ -67,21 +67,21 @@ describe("offer logic", () => {
       startDate: "2027-01-04",
       endDate: "2027-07-02",
       hoursPerWeek: 38,
-      salaryNet: 1600, // "1.600" is a thousands separator
+      salaryNet: 1800, // "1.800" is a thousands separator
       mealVoucherPerDay: 10,
       noticePeriod: "Sans préavis, fin d'un commun accord",
       paidLeave: "25 jours",
-      workAddress: "106 avenue Louise, 1050 Ixelles",
+      workAddress: "16 rue de la Loi, 1000 Bruxelles",
     });
     expect(offerFromTerms({ hoursPerWeek: { value: "37,5 h" } })).toEqual({ hoursPerWeek: 37.5 });
     expect(offerFromTerms(terms, ["paidLeave", "salaryNet"])).not.toHaveProperty("paidLeave");
   });
 
   it("pre-fills only the empty fields of a move", () => {
-    const offer = { startDate: "2027-01-04", endDate: "2027-07-02", workAddress: "106 avenue Louise", salaryNet: 1600, period: "MONTH" as const, mealVoucherPerDay: 10 };
-    expect(moveFromOffer(offer)).toEqual({ arrivalDate: "2027-01-04", departureDate: "2027-07-02", workAddress: "106 avenue Louise", budget: { income: 1600, incomeNote: "Net mensuel de l’offre", foodAllowance: 200 } });
+    const offer = { startDate: "2027-01-04", endDate: "2027-07-02", workAddress: "16 rue de la Loi", salaryNet: 1800, period: "MONTH" as const, mealVoucherPerDay: 10 };
+    expect(moveFromOffer(offer)).toEqual({ arrivalDate: "2027-01-04", departureDate: "2027-07-02", workAddress: "16 rue de la Loi", budget: { income: 1800, incomeNote: "Net mensuel de l’offre", foodAllowance: 200 } });
     // Income typed by hand (1 500) and dates already set: untouched.
-    expect(moveFromOffer(offer, { arrivalDate: "2027-01-03", budget: { income: 1500, foodAllowance: 0 } })).toEqual({ departureDate: "2027-07-02", workAddress: "106 avenue Louise", budget: { foodAllowance: 200 } });
+    expect(moveFromOffer(offer, { arrivalDate: "2027-01-03", budget: { income: 1500, foodAllowance: 0 } })).toEqual({ departureDate: "2027-07-02", workAddress: "16 rue de la Loi", budget: { foodAllowance: 200 } });
     expect(moveFromOffer({ salaryNet: 40000, period: "YEAR" })).toEqual({});
   });
 
@@ -98,7 +98,7 @@ describe("offer and contract (database)", () => {
   beforeAll(async () => {
     useTempStorage();
     await createTestDb();
-    const { opportunity } = await createOpportunity({ type: "INTERNSHIP", title: "AI Transformation Intern", organizationName: "BlackFin", locationCity: "Bruxelles", locationCountry: "Belgique" }, USER);
+    const { opportunity } = await createOpportunity({ type: "INTERNSHIP", title: "AI Transformation Intern", organizationName: "Acme", locationCity: "Bruxelles", locationCountry: "Belgique" }, USER);
     oppId = opportunity!.id;
     await changeStatus(oppId, { status: "OFFER" }, USER);
   });
@@ -128,7 +128,7 @@ describe("offer and contract (database)", () => {
 
   it("creates the move from the offer, then only fills what is still empty", async () => {
     const move = await createMoveFromOpportunity(oppId, USER);
-    expect(move).toMatchObject({ arrivalDate: "2027-01-04", departureDate: "2027-07-02", workAddress: "106 avenue Louise, 1050 Ixelles" });
+    expect(move).toMatchObject({ arrivalDate: "2027-01-04", departureDate: "2027-07-02", workAddress: "16 rue de la Loi, 1000 Bruxelles" });
     let view = await getMove(move.id);
     expect(view.budgetPlan.income).toBe(1500);
     expect(view.budgetPlan.foodAllowance).toBe(200);
@@ -145,7 +145,7 @@ describe("offer and contract (database)", () => {
     await setListingStatus(listing.id, "SHORTLISTED", USER);
     const today = await getToday({ horizonDays: 7 });
     const all = [...today.overdue, ...today.dueToday, ...today.upcoming];
-    expect(all.find((i) => i.kind === "OFFER")).toMatchObject({ title: "Répondre à l’offre — BlackFin", href: `/applications/${oppId}?tab=offer` });
+    expect(all.find((i) => i.kind === "OFFER")).toMatchObject({ title: "Répondre à l’offre — Acme", href: `/applications/${oppId}?tab=offer` });
     expect(all.find((i) => i.kind === "HOUSING")?.title).toMatch(/1 logement à contacter/);
     expect(today.moves[0]).toMatchObject({ id: move, toContact: 1 });
     expect(today.counts.housing).toBe(1);
