@@ -18,6 +18,7 @@ import {
   ArrowUp,
   ArrowUpToLine,
   Bold,
+  Briefcase,
   CaseUpper,
   Check,
   Copy,
@@ -759,6 +760,16 @@ export function CvEditor({ variant, entries, opportunities }: { variant: EditorV
   const [offerId, setOfferId] = useState<string>("none");
   const [claudeBusy, setClaudeBusy] = useState(false);
   const [claudeNote, setClaudeNote] = useState<{ summary: string; refused: string[] } | null>(null);
+  const [claudeFocused, setClaudeFocused] = useState(false);
+  const claudeInputRef = useRef<HTMLTextAreaElement | null>(null);
+  useLayoutEffect(() => {
+    const el = claudeInputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    const max = 6 * 20 + 16;
+    el.style.height = `${Math.min(el.scrollHeight, max)}px`;
+    el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
+  }, [instruction]);
 
   const askClaude = async (text = instruction) => {
     const ask = text.trim();
@@ -1211,39 +1222,68 @@ export function CvEditor({ variant, entries, opportunities }: { variant: EditorV
             </div>
           )}
           <div className="relative isolate">
-            <div aria-hidden className="composer-halo pointer-events-none absolute -inset-[3px] -z-10 rounded-[23px] opacity-70 blur-md" />
-            <div className="flex items-end gap-2 rounded-[20px] border border-transparent bg-background p-2 shadow-lg">
+            <div aria-hidden className={cn("composer-halo pointer-events-none absolute -inset-[3px] -z-10 rounded-[23px] opacity-45 blur-md transition-opacity duration-300", (claudeFocused || claudeBusy) && "opacity-100")} />
+            <div className={cn("relative rounded-[20px] border bg-background shadow-lg transition-colors", claudeFocused || claudeBusy ? "border-transparent" : "border-border")}>
               <textarea
+                ref={claudeInputRef}
                 value={instruction}
+                rows={1}
+                disabled={claudeBusy}
                 onChange={(e) => setInstruction(e.target.value)}
+                onFocus={() => setClaudeFocused(true)}
+                onBlur={() => setClaudeFocused(false)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
                     void askClaude();
                   }
                 }}
-                rows={1}
-                disabled={claudeBusy}
-                placeholder={claudeBusy ? "Claude modifie ton CV…" : "Demande à Claude : « raccourcis le profil à 3 lignes », « traduis en anglais », « mets les dates en gris »…"}
-                className="max-h-32 min-h-9 flex-1 resize-none bg-transparent px-2 py-2 text-sm outline-none placeholder:text-faint"
+                placeholder={claudeBusy ? "Claude modifie ton CV…" : "Demande une modification à Claude…"}
+                className="block min-h-11 w-full resize-none bg-transparent px-4 pt-3 pb-1 text-sm leading-5 outline-none placeholder:text-faint disabled:cursor-wait"
                 aria-label="Instruction pour Claude"
               />
-              <Select value={offerId} onValueChange={setOfferId}>
-                <SelectTrigger size="sm" className="h-8 w-44 shrink-0" title="Adapter à une offre">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="z-[60] max-h-72">
-                  <SelectItem value="none">Sans offre</SelectItem>
-                  {opportunities.map((o) => (
-                    <SelectItem key={o.id} value={o.id}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button variant="highlight" size="icon-sm" onClick={() => void askClaude()} disabled={!instruction.trim() || claudeBusy} aria-label="Envoyer à Claude">
-                {claudeBusy ? <Loader2 className="animate-spin" /> : <ArrowUp />}
-              </Button>
+              <div className="flex items-center gap-1.5 px-2 pt-1 pb-2">
+                <div className="min-w-0 flex-1">
+                  {!instruction.trim() && !claudeBusy && (
+                    <div className="flex items-center gap-1.5 overflow-x-auto px-1 [mask-image:linear-gradient(to_right,black_88%,transparent)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      <Sparkles className="size-3.5 shrink-0 text-highlight-500" aria-hidden />
+                      {["Raccourcis le profil à 3 lignes", "Resserre pour tenir sur une page", "Traduis en anglais", "Mets les dates en gris"].map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => void askClaude(t)}
+                          className="shrink-0 rounded-full bg-highlight-50 px-2.5 py-1 text-xs whitespace-nowrap text-highlight-700 transition-colors hover:bg-highlight-100"
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {claudeBusy && (
+                    <p className="flex items-center gap-1.5 px-2 text-xs text-muted-foreground">
+                      <Loader2 className="size-3.5 animate-spin" /> Claude modifie ton CV…
+                    </p>
+                  )}
+                </div>
+                <Select value={offerId} onValueChange={setOfferId}>
+                  <SelectTrigger size="sm" className="h-7 w-auto max-w-52 shrink-0 gap-1 rounded-full border-transparent bg-muted-background px-2.5 text-xs shadow-none" title="Adapter le CV à une offre">
+                    <Briefcase className="size-3.5 text-muted-foreground" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="z-[60] max-h-72">
+                    <SelectItem value="none">Sans offre</SelectItem>
+                    {opportunities.map((o) => (
+                      <SelectItem key={o.id} value={o.id}>
+                        {o.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button variant="highlight" size="icon-sm" onClick={() => void askClaude()} disabled={!instruction.trim() || claudeBusy} aria-label="Envoyer à Claude">
+                  {claudeBusy ? <Loader2 className="animate-spin" /> : <ArrowUp />}
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -726,8 +726,8 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
                     : busy
                       ? "Claude travaille…"
                       : hero
-                        ? "Que veux-tu faire ? Cherche des offres, un logement, ou pose une question… (@ pour citer une candidature, un CV…)"
-                        : "Demande n'importe quoi à Career OS… (@ pour citer une candidature, un CV ou autre chose)"
+                        ? "Que veux-tu faire ? Des offres, un logement, une question… (@ pour citer une candidature, un CV…)"
+                        : "Demande n'importe quoi… (@ pour citer une candidature, un CV…)"
                 }
                 className={cn("block w-full resize-none bg-transparent px-4 pt-3 pb-1 text-sm leading-5 outline-none placeholder:text-faint disabled:cursor-wait", hero ? "min-h-[76px] text-[15px] leading-6" : "min-h-11")}
                 aria-label="Message pour Claude"
