@@ -49,6 +49,15 @@
     }
   }
 
+  # Deep paths in the app's libraries can pass Windows' 260-character limit, which Remove-Item (PowerShell 5) does not
+  # handle: Node.js does, so it deletes once it is installed.
+  function Remove-Tree([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    if (Test-Path $Node) { & $Node -e "require('fs').rmSync(process.argv[1], { recursive: true, force: true, maxRetries: 5 })" $Path }
+    if (Test-Path -LiteralPath $Path) { Remove-Item -LiteralPath $Path -Recurse -Force }
+    if (Test-Path -LiteralPath $Path) { throw "impossible de remplacer $Path (un fichier est peut-être ouvert)" }
+  }
+
   function Test-PortFree([int]$Port) {
     try {
       $listener = New-Object System.Net.Sockets.TcpListener ([Net.IPAddress]::Loopback), $Port
@@ -134,10 +143,10 @@
     $actual = (Get-FileHash -Algorithm SHA256 $zip).Hash
     if (-not $expected -or $actual -ne $expected.ToUpper()) { throw 'Career OS téléchargé ne correspond pas à son empreinte.' }
     $staged = Join-Path $Base 'app.new'
-    if (Test-Path $staged) { Remove-Item -LiteralPath $staged -Recurse -Force }
+    Remove-Tree $staged
     Expand-Zip $zip $staged
     if (-not (Test-Path (Join-Path $staged 'server.js'))) { throw 'archive Career OS incomplète.' }
-    if (Test-Path $AppDir) { Remove-Item -LiteralPath $AppDir -Recurse -Force }
+    Remove-Tree $AppDir
     Move-Item -LiteralPath $staged -Destination $AppDir
     $version = (Get-Content (Join-Path $AppDir 'VERSION') -ErrorAction SilentlyContinue | Select-Object -First 1)
     Say "version $version installée" 'Green'
@@ -148,7 +157,11 @@
     else {
       Say 'téléchargement du paquet officiel d''Anthropic (≈ 200 Mo, quelques minutes)…'
       $npm = Join-Path $NodeDir 'npm.cmd'
-      & $npm install --prefix $ClaudeDir --no-audit --no-fund --loglevel=error --allow-scripts=@anthropic-ai/claude-code '@anthropic-ai/claude-code' | Out-Null
+      New-Item -ItemType Directory -Force -Path $ClaudeDir | Out-Null
+      # npm 11 runs install scripts only for allowed packages: Claude Code's one puts its program in place.
+      $manifest = '{ "name": "career-os-claude", "private": true, "allowScripts": { "@anthropic-ai/claude-code": true } }'
+      [IO.File]::WriteAllText((Join-Path $ClaudeDir 'package.json'), $manifest, (New-Object Text.UTF8Encoding $false))
+      & $npm install --prefix $ClaudeDir --no-audit --no-fund --loglevel=error '@anthropic-ai/claude-code' | Out-Null
       if (Test-Path $ClaudeExe) { Say 'installé' 'Green' }
       else { Say 'Claude Code n''a pas pu être installé : l''app marche, l''assistant s''activera en relançant la commande.' 'Yellow' }
     }
@@ -244,6 +257,6 @@
     Write-Host '  Relance la même commande. Si ça bloque encore, envoie ce message à la personne qui t''a partagé Career OS.' -ForegroundColor Red
     Write-Host ''
   } finally {
-    Remove-Item -LiteralPath $Temp -Recurse -Force -ErrorAction SilentlyContinue
+    try { Remove-Tree $Temp } catch { }
   }
 }

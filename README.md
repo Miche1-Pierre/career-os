@@ -21,7 +21,22 @@ Mono-utilisateur, local, vos données restent chez vous (PostgreSQL + dossiers s
 
 ## Installer
 
-### Avec Claude Code (recommandé)
+### Sur Windows, en une commande (sans Claude Code)
+
+Dans le Terminal (clic droit sur Démarrer → Terminal) :
+
+```powershell
+irm https://get-career-os.vercel.app/install.ps1 | iex
+```
+
+Le script ([site/install.ps1](site/install.ps1)) télécharge Node.js (nodejs.org) et la version compilée de Career OS
+(dernière release GitHub, construite par [.github/workflows/release-windows.yml](.github/workflows/release-windows.yml)),
+vérifie leurs empreintes, installe Claude Code (npm) pour l'assistant, crée `Documents\CareerOS`, les raccourcis et
+l'entrée de désinstallation, puis ouvre l'app. Tout va dans `%LOCALAPPDATA%\CareerOS`, sans droits administrateur.
+L'assistant s'active en collant une clé API Claude au premier lancement (ou dans Paramètres → IA). Relancer la commande
+met à jour.
+
+### Avec Claude Code (Mac, Linux, ou pour tout régler avec Claude)
 
 Le plus simple : dans [Claude Code](https://claude.com/claude-code) (onglet Code de l'application Claude, ou `claude`
 dans un terminal), ouvert sur n'importe quel dossier, écrivez :

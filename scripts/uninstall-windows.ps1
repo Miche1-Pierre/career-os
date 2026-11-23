@@ -40,6 +40,14 @@ $programs = [Environment]::GetFolderPath('Programs')
 Remove-Item -LiteralPath (Join-Path $desktop 'Career OS.lnk') -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath (Join-Path $programs 'Career OS') -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\CareerOS' -Recurse -Force -ErrorAction SilentlyContinue
+# Node.js handles the deep library paths that Remove-Item (PowerShell 5) cannot delete.
+$node = Join-Path $Base 'node
+ode.exe'
+if (Test-Path $node) {
+  foreach ($dir in 'app', 'claude') {
+    & $node -e "require('fs').rmSync(process.argv[1], { recursive: true, force: true, maxRetries: 5 })" (Join-Path $Base $dir)
+  }
+}
 Remove-Item -LiteralPath $Base -Recurse -Force -ErrorAction SilentlyContinue
 
 if (Test-Path $Base) {

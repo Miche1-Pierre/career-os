@@ -51,9 +51,10 @@ fs.rmSync(path.join(stage, ".env"), { force: true });
 const version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
 fs.writeFileSync(path.join(stage, "VERSION"), `${version}\n`);
 
-// Windows tar (bsdtar) writes zip archives.
+// Windows' own tar (bsdtar) writes zip archives; another tar on the PATH (Git Bash's) does not.
 log(`archive ${zipName}`);
-const tar = spawnSync("tar", ["-a", "-c", "-f", zip, "-C", stage, "."], { stdio: "inherit" });
+const windowsTar = path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "tar.exe");
+const tar = spawnSync(fs.existsSync(windowsTar) ? windowsTar : "tar", ["-a", "-c", "-f", zip, "-C", stage, "."], { stdio: "inherit" });
 if (tar.status !== 0) process.exit(tar.status ?? 1);
 
 const hash = crypto.createHash("sha256").update(fs.readFileSync(zip)).digest("hex");

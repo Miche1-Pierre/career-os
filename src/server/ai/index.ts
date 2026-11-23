@@ -120,7 +120,11 @@ const claudeCodeProvider: Provider = {
           mode,
           model,
           detail: inDocker() ? "Claude Code CLI not found in this environment." : "Claude Code n'est pas installé sur cet ordinateur : il fait tourner le chat, les recherches et les analyses.",
-          setup: inDocker() ? "Rebuild the image with INSTALL_CLAUDE_CLI=true, or use the host bridge (npm run bridge)." : "Demande à Claude « installe Claude Code pour Career OS », ou lance : npm i -g @anthropic-ai/claude-code",
+          setup: inDocker()
+            ? "Rebuild the image with INSTALL_CLAUDE_CLI=true, or use the host bridge (npm run bridge)."
+            : env("CLAUDE_REQUIRES_KEY") === "true"
+              ? "Relance la commande d'installation de Career OS : elle l'ajoute."
+              : "Demande à Claude « installe Claude Code pour Career OS », ou lance : npm i -g @anthropic-ai/claude-code",
         };
       }
       if (claudeNeedsKey()) return { provider: "claude-code", available: false, mode, model, detail: "Claude n'est pas encore connecté.", setup: NEEDS_KEY_MESSAGE };

@@ -1,11 +1,15 @@
 # Builds the prebuilt Windows app downloaded by site/install.ps1 and publishes it as the latest GitHub release.
-# Run it from the Actions tab (Run workflow) or push a tag vX.Y.Z. The release tag is the package.json version.
+# Runs on every app change merged to main, on a vX.Y.Z tag, or from the Actions tab (Run workflow).
+# The release tag is the package.json version: its files are replaced until the version changes.
 name: Windows release
 
 on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+    # Every change to the app on main refreshes the installer's download (the site and docs do not).
+    branches: [main]
+    paths-ignore: ["site/**", "docs/**", "**/*.md", ".claude/**"]
 
 permissions:
   contents: write
