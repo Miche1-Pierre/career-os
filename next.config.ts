@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV !== "production";
+/** Self-contained build made on Windows (the prebuilt app of the Windows install). */
+const windowsBuild = process.platform === "win32";
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -29,30 +31,40 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // The Docker image runs the self-contained server (.next/standalone, set by the Dockerfile). The local install runs
-  // `next start`, which does not support that output, so it gets a regular build.
+  // The Docker image and the Windows install run the self-contained server (.next/standalone, NEXT_OUTPUT=standalone set
+  // by the Dockerfile and the release workflow). A local `npm run build:local` runs `next start`, which does not support
+  // that output, so it gets a regular build.
   output: process.env.NEXT_OUTPUT === "standalone" ? "standalone" : undefined,
   poweredByHeader: false,
   serverExternalPackages: ["unpdf", "mammoth", "linkedom", "@mozilla/readability", "@huggingface/transformers", "onnxruntime-node", "sharp", "@react-pdf/renderer"],
   // Dictation (local Whisper): transformers.js loads onnxruntime-node through createRequire, which file tracing does not
-  // follow; ship it with the Linux binaries only (the image is Linux; macOS / Windows builds are ~220 MB).
+  // follow; ship it with the binaries of the platform being built only: Linux for the Docker image, Windows x64 for
+  // the Windows install (built on Windows). macOS / other builds are ~220 MB and stay out.
   outputFileTracingIncludes: {
     "/api/transcribe": [
       "./node_modules/onnxruntime-node/package.json",
       "./node_modules/onnxruntime-node/dist/**/*",
-      "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/onnxruntime_binding.node",
-      "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime.so*",
-      "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_shared.so",
+      ...(windowsBuild
+        ? ["./node_modules/onnxruntime-node/bin/napi-v6/win32/x64/*"]
+        : [
+            "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/onnxruntime_binding.node",
+            "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime.so*",
+            "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_shared.so",
+          ]),
       "./node_modules/onnxruntime-common/**/*",
     ],
   },
-  // CPU only: the CUDA / TensorRT providers (≈ 260 MB) and other platforms' builds stay out of the image.
+  // CPU only: the CUDA / TensorRT providers (≈ 260 MB) and other platforms' builds stay out.
   outputFileTracingExcludes: {
     "*": [
       "./node_modules/onnxruntime-node/bin/napi-v6/darwin/**/*",
-      "./node_modules/onnxruntime-node/bin/napi-v6/win32/**/*",
-      "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_cuda.so",
-      "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_tensorrt.so",
+      ...(windowsBuild
+        ? ["./node_modules/onnxruntime-node/bin/napi-v6/linux/**/*", "./node_modules/onnxruntime-node/bin/napi-v6/win32/arm64/**/*"]
+        : [
+            "./node_modules/onnxruntime-node/bin/napi-v6/win32/**/*",
+            "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_cuda.so",
+            "./node_modules/onnxruntime-node/bin/napi-v6/linux/*/libonnxruntime_providers_tensorrt.so",
+          ]),
       "./node_modules/onnxruntime-web/**/*",
     ],
   },

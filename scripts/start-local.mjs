@@ -6,13 +6,18 @@
  *   npm run build:local     once, and after each update
  *   npm run local           production server (fast)
  *   npm run local -- --dev  development server (hot reload)
+ *   --open                  open the browser once the app answers (or right away if it already runs)
+ *
+ * The Windows install (install.ps1) ships a prebuilt, self-contained server (server.js at the root): it is used
+ * when present, with no build step and no node_modules to install.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import { startLocalDb } from "./local-db.mjs";
 
-const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")), "..");
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 process.chdir(root);
 try {
   process.loadEnvFile(path.join(root, ".env"));
@@ -21,9 +26,37 @@ try {
 }
 
 const dev = process.argv.includes("--dev");
+const open = process.argv.includes("--open");
 const port = process.env.APP_PORT || "3000";
 const host = process.env.APP_BIND || "127.0.0.1";
+const url = process.env.APP_URL || `http://localhost:${port}`;
 const log = (m) => console.log(`[career-os] ${m}`);
+process.title = "Career OS (fermer cette fenêtre arrête l'application)";
+
+async function healthy() {
+  try {
+    const res = await fetch(`${url.replace(/\/$/, "")}/api/health`, { signal: AbortSignal.timeout(2000) });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+function openBrowser() {
+  const [cmd, args] =
+    process.platform === "win32" ? ["cmd.exe", ["/c", "start", "", url]] : process.platform === "darwin" ? ["open", [url]] : ["xdg-open", [url]];
+  try {
+    spawn(cmd, args, { detached: true, stdio: "ignore", windowsHide: true }).unref();
+  } catch {
+    log(`ouvre ${url} dans ton navigateur`);
+  }
+}
+
+// Double-click on the shortcut while Career OS already runs: just show it.
+if (open && (await healthy())) {
+  openBrowser();
+  process.exit(0);
+}
 
 let db = null;
 if (process.env.CAREER_OS_DB_DIR) {
@@ -59,14 +92,29 @@ if (migrateCode !== 0) {
   process.exit(1);
 }
 
-if (!dev && !fs.existsSync(path.join(root, ".next", "BUILD_ID"))) {
+// Prebuilt self-contained server (Windows install) or a regular build (`npm run build:local`).
+const standalone = path.join(root, "server.js");
+const prebuilt = !dev && fs.existsSync(standalone);
+if (!dev && !prebuilt && !fs.existsSync(path.join(root, ".next", "BUILD_ID"))) {
   await stopDb();
   console.error("[career-os] l'application n'est pas construite : lance d'abord « npm run build:local ».");
   process.exit(1);
 }
 
-const next = spawn(process.execPath, [path.join(root, "node_modules", "next", "dist", "bin", "next"), dev ? "dev" : "start", "-p", port, "-H", host], { stdio: "inherit", env: process.env });
-log(`Career OS démarre sur http://localhost:${port}`);
+const next = prebuilt
+  ? spawn(process.execPath, [standalone], { stdio: "inherit", env: { ...process.env, NODE_ENV: "production", PORT: port, HOSTNAME: host } })
+  : spawn(process.execPath, [path.join(root, "node_modules", "next", "dist", "bin", "next"), dev ? "dev" : "start", "-p", port, "-H", host], { stdio: "inherit", env: process.env });
+log(`Career OS démarre sur ${url}`);
+
+if (open) {
+  void (async () => {
+    for (let i = 0; i < 120; i++) {
+      if (await healthy()) return openBrowser();
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+    log(`Career OS ne répond pas encore : ouvre ${url} dans ton navigateur.`);
+  })();
+}
 
 let quitting = false;
 const quit = async (code = 0) => {
