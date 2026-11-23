@@ -47,11 +47,25 @@ export function HousingMap({ move, listings, onOpen }: { move: MoveView; listing
           .bindTooltip(escapeHtml(move.workAddress ?? "Lieu de travail"))
           .addTo(map);
       }
+      for (const place of move.places ?? []) {
+        const p: [number, number] = [place.lat, place.lng];
+        points.push(p);
+        L.marker(p, {
+          icon: L.divIcon({
+            className: "",
+            html: `<div style="background:#7c3aed;color:#fff;border-radius:8px;padding:2px 6px;font:600 11px/16px system-ui;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.3)">${escapeHtml(place.label)}</div>`,
+            iconAnchor: [12, 10],
+          }),
+        })
+          .bindTooltip(escapeHtml(place.address))
+          .addTo(map);
+      }
       for (const l of listings) {
         if (l.lat === null || l.lng === null) continue;
         const p: [number, number] = [l.lat, l.lng];
         points.push(p);
-        const label = `${escapeHtml(l.title)}<br/>${l.total !== null ? money(l.total, move.currency) : "prix ?"}${l.walkMin !== null ? ` · ${l.walkMin} min à pied` : ""}`;
+        const trips = l.trips.map((t) => `${escapeHtml(t.label)} : ${t.walkMin} min`).join("<br/>");
+        const label = `${escapeHtml(l.title)}<br/>${l.total !== null ? money(l.total, move.currency) : "prix ?"}${l.walkMin !== null ? ` · travail : ${l.walkMin} min à pied` : ""}${trips ? `<br/>${trips}` : ""}`;
         L.circleMarker(p, { radius: l.pick === "YES" ? 9 : 7, color: "#fff", weight: 2, fillColor: FIT_COLOR[l.fit], fillOpacity: 0.95 })
           .bindTooltip(label)
           .on("click", () => onOpenRef.current(l.id))
@@ -90,6 +104,12 @@ export function HousingMap({ move, listings, onOpen }: { move: MoveView; listing
           </span>
         ))}
         <span>Cercle : distance à pied ({move.budgetPlan.walkThresholdKm} km)</span>
+        {(move.places ?? []).length > 0 && (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="size-2.5 rounded-full bg-violet-600" />
+            lieux importants
+          </span>
+        )}
       </p>
     </div>
   );

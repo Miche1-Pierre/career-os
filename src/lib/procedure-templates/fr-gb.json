@@ -1,0 +1,647 @@
+{
+  "key": "FR-GB",
+  "from": "FR",
+  "to": "GB",
+  "title": "France → Royaume-Uni (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "visa-voie",
+      "title": "Choisir la voie d'immigration",
+      "category": "VISA",
+      "summary": "Depuis le Brexit, un stage ou un emploi au Royaume-Uni exige un visa obtenu avant le départ. Les visas Skilled Worker, Government Authorised Exchange et Global Business Mobility supposent un sponsor agréé.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.gov.uk/browse/visas-immigration/work-visas",
+      "steps": [
+        {
+          "title": "Écarter le visa visiteur",
+          "detail": "Un visiteur (Standard Visitor) ne peut faire aucun travail, payé ou non, pour une entreprise britannique ni comme indépendant.",
+          "officialUrl": "https://www.gov.uk/standard-visitor",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Ne pas confondre avec l'ETA",
+          "detail": "L'autorisation de voyage électronique (ETA, 20 £) sert aux visites jusqu'à 6 mois. Elle n'est pas nécessaire si vous avez l'autorisation de vivre, travailler ou étudier au Royaume-Uni.",
+          "officialUrl": "https://www.gov.uk/eta",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Stage : visa Government Authorised Exchange (GAE)",
+          "detail": "Pour une expérience professionnelle ou une formation de courte durée dans le cadre d'un programme agréé : 12 mois au plus pour un stage (work experience), 24 mois pour un programme de recherche ou de formation.",
+          "officialUrl": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-government-authorised-exchange-schemes",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Emploi : visa Skilled Worker",
+          "detail": "Il faut une offre d'emploi d'un employeur agréé par le Home Office, un certificat de parrainage (CoS), un métier éligible, un salaire minimum et un niveau d'anglais suffisant. Le visa peut durer jusqu'à 5 ans avant prolongation.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Mutation intra-groupe : Graduate Trainee (Global Business Mobility)",
+          "detail": "Pour une formation de diplômé dans la branche britannique de votre employeur : avoir travaillé au moins 3 mois pour lui hors du Royaume-Uni juste avant la demande, être payé au moins 27 300 £ par an. Durée de 12 mois au plus, frais de 340 £.",
+          "officialUrl": "https://www.gov.uk/graduate-trainee-visa",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Mutation intra-groupe : Senior or Specialist Worker (Global Business Mobility)",
+          "detail": "Avoir travaillé au moins 12 mois pour l'employeur hors du Royaume-Uni (aucune durée minimale si vous gagnez 73 900 £ par an ou plus) et être payé au moins 52 500 £ ou le taux de référence du métier.",
+          "officialUrl": "https://www.gov.uk/senior-specialist-worker-visa/eligibility",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Sans offre d'emploi : High Potential Individual (HPI)",
+          "detail": "Pour un diplôme obtenu depuis 5 ans au plus dans une université figurant sur la liste officielle. Le visa dure 2 ans (3 ans avec un doctorat) et permet de travailler dans la plupart des emplois ou d'en chercher un. Le nombre de demandes est plafonné chaque année.",
+          "officialUrl": "https://www.gov.uk/high-potential-individual-visa",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Youth Mobility Scheme : non ouvert aux Français",
+          "detail": "Au 23 novembre 2026, ni la France ni aucun autre pays de l'UE ne figure dans la liste des nationalités éligibles.",
+          "officialUrl": "https://www.gov.uk/youth-mobility/eligibility",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Graduate : seulement après des études au Royaume-Uni",
+          "detail": "Réservé aux personnes déjà au Royaume-Uni avec un visa étudiant (Student) qui ont achevé un diplôme britannique éligible. La demande ne peut pas se faire depuis l'étranger.",
+          "officialUrl": "https://www.gov.uk/graduate-visa",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "parrainage-stage",
+      "title": "Obtenir le parrainage d'un programme agréé (stage GAE)",
+      "category": "VISA",
+      "summary": "Pour le visa Government Authorised Exchange, le parrainage vient d'un organisme qui gère un programme d'échange agréé, d'une université ou d'une administration. Il vous attribue un certificat de parrainage (CoS).",
+      "appliesIf": "stage ou formation avec le visa Government Authorised Exchange",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/government-authorised-exchange",
+      "steps": [
+        {
+          "title": "Choisir un programme agréé",
+          "detail": "Les programmes agréés sont listés dans une annexe des règles d'immigration. Exemples en expérience professionnelle : AIESEC internships, BUNAC Intern UK, Erasmus+, GTI intern scheme, International Internship Scheme.",
+          "officialUrl": "https://www.gov.uk/guidance/immigration-rules/immigration-rules-appendix-government-authorised-exchange-schemes",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Stage Erasmus+ : passer par IRARA Citizen Services",
+          "detail": "Pour un stage dans le cadre d'études supérieures ou en tant que jeune diplômé avec Erasmus+, le certificat de parrainage GAE doit être obtenu auprès d'IRARA Citizen Services avant la demande.",
+          "officialUrl": "https://www.gov.uk/guidance/erasmus-applicants-coming-to-the-uk",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la rémunération",
+          "detail": "L'employeur doit payer au moins le salaire minimum britannique et respecter les règles sur la durée hebdomadaire du travail, sinon la demande est refusée.",
+          "officialUrl": "https://www.gov.uk/government-authorised-exchange/eligibility",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Recevoir le certificat à temps",
+          "detail": "Un certificat de parrainage est valable 3 mois à partir de son attribution ; un numéro de référence de parrainage, 90 jours à partir de sa délivrance au sponsor.",
+          "officialUrl": "https://www.gov.uk/government-authorised-exchange/eligibility",
+          "requiredDocuments": null
+        },
+        {
+          "title": "S'en tenir au poste prévu",
+          "detail": "Vous pouvez travailler dans le poste couvert par le certificat, et avoir un second emploi jusqu'à 20 heures par semaine. Un emploi permanent est interdit.",
+          "officialUrl": "https://www.gov.uk/government-authorised-exchange",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "parrainage-emploi",
+      "title": "Obtenir l'offre d'emploi et le certificat de parrainage (Skilled Worker)",
+      "category": "VISA",
+      "summary": "Le visa Skilled Worker exige une offre d'un employeur agréé (sponsor), qui vous attribue un certificat de parrainage électronique (CoS) décrivant le poste.",
+      "appliesIf": "emploi chez un employeur britannique avec le visa Skilled Worker",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/skilled-worker-visa/your-job",
+      "steps": [
+        {
+          "title": "Vérifier que l'employeur est sponsor",
+          "detail": "Consultez le registre officiel des organisations autorisées à parrainer des travailleurs (fichier CSV publié par UK Visas and Immigration).",
+          "officialUrl": "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier le code métier",
+          "detail": "Demandez à l'employeur le code métier à 4 chiffres et vérifiez-le dans le tableau des métiers éligibles. Les métiers de niveau moyen ne sont éligibles que s'ils figurent sur l'immigration salary list ou la temporary shortage list.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/your-job",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier le salaire proposé",
+          "detail": "En général, au moins 41 700 £ par an ou le taux de référence du métier (going rate) s'il est plus élevé. Si vous avez moins de 26 ans à la date de la demande, 70 % du taux du métier peuvent suffire, avec au moins 33 400 £ par an et un séjour total limité à 4 ans. D'autres cas existent (doctorat, immigration salary list).",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/when-you-can-be-paid-less",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prouver votre niveau d'anglais (B2)",
+          "detail": "La France ne fait pas partie des nationalités dispensées. Le niveau B2 se prouve par un test SELT agréé, ou par un diplôme enseigné en anglais reconnu par Ecctis comme équivalent au moins au bachelor britannique.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/knowledge-of-english",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Recevoir le certificat de parrainage (CoS)",
+          "detail": "C'est un document électronique avec un numéro de référence à indiquer dans la demande. Déposez la demande de visa dans les 3 mois suivant sa réception.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/your-job",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "demande-visa",
+      "title": "Déposer la demande de visa en ligne",
+      "category": "VISA",
+      "summary": "Une fois le certificat de parrainage reçu, la demande se fait en ligne sur gov.uk : frais de visa, surtaxe santé (IHS), puis vérification d'identité par application ou en centre de demande de visa.",
+      "appliesIf": "visa Skilled Worker, Government Authorised Exchange ou Global Business Mobility, après réception du certificat de parrainage",
+      "when": -90,
+      "officialUrl": "https://www.gov.uk/skilled-worker-visa/apply-from-outside-the-uk",
+      "steps": [
+        {
+          "title": "Déposer dans la bonne fenêtre",
+          "detail": "Vous pouvez déposer la demande jusqu'à 3 mois avant la date de début du travail indiquée sur le certificat de parrainage. La même règle vaut pour le visa Government Authorised Exchange.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Préparer le dossier",
+          "detail": "Les pièces varient selon le visa et votre situation : vérifiez la liste de votre visa sur gov.uk. Les documents qui ne sont ni en anglais ni en gallois doivent être accompagnés d'une traduction certifiée.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/documents-you-must-provide",
+          "requiredDocuments": [
+            "Numéro de référence du certificat de parrainage (CoS)",
+            "Passeport valide",
+            "Preuve du niveau d'anglais (Skilled Worker)",
+            "Intitulé du poste, salaire annuel et code métier (Skilled Worker)",
+            "Relevés bancaires prouvant vos économies, sauf si le sponsor certifie votre prise en charge",
+            "Extrait de casier judiciaire pour certains métiers (éducation, santé, travail social)",
+            "Traductions certifiées des documents qui ne sont ni en anglais ni en gallois"
+          ]
+        },
+        {
+          "title": "Payer les frais de visa (Skilled Worker)",
+          "detail": "Depuis l'étranger, le visa Skilled Worker coûte 819 £ par personne jusqu'à 3 ans et 1 618 £ au-delà (tarifs réduits pour les métiers de l'immigration salary list).",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/how-much-it-costs",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Payer les frais de visa (stage GAE)",
+          "detail": "Le visa Government Authorised Exchange coûte 340 £ par personne, que la demande soit faite depuis le Royaume-Uni ou depuis l'étranger.",
+          "officialUrl": "https://www.gov.uk/government-authorised-exchange",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Payer la surtaxe santé (IHS)",
+          "detail": "Elle est en général de 1 035 £ par année de visa. Depuis l'étranger, payez-la dans les 7 jours ouvrés suivant l'e-mail de UK Visas and Immigration, sinon la demande est refusée. Elle n'est pas due pour un visa de 6 mois ou moins demandé depuis l'étranger.",
+          "officialUrl": "https://www.gov.uk/healthcare-immigration-application/how-much-pay",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Justifier vos économies",
+          "detail": "Prouvez au moins 1 270 £ disponibles sur votre compte 28 jours de suite, le 28e jour tombant dans les 31 jours avant la demande, sauf si votre sponsor confirme qu'il couvre vos frais du premier mois (jusqu'à 1 270 £). Même montant pour le Skilled Worker.",
+          "officialUrl": "https://www.gov.uk/government-authorised-exchange/eligibility",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prouver votre identité",
+          "detail": "Selon votre passeport, vous scannez votre pièce avec l'application « UK Immigration: ID Check », qui crée aussi votre compte UKVI, ou vous donnez empreintes et photo dans un centre de demande de visa.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/apply-from-outside-the-uk",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Attendre la décision",
+          "detail": "Depuis l'étranger, la décision arrive en général sous 3 semaines. Le délai peut s'allonger si des documents doivent être vérifiés ou si un entretien est nécessaire.",
+          "officialUrl": "https://www.gov.uk/skilled-worker-visa/apply-from-outside-the-uk",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "evisa",
+      "title": "Activer votre compte UKVI et votre eVisa",
+      "category": "VISA",
+      "summary": "Le visa est un enregistrement numérique (eVisa), consultable gratuitement dans un compte UKVI. Il sert à voyager et à prouver votre droit de travailler ou de louer.",
+      "appliesIf": "après l'accord du visa",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/evisa",
+      "steps": [
+        {
+          "title": "Créer le compte UKVI et y relier l'eVisa",
+          "detail": "Il faut un téléphone et une adresse e-mail, un passeport valide et le numéro de votre demande de visa (GWF ou UAN). La confirmation d'identité se fait en général avec une application sur smartphone ; l'accès peut prendre jusqu'à 24 heures.",
+          "officialUrl": "https://www.gov.uk/get-access-evisa",
+          "requiredDocuments": ["Passeport valide", "Numéro de demande de visa (GWF ou UAN)"]
+        },
+        {
+          "title": "Ajouter le passeport du voyage",
+          "detail": "Ajoutez à votre compte le passeport avec lequel vous voyagerez et vérifiez que vos informations correspondent exactement à celles données au transporteur : sinon, il peut refuser de vous embarquer.",
+          "officialUrl": "https://www.gov.uk/evisa/travel-with-evisa",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Donner un code de partage à l'employeur",
+          "detail": "Générez un code de partage (share code), valable 90 jours, et transmettez-le avec votre date de naissance à l'employeur ou au propriétaire pour prouver votre statut.",
+          "officialUrl": "https://www.gov.uk/view-prove-immigration-status",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Mettre le compte à jour en cas de nouveau passeport",
+          "detail": "Si seuls le numéro ou la date d'expiration du passeport changent, vous pouvez mettre le compte à jour vous-même ; pour les autres changements, demandez-le à UK Visas and Immigration.",
+          "officialUrl": "https://www.gov.uk/evisa/travel-with-evisa",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "La CEAM reste valable au Royaume-Uni pour les soins essentiels pendant un séjour temporaire. Si vous vous installez avec un visa de plus de 6 mois, l'accès au NHS passe en principe par la surtaxe santé (IHS) payée avec le visa.",
+      "appliesIf": "tant que vous restez affilié à l'Assurance Maladie française (séjour temporaire, détachement)",
+      "when": -20,
+      "officialUrl": "https://www.diplomatie.gouv.fr/fr/information-par-pays/royaume-uni/conseils-aux-voyageurs-sante",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Ameli conseille de la demander au moins 15 jours avant le départ (France Diplomatie indique 20 jours). Elle vaut 2 ans au maximum, sans dépasser la durée de vos droits ; si vous partez dans moins de 15 jours, un certificat provisoire valable 3 mois est délivré.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Savoir ce qu'elle couvre",
+          "detail": "Elle couvre les soins devenus médicalement nécessaires pendant un séjour temporaire en Angleterre, mais ni les soins privés ni le rapatriement. Une assurance couvrant frais médicaux, hospitalisation et rapatriement reste recommandée.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/visitors-from-eu-countries-norway-iceland-liechtenstein-or-switzerland/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Détaché : CEAM ou formulaire S1",
+          "detail": "Si vous gardez votre résidence en France, présentez la CEAM aux soignants britanniques. Si vous transférez votre résidence au Royaume-Uni, demandez à votre caisse française un formulaire S1 pour vous inscrire auprès du système britannique.",
+          "officialUrl": "https://www.cleiss.fr/employeurs/empl_france_envoie_uk.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier un remboursement de la surtaxe santé",
+          "detail": "Un remboursement total ou partiel est possible si vous avez un S1 enregistré auprès du NHS Business Services Authority. Avec une CEAM, seuls les étudiants à temps plein qui ne travaillent pas peuvent être remboursés.",
+          "officialUrl": "https://www.gov.uk/healthcare-immigration-application/refunds",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Contrat local : rendre la carte",
+          "detail": "Si vous quittez l'Assurance Maladie française (expatriation), rendez votre CEAM et votre carte Vitale à votre caisse avant le départ.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "assurance-maladie",
+      "title": "Faire le point sur votre Assurance maladie",
+      "category": "HEALTH",
+      "summary": "Avec un contrat de travail britannique, vous relevez du régime britannique. Détaché par un employeur établi en France, vous pouvez rester au régime français 24 mois au plus, selon l'accord de commerce et de coopération UE-Royaume-Uni.",
+      "appliesIf": null,
+      "when": 30,
+      "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/royaume_uni.html",
+      "steps": [
+        {
+          "title": "Contrat local : régime britannique",
+          "detail": "Si vous résidez au Royaume-Uni, vous relevez obligatoirement du régime britannique pour les soins et les indemnités journalières.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/royaume_uni.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer le transfert de résidence à la CPAM",
+          "detail": "Envoyez la « Déclaration de transfert de résidence hors de France » dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": ["Formulaire de déclaration de transfert de résidence hors de France", "Carte Vitale", "Carte européenne d'assurance maladie"]
+        },
+        {
+          "title": "Détachement : obtenir le document A1",
+          "detail": "L'employeur demande le document A1 à l'Urssaf avant le départ et vous en remet une copie à garder pendant toute la mission. Pour une mobilité commencée depuis 2021, le détachement est limité à 24 mois, sans prolongation possible.",
+          "officialUrl": "https://www.cleiss.fr/employeurs/empl_france_envoie_uk.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Stagiaire étudiant : vérifier votre couverture",
+          "detail": "Demandez à votre école et à votre CPAM comment vous serez couvert pendant le stage (maladie et accidents du travail), selon votre statut et votre gratification.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        },
+        {
+          "title": "Envisager la Caisse des Français de l'étranger (facultatif)",
+          "detail": "La CFE permet de rester affilié au régime français, en cotisant à la fois à la CFE et au régime obligatoire britannique.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "nhs-gp",
+      "title": "S'inscrire chez un médecin généraliste (GP)",
+      "category": "HEALTH",
+      "summary": "En Angleterre, l'inscription chez un GP est gratuite et peut se faire en ligne. La surtaxe santé payée avec le visa donne accès au NHS, mais certains frais restent à votre charge.",
+      "appliesIf": "installation en Angleterre",
+      "when": null,
+      "officialUrl": "https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/",
+      "steps": [
+        {
+          "title": "Trouver un cabinet près de chez vous",
+          "detail": "Cherchez les cabinets (GP surgeries) par code postal avec le service « Find a GP » du site du NHS.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "S'inscrire en ligne",
+          "detail": "L'inscription est gratuite et prend environ 15 minutes par personne. Aucune pièce d'identité, preuve d'adresse ou preuve de statut d'immigration n'est exigée.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "En cas de refus",
+          "detail": "Un cabinet peut refuser (patientèle complète, adresse hors secteur) mais doit vous écrire dans les 14 jours pour expliquer pourquoi.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/gps/how-to-register-with-a-gp-surgery/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prévoir certains frais",
+          "detail": "Même après la surtaxe santé, certains frais restent dus, comme les ordonnances ou les soins dentaires.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/moving-to-england-from-eu-countries-or-norway-iceland-liectenstein-or-switzerland/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Détaché avec un S1 : l'enregistrer",
+          "detail": "Si votre caisse française vous a remis un formulaire S1, envoyez-le directement à l'Overseas Healthcare Team pour l'enregistrer au Royaume-Uni.",
+          "officialUrl": "https://www.nhs.uk/nhs-services/visiting-or-moving-to-england/moving-to-england-from-eu-countries-or-norway-iceland-liectenstein-or-switzerland/",
+          "requiredDocuments": ["Formulaire S1"]
+        }
+      ]
+    },
+    {
+      "key": "national-insurance",
+      "title": "Demander un numéro de National Insurance",
+      "category": "OTHER",
+      "summary": "Le numéro de National Insurance se demande en ligne une fois au Royaume-Uni, si vous avez le droit d'y travailler. Il reste le même toute la vie.",
+      "appliesIf": "visa autorisant le travail",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/apply-national-insurance-number",
+      "steps": [
+        {
+          "title": "Vérifier si vous en avez déjà un",
+          "detail": "Avec un eVisa, votre numéro peut déjà figurer dans votre compte UKVI.",
+          "officialUrl": "https://www.gov.uk/apply-national-insurance-number",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Faire la demande en ligne",
+          "detail": "Vous devez vivre au Royaume-Uni et y avoir le droit de travailler. Vous téléversez une photo de vous tenant votre passeport et des photos de vos pièces ; un rendez-vous ou un envoi de copies peut être demandé.",
+          "officialUrl": "https://www.gov.uk/apply-national-insurance-number/how-to-apply",
+          "requiredDocuments": ["Passeport ou carte d'identité d'un pays de l'UE"]
+        },
+        {
+          "title": "Commencer à travailler sans attendre",
+          "detail": "Vous pouvez commencer avant de recevoir le numéro si vous prouvez votre droit de travailler.",
+          "officialUrl": "https://www.gov.uk/apply-national-insurance-number",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Suivre le délai",
+          "detail": "Le numéro peut mettre jusqu'à 4 semaines à arriver après la preuve d'identité. Au-delà, appelez la ligne d'assistance avec la référence figurant dans l'e-mail de confirmation.",
+          "officialUrl": "https://www.gov.uk/apply-national-insurance-number",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "logement",
+      "title": "Louer un logement en Angleterre",
+      "category": "RESIDENCE",
+      "summary": "Depuis le 1er mai 2026, une nouvelle location privée en Angleterre est un bail sans date de fin (assured periodic tenancy). Le propriétaire peut vérifier votre droit à louer et doit protéger votre dépôt de garantie.",
+      "appliesIf": "location privée en Angleterre (règles différentes en Écosse, au pays de Galles, en Irlande du Nord, et si vous êtes hébergé chez votre propriétaire)",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/guidance/renters-rights-act-overview-for-tenants",
+      "steps": [
+        {
+          "title": "Prouver votre droit à louer (Right to Rent)",
+          "detail": "En Angleterre seulement, le propriétaire peut demander une vérification du Home Office : donnez-lui un code de partage obtenu en ligne ou vos documents d'immigration originaux.",
+          "officialUrl": "https://www.gov.uk/prove-right-to-rent",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier les sommes demandées",
+          "detail": "Avant la signature : dépôt de réservation d'une semaine de loyer au plus, dépôt de garantie de 5 semaines au plus si le loyer annuel est inférieur à 50 000 £. Aucun loyer ne peut être demandé avant la signature, puis 1 mois au plus avant l'entrée pour un loyer mensuel.",
+          "officialUrl": "https://www.gov.uk/assured-periodic-tenancies-tenants/rent-in-advance-and-deposits",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la protection du dépôt",
+          "detail": "Le propriétaire ou l'agence doit placer le dépôt dans un dispositif agréé par l'État (tenancy deposit protection) dans les 30 jours suivant sa réception.",
+          "officialUrl": "https://www.gov.uk/tenancy-deposit-protection",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Comprendre la durée du bail",
+          "detail": "Un bail signé depuis le 1er mai 2026 n'a pas de date de fin. Vous pouvez y mettre fin par écrit avec 2 mois de préavis : anticipez-le pour un séjour de 6 à 12 mois.",
+          "officialUrl": "https://www.gov.uk/guidance/renters-rights-act-overview-for-tenants",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Refuser les surenchères",
+          "detail": "Le loyer doit figurer dans l'annonce ou l'offre écrite, et le propriétaire ne peut ni accepter ni encourager des offres supérieures.",
+          "officialUrl": "https://www.gov.uk/guidance/renters-rights-act-overview-for-tenants",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "council-tax",
+      "title": "Payer la council tax",
+      "category": "TAX",
+      "summary": "La council tax est la taxe locale due en général par les occupants de 18 ans ou plus. Son montant dépend de la bande d'évaluation du logement et du tarif fixé par le council.",
+      "appliesIf": "logement en Angleterre, au pays de Galles ou en Écosse",
+      "when": null,
+      "officialUrl": "https://www.gov.uk/council-tax",
+      "steps": [
+        {
+          "title": "Trouver votre council",
+          "detail": "Cherchez le site de votre council à partir de votre code postal : c'est lui qui fixe le montant de chaque bande.",
+          "officialUrl": "https://www.gov.uk/find-local-council",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Demander la réduction de 25 %",
+          "detail": "Si vous vivez seul, ou seulement avec des personnes non comptées (étudiants à temps plein, moins de 18 ans, certains apprentis), la facture baisse d'un quart. La réduction se demande au council.",
+          "officialUrl": "https://www.gov.uk/council-tax/who-has-to-pay",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire britannique",
+      "category": "BANK",
+      "summary": "Les neuf plus grandes banques doivent proposer un compte de base, sans frais pour les opérations courantes en livres, aux personnes résidant légalement au Royaume-Uni qui n'ont pas de compte.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024",
+      "steps": [
+        {
+          "title": "Demander un compte de base si besoin",
+          "detail": "Barclays UK, The Co-operative Bank, HSBC UK, Lloyds Banking Group, Nationwide, NatWest Group, Santander UK, TSB et Virgin Money UK doivent le proposer. Il offre les services d'un compte courant, sans découvert.",
+          "officialUrl": "https://www.gov.uk/government/publications/basic-bank-accounts-july-2023-to-june-2024/basic-bank-accounts-july-2023-to-june-2024",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier la garantie des dépôts",
+          "detail": "Depuis le 1er décembre 2025, le FSCS garantit jusqu'à 120 000 £ par personne et par banque ; les banques d'un même groupe qui partagent un agrément comptent pour une seule. Vérifiez la banque avec l'outil du FSCS.",
+          "officialUrl": "https://www.fscs.org.uk/what-we-cover/banks-building-societies/",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Demander la liste des pièces",
+          "detail": "Les justificatifs acceptés (identité, adresse) varient selon la banque : demandez la liste avant le rendez-vous.",
+          "officialUrl": null,
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "impots",
+      "title": "Payer ses impôts au Royaume-Uni",
+      "category": "TAX",
+      "summary": "Un salarié paie en général l'impôt sur le revenu et les cotisations National Insurance par retenue sur salaire (PAYE). La résidence fiscale britannique dépend surtout du nombre de jours passés au Royaume-Uni dans l'année fiscale.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.gov.uk/income-tax/how-you-pay-income-tax",
+      "steps": [
+        {
+          "title": "Remplir la starter checklist",
+          "detail": "Sans formulaire P45, donnez à votre employeur les informations de la starter checklist. À défaut, vous êtes payé avec un code d'imposition d'urgence, que le HMRC peut mettre jusqu'à 35 jours à corriger.",
+          "officialUrl": "https://www.gov.uk/tax-codes/emergency-tax-codes",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déterminer votre résidence fiscale",
+          "detail": "Vous êtes notamment résident si vous passez 183 jours ou plus au Royaume-Uni dans l'année fiscale ; un résident est imposé sur tous ses revenus, britanniques et étrangers. L'année d'arrivée ou de départ peut être scindée (split-year treatment) sous conditions.",
+          "officialUrl": "https://www.gov.uk/tax-foreign-income/residence",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Vérifier si une déclaration est nécessaire",
+          "detail": "Une déclaration Self Assessment est notamment exigée si vous avez gagné plus de 1 000 £ comme indépendant ou plus de 2 500 £ d'autres revenus non imposés à la source.",
+          "officialUrl": "https://www.gov.uk/income-tax/how-you-pay-income-tax",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Consulter la convention fiscale franco-britannique",
+          "detail": "La convention de 2008, en vigueur depuis le 18 décembre 2009, est publiée sur gov.uk avec sa version modifiée par l'instrument multilatéral : lisez-la avant de demander un avantage conventionnel.",
+          "officialUrl": "https://www.gov.uk/government/publications/france-tax-treaties",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Déclarer en France l'année du départ",
+          "detail": "Signalez votre nouvelle adresse à votre centre des finances publiques. L'année suivante, déclarez sur la 2042 vos revenus du 1er janvier au départ ; les revenus de source étrangère se déclarent sur la 2047.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "transport",
+      "title": "Conduire et se déplacer",
+      "category": "TRANSPORT",
+      "summary": "Le permis français permet en général de conduire en Grande-Bretagne sans échange obligatoire. À Londres, les transports TfL se paient avec une carte sans contact ou une carte Oyster.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.gov.uk/driving-nongb-licence",
+      "steps": [
+        {
+          "title": "Conduire en Grande-Bretagne avec votre permis",
+          "detail": "Si vous aviez moins de 67 ans en devenant résident, vous pouvez conduire avec votre permis de l'UE jusqu'à 70 ans. L'échange contre un permis britannique est possible sans repasser l'examen, mais pas obligatoire. Un permis de l'UE obtenu en échange d'un permis hors UE ne vaut que 12 mois.",
+          "officialUrl": "https://www.gov.uk/driving-nongb-licence",
+          "requiredDocuments": null
+        },
+        {
+          "title": "En Irlande du Nord, vérifier les règles de nidirect",
+          "detail": "Un permis voiture (Group 1) d'un pays de l'UE encore valide permet de conduire jusqu'à son expiration.",
+          "officialUrl": "https://www.nidirect.gov.uk/articles/exchanging-your-foreign-driving-licence",
+          "requiredDocuments": null
+        },
+        {
+          "title": "À Londres, payer avec le sans contact ou Oyster",
+          "detail": "Sur tout le réseau TfL, vous payez vos trajets avec une carte sans contact ou une carte Oyster.",
+          "officialUrl": "https://tfl.gov.uk/fares/how-to-pay-and-where-to-buy-tickets-and-oyster/pay-as-you-go/contactless-and-mobile-pay-as-you-go",
+          "requiredDocuments": null
+        }
+      ]
+    },
+    {
+      "key": "depart",
+      "title": "Quitter le Royaume-Uni à la fin du séjour",
+      "category": "RESIDENCE",
+      "summary": "Avant de partir, prévenez le HMRC, votre propriétaire et votre council, puis rouvrez vos droits en France.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.gov.uk/tax-right-retire-abroad-return-to-uk",
+      "steps": [
+        {
+          "title": "Prévenir le HMRC (formulaire P85)",
+          "detail": "Si vous ne faites pas de déclaration Self Assessment, remplissez le P85 en joignant les parties 2 et 3 de votre P45. Le HMRC calcule un éventuel remboursement pour l'année du départ ; la plupart se versent sur un compte bancaire britannique.",
+          "officialUrl": "https://www.gov.uk/tax-right-retire-abroad-return-to-uk",
+          "requiredDocuments": ["Parties 2 et 3 du P45, si vous l'avez"]
+        },
+        {
+          "title": "Donner congé au propriétaire",
+          "detail": "En Angleterre, prévenez par écrit avec 2 mois de préavis, le jour du paiement du loyer ou la veille.",
+          "officialUrl": "https://www.gov.uk/guidance/renters-rights-act-overview-for-tenants",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Récupérer le dépôt de garantie",
+          "detail": "Le propriétaire doit vous le rendre dans les 10 jours suivant votre accord sur le montant.",
+          "officialUrl": "https://www.gov.uk/tenancy-deposit-protection",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Prévenir le council",
+          "detail": "Signalez votre départ et votre nouvelle adresse pour recevoir la facture finale et clôturer le compte de council tax. Certains councils, comme Southwark, demandent de le faire dans les 21 jours.",
+          "officialUrl": "https://www.southwark.gov.uk/council-tax/tell-us-about-change/moving-home",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Garder une trace de vos cotisations",
+          "detail": "Les cotisations National Insurance ne sont pas remboursées en cas de départ définitif, mais elles peuvent compter pour des droits dans les pays liés au Royaume-Uni par un accord de sécurité sociale.",
+          "officialUrl": "https://www.gov.uk/tax-right-retire-abroad-return-to-uk",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Préparer vos droits au chômage",
+          "detail": "Le document U1, délivré par le HMRC, permet de faire valoir vos périodes d'emploi britanniques : si vous rentrez chercher un emploi en France, demandez à France Travail s'il vous le faut.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/travailler/expatriation/royaume_uni.html",
+          "requiredDocuments": null
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie",
+          "detail": "À votre retour, envoyez à votre CPAM le formulaire S1106 de demande d'ouverture des droits à l'assurance maladie.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": ["Formulaire S1106"]
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Les règles britanniques d'immigration changent souvent : seuils de salaire du Skilled Worker, niveau d'anglais B2 pour une première demande (B1 seulement si vous aviez ce visa avant le 8 janvier 2026), frais de visa et surtaxe santé. Montants relevés sur gov.uk le 23/11/2026 : vérifiez-les avant toute démarche.",
+    "Le Youth Mobility Scheme n'est pas ouvert aux Français. Un futur programme UK-UE, le Youth Experience Scheme (18-31 ans, jusqu'à 3 ans), a été annoncé : selon gov.uk (page mise à jour le 20 novembre 2026), les premiers départs sont attendus au plus tard en janvier 2030.",
+    "Si vous avez déjà le statut settled ou pre-settled (EU Settlement Scheme), votre situation diffère de ce modèle : vérifiez vos droits sur gov.uk. La date limite pour la plupart des demandes était le 30 juin 2021.",
+    "La délivrance du visa relève de UK Visas and Immigration : le délai habituel de 3 semaines peut s'allonger (vérification de documents, entretien).",
+    "Passez uniquement par gov.uk pour l'ETA et les visas : gov.uk met en garde contre des sites qui imitent les services officiels et facturent plus cher.",
+    "Plusieurs règles de ce modèle ne valent qu'en Angleterre : Right to Rent, baux sans date de fin depuis le 1er mai 2026, plafonds de dépôt, pages NHS citées. L'Écosse et l'Irlande du Nord ont leurs propres dispositifs de protection du dépôt, et la page gov.uk sur la council tax couvre l'Angleterre, le pays de Galles et l'Écosse.",
+    "Stage sous convention d'une école française : la couverture maladie et accidents du travail pendant un stage au Royaume-Uni n'a pas pu être confirmée sur une page officielle propre à ce pays. Demandez à votre école et à votre CPAM avant le départ.",
+    "Détachement : selon le CLEISS, une mobilité vers le Royaume-Uni commencée depuis 2021 est limitée à 24 mois de détachement, sans prolongation possible. Le document A1 concerne la sécurité sociale : la voie d'immigration se vérifie à part sur gov.uk.",
+    "CEAM : ameli conseille de la demander au moins 15 jours avant le départ, France Diplomatie 20 jours. Elle couvre les soins essentiels d'un séjour temporaire et ne figure pas parmi les cas d'exemption de la surtaxe santé.",
+    "Un visa de 6 mois ou moins demandé depuis l'étranger n'entraîne pas de surtaxe santé : vérifiez alors comment vos soins seront pris en charge (CEAM si vous restez affilié en France, assurance privée).",
+    "Les frais de visa, la surtaxe santé et les économies exigées s'appliquent par personne : les démarches des membres de la famille qui vous accompagnent ne sont pas détaillées ici.",
+    "La liste des universités éligibles au visa HPI est publiée pour chaque année (du 1er novembre au 31 octobre) et le nombre de demandes est plafonné : vérifiez la liste en vigueur à la date de la demande.",
+    "Les pages de MoneyHelper (service public d'information financière) n'ont pas pu être consultées (accès refusé) : les pièces demandées pour ouvrir un compte ne sont pas détaillées, demandez-les à la banque."
+  ]
+}

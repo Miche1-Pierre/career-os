@@ -1,0 +1,588 @@
+{
+  "key": "FR-CH",
+  "from": "FR",
+  "to": "CH",
+  "title": "France → Suisse (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "stage-etudiant",
+      "title": "Clarifier la couverture d'un stage effectué pendant vos études",
+      "category": "OTHER",
+      "summary": "Pour un stage en Suisse dans le cadre d'études suivies en France, votre protection sociale dépend du montant de la gratification et de la législation suisse, qui peut vous considérer comme salarié.",
+      "appliesIf": "stage effectué dans le cadre d'études suivies en France, avec convention de stage",
+      "when": null,
+      "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html",
+      "steps": [
+        {
+          "title": "Vérifier si la Suisse vous considère comme salarié",
+          "detail": "Selon la durée et la rémunération du stage, la législation du pays d'accueil peut vous traiter comme un travailleur salarié : vous êtes alors affilié à son régime de sécurité sociale. Le CLEISS conseille de vous renseigner auprès de l'organisme d'accueil avant le départ.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        },
+        {
+          "title": "Contrôler le maintien de la couverture accidents du travail française",
+          "detail": "Elle est maintenue si la gratification ne dépasse pas 15 % du plafond horaire de la sécurité sociale, si le stage dure au plus 6 mois par année d'enseignement dans le même organisme, s'il fait l'objet d'une convention tripartite et si votre établissement a payé la cotisation accidents du travail. Au-delà de ce seuil de gratification, la couverture française ne s'applique pas.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html",
+          "requiredDocuments": [
+            "Convention de stage tripartite signée (établissement, organisme d'accueil, étudiant)"
+          ]
+        },
+        {
+          "title": "Savoir déclarer un accident",
+          "detail": "Si le stage est couvert par la France, prévenez votre établissement dans les 24 heures, éventuellement par l'intermédiaire de l'entreprise d'accueil. L'établissement adresse ensuite la déclaration d'accident du travail à la CPAM dans les 48 heures.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        },
+        {
+          "title": "Vérifier l'assurance-maladie suisse si le stage est rémunéré",
+          "detail": "L'OFSP n'exempte de l'assurance-maladie suisse les étudiants de l'UE que s'ils n'exercent pas d'activité lucrative en Suisse et restent assurés dans leur pays. Si vous exercez une activité lucrative, vous devez vous assurer en Suisse.",
+          "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-obligation-de-sassurer-pour-les-assures-domicilies-en-suisse"
+        }
+      ]
+    },
+    {
+      "key": "permis-sejour",
+      "title": "Déclarer votre arrivée et demander le permis L ou B",
+      "category": "VISA",
+      "summary": "Pour un emploi de plus de 3 mois, un citoyen de l'UE déclare son arrivée à sa commune de résidence dans les 14 jours suivant l'arrivée, et avant de commencer à travailler, pour demander une autorisation de séjour. Celle-ci vaut aussi autorisation de travail.",
+      "appliesIf": "contrat de travail ou de stage de plus de 3 mois chez un employeur en Suisse, avec installation en Suisse",
+      "when": 14,
+      "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes",
+      "steps": [
+        {
+          "title": "Réunir les pièces du dossier",
+          "detail": "Le SEM demande une pièce d'identité valide et une déclaration d'engagement ou une attestation de travail signée par l'employeur, par exemple un contrat indiquant la durée de l'engagement et le taux d'occupation. Selon la commune, d'autres pièces sont demandées, souvent un justificatif de logement (voir les exemples ci-dessous).",
+          "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport en cours de validité",
+            "Contrat de travail ou attestation de l'employeur indiquant la durée de l'engagement et le taux d'occupation",
+            "Bail, contrat de sous-location ou attestation du logeur"
+          ]
+        },
+        {
+          "title": "S'annoncer dans les 14 jours, avant le premier jour de travail",
+          "detail": "Selon le SEM, la déclaration d'arrivée se fait auprès de la commune de résidence dans les 14 jours qui suivent l'arrivée en Suisse, mais avant de débuter l'activité. Les démarches peuvent être faites une fois en Suisse.",
+          "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes"
+        },
+        {
+          "title": "À Genève : déposer la demande auprès de l'OCPM",
+          "detail": "La demande d'autorisation de séjour avec activité se dépose avant le début de l'activité, en ligne ou par courrier, par vous ou par l'employeur. Pour un contrat de plus de 4 mois, l'activité peut commencer dès l'envoi du dossier complet à l'OCPM, sauf profession réglementée.",
+          "officialUrl": "https://www.ge.ch/demander-permis-resider-travailler-geneve/activite-salariee-ressortissant-ue/aele",
+          "requiredDocuments": [
+            "Copie couleur d'une pièce d'identité en cours de validité",
+            "Copie du bail ou attestation du logeur (formulaire AL)",
+            "Formulaire M (seulement pour une demande par courrier)"
+          ]
+        },
+        {
+          "title": "À Lausanne : se présenter au guichet sur rendez-vous",
+          "detail": "En arrivant de l'étranger, vous devez vous présenter personnellement au contrôle des habitants, sur rendez-vous, dans les 14 jours suivant l'arrivée. Seuls les dossiers complets sont traités.",
+          "officialUrl": "https://www.lausanne.ch/prestations/controle-des-habitants/arrivee-inscription-UE-AELE.html",
+          "requiredDocuments": [
+            "Formulaire d'annonce d'arrivée pour les ressortissants de l'UE ou de l'AELE",
+            "Pièce d'identité originale",
+            "Photo format passeport",
+            "Bail à votre nom, ou contrat de sous-location avec le bail et une copie de la pièce d'identité du locataire",
+            "Contrat de travail",
+            "Document d'état civil (par exemple acte de naissance)"
+          ]
+        },
+        {
+          "title": "À Zurich : prendre rendez-vous au Personenmeldeamt",
+          "detail": "La Ville de Zurich demande de s'annoncer en personne au Personenmeldeamt Zürich Süd, sur rendez-vous, dans les 14 jours, une fois installé (pas avant l'emménagement). Si aucun rendez-vous n'est libre avant la fin du délai, réservez le premier disponible et demandez une prolongation par le formulaire de contact. L'annonce coûte 40 francs par adulte, plus les émoluments de l'office des migrations.",
+          "officialUrl": "https://www.stadt-zuerich.ch/de/lebenslagen/einwohner-services/umziehen-melden/zuzug.html",
+          "requiredDocuments": [
+            "Passeport ou carte d'identité",
+            "Bail, contrat de sous-location ou attestation d'emménagement",
+            "Contrat de travail ou attestation d'études"
+          ]
+        },
+        {
+          "title": "Vérifier le type de permis reçu",
+          "detail": "Pour une activité de 364 jours au plus, vous recevez un livret L UE/AELE, valable pour la durée du contrat. À partir d'un an de contrat, c'est un livret B UE/AELE, valable cinq ans et prolongeable.",
+          "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes"
+        },
+        {
+          "title": "Renouveler le permis si le contrat est prolongé",
+          "detail": "La demande de renouvellement se fait au plus tôt trois mois et au plus tard deux semaines avant l'échéance du permis, auprès de votre commune ou, dans certains cantons, directement auprès du canton.",
+          "officialUrl": "https://www.ch.ch/fr/documents-et-extraits/permis-de-sejour/",
+          "requiredDocuments": [
+            "Permis de séjour",
+            "Carte d'identité ou passeport valable",
+            "Avis de fin de validité du titre de séjour, si vous en avez reçu un"
+          ]
+        },
+        {
+          "title": "Annoncer tout déménagement en Suisse",
+          "detail": "Le permis est valable dans toute la Suisse, et le livret L permet de changer d'emploi salarié. Si vous changez de domicile, présentez votre livret lors de la déclaration d'arrivée dans la nouvelle commune pour y faire inscrire la nouvelle adresse.",
+          "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes"
+        }
+      ]
+    },
+    {
+      "key": "assurance-maladie",
+      "title": "S'affilier à l'assurance-maladie suisse (LAMal)",
+      "category": "HEALTH",
+      "summary": "L'assurance-maladie de base est obligatoire et privée. En vous installant en Suisse, affiliez-vous à une caisse-maladie admise au plus tard 3 mois après la prise de domicile : la couverture remonte alors à cette date.",
+      "appliesIf": "installation en Suisse pour un emploi ou un stage rémunéré (les frontaliers et les travailleurs détachés ont d'autres règles)",
+      "when": 89,
+      "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-obligation-de-sassurer-pour-les-assures-domicilies-en-suisse",
+      "steps": [
+        {
+          "title": "Comparer les primes",
+          "detail": "Le site Priminfo de la Confédération publie les primes de l'assurance de base par caisse et par région, avec un calculateur.",
+          "officialUrl": "https://www.priminfo.admin.ch/fr/praemien"
+        },
+        {
+          "title": "Choisir la franchise et le modèle d'assurance",
+          "detail": "Plus la franchise est haute, plus la prime est basse. Après la franchise, vous payez une quote-part de 10 % des frais, au maximum 700 francs par an. Le modèle standard laisse le libre choix du médecin et coûte plus cher ; d'autres modèles, moins chers, imposent certaines règles.",
+          "officialUrl": "https://www.priminfo.admin.ch/fr/versicherungen/grundversicherung"
+        },
+        {
+          "title": "Envoyer la demande d'affiliation dans les 3 mois",
+          "detail": "La demande se fait directement auprès de la caisse choisie, qui doit vous accepter dans l'assurance de base sans réserve ni délai d'attente. Dans le délai, l'assurance prend effet à la prise de domicile et vous payez les primes depuis cette date. En retard, elle ne prend effet qu'à l'affiliation, avec un supplément de prime si le retard n'est pas excusable.",
+          "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-obligation-de-sassurer-pour-les-assures-domicilies-en-suisse"
+        },
+        {
+          "title": "Permis L : compter le délai depuis l'annonce à la commune",
+          "detail": "Pour un permis L valable plus de 3 mois, l'OFSP indique que l'obligation commence le jour de l'annonce au contrôle des habitants, avec 3 mois pour s'affilier. Passé ce délai, vous risquez une affiliation d'office, et vos soins restent à votre charge jusqu'à l'affiliation.",
+          "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-travailleurs-de-courte-duree-en-suisse"
+        },
+        {
+          "title": "Suspendre la couverture accidents",
+          "detail": "Si vous travaillez au moins 8 heures par semaine, l'assurance-accidents de votre employeur couvre aussi les accidents non professionnels. Vous pouvez alors faire suspendre la couverture accidents de votre assurance-maladie de base, ce qui réduit la prime.",
+          "officialUrl": "https://www.ch.ch/fr/assurances/assurance-accident/"
+        },
+        {
+          "title": "Vérifier si une exemption vous concerne",
+          "detail": "Les exemptions visent des cas précis, par exemple un travailleur de l'UE détaché en Suisse pour 24 mois au plus, un étudiant de l'UE sans activité lucrative en Suisse, ou une personne résidant dans l'UE qui exerce son droit d'option. Les autorités cantonales compétentes statuent sur les demandes.",
+          "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-obligation-de-sassurer-pour-les-assures-domicilies-en-suisse"
+        },
+        {
+          "title": "Réfléchir avant de prendre une assurance complémentaire",
+          "detail": "L'assurance complémentaire est facultative et peut être prise auprès d'une autre caisse que l'assurance de base. La caisse peut demander de remplir un questionnaire de santé et refuser de vous assurer.",
+          "officialUrl": "https://www.ch.ch/fr/assurances/assurance-maladie/conclure-une-assurance-maladie/"
+        },
+        {
+          "title": "Prévenir votre CPAM si vous devenez expatrié",
+          "detail": "Envoyez la déclaration de transfert de résidence hors de France dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": [
+            "Déclaration de transfert de résidence hors de France",
+            "Carte Vitale",
+            "Carte européenne d'assurance maladie"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "assurances-sociales",
+      "title": "Contrôler vos cotisations sociales sur la fiche de salaire",
+      "category": "INSURANCE",
+      "summary": "Votre employeur déduit les cotisations sociales du salaire et les verse aux assurances : AVS, AI, APG, assurance-chômage, assurance-accidents et, selon votre salaire, 2e pilier.",
+      "appliesIf": "emploi ou stage rémunéré chez un employeur en Suisse",
+      "when": null,
+      "officialUrl": "https://www.ch.ch/fr/retraite/prevoyance-vieillesse/le-premier-pilier-avs/contributions-avs/",
+      "steps": [
+        {
+          "title": "Obtenir votre numéro AVS",
+          "detail": "Le numéro AVS sert de numéro d'assurance sociale. Si vous n'en avez pas, votre employeur vous déclare à une caisse de compensation, qui le demande. Il figure ensuite sur votre carte d'assurance-maladie et commence par 756.",
+          "officialUrl": "https://www.bsv.admin.ch/fr/numero-avs"
+        },
+        {
+          "title": "Vérifier les cotisations AVS",
+          "detail": "Les cotisations AVS représentent 8,7 % du salaire, payées à moitié par vous et à moitié par l'employeur, qui les déduit et les verse à la caisse de compensation. S'y ajoutent les cotisations à l'assurance-invalidité, aux allocations pour perte de gain et à l'assurance-chômage.",
+          "officialUrl": "https://www.ch.ch/fr/retraite/prevoyance-vieillesse/le-premier-pilier-avs/contributions-avs/"
+        },
+        {
+          "title": "Vérifier l'assurance-accidents",
+          "detail": "L'employeur doit assurer ses salariés contre les accidents, et une cotisation est prélevée sur le salaire. À partir de 8 heures par semaine, les accidents non professionnels sont aussi couverts ; en dessous, seulement les accidents et maladies professionnels. En cas d'accident, prévenez votre employeur dès que possible.",
+          "officialUrl": "https://www.ch.ch/fr/assurances/assurance-accident/"
+        },
+        {
+          "title": "Vérifier l'affiliation au 2e pilier",
+          "detail": "Le 2e pilier est obligatoire dès 17 ans pour un salarié assuré à l'AVS qui touche au moins 22 680 francs par an. Un contrat de 3 mois au plus n'y oblige pas. L'employeur déduit vos cotisations du salaire et les verse à son institution de prévoyance.",
+          "officialUrl": "https://www.ch.ch/fr/retraite/prevoyance-vieillesse/prevoyance-professionnelle-2e-pilier/"
+        },
+        {
+          "title": "Demander un extrait de votre compte AVS",
+          "detail": "Vous pouvez demander à tout moment un extrait de votre compte individuel. En cas d'erreur, demandez la correction à la caisse de compensation dans les 30 jours suivant sa réception.",
+          "officialUrl": "https://www.ch.ch/fr/retraite/prevoyance-vieillesse/le-premier-pilier-avs/contributions-avs/"
+        }
+      ]
+    },
+    {
+      "key": "impot-source",
+      "title": "Comprendre l'impôt à la source sur votre salaire",
+      "category": "TAX",
+      "summary": "Un travailleur étranger domicilié en Suisse sans permis C est imposé à la source : l'employeur retient chaque mois l'impôt sur le revenu de la Confédération, du canton et de la commune. Le taux varie d'un canton à l'autre.",
+      "appliesIf": "titulaire d'un permis L ou B domicilié en Suisse",
+      "when": null,
+      "officialUrl": "https://www.ch.ch/fr/impots-et-finances/types-d-impots/imposition-a-la-source/",
+      "steps": [
+        {
+          "title": "Vérifier la retenue sur la fiche de salaire",
+          "detail": "L'employeur retient l'impôt chaque mois et le verse à l'administration fiscale cantonale. En principe, vous n'avez alors pas de déclaration d'impôt à remplir.",
+          "officialUrl": "https://www.ch.ch/fr/impots-et-finances/types-d-impots/imposition-a-la-source/"
+        },
+        {
+          "title": "Estimer l'impôt avec l'outil de votre canton",
+          "detail": "Les barèmes sont cantonaux. Genève, par exemple, propose une calculette en ligne pour estimer le montant de l'impôt à la source.",
+          "officialUrl": "https://www.ge.ch/impot-source/calculette-baremes-perception-impot-source"
+        },
+        {
+          "title": "Demander une correction avant le 31 mars",
+          "detail": "À Genève, si votre situation familiale ou certaines déductions n'ont pas été prises en compte, vous pouvez demander une rectification (DRIS) ou une taxation ordinaire ultérieure (TOU), au plus tard le 31 mars de l'année qui suit les prélèvements.",
+          "officialUrl": "https://www.ge.ch/impot-source/rectification-taxation-ordinaire-ulterieure-dris/tou"
+        },
+        {
+          "title": "Savoir si la taxation ordinaire ultérieure est obligatoire",
+          "detail": "Dans le canton de Vaud, elle est obligatoire si le revenu brut annuel soumis à l'impôt à la source dépasse 120 000 francs, ou si vous avez d'autres revenus ou de la fortune. Sinon, elle peut être demandée par écrit au plus tard le 31 mars de l'année suivante ; la demande ne peut plus être retirée et vaut jusqu'à la fin de l'imposition à la source.",
+          "officialUrl": "https://www.vd.ch/etat-droit-finances/impots/pour-les-employeurs/impot-a-la-source/personnes-imposees-a-la-source-/-sourciers"
+        }
+      ]
+    },
+    {
+      "key": "residence-fiscale",
+      "title": "Clarifier votre situation fiscale entre la France et la Suisse",
+      "category": "TAX",
+      "summary": "La convention fiscale franco-suisse du 9 septembre 1966 répartit le droit d'imposer : un salaire est en principe imposable dans l'État où l'emploi est exercé. Un régime particulier vise les frontaliers qui rentrent en France chaque jour.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.impots.gouv.fr/suisse",
+      "steps": [
+        {
+          "title": "Comprendre où votre salaire est imposé",
+          "detail": "Selon l'article 17 de la convention, le salaire d'un résident d'un État est imposable dans cet État, sauf si l'emploi est exercé dans l'autre État : il est alors imposable dans cet autre État. Une exception, sous conditions, vise les séjours temporaires de 183 jours au plus dans l'année.",
+          "officialUrl": "https://bofip.impots.gouv.fr/bofip/3149-PGP.html/identifiant=BOI-INT-CVB-CHE-10-20-60-20130715"
+        },
+        {
+          "title": "Si vous restez domicilié en France : vérifier le régime frontalier",
+          "detail": "Si vous travaillez dans le canton de Vaud, du Valais, de Berne, de Soleure, de Bâle-Ville, de Bâle-Campagne, de Neuchâtel ou du Jura et rentrez en France en règle générale chaque jour (au plus 45 nuits par an en Suisse à temps plein), votre salaire est imposable en France. Remettez l'attestation 2041-AS à votre employeur avant la prise de fonctions, puis chaque année avant le 1er janvier.",
+          "officialUrl": "https://www.impots.gouv.fr/international-particulier/questions/je-viens-de-debuter-une-activite-salariee-en-suisse-suis-je",
+          "requiredDocuments": [
+            "Attestation de résidence fiscale 2041-AS"
+          ]
+        },
+        {
+          "title": "Déclarer en France vos salaires suisses si vous y restez résident fiscal",
+          "detail": "Si vous êtes domicilié en France et percevez des revenus hors de France, joignez le formulaire 2047 à votre déclaration de revenus. Il comporte une annexe propre aux salaires suisses.",
+          "officialUrl": "https://www.impots.gouv.fr/formulaire/2047/declaration-des-revenus-encaisses-letranger"
+        },
+        {
+          "title": "Poser vos questions à l'administration fiscale de votre canton",
+          "detail": "Une fois installé en Suisse, c'est l'administration fiscale de votre canton de domicile qui vous renseigne.",
+          "officialUrl": "https://www.sem.admin.ch/fr/faq-libre-circulation-des-personnes"
+        }
+      ]
+    },
+    {
+      "key": "logement",
+      "title": "Signer le bail et constituer la garantie de loyer",
+      "category": "OTHER",
+      "summary": "Le bail précise notamment la durée, le délai de résiliation, le loyer et les charges. Pour un logement, la garantie de loyer ne peut pas dépasser trois mois de loyer.",
+      "appliesIf": "location d'un logement en Suisse",
+      "when": null,
+      "officialUrl": "https://www.ch.ch/fr/logement/location-d-un-logement/bail-a-loyer-et-bail-a-ferme/",
+      "steps": [
+        {
+          "title": "Relire les clauses essentielles du bail",
+          "detail": "Le bail indique notamment sa durée, le délai ou terme de résiliation, le loyer mensuel et les charges : si les charges ne sont pas mentionnées, elles sont considérées comme comprises dans le loyer. La garantie n'est due que si le contrat la prévoit expressément. En colocation, toutes les personnes inscrites au contrat répondent solidairement du loyer.",
+          "officialUrl": "https://www.ch.ch/fr/logement/location-d-un-logement/bail-a-loyer-et-bail-a-ferme/"
+        },
+        {
+          "title": "Verser la garantie sur un compte au nom du locataire",
+          "detail": "La caution, de trois mois de loyer au maximum, est placée sur un compte bancaire spécial, le compte de garantie de loyer, au nom du locataire. Vous la récupérez avec les intérêts en quittant le logement.",
+          "officialUrl": "https://www.bwo.admin.ch/dam/fr/sd-web/91P4EJuLuPSK/franzoesisch.pdf"
+        },
+        {
+          "title": "Faire l'état des lieux d'entrée",
+          "detail": "Avant l'emménagement, le bailleur et le locataire font ensemble l'état des lieux et notent par écrit tous les défauts, même minimes.",
+          "officialUrl": "https://www.bwo.admin.ch/dam/fr/sd-web/91P4EJuLuPSK/franzoesisch.pdf"
+        },
+        {
+          "title": "En sous-location, prévoir les justificatifs du locataire principal",
+          "detail": "À Lausanne par exemple, si le bail n'est pas à votre nom, l'annonce d'arrivée demande le contrat de sous-location ou une attestation d'hébergement, le bail du locataire et une copie de sa pièce d'identité.",
+          "officialUrl": "https://www.lausanne.ch/prestations/controle-des-habitants/arrivee-inscription-UE-AELE.html",
+          "requiredDocuments": [
+            "Contrat de sous-location ou attestation d'hébergement",
+            "Bail du locataire principal",
+            "Copie de la pièce d'identité du locataire principal"
+          ]
+        },
+        {
+          "title": "Souscrire une RC privée et une assurance ménage",
+          "detail": "L'assurance responsabilité civile privée est en principe facultative en Suisse, mais souvent exigée pour louer un appartement. L'assurance ménage couvre vos biens (incendie, événement naturel, dégâts d'eau, vol par effraction), pas les dommages causés à des tiers.",
+          "officialUrl": "https://www.ch.ch/fr/assurances/assurance-responsabilite-civile-privee--rc-/"
+        }
+      ]
+    },
+    {
+      "key": "douane-demenagement",
+      "title": "Passer la douane avec vos effets de déménagement",
+      "category": "OTHER",
+      "summary": "Si vous transférez votre domicile en Suisse, vous pouvez importer vos meubles et effets personnels sans droits de douane, à condition de les avoir utilisés au moins six mois et de continuer à les utiliser.",
+      "appliesIf": "si vous emportez des meubles, de nombreux effets personnels ou un véhicule",
+      "when": 0,
+      "officialUrl": "https://www.bazg.admin.ch/fr/demenagement-importation-procedure-a-suivre",
+      "steps": [
+        {
+          "title": "Remplir le formulaire 18.44",
+          "detail": "Présentez au bureau de douane d'entrée le formulaire 18.44 « Traitement douanier des effets de déménagement ». Un citoyen de l'UE prouve le transfert de domicile par d'autres moyens qu'un titre de séjour : contrat de travail, bail ou document attestant qu'il a annoncé son départ dans son pays.",
+          "officialUrl": "https://www.bazg.admin.ch/fr/demenagement-importation-procedure-a-suivre",
+          "requiredDocuments": [
+            "Formulaire 18.44 rempli",
+            "Liste complète des biens importés",
+            "Passeport ou carte d'identité",
+            "Contrat de travail, bail ou justificatif de départ de France"
+          ]
+        },
+        {
+          "title": "Passer aux heures d'ouverture d'un bureau compétent",
+          "detail": "Le passage doit avoir lieu pendant les heures d'ouverture d'un bureau de douane compétent pour les marchandises commerciales. Si vous faites appel à un déménageur, remettez-lui les documents.",
+          "officialUrl": "https://www.ch.ch/fr/douane/demenager-en-suisse/"
+        },
+        {
+          "title": "Respecter le délai de deux ans",
+          "detail": "Vous avez deux ans à compter du transfert de domicile pour importer vos biens en Suisse en franchise de redevances.",
+          "officialUrl": "https://www.ch.ch/fr/douane/demenager-en-suisse/"
+        },
+        {
+          "title": "Déclarer votre véhicule au premier passage",
+          "detail": "Un véhicule étranger se déclare à la douane suisse dès le premier franchissement de la frontière lié au déménagement, même s'il est importé comme effet de déménagement.",
+          "officialUrl": "https://www.bazg.admin.ch/fr/questions-frequentes-vehicules-routiers-et-embarcations"
+        }
+      ]
+    },
+    {
+      "key": "permis-conduire-vehicule",
+      "title": "Échanger votre permis et immatriculer votre véhicule en Suisse",
+      "category": "TRANSPORT",
+      "summary": "Si vous habitez en Suisse, vous ne pouvez conduire avec votre permis français que pendant 12 mois, puis vous devez l'échanger. Un véhicule venu de l'étranger doit recevoir des plaques suisses au plus tard un an après le transfert de domicile.",
+      "appliesIf": "si vous conduisez en Suisse ; l'échange du permis concerne un séjour de plus de 12 mois",
+      "when": null,
+      "officialUrl": "https://www.ch.ch/fr/circulation-et-vehicules/permis-de-conduire/changement-de-permis-de-conduire/",
+      "steps": [
+        {
+          "title": "Échanger le permis avant 12 mois de résidence",
+          "detail": "Avec un permis de l'UE, vous obtenez le permis suisse sans contrôle supplémentaire de vos qualifications. Adressez-vous au service des automobiles de votre canton avec le permis original et passez un test de la vue. Le prix varie selon le canton et dépassera probablement 100 francs. Après le délai, l'échange reste possible mais vous risquez une amende.",
+          "officialUrl": "https://www.ch.ch/fr/circulation-et-vehicules/permis-de-conduire/changement-de-permis-de-conduire/",
+          "requiredDocuments": [
+            "Permis de conduire français original"
+          ]
+        },
+        {
+          "title": "Demander des plaques suisses dans l'année",
+          "detail": "Au plus tard un an après le transfert de domicile, demandez des plaques de contrôle suisses au service cantonal des automobiles.",
+          "officialUrl": "https://www.bazg.admin.ch/fr/questions-frequentes-vehicules-routiers-et-embarcations"
+        },
+        {
+          "title": "Préparer le dossier d'immatriculation",
+          "detail": "Pour un véhicule venant de l'étranger, le service des automobiles demande plusieurs pièces. Le permis de circulation et les plaques coûtent en général entre 50 et 100 francs selon le canton.",
+          "officialUrl": "https://www.ch.ch/fr/circulation-et-vehicules/voitures-et-autres-vehicules/immatriculer-un-vehicule/",
+          "requiredDocuments": [
+            "Attestation d'assurance responsabilité civile",
+            "Confirmation du dédouanement",
+            "Permis de circulation étranger",
+            "Rapport d'expertise (formulaire 13.20A)",
+            "Pièce d'identité ou permis de séjour",
+            "Attestation de domicile de la commune (première immatriculation)"
+          ]
+        },
+        {
+          "title": "Acheter la vignette autoroutière",
+          "detail": "La vignette coûte 40 francs ; celle de 2027 est valable du 1er décembre 2026 au 31 janvier 2028. La version électronique s'achète sur www.e-vignette.ch, le portail Via de l'OFDF. Rouler sans vignette expose à une amende de 200 francs.",
+          "officialUrl": "https://www.ch.ch/fr/circulation-et-vehicules/comportement-dans-la-circulation-routiere/vignette-autoroutiere/"
+        }
+      ]
+    },
+    {
+      "key": "transport-cff",
+      "title": "Prendre un abonnement demi-tarif CFF",
+      "category": "TRANSPORT",
+      "summary": "Le demi-tarif permet de voyager à moitié prix avec les CFF, la plupart des autres compagnies ferroviaires, en bateau et en car postal, avec des réductions dans les transports urbains. Il est enregistré sur le SwissPass.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.sbb.ch/fr/offres/demi-tarif",
+      "steps": [
+        {
+          "title": "Vérifier le prix en vigueur",
+          "detail": "Le premier abonnement coûte 120 francs par an de 16 ans à la veille des 25 ans. Pour les adultes, de nouveaux prix s'appliquent à partir du 13 décembre 2026 : consultez le tarif sur sbb.ch. La réduction peut être inférieure à 50 % sur les courtes distances.",
+          "officialUrl": "https://www.sbb.ch/fr/offres/demi-tarif"
+        },
+        {
+          "title": "Résilier avant votre départ",
+          "detail": "L'abonnement est valable un an et se renouvelle automatiquement. Les CFF rappellent à l'avance la dernière date de résiliation possible : pensez-y si vous quittez la Suisse.",
+          "officialUrl": "https://www.sbb.ch/fr/offres/demi-tarif"
+        }
+      ]
+    },
+    {
+      "key": "banque-suisse",
+      "title": "Organiser vos paiements en francs suisses",
+      "category": "BANK",
+      "summary": "L'euro n'a pas cours légal en Suisse : avec une carte française, chaque paiement entraîne une opération de change et une commission. Indiquez à votre employeur le compte sur lequel verser votre salaire.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2404",
+      "steps": [
+        {
+          "title": "Évaluer les frais de votre carte française",
+          "detail": "Hors zone euro, un paiement par carte donne lieu à une opération de change et à une commission indiquées sur le relevé, et les retraits au distributeur sont facturés. Vérifiez aussi vos plafonds de paiement et de retrait auprès de votre banque.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F2404"
+        },
+        {
+          "title": "Prévoir un compte pour la garantie de loyer",
+          "detail": "En Suisse, la garantie de loyer est placée sur un compte bancaire spécial au nom du locataire.",
+          "officialUrl": "https://www.bwo.admin.ch/dam/fr/sd-web/91P4EJuLuPSK/franzoesisch.pdf"
+        }
+      ]
+    },
+    {
+      "key": "redevance-radio-tv",
+      "title": "Payer la redevance de radio-télévision",
+      "category": "OTHER",
+      "summary": "Chaque ménage privé en Suisse paie une redevance annuelle de 335 francs, perçue par Serafe. Il n'y a rien à déclarer : les communes et les cantons transmettent les données des ménages.",
+      "appliesIf": "ménage privé en Suisse (logement seul ou en colocation)",
+      "when": null,
+      "officialUrl": "https://www.bakom.admin.ch/fr/redevance-des-menages-prives",
+      "steps": [
+        {
+          "title": "Payer la facture Serafe",
+          "detail": "Le mois d'envoi de la facture dépend du groupe de facturation attribué au ménage. La facture annuelle est payable dans les 60 jours.",
+          "officialUrl": "https://www.bakom.admin.ch/fr/montant-et-facturation"
+        },
+        {
+          "title": "En colocation, se répartir le montant",
+          "detail": "Toutes les personnes majeures du ménage figurent sur la facture et répondent solidairement du montant. La répartition entre elles relève du droit privé.",
+          "officialUrl": "https://www.bakom.admin.ch/fr/montant-et-facturation"
+        },
+        {
+          "title": "Signaler une erreur sur la facture",
+          "detail": "Une erreur dans les coordonnées se signale au service compétent de la commune ou du canton, ou à Serafe.",
+          "officialUrl": "https://www.bakom.admin.ch/fr/montant-et-facturation"
+        }
+      ]
+    },
+    {
+      "key": "registre-francais",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Facultative mais fortement recommandée pour un séjour de plus de 6 mois, l'inscription est gratuite et valable 5 ans. Elle facilite les démarches consulaires et permet au consulat de vous contacter en cas d'urgence.",
+      "appliesIf": "facultatif",
+      "when": null,
+      "officialUrl": "https://ch.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne sur service-public.fr",
+          "detail": "Connectez-vous à service-public.fr, rubrique « Je pars vivre à l'étranger », puis choisissez la démarche d'inscription au registre. Le consulat de rattachement vous contacte ensuite pour valider l'inscription.",
+          "officialUrl": "https://ch.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+          "requiredDocuments": [
+            "Carte nationale d'identité ou passeport français",
+            "Justificatif de résidence en Suisse",
+            "Photo d'identité récente"
+          ]
+        },
+        {
+          "title": "Identifier votre consulat",
+          "detail": "Le consulat général de France à Genève est compétent pour les cantons de Fribourg, Genève, Jura, Neuchâtel, Valais et Vaud. Les Français des autres cantons relèvent du consulat général de France à Zurich.",
+          "officialUrl": "https://ch.diplomatie.gouv.fr/fr/presence-francaise/consulat-general-de-france-geneve"
+        },
+        {
+          "title": "Choisir de voter depuis la Suisse (facultatif)",
+          "detail": "Lors de l'inscription, vous pouvez indiquer que vous souhaitez voter aux élections françaises depuis l'étranger.",
+          "officialUrl": "https://ch.diplomatie.gouv.fr/fr/registre/inscription-au-registre"
+        }
+      ]
+    },
+    {
+      "key": "depart",
+      "title": "Annoncer votre départ de Suisse et solder vos assurances",
+      "category": "RESIDENCE",
+      "summary": "Avant de quitter la Suisse, annoncez votre départ à la commune ou à l'office cantonal compétent. Pensez ensuite à l'assurance-maladie, au 2e pilier, au bail et à vos droits en France.",
+      "appliesIf": "départ définitif de Suisse",
+      "when": null,
+      "officialUrl": "https://www.ch.ch/fr/logement/demenagement/annonce-de-depart-et-d-arrivee/",
+      "steps": [
+        {
+          "title": "À Genève : annoncer le départ à l'OCPM",
+          "detail": "Avec un permis L ou B, l'annonce peut se faire dans le mois qui précède le départ et au plus tard deux semaines avant, en ligne ou par courrier ; elle est gratuite. Une attestation de départ coûte 25 francs par personne. En cas de départ définitif, détruisez votre permis ou renvoyez-le coupé en deux à l'OCPM.",
+          "officialUrl": "https://www.ge.ch/annoncer-mon-depart-ocpm/annoncer-mon-depart",
+          "requiredDocuments": [
+            "Formulaire D (annonce par courrier)",
+            "Copie de la pièce d'identité en cours de validité"
+          ]
+        },
+        {
+          "title": "À Lausanne : annoncer le départ et demander l'attestation",
+          "detail": "Le départ s'annonce dès que vous partez, et jusqu'à un mois à l'avance, en ligne, par courrier ou au guichet. L'attestation définitive de départ, que les caisses de pension et les assurances demandent généralement, s'obtient à partir de la date de départ.",
+          "officialUrl": "https://www.lausanne.ch/prestations/controle-des-habitants/depart-suisse-permis-lbcnfs.html",
+          "requiredDocuments": [
+            "Formulaire de départ daté et signé",
+            "Copie couleur d'une pièce d'identité valable"
+          ]
+        },
+        {
+          "title": "Mettre fin à l'assurance-maladie",
+          "detail": "Pour un permis L, l'OFSP indique que l'assurance prend fin à la date de départ annoncée au contrôle des habitants, et dans tous les cas le jour du départ effectif. Prévenez votre caisse-maladie.",
+          "officialUrl": "https://www.bag.admin.ch/fr/assurance-maladie-travailleurs-de-courte-duree-en-suisse"
+        },
+        {
+          "title": "Régler votre 2e pilier",
+          "detail": "Si vous vous installez dans un pays de l'UE où vous êtes obligatoirement assuré, la part obligatoire reste en Suisse sur un compte bloqué jusqu'à la retraite ; la part surobligatoire peut vous être versée. Renseignez-vous auprès de votre institution de prévoyance et récupérez l'argent d'un éventuel compte de libre passage.",
+          "officialUrl": "https://www.ch.ch/fr/retraite/prevoyance-vieillesse/prevoyance-professionnelle-2e-pilier/"
+        },
+        {
+          "title": "Demander l'examen du Fonds de garantie LPP pour la part obligatoire",
+          "detail": "Pour obtenir aussi la part obligatoire, il faut prouver que vous n'êtes pas assujetti à l'assurance vieillesse obligatoire dans le pays d'arrivée. Pour la France, la seconde partie du formulaire est remplie par votre caisse d'assurance maladie (CPAM notamment), au plus tôt 90 jours après le départ de Suisse.",
+          "officialUrl": "https://sfbvg.ch/fr/missions/paiement-en-especes-en-cas-de-depart-a-letranger"
+        },
+        {
+          "title": "Savoir que vos cotisations AVS ne sont pas remboursées",
+          "detail": "Un ressortissant de l'UE n'a pas droit au remboursement de ses cotisations AVS en quittant la Suisse.",
+          "officialUrl": "https://www.zas.admin.ch/fr/remboursement-des-cotisations"
+        },
+        {
+          "title": "Demander le formulaire PD U1",
+          "detail": "Le PD U1 atteste vos périodes d'assurance en Suisse pour le calcul des prestations de chômage. Envoyez la demande à la caisse de chômage où vous étiez inscrit, sinon à une caisse de chômage de votre dernier lieu de domicile en Suisse.",
+          "officialUrl": "https://www.arbeit.swiss/fr/demandeurs-demploi/retour-en-suisse",
+          "requiredDocuments": [
+            "Formulaire « Demande d'établissement d'un PD U1 »"
+          ]
+        },
+        {
+          "title": "Savoir comment France Travail utilise le U1",
+          "detail": "France Travail prend en compte les périodes de travail indiquées sur le U1 à condition que vous ayez travaillé en France après cette activité à l'étranger.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34416"
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie en France",
+          "detail": "Signalez votre départ à votre caisse-maladie suisse, puis envoyez à votre CPAM le formulaire S1106 de demande d'ouverture des droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": [
+            "Formulaire S1106 (demande d'ouverture des droits à l'assurance maladie)"
+          ]
+        },
+        {
+          "title": "Résilier le bail dans les règles",
+          "detail": "Respectez le délai légal ou contractuel. Toutes les personnes qui ont signé le bail signent la résiliation, envoyée en recommandé. Pour partir à une autre date, c'est à vous de trouver un locataire de remplacement si vous ne voulez pas payer le loyer jusqu'au terme.",
+          "officialUrl": "https://www.ch.ch/fr/logement/location-d-un-logement/bail-a-loyer-et-bail-a-ferme/"
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Les démarches d'arrivée et de départ varient selon le canton et la commune : autorité compétente (commune, ou OCPM à Genève), dépôt en ligne ou au guichet, pièces et frais. Les exemples de Genève, Lausanne et Zurich sont indicatifs : vérifiez sur le site de votre commune ou de votre canton.",
+    "Délai d'annonce : le SEM fixe 14 jours après l'arrivée, mais avant le début de l'activité. À Zurich, les rendez-vous sont parfois disponibles seulement après ce délai : la Ville demande de réserver le premier rendez-vous libre et de solliciter une prolongation.",
+    "Ce modèle vise une installation en Suisse avec un permis L ou B. Si vous gardez votre domicile en France et y rentrez au moins une fois par semaine, vous relevez du permis frontalier G, avec d'autres règles : droit d'option pour l'assurance-maladie à exercer dans les 3 mois, imposition en France dans 8 cantons avec l'attestation 2041-AS, imposition à la source à Genève.",
+    "Frontalier logé en Suisse pendant la semaine : selon le SEM, il doit s'annoncer à la commune où il séjourne. Lausanne permet alors une inscription en résidence secondaire.",
+    "Stage : les pages officielles consultées ne précisent pas quel permis demander pour un stage non rémunéré ou effectué sous convention d'études. Un stage rémunéré peut être traité comme un emploi salarié (permis, LAMal, AVS, impôt à la source) : demandez à l'autorité cantonale des migrations et à votre établissement.",
+    "Assurance-maladie : le délai de 3 mois court depuis la prise de domicile selon l'OFSP, et depuis l'annonce au contrôle des habitants pour un permis L. L'échéance proposée ici (60 jours après l'arrivée) garde une marge. Un changement de caisse pour l'année suivante se notifie par écrit avant le 30 novembre.",
+    "Si vous devenez expatrié, ameli demande de rendre la carte Vitale et la CEAM : vos soins en Suisse relèvent alors de la LAMal. Pour un stage d'études, le CLEISS conseille au contraire de demander une CEAM avant le départ : vérifiez votre situation auprès de votre CPAM.",
+    "Impôt à la source : la date du 31 mars et le seuil de 120 000 francs pour la taxation ordinaire ultérieure obligatoire ont été relevés sur les sites de Genève et de Vaud. Barèmes et procédures sont cantonaux : vérifiez auprès de l'administration fiscale de votre canton.",
+    "Résidence fiscale : selon votre foyer et vos attaches, la France peut continuer à vous considérer comme résident fiscal, et la convention franco-suisse de 1966 s'applique. En cas de doute, interrogez votre service des impôts en France et l'administration fiscale de votre canton.",
+    "2e pilier : le seuil de 22 680 francs par an relevé sur ch.ch et les règles de libre passage peuvent changer ; renseignez-vous auprès de l'institution de prévoyance de votre employeur.",
+    "Aucune page officielle suisse sur l'ouverture d'un compte bancaire par un nouvel arrivant n'a été trouvée : les conditions et les frais dépendent de chaque banque.",
+    "Montants relevés le 23/11/2026, susceptibles de changer : vignette 40 francs, redevance radio-télévision 335 francs par an, demi-tarif 120 francs par an de 16 à 24 ans (prix adultes modifiés au 13 décembre 2026), annonce d'arrivée à Zurich 40 francs par adulte, attestation de départ à Genève 25 francs.",
+    "Les règles de libre circulation entre la Suisse et l'UE peuvent évoluer : vérifiez la date de mise à jour des pages du SEM et de votre canton avant vos démarches."
+  ]
+}

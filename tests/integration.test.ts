@@ -1,3 +1,4 @@
+import { EXPORT_SCHEMA_VERSION } from "@/lib/constants";
 import fs from "node:fs";
 import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -259,7 +260,7 @@ describe("rules engine", () => {
 describe("export / import", () => {
   it("round-trips all data through the versioned JSON format", async () => {
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(4);
+    expect(file.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(file.counts.moves).toBe(0);
     expect(file.counts.opportunities).toBeGreaterThan(0);
     const serialized = JSON.parse(JSON.stringify(file));

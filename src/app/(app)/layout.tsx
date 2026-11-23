@@ -11,19 +11,22 @@ import { hasDemoData } from "@/server/services/demo";
 import { aiStatus } from "@/server/ai";
 import { todayISO } from "@/lib/dates";
 import { accessToken } from "@/server/security";
+import { getFxRates } from "@/server/services/fx";
 
 export const dynamic = "force-dynamic";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const settings = await getSettings();
   if (!settings.onboarding.completedAt) redirect("/welcome");
-  const [stages, tags, views, badges, demo, ai, jar] = await Promise.all([listStages(), listTags(), listViews(), getBadgeCounts(), hasDemoData(), aiStatus(), cookies()]);
+  const [stages, tags, views, badges, demo, ai, jar, fx] = await Promise.all([listStages(), listTags(), listViews(), getBadgeCounts(), hasDemoData(), aiStatus(), cookies(), getFxRates()]);
   const data: AppData = {
     today: todayISO(settings.general.timezone),
     timezone: settings.general.timezone,
     dateLocale: settings.general.dateLocale,
     weekStartsOn: settings.general.weekStartsOn,
     userName: settings.general.userName,
+    currency: (settings.general.currency || "EUR").toUpperCase(),
+    fx,
     stages: stages.map((s) => ({ id: s.id, pipeline: s.pipeline, key: s.key, label: s.label, category: s.category, color: s.color, position: s.position, isDefault: s.isDefault })),
     tags: tags.map((t) => ({ name: t.name, color: t.color })),
     ai: { available: ai.available, provider: ai.provider, detail: ai.detail, setup: ai.setup, model: ai.model },

@@ -36,6 +36,9 @@ const TABLES: [string, Table][] = [
   ["procedureSteps", s.procedureSteps],
   ["savedSearches", s.savedSearches],
   ["researchRuns", s.researchRuns],
+  ["cvEntries", s.cvEntries],
+  ["cvVariants", s.cvVariants],
+  // share_links are deliberately left out: a link is a secret, a new one is made after a restore.
 ];
 
 export interface ExportFile {
@@ -95,6 +98,12 @@ function upgradeExport(file: ExportFile): ExportFile {
     file.data.savedSearches ??= [];
     file.data.researchRuns ??= [];
     file.schemaVersion = 4;
+  }
+  // v4 → v5: structured CVs (cvEntries, cvVariants) added; moves gained `places` (defaults to none).
+  if (file.schemaVersion === 4) {
+    file.data.cvEntries ??= [];
+    file.data.cvVariants ??= [];
+    file.schemaVersion = 5;
   }
   return file;
 }

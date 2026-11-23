@@ -1,5 +1,6 @@
 "use client";
 
+import { Approx, useRateLabel } from "@/components/app/approx";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -191,7 +192,15 @@ export function MoveDetail({ move, procedures, templates, initialTab, initialLis
           setFormOpen(true);
         }}
       />
-      <ListingFormDialog open={formOpen} onOpenChange={setFormOpen} moveId={move.id} listing={editing} currency={cur} onSaved={(id) => !editing && openListing(id)} />
+      <ListingFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        moveId={move.id}
+        listing={editing}
+        currency={cur}
+        near={move.workLat !== null && move.workLng !== null ? { lat: move.workLat, lng: move.workLng } : null}
+        onSaved={(id) => !editing && openListing(id)}
+      />
       <MoveFormDialog open={moveFormOpen} onOpenChange={setMoveFormOpen} move={move} />
     </PageContainer>
   );
@@ -202,6 +211,7 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
   const s = move.summary;
   const cur = move.currency;
   const chosen = s.chosen ? move.listings.find((l) => l.id === s.chosen!.id) : null;
+  const rate = useRateLabel(cur);
 
   const actions: { key: string; icon: typeof Home; tone?: "warning" | "highlight" | "info"; title: string; sub?: string; onClick: () => void }[] = [];
   if (!move.workAddress) actions.push({ key: "work", icon: TriangleAlert, tone: "warning", title: "Ajouter l'adresse du lieu de travail", sub: "Nécessaire pour les temps de marche et les frais de transport", onClick: onEdit });
@@ -239,13 +249,26 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
           title="Logement"
           icon={Home}
           variant={chosen ? "default" : s.open ? "highlight" : "default"}
-          value={chosen ? money(chosen.total, cur) : `${s.open}`}
+          value={
+            chosen ? (
+              <span>
+                {money(chosen.total, cur)} <Approx amount={chosen.total} currency={cur} />
+              </span>
+            ) : (
+              `${s.open}`
+            )
+          }
           subtitle={chosen ? chosen.title : `annonces actives · ${s.toContact} à contacter · ${s.visitsPlanned} visites`}
         />
         <ValueCard
           title={chosen ? "Épargne / mois" : "Meilleure épargne / mois"}
           icon={PiggyBank}
-          value={<span className={cn(savingsTone(chosen?.budget?.savings ?? s.bestSavings?.savings))}>{chosen?.budget ? signedMoney(chosen.budget.savings, cur) : s.bestSavings ? signedMoney(s.bestSavings.savings, cur) : "–"}</span>}
+          value={
+            <span>
+              <span className={cn(savingsTone(chosen?.budget?.savings ?? s.bestSavings?.savings))}>{chosen?.budget ? signedMoney(chosen.budget.savings, cur) : s.bestSavings ? signedMoney(s.bestSavings.savings, cur) : "–"}</span>{" "}
+              <Approx amount={chosen?.budget?.savings ?? s.bestSavings?.savings} currency={cur} signed />
+            </span>
+          }
           subtitle={chosen ? "avec le logement choisi" : s.bestSavings ? s.bestSavings.title : "Ajoute des annonces avec un prix"}
         />
       </div>
@@ -275,6 +298,7 @@ function Overview({ move, onTab, onOpenListing, onEdit }: { move: MoveView; onTa
           <SectionHeader title="Lieu de travail" />
           <p className="copy-sm">{move.workAddress ?? <span className="text-muted-foreground">Non renseigné</span>}</p>
           {move.workAddress && move.workLat === null && <p className="text-xs text-warning-700">Adresse non localisée : les temps de marche utilisent les distances saisies sur chaque annonce.</p>}
+          {rate && <p className="text-xs text-muted-foreground">Montants en {cur} · {rate} (conversion indicative)</p>}
         </div>
         {move.notes && (
           <div className="space-y-2">

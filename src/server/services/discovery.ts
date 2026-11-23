@@ -19,6 +19,11 @@ import {
   sourceByKey,
   sourcesFor,
   SCHEDULES,
+  searchName,
+  findBoards,
+  prettySlug,
+  companyFromTitle,
+  type CompanyBoard,
   type HousingCriteria,
   type JobResult,
   type Schedule,
@@ -28,7 +33,8 @@ import { isISODate, todayISO } from "@/lib/dates";
 import { AppError, notFound, CLAUDE, type Ctx } from "@/server/context";
 import { generateStructured } from "@/server/ai";
 import { discoveryHousingSystemPrompt, discoveryHousingTask, discoveryJobsSystemPrompt, discoveryJobsTask } from "@/server/ai/prompts";
-import { defaultFetchJson, runJobConnector, type ConnectorDeps } from "@/server/discovery/connectors";
+import { defaultFetchJson, fetchBoard, runJobConnector, type ConnectorDeps } from "@/server/discovery/connectors";
+import { safeFetch } from "@/server/capture/safe-fetch";
 import { logAudit } from "./audit";
 import { getSettings } from "./settings";
 import { createCapture } from "./inbox";
@@ -71,6 +77,55 @@ export async function listRuns(searchId: string, limit = 10) {
   return db.select().from(researchRuns).where(eq(researchRuns.searchId, searchId)).orderBy(desc(researchRuns.startedAt)).limit(limit);
 }
 
+export interface DetectedBoard extends CompanyBoard {
+  /** Open jobs read on the board right now, or null when the board did not answer. */
+  jobs: number | null;
+}
+
+/**
+ * Finds the Greenhouse / Lever / Ashby board behind a careers page: from the link itself, else from the page HTML
+ * (boards are often embedded in the company's own site). Each board is checked by reading its public job list.
+ */
+export async function detectCareersBoard(raw: string): Promise<{ boards: DetectedBoard[]; pageTitle: string | null }> {
+  const url = /^https?:\/\//i.test(raw.trim()) ? raw.trim() : `https://${raw.trim()}`;
+  let html = "";
+  let pageTitle: string | null = null;
+  try {
+    const page = await safeFetch(url);
+    if (/html|text\/plain/.test(page.contentType)) {
+      html = page.body.toString("utf8").slice(0, 3_000_000);
+      const og = html.match(/<meta[^>]+property=["']og:site_name["'][^>]+content=["']([^"']+)["']/i)?.[1] ?? html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:site_name["']/i)?.[1];
+      pageTitle = og?.trim() || html.match(/<title[^>]*>([^<]{1,200})<\/title>/i)?.[1]?.trim() || null;
+    }
+  } catch {
+    // The link alone may still name the board.
+  }
+  const found = findBoards(`${url}
+${html}`).slice(0, 3);
+  const host = (() => {
+    try {
+      const h = new URL(url).hostname.replace(/^www\./, "");
+      return /greenhouse\.io|lever\.co|ashbyhq\.com/.test(h) ? null : prettySlug(h.split(".")[0]);
+    } catch {
+      return null;
+    }
+  })();
+  const name = companyFromTitle(pageTitle) ?? host;
+  const deps = await defaultDeps();
+  const boards: DetectedBoard[] = [];
+  for (const b of found) {
+    const board: CompanyBoard = { name: name ?? prettySlug(b.slug), ats: b.ats, slug: b.slug };
+    let jobs: number | null = null;
+    try {
+      jobs = (await fetchBoard(board, deps)).length;
+    } catch {
+      jobs = null;
+    }
+    boards.push({ ...board, jobs });
+  }
+  return { boards, pageTitle };
+}
+
 export async function createSearch(raw: unknown, ctx: Ctx) {
   const input = savedSearchInputSchema.parse(raw);
   if (input.domain === "HOUSING") {
@@ -81,7 +136,7 @@ export async function createSearch(raw: unknown, ctx: Ctx) {
     .insert(savedSearches)
     .values({
       domain: input.domain,
-      name: input.name,
+      name: input.name?.trim() || searchName(input),
       moveId: input.domain === "HOUSING" ? input.moveId : null,
       criteria: input.criteria as Record<string, unknown>,
       sources: input.sources ?? [],

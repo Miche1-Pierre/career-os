@@ -8,6 +8,10 @@ export async function createSearchAction(input: Record<string, unknown>) {
   return runAction(async () => ({ id: (await discovery.createSearch(input, USER)).id }));
 }
 
+export async function detectCareersBoardAction(url: string) {
+  return runAction(() => discovery.detectCareersBoard(url));
+}
+
 export async function updateSearchAction(id: string, patch: Record<string, unknown>) {
   return runAction(async () => {
     await discovery.updateSearch(id, patch, USER);

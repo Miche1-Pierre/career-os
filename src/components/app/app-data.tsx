@@ -2,6 +2,7 @@
 
 import { createContext, useContext } from "react";
 import type { PipelineKey, StageCategory } from "@/lib/constants";
+import type { FxRates } from "@/lib/fx";
 
 export interface StageOption {
   id: string;
@@ -20,6 +21,10 @@ export interface AppData {
   dateLocale: string;
   weekStartsOn: number;
   userName: string;
+  /** The user's own currency (amounts in other currencies get an indicative conversion into it). */
+  currency: string;
+  /** ECB euro reference rates, or null when never downloaded. */
+  fx: FxRates | null;
   stages: StageOption[];
   tags: { name: string; color: string | null }[];
   ai: { available: boolean; provider: string; detail: string; setup: string | null; model: string | null };

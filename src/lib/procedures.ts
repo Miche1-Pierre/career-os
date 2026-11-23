@@ -229,14 +229,34 @@ const COUNTRY_CODES: Record<string, string> = {
   singapore: "SG",
   australie: "AU",
   australia: "AU",
+  autriche: "AT",
+  austria: "AT",
+  danemark: "DK",
+  denmark: "DK",
+  suede: "SE",
+  sweden: "SE",
+  norvege: "NO",
+  norway: "NO",
+  pologne: "PL",
+  poland: "PL",
+  tchequie: "CZ",
+  "republique tcheque": "CZ",
+  czechia: "CZ",
+  "nouvelle-zelande": "NZ",
+  "new zealand": "NZ",
+  "grande-bretagne": "GB",
+  angleterre: "GB",
+  uk: "GB",
+  "great britain": "GB",
+  england: "GB",
+  "united states of america": "US",
 };
 
 /** ISO 3166 alpha-2 code of a country written in French or English ("Belgique" → "BE"), or null. */
 export function countryCode(name: string | null | undefined): string | null {
   if (!name) return null;
   const n = normalizeText(name).trim();
-  if (/^[a-z]{2}$/.test(n)) return n.toUpperCase();
-  return COUNTRY_CODES[n] ?? null;
+  return COUNTRY_CODES[n] ?? (/^[a-z]{2}$/.test(n) ? n.toUpperCase() : null);
 }
 
 // ---------------------------------------------------------------------------

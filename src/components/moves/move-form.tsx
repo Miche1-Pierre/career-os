@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PlaceInput } from "@/components/app/place-input";
+import { COUNTRIES, countryInfo } from "@/lib/countries";
+import { CURRENCIES } from "@/lib/fx";
 import { DateInput, FormField } from "@/components/app/fields";
 import { EntityCombobox, type ComboOption } from "@/components/app/entity-combobox";
 import { useAction } from "@/hooks/use-action";
@@ -20,6 +24,11 @@ interface State {
   arrivalDate: string | null;
   departureDate: string | null;
   workAddress: string;
+  /** Coordinates of a picked suggestion (the server geocodes typed addresses itself). */
+  workCoords: { lat: number; lng: number } | null;
+  cityCoords: { lat: number; lng: number } | null;
+  /** The user chose the currency: stop deriving it from the country. */
+  currencyTouched: boolean;
   notes: string;
   opportunity: { id: string | null; name: string | null };
 }
@@ -45,10 +54,20 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
     arrivalDate: move?.arrivalDate ?? null,
     departureDate: move?.departureDate ?? null,
     workAddress: move?.workAddress ?? "",
+    workCoords: null,
+    cityCoords: move?.workLat != null && move?.workLng != null ? { lat: move.workLat, lng: move.workLng } : null,
+    currencyTouched: !!move,
     notes: move?.notes ?? "",
     opportunity: { id: move?.opportunityId ?? null, name: null },
   }));
   const set = <K extends keyof State>(k: K, v: State[K]) => setS((x) => ({ ...x, [k]: v }));
+  /** Country typed or picked: the currency follows until the user picks one. */
+  const setCountry = (country: string, code?: string | null) =>
+    setS((x) => {
+      const info = code ? COUNTRIES.find((c) => c.code === code) : countryInfo(country);
+      return { ...x, country, currency: !x.currencyTouched && info ? info.currency : x.currency };
+    });
+  const currencies = CURRENCIES.includes(s.currency as (typeof CURRENCIES)[number]) ? [...CURRENCIES] : [s.currency, ...CURRENCIES];
 
   const submit = () => {
     const payload = {
@@ -59,6 +78,7 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
       arrivalDate: s.arrivalDate,
       departureDate: s.departureDate,
       workAddress: s.workAddress.trim() || null,
+      ...(s.workCoords ? { workLat: s.workCoords.lat, workLng: s.workCoords.lng } : {}),
       notes: s.notes.trim() || null,
       opportunityId: s.opportunity.id,
     };
@@ -77,10 +97,25 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
             <Input id="m-title" value={s.title} onChange={(e) => set("title", e.target.value)} placeholder="BlackFin · Bruxelles" autoFocus />
           </FormField>
           <FormField label="Ville" htmlFor="m-city">
-            <Input id="m-city" value={s.city} onChange={(e) => set("city", e.target.value)} />
+            <PlaceInput
+              id="m-city"
+              mode="city"
+              value={s.city}
+              onChange={(v) => set("city", v)}
+              onSelect={(p) => {
+                setS((x) => ({ ...x, city: p.city ?? p.label, cityCoords: { lat: p.lat, lng: p.lng } }));
+                if (p.country) setCountry(p.country, p.countryCode);
+              }}
+              placeholder="Bruxelles"
+            />
           </FormField>
           <FormField label="Pays" htmlFor="m-country">
-            <Input id="m-country" value={s.country} onChange={(e) => set("country", e.target.value)} />
+            <Input id="m-country" list="m-countries" value={s.country} onChange={(e) => setCountry(e.target.value)} autoComplete="off" />
+            <datalist id="m-countries">
+              {COUNTRIES.map((c) => (
+                <option key={c.code} value={c.name} />
+              ))}
+            </datalist>
           </FormField>
           <FormField label="Arrivée / début" htmlFor="m-from">
             <DateInput id="m-from" value={s.arrivalDate} onChange={(v) => set("arrivalDate", v)} />
@@ -88,11 +123,29 @@ function MoveFormBody({ onOpenChange, move, opportunities }: { onOpenChange: (o:
           <FormField label="Fin (si connue)" htmlFor="m-to">
             <DateInput id="m-to" value={s.departureDate} onChange={(v) => set("departureDate", v)} />
           </FormField>
-          <FormField label="Adresse du lieu de travail" htmlFor="m-work" className="sm:col-span-2" hint="Localisée automatiquement (OpenStreetMap) pour calculer les temps de marche.">
-            <Input id="m-work" value={s.workAddress} onChange={(e) => set("workAddress", e.target.value)} placeholder="Avenue Louise 106, 1050 Ixelles" />
+          <FormField label="Adresse du lieu de travail" htmlFor="m-work" className="sm:col-span-2" hint="Choisis une suggestion : elle sert aux temps de marche et à la carte.">
+            <PlaceInput
+              id="m-work"
+              value={s.workAddress}
+              near={s.cityCoords}
+              onChange={(v) => setS((x) => ({ ...x, workAddress: v, workCoords: null }))}
+              onSelect={(p) => set("workCoords", { lat: p.lat, lng: p.lng })}
+              placeholder="Avenue Louise 106, 1050 Ixelles"
+            />
           </FormField>
-          <FormField label="Devise" htmlFor="m-cur">
-            <Input id="m-cur" value={s.currency} maxLength={3} onChange={(e) => set("currency", e.target.value)} />
+          <FormField label="Devise" htmlFor="m-cur" hint={s.currencyTouched ? undefined : "Suit le pays"}>
+            <Select value={s.currency} onValueChange={(v) => setS((x) => ({ ...x, currency: v, currencyTouched: true }))}>
+              <SelectTrigger id="m-cur" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((c) => (
+                  <SelectItem key={c} value={c}>
+                    {c}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </FormField>
           {!move && opportunities.length > 0 && (
             <FormField label="Candidature liée" className="sm:col-span-1">

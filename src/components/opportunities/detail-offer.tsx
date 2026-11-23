@@ -1,5 +1,6 @@
 "use client";
 
+import { Approx } from "@/components/app/approx";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -97,9 +98,11 @@ export function DetailOffer({ opp, move }: { opp: OpportunityDetail; move: { id:
             </FormField>
             <FormField label="Net">
               <NumberInput value={v.salaryNet} onChange={(n) => set("salaryNet", n)} />
+              <Approx amount={v.salaryNet} currency={v.currency ?? "EUR"} className="block pt-1" />
             </FormField>
             <FormField label="Brut">
               <NumberInput value={v.salaryGross} onChange={(n) => set("salaryGross", n)} />
+              <Approx amount={v.salaryGross} currency={v.currency ?? "EUR"} className="block pt-1" />
             </FormField>
             <FormField label="Période">
               <Select value={v.period ?? ""} onValueChange={(p) => set("period", (p || null) as Editable["period"])}>
