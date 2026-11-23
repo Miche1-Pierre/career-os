@@ -12,7 +12,7 @@ function escapeHtml(s: string) {
 }
 
 /**
- * OpenStreetMap view of the move: the workplace, a walking-distance circle and every located listing
+ * Map of the move (CARTO basemap, OpenStreetMap data): the workplace, a walking-distance circle and every located listing
  * (colour = fit: green OK, blue to check, amber warning, grey blocking). Click a pin to open the listing.
  */
 export function HousingMap({ move, listings, onOpen }: { move: MoveView; listings: ListingView[]; onOpen: (id: string) => void }) {
@@ -28,9 +28,14 @@ export function HousingMap({ move, listings, onOpen }: { move: MoveView; listing
     void import("leaflet").then((L) => {
       if (disposed || !ref.current) return;
       map = L.map(ref.current, { scrollWheelZoom: true, attributionControl: true });
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      // CARTO basemaps (OpenStreetMap data): light or dark to match the theme. OSM's own tile servers refuse apps
+      // that do not identify themselves, and their policy discourages app use.
+      const dark = document.documentElement.classList.contains("dark");
+      L.tileLayer(`https://{s}.basemaps.cartocdn.com/rastertiles/${dark ? "dark_all" : "voyager"}/{z}/{x}/{y}{r}.png`, {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+        subdomains: "abcd",
+        referrerPolicy: "strict-origin-when-cross-origin",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
       }).addTo(map);
       const points: [number, number][] = [];
       if (move.workLat !== null && move.workLng !== null) {
