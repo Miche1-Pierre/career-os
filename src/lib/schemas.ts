@@ -367,6 +367,10 @@ export const attachDocumentSchema = z.object({
 
 export const profileSchema = z.object({
   fullName: trimmed.max(200).default(""),
+  /** Contact details of the user (signatures of the drafted messages, CV header). */
+  email: trimmed.max(320).default(""),
+  phone: trimmed.max(50).default(""),
+  location: trimmed.max(200).default(""),
   headline: trimmed.max(300).default(""),
   summary: trimmed.max(10_000).default(""),
   yearsOfExperience: z.number().min(0).max(60).nullable().default(null),

@@ -27,6 +27,9 @@ const CV_MODEL_CLAUDE_CODE = "haiku";
 
 export const cvProfileExtractionSchema = z.object({
   fullName: z.string().nullable(),
+  email: z.string().nullable(),
+  phone: z.string().nullable(),
+  location: z.string().nullable(),
   headline: z.string().nullable(),
   summary: z.string().nullable(),
   yearsOfExperience: z.number().nullable(),
@@ -45,6 +48,9 @@ const lenientText = z.unknown().transform((v) => (typeof v === "string" ? v : nu
 const lenientList = z.unknown().transform((v) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : []));
 const lenientSchema = z.object({
   fullName: lenientText,
+  email: lenientText,
+  phone: lenientText,
+  location: lenientText,
   headline: lenientText,
   summary: lenientText,
   yearsOfExperience: z.unknown().transform((v) => (typeof v === "number" && Number.isFinite(v) ? v : typeof v === "string" && /^\d+(\.\d+)?$/.test(v.trim()) ? Number(v) : null)),
@@ -58,7 +64,7 @@ const lenientSchema = z.object({
 });
 
 const LIST_LIMITS: Record<ProfileListField, number> = { skills: 300, languages: 30, education: 30, targetRoles: 50, targetDomains: 50, preferredLocations: 50, dealBreakers: 50 };
-const TEXT_LIMITS: Record<ProfileTextField, number> = { fullName: 200, headline: 300, summary: 10_000 };
+const TEXT_LIMITS: Record<ProfileTextField, number> = { fullName: 200, email: 320, phone: 50, location: 200, headline: 300, summary: 10_000 };
 
 export function cvSystemPrompt() {
   return `You are the CV parser of Career OS, a personal job-search tracker. You receive the raw text extracted from the user's OWN CV (resume) and return ONLY data that follows the provided JSON schema, to pre-fill the user's profile. The user reviews every field before anything is saved.
@@ -66,7 +72,7 @@ export function cvSystemPrompt() {
 ABSOLUTE RULES
 1. Never invent, never guess, never embellish. Fill a field only with information explicitly written in the CV. Otherwise use null (text, number) or [] (lists). An empty answer is correct; a plausible one is not.
 2. Keep the CV's own language and wording. Do not translate.
-3. fullName: the person's name as written. headline: the title written under/next to the name (e.g. "Ingénieur logiciel full-stack"), or null — never compose one. summary: the CV's profile / summary / about section, copied or minimally condensed, or null when the CV has no such section.
+3. fullName: the person's name as written. email, phone, location: the contact details written on the CV (location = the city / country line, e.g. "Lyon, France"), or null. headline: the title written under/next to the name (e.g. "Ingénieur logiciel full-stack"), or null — never compose one. summary: the CV's profile / summary / about section, copied or minimally condensed, or null when the CV has no such section.
 4. yearsOfExperience: only when the CV states it explicitly (e.g. "5 ans d'expérience", "10+ years of experience"); otherwise null. Do not compute it from dates.
 5. skills: competences, tools, programming languages, frameworks and methods explicitly listed in the CV. One per item, short, as written, no duplicates, no soft-skill sentences invented from job descriptions.
 6. languages: spoken languages with the level when given, as written (e.g. "Anglais — C1", "German (native)").

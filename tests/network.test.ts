@@ -372,6 +372,9 @@ describe("CV import", () => {
   it("cleans the extraction and marks what is not in the CV", () => {
     const raw: CvProfileExtraction = {
       fullName: "  Pierre Exemple ",
+      email: "pierre@exemple.fr",
+      phone: null,
+      location: "Lyon, France",
       headline: "Ingénieur logiciel full-stack",
       summary: null,
       yearsOfExperience: 8,
@@ -389,19 +392,21 @@ describe("CV import", () => {
     expect(proposed.skills).toEqual(["TypeScript", "React", "Kubernetes"]);
     expect(unverified.items.skills).toEqual(["Kubernetes"]);
     expect(unverified.yearsOfExperience).toBe(true);
-    expect(unverified.text).toEqual([]);
+    // A city that the CV does not mention is proposed but flagged, like any other unverified field.
+    expect(proposed.location).toBe("Lyon, France");
+    expect(unverified.text).toEqual(["location"]);
   });
 
   it("proposes safe defaults and merges accepted fields without losing data", () => {
     const current: Profile = { ...emptyProfile(), headline: "Mon titre", skills: ["Go", "React"] };
     const proposal: CvProposal = {
-      proposed: { fullName: "Pierre Exemple", headline: "Ingénieur logiciel", summary: "", yearsOfExperience: 5, skills: ["React", "TypeScript", "Kubernetes"], languages: [], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
+      proposed: { fullName: "Pierre Exemple", email: "", phone: "", location: "", headline: "Ingénieur logiciel", summary: "", yearsOfExperience: 5, skills: ["React", "TypeScript", "Kubernetes"], languages: [], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
       unverified: { text: [], yearsOfExperience: false, items: { skills: ["Kubernetes"] } },
       warnings: [],
       meta: { provider: "claude-code", model: "haiku", promptVersion: "cv_profile_import_v1", durationMs: 1, characters: 1, truncated: false, pageCount: 1 },
     };
     const choices = initialCvChoices(current, proposal);
-    expect(choices.text).toEqual({ fullName: true, headline: false, summary: false }); // never overwrite by default
+    expect(choices.text).toEqual({ fullName: true, email: false, phone: false, location: false, headline: false, summary: false }); // never overwrite by default
     expect(choices.years).toBe(true);
     expect(choices.lists.skills).toEqual({ accept: true, mode: "merge", included: ["React", "TypeScript"] }); // unverified item left out
     expect(choices.lists.languages.accept).toBe(false);
@@ -416,13 +421,13 @@ describe("CV import", () => {
   it("merges list items ignoring case and accents", () => {
     const current: Profile = { ...emptyProfile(), languages: ["Français (natif)"] };
     const proposal: CvProposal = {
-      proposed: { fullName: "", headline: "", summary: "", yearsOfExperience: null, skills: [], languages: ["Francais (natif)", "Anglais (B2)"], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
+      proposed: { fullName: "", email: "", phone: "", location: "", headline: "", summary: "", yearsOfExperience: null, skills: [], languages: ["Francais (natif)", "Anglais (B2)"], education: [], targetRoles: [], targetDomains: [], preferredLocations: [], dealBreakers: [] },
       unverified: { text: [], yearsOfExperience: false, items: {} },
       warnings: [],
       meta: { provider: "none", model: null, promptVersion: "cv_profile_import_v1", durationMs: 0, characters: 0, truncated: false, pageCount: null },
     };
     const choices = initialCvChoices(current, proposal);
-    expect(choices.text).toEqual({ fullName: false, headline: false, summary: false });
+    expect(choices.text).toEqual({ fullName: false, email: false, phone: false, location: false, headline: false, summary: false });
     expect(choices.years).toBe(false);
     expect(applyCvChoices(current, proposal, choices).languages).toEqual(["Français (natif)", "Anglais (B2)"]);
   });
