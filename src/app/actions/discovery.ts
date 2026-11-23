@@ -29,3 +29,15 @@ export async function runSearchAction(id: string) {
     return { status: run.status, resultsNew: run.resultsNew, resultsFound: run.resultsFound, error: run.error };
   });
 }
+
+/** What the search form needs when it is shown outside the Recherches page (in the chat). */
+export async function getSearchFormDataAction() {
+  return runAction(async () => {
+    const { listMoves } = await import("@/server/services/moves");
+    const moves = await listMoves();
+    return {
+      moves: moves.map((m) => ({ id: m.id, title: m.title, city: m.city, country: m.country, arrivalDate: m.arrivalDate, departureDate: m.departureDate, workAddress: m.workAddress, currency: m.currency })),
+      adzunaReady: !!(process.env.ADZUNA_APP_ID?.trim() && process.env.ADZUNA_APP_KEY?.trim()),
+    };
+  });
+}

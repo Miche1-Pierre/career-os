@@ -7,12 +7,12 @@ import {
   Briefcase,
   Building2,
   CalendarDays,
+  FileDown,
   FileText,
   GraduationCap,
   Inbox,
   LayoutDashboard,
   Plane,
-  Plus,
   Settings,
   Sun,
   Trash2,
@@ -59,7 +59,7 @@ function isActive(pathname: string, item: NavItem) {
   return prefixes.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
-function NavGroup({ label, items }: { label?: string; items: NavItem[] }) {
+function NavGroup({ label, items, children }: { label?: string; items: NavItem[]; children?: React.ReactNode }) {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
   return (
@@ -78,6 +78,7 @@ function NavGroup({ label, items }: { label?: string; items: NavItem[] }) {
               {!!item.badge && <SidebarMenuBadge className="tabular-nums">{item.badge}</SidebarMenuBadge>}
             </SidebarMenuItem>
           ))}
+          {children}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
@@ -91,32 +92,38 @@ function NavGroup({ label, items }: { label?: string; items: NavItem[] }) {
 export function AppSidebar() {
   const { badges, ai } = useAppData();
   const { open: openImport } = useQuickImport();
-  const { state } = useSidebar();
+  const { state, isMobile, setOpenMobile } = useSidebar();
+  const pathname = usePathname();
+  const onHome = pathname === "/" || pathname.startsWith("/searches");
   const collapsed = state === "collapsed";
-  const apply: NavItem[] = [
-    { href: "/applications", label: "Candidatures", icon: Briefcase },
-    { href: "/searches", label: "Recherches", icon: Radar },
-  ];
+  const apply: NavItem[] = [{ href: "/applications", label: "Candidatures", icon: Briefcase }];
   if (badges.inbox > 0) apply.push({ href: "/inbox", label: "À trier", icon: Inbox, badge: badges.inbox });
   return (
     <Sidebar collapsible="icon" variant="floating" className="macos-sidebar">
-      <SidebarHeader className={cn("gap-1 pt-3 pb-1", collapsed ? "items-center px-2" : "px-3")}>
-        <div className={cn("flex items-center gap-2", collapsed && "flex-col")}>
-          <Link href="/today" className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
-            {collapsed ? <CareerOsGlyph className="size-5" /> : <CareerOsMark className="h-[18px]" />}
-            {!collapsed && <span className="truncate text-[13px] font-semibold text-foreground">Career OS</span>}
-          </Link>
+      <SidebarHeader className={cn("gap-2 pt-3 pb-1", collapsed ? "items-center px-2" : "px-3")}>
+        <Link href="/" className="flex min-w-0 items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+          {collapsed ? <CareerOsGlyph className="size-5" /> : <CareerOsMark className="h-[18px]" />}
+          {!collapsed && <span className="truncate text-[13px] font-semibold text-foreground">Career OS</span>}
+        </Link>
+        {collapsed ? (
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="highlight" size="icon-xs" className="size-6 shrink-0 rounded-full" onClick={() => openImport()} aria-label="Import rapide">
-                <Plus />
+              <Button variant="highlight" size="icon-sm" asChild aria-label="Rechercher">
+                <Link href="/" onClick={() => isMobile && setOpenMobile(false)}>
+                  <Radar />
+                </Link>
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">
-              Import rapide <Kbd className="ml-1">I</Kbd>
-            </TooltipContent>
+            <TooltipContent side="right">Rechercher</TooltipContent>
           </Tooltip>
-        </div>
+        ) : (
+          <Button variant="highlight" asChild className={cn("h-8 w-full justify-start gap-2 rounded-lg", onHome && "ring-2 ring-highlight-200 dark:ring-highlight-900")}>
+            <Link href="/" onClick={() => isMobile && setOpenMobile(false)}>
+              <Radar />
+              Rechercher
+            </Link>
+          </Button>
+        )}
       </SidebarHeader>
       <SidebarContent>
         <NavGroup
@@ -124,7 +131,17 @@ export function AppSidebar() {
             { href: "/today", label: "Aujourd'hui", icon: Sun, badge: badges.today, also: ["/tasks"] },
             { href: "/calendar", label: "Calendrier", icon: CalendarDays },
           ]}
-        />
+        >
+          <SidebarMenuItem>
+            <SidebarMenuButton tooltip="Import rapide (I)" onClick={() => openImport()}>
+              <FileDown />
+              <span className="truncate">Import rapide</span>
+            </SidebarMenuButton>
+            <SidebarMenuBadge>
+              <Kbd className="h-4 min-w-4 px-1 text-[10px]">I</Kbd>
+            </SidebarMenuBadge>
+          </SidebarMenuItem>
+        </NavGroup>
         <NavGroup
           label="Préparer"
           items={[

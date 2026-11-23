@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useAppData } from "@/components/app/app-data";
 import { cn } from "@/lib/utils";
 import { useDictation } from "./use-dictation";
+import { ChatForm, formKey, parseChatForm, type ChatFormSpec } from "./chat-form";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -38,6 +39,8 @@ interface UiMessage {
   error?: string | null;
   mentions?: ChatMention[];
   streaming?: boolean;
+  /** A form shown by a quick action (local, not sent to Claude). */
+  form?: ChatFormSpec;
 }
 
 interface ThreadSummary {
@@ -54,6 +57,12 @@ interface ChatContextValue {
   /** Attaches an element (job, home, company…) to the next message. */
   mention: (m: ChatMention) => void;
   focus: () => void;
+  /** Opens the conversation panel with a form (job or housing search) ready to fill. */
+  showForm: (spec: ChatFormSpec) => void;
+  /** Opens a previous conversation. */
+  openThread: (id: string) => void;
+  /** The home page gives the place where the chat bar sits in the middle of the page (null elsewhere). */
+  heroSlot: (el: HTMLElement | null) => void;
 }
 
 const ChatContext = createContext<ChatContextValue | null>(null);
@@ -100,6 +109,7 @@ function suggestionsFor(path: string): string[] {
   if (path.startsWith("/analytics") || path.startsWith("/dashboard")) return ["Résume mes statistiques du mois", "Quel canal me donne le plus de réponses ?"];
   if (path.startsWith("/searches")) return ["Crée une recherche d'offres AI engineer à Bruxelles", "Lance mes recherches", "Quelles entreprises IA à Bruxelles ont une page carrières Greenhouse ou Lever ?"];
   if (path.startsWith("/settings")) return ["Lis mon CV et remplis mon profil"];
+  if (path === "/") return ["Trouve-moi des offres AI engineer à Bruxelles", "Qu'est-ce que je dois faire aujourd'hui ?", "Cherche une coloc meublée près du bureau", "Ajoute cette offre : "];
   return ["Qu'est-ce que je dois faire aujourd'hui ?", "Rédige mes relances en retard", "Ajoute cette offre : "];
 }
 
@@ -112,6 +122,7 @@ const MENTION_LABEL: Record<string, string> = {
   move: "Installation",
   listing: "Logement",
   event: "Note",
+  cv: "CV",
 };
 
 // ---------------------------------------------------------------------------
@@ -123,6 +134,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [mentions, setMentions] = useState<ChatMention[]>([]);
   const [open, setOpen] = useState(false);
   const [pendingSend, setPendingSend] = useState<string | null>(null);
+  const [pendingForm, setPendingForm] = useState<ChatFormSpec | null>(null);
+  const [pendingThread, setPendingThread] = useState<string | null>(null);
+  const [heroSlot, setHeroSlot] = useState<HTMLElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const value = useMemo<ChatContextValue>(
@@ -140,13 +154,31 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         requestAnimationFrame(() => inputRef.current?.focus());
       },
       focus: () => inputRef.current?.focus(),
+      showForm: (spec) => setPendingForm(spec),
+      openThread: (id) => setPendingThread(id),
+      heroSlot: setHeroSlot,
     }),
     [],
   );
 
   const dock = useMemo<DockProps>(
-    () => ({ input, setInput, mentions, setMentions, open, setOpen, inputRef, pendingSend, clearPending: () => setPendingSend(null) }),
-    [input, mentions, open, pendingSend],
+    () => ({
+      input,
+      setInput,
+      mentions,
+      setMentions,
+      open,
+      setOpen,
+      inputRef,
+      pendingSend,
+      clearPending: () => setPendingSend(null),
+      pendingForm,
+      clearPendingForm: () => setPendingForm(null),
+      pendingThread,
+      clearPendingThread: () => setPendingThread(null),
+      heroSlot,
+    }),
+    [input, mentions, open, pendingSend, pendingForm, pendingThread, heroSlot],
   );
 
   return (
@@ -166,6 +198,11 @@ interface DockProps {
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
   pendingSend: string | null;
   clearPending: () => void;
+  pendingForm: ChatFormSpec | null;
+  clearPendingForm: () => void;
+  pendingThread: string | null;
+  clearPendingThread: () => void;
+  heroSlot: HTMLElement | null;
 }
 
 const DockStateContext = createContext<DockProps | null>(null);
@@ -176,7 +213,7 @@ export function ChatDock() {
   return props ? <Dock {...props} /> : null;
 }
 
-function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef, pendingSend, clearPending }: DockProps) {
+function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef, pendingSend, clearPending, pendingForm, clearPendingForm, pendingThread, clearPendingThread, heroSlot }: DockProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -343,6 +380,33 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
     }
   }, [pendingSend, clearPending, send]);
 
+  // A quick action asked for a form: it appears as a message of the conversation.
+  useEffect(() => {
+    if (!pendingForm) return;
+    clearPendingForm();
+    const spec = pendingForm;
+    const msg: UiMessage = { id: `f-${Date.now()}`, role: "assistant", content: "", tools: [], form: spec };
+    // A quick action starts a new conversation (unless Claude is answering in the current one).
+    if (busy) setMessages((list) => [...list, msg]);
+    else {
+      setThreadId(null);
+      setThreadTitle(spec.domain === "HOUSING" ? "Recherche de logement" : "Recherche d’offres");
+      store.set(null);
+      setMessages([msg]);
+    }
+    setOpen(true);
+  }, [pendingForm, clearPendingForm, setOpen, busy]);
+
+  useEffect(() => {
+    if (!pendingThread) return;
+    clearPendingThread();
+    const id = pendingThread;
+    void loadThread(id).then(() => {
+      store.set(id);
+      setOpen(true);
+    });
+  }, [pendingThread, clearPendingThread, loadThread, setOpen]);
+
   // Keyboard: Ctrl/Cmd+J focuses the chat from anywhere; Escape collapses the panel.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -400,6 +464,9 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
     return () => window.removeEventListener("keydown", onKey);
   }, [recording, dictation]);
 
+  // Home page: the bar sits in the middle of the page (hero) until a conversation opens.
+  const hero = !!heroSlot && !(open && messages.length > 0);
+
   // The input grows with its content up to 8 lines, then scrolls.
   useLayoutEffect(() => {
     const el = inputRef.current;
@@ -408,7 +475,83 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
     const max = 8 * 20 + 16;
     el.style.height = `${Math.min(el.scrollHeight, max)}px`;
     el.style.overflowY = el.scrollHeight > max ? "auto" : "hidden";
-  }, [input, inputRef, dictation.state]);
+  }, [input, inputRef, dictation.state, hero]);
+
+  // Home page: the bar sits in the middle of the page (hero) until a conversation opens; on every other page it is
+  // docked at the bottom. It is the same element, so it slides from one place to the other (FLIP animation).
+  const outerRef = useRef<HTMLDivElement | null>(null);
+  const boxRef = useRef<HTMLDivElement | null>(null);
+  const lastRect = useRef<DOMRect | null>(null);
+  const wasHero = useRef(hero);
+  // No slide when the app has just loaded on the home page: only page changes animate.
+  const mountedAt = useRef<number | null>(null);
+
+  useLayoutEffect(() => {
+    const outer = outerRef.current;
+    const box = boxRef.current;
+    if (!outer || !box) return;
+    if (!hero || !heroSlot) {
+      outer.style.removeProperty("top");
+      outer.style.removeProperty("left");
+      outer.style.removeProperty("width");
+      return;
+    }
+    const place = () => {
+      const host = outer.parentElement;
+      if (!host) return;
+      const h = host.getBoundingClientRect();
+      const r = heroSlot.getBoundingClientRect();
+      outer.style.top = `${r.top - h.top}px`;
+      outer.style.left = `${r.left - h.left}px`;
+      outer.style.width = `${r.width}px`;
+      heroSlot.style.height = `${box.offsetHeight}px`;
+    };
+    place();
+    // The slot can move without changing size (fonts loading, text wrapping above it): watch its surroundings too,
+    // and re-place a few frames while the page settles.
+    const ro = new ResizeObserver(place);
+    ro.observe(heroSlot);
+    ro.observe(box);
+    if (heroSlot.parentElement) ro.observe(heroSlot.parentElement);
+    if (outer.parentElement) ro.observe(outer.parentElement);
+    window.addEventListener("resize", place);
+    void document.fonts?.ready.then(place);
+    let frames = 0;
+    let raf = requestAnimationFrame(function tick() {
+      place();
+      if (++frames < 30) raf = requestAnimationFrame(tick);
+    });
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", place);
+    };
+  }, [hero, heroSlot]);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    if (!box) return;
+    const now = box.getBoundingClientRect();
+    const before = lastRect.current;
+    mountedAt.current ??= performance.now();
+    const settled = performance.now() - mountedAt.current > 800;
+    if (wasHero.current !== hero && before && settled && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const dx = before.left - now.left;
+      const dy = before.top - now.top;
+      if (Math.abs(dx) + Math.abs(dy) > 4) box.animate([{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }], { duration: 560, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+    }
+    wasHero.current = hero;
+    lastRect.current = now;
+  });
+
+  // Keep the last position fresh while the page scrolls (the animation starts from where the bar really was).
+  useEffect(() => {
+    const onScroll = () => {
+      if (boxRef.current) lastRect.current = boxRef.current.getBoundingClientRect();
+    };
+    window.addEventListener("scroll", onScroll, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", onScroll, { capture: true });
+  }, []);
 
   const suggestions = suggestionsFor(pathname);
   const last = messages[messages.length - 1];
@@ -416,8 +559,8 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
   const showSuggestions = !input.trim() && !mentions.length && !busy && dictation.state === "idle" && !(open && messages.length > 0);
 
   return (
-    <div className="pointer-events-none sticky bottom-0 z-30 w-full px-3 pb-3 sm:px-6">
-      <div className="pointer-events-auto mx-auto w-full max-w-3xl">
+    <div ref={outerRef} className={cn("pointer-events-none z-30", hero ? "absolute" : "sticky bottom-0 w-full px-3 pb-3 sm:px-6")}>
+      <div ref={boxRef} className={cn("pointer-events-auto mx-auto w-full", !hero && "max-w-3xl")}>
         {open && messages.length > 0 && (
           <div className="mb-2 flex max-h-[min(62vh,620px)] flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-xl">
             <div className="flex items-center gap-2 border-b border-separator px-3 py-2">
@@ -480,7 +623,7 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
         )}
 
         <div className="relative isolate">
-          <div aria-hidden className={cn("composer-halo pointer-events-none absolute -inset-[3px] -z-10 rounded-[23px] opacity-45 blur-md transition-opacity duration-300", (focused || dictation.state !== "idle") && "opacity-100")} />
+          <div aria-hidden className={cn("composer-halo pointer-events-none absolute -inset-[3px] -z-10 rounded-[23px] opacity-45 blur-md transition-opacity duration-300", (focused || hero || dictation.state !== "idle") && "opacity-100")} />
           <div className={cn("relative rounded-[20px] border bg-background shadow-lg transition-colors", focused || dictation.state !== "idle" ? "border-transparent" : "border-border")}>
             {mentionQuery !== null && mentionHits.length > 0 && (
               <div className="absolute inset-x-2 bottom-full mb-3 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
@@ -579,9 +722,11 @@ function Dock({ input, setInput, mentions, setMentions, open, setOpen, inputRef,
                       : "Transcription…"
                     : busy
                       ? "Claude travaille…"
-                      : "Demande n'importe quoi à Career OS… (@ pour citer une candidature, un logement…)"
+                      : hero
+                        ? "Que veux-tu faire ? Cherche des offres, un logement, ou pose une question… (@ pour citer une candidature, un CV…)"
+                        : "Demande n'importe quoi à Career OS… (@ pour citer une candidature, un CV ou autre chose)"
                 }
-                className="block min-h-11 w-full resize-none bg-transparent px-4 pt-3 pb-1 text-sm leading-5 outline-none placeholder:text-faint disabled:cursor-wait"
+                className={cn("block w-full resize-none bg-transparent px-4 pt-3 pb-1 text-sm leading-5 outline-none placeholder:text-faint disabled:cursor-wait", hero ? "min-h-[76px] text-[15px] leading-6" : "min-h-11")}
                 aria-label="Message pour Claude"
               />
             )}
@@ -718,6 +863,7 @@ function rewriteHref(href: string | undefined) {
 }
 
 function MessageView({ m, onNavigate }: { m: UiMessage; onNavigate: (href: string) => void }) {
+  if (m.form) return <ChatForm spec={m.form} storageKey={m.id} />;
   if (m.role === "user") {
     return (
       <div className="flex flex-col items-end gap-1">
@@ -751,6 +897,30 @@ function MessageView({ m, onNavigate }: { m: UiMessage; onNavigate: (href: strin
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
+              // ```careeros-form blocks written by Claude become real forms.
+              pre: ({ node, children, ...rest }) => {
+                const first = node?.children?.[0] as { properties?: { className?: unknown } } | undefined;
+                const cls = first?.properties?.className;
+                if (Array.isArray(cls) && cls.includes("language-careeros-form")) return <>{children}</>;
+                return <pre {...rest}>{children}</pre>;
+              },
+              code: ({ className, children, ...rest }) => {
+                if (className?.includes("language-careeros-form")) {
+                  const spec = parseChatForm(String(children));
+                  if (!spec)
+                    return (
+                      <span className="flex items-center gap-2 text-muted-foreground">
+                        <Loader2 className="size-3.5 animate-spin" /> Préparation du formulaire…
+                      </span>
+                    );
+                  return <ChatForm spec={spec} storageKey={formKey(spec)} />;
+                }
+                return (
+                  <code className={className} {...rest}>
+                    {children}
+                  </code>
+                );
+              },
               a: ({ href, children }) => {
                 const target = rewriteHref(href);
                 const internal = !!target && target.startsWith("/");
