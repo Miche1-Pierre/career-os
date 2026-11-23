@@ -65,8 +65,13 @@ Career OS à jour tout seul chez les utilisateurs.
 
 - **Lanceur** `CareerOS.exe` (`packaging/windows/CareerOS.cs`) : démarre l'app sans fenêtre noire, ouvre le navigateur,
   affiche un message clair si le démarrage échoue (journal : `Documents\CareerOS\data\app\career-os.log`).
-- **Dossier de l'app en lecture seule** (règle du Store) : réglages, base, documents et sauvegardes dans
-  `Documents\CareerOS` (`scripts/app-home.mjs`), conservés à la désinstallation.
+- **L'app voyage en archive** (`app.zip` dans le paquet) : le Store refuse les noms de fichiers avec crochets, que les
+  pages de l'app utilisent (`[id]`). Au premier lancement de chaque version, une petite fenêtre « Préparation de
+  Career OS… » s'affiche quelques secondes pendant que `unpack.mjs` (Node.js, chemins longs gérés) la décompresse dans
+  l'espace privé de l'app (`%LOCALAPPDATA%\CareerOS-Store`, supprimé par Windows avec l'app) ; les anciennes versions
+  sont effacées.
+- **Données hors du dossier de l'app** : réglages, base, documents et sauvegardes dans `Documents\CareerOS`
+  (`scripts/app-home.mjs`), conservés à la désinstallation.
 - **Arrêt automatique** : sans fenêtre propre, l'app s'arrête 10 minutes après la fermeture du dernier onglet Career OS
   (chaque page se signale toutes les minutes ; base fermée proprement).
 - **Double-clic pendant le démarrage** : un verrou empêche d'ouvrir la base deux fois ; le second lancement attend et

@@ -21,16 +21,21 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { startLocalDb } from "./local-db.mjs";
-import { ensureFreePorts, prepareHome } from "./app-home.mjs";
+import { ensureFreePorts, parseEnv, prepareHome, settingsFile } from "./app-home.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 process.chdir(root);
 const home = process.env.CAREER_OS_HOME?.trim() ? path.resolve(process.env.CAREER_OS_HOME) : null;
-let homeValues = null;
-if (home) {
-  homeValues = (await prepareHome(home)).values;
-  Object.assign(process.env, homeValues);
-} else {
+// Store install: the address of a running Career OS, as its settings say (only the instance holding the lock writes
+// them, see below).
+const homeUrl = () => {
+  try {
+    return parseEnv(fs.readFileSync(settingsFile(home), "utf8")).APP_URL || null;
+  } catch {
+    return null;
+  }
+};
+if (!home) {
   try {
     process.loadEnvFile(path.join(root, ".env"));
   } catch {
@@ -43,7 +48,7 @@ const open = process.argv.includes("--open");
 const idleExit = process.argv.includes("--idle-exit");
 let port = process.env.APP_PORT || "3000";
 let host = process.env.APP_BIND || "127.0.0.1";
-let url = process.env.APP_URL || `http://localhost:${port}`;
+let url = (home ? homeUrl() : process.env.APP_URL) || `http://localhost:${port}`;
 const log = (m) => console.log(`[career-os] ${m}`);
 process.title = idleExit ? "Career OS" : "Career OS (fermer cette fenêtre arrête l'application)";
 
@@ -72,20 +77,22 @@ function openBrowser() {
   }
 }
 
-// Double-click on the shortcut while Career OS already runs: just show it.
-if (open && (await healthy())) {
+// Double-click on the shortcut while Career OS already runs: just show it. (Store install never launched yet: no
+// address of its own, so another Career OS on the default port must not be taken for it.)
+if (open && (!home || homeUrl()) && (await healthy())) {
   openBrowser();
   process.exit(0);
 }
 
 // Store install: one process owns the database folder. A second launch while the first one is still starting waits
-// for it and shows it; the lock also keeps the port check below from moving away from our own running database.
+// for it and shows it. Only the lock holder writes the settings and checks the ports, so two launches never race.
 let lockFile = null;
 process.on("exit", () => {
   if (lockFile) fs.rmSync(lockFile, { force: true });
 });
 if (home) {
   const lockPath = path.join(home, "data", "app", "career-os.lock");
+  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
   const alive = (pid) => {
     try {
       process.kill(pid, 0);
@@ -105,6 +112,7 @@ if (home) {
       if (owner && owner !== process.pid && alive(owner)) {
         log("Career OS démarre déjà : ouverture dès qu'il répond");
         for (let i = 0; i < 180; i++) {
+          url = homeUrl() ?? url; // the holder may have moved to another port
           if (await healthy()) {
             if (open) openBrowser();
             process.exit(0);
@@ -117,7 +125,7 @@ if (home) {
       fs.rmSync(lockPath, { force: true }); // left by a run that did not stop cleanly
     }
   }
-  const values = await ensureFreePorts(home, homeValues);
+  const values = await ensureFreePorts(home, (await prepareHome(home)).values);
   Object.assign(process.env, values);
   port = values.APP_PORT;
   host = values.APP_BIND;

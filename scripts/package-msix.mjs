@@ -2,7 +2,7 @@
 /**
  * Microsoft Store package (MSIX), built on Windows after scripts/package-windows.mjs (which assembles release/career-os):
  *
- *   release/msix/layout/                     CareerOS.exe, node\node.exe, app\, Assets\, AppxManifest.xml
+ *   release/msix/layout/                     CareerOS.exe, node\node.exe, app.zip, app.version, Assets\, AppxManifest.xml
  *   release/career-os-<version>-x64.msix     when the Windows SDK's makeappx is available (GitHub's Windows runners)
  *
  * Identity, from Partner Center (Product management → Product identity), as environment variables:
@@ -11,6 +11,9 @@
  *   MSIX_PUBLISHER_DISPLAY_NAME   Package/Properties/PublisherDisplayName
  *   MSIX_VERSION                  a.b.c.0, higher at each submission (default: package.json version + ".0")
  * Without them the package gets test values: fine to try it locally, refused by the Store.
+ *
+ * The app goes in as its archive (career-os-windows-x64.zip): MSIX refuses file names with brackets, which the app's
+ * pages use ([id]…). CareerOS.exe unpacks it once per version into the package's private storage.
  *
  * The package is not signed: the Store signs it after certification. To try the layout on this PC (Developer Mode on):
  *   Add-AppxPackage -Register release\msix\layout\AppxManifest.xml
@@ -31,7 +34,8 @@ const fail = (m) => {
   process.exit(1);
 };
 
-if (!fs.existsSync(path.join(stage, "server.js"))) fail("release/career-os manquant : lance d'abord node scripts/package-windows.mjs");
+const zip = path.join(root, "release", "career-os-windows-x64.zip");
+if (!fs.existsSync(path.join(stage, "server.js")) || !fs.existsSync(zip)) fail("release/career-os manquant : lance d'abord node scripts/package-windows.mjs");
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
 const version = process.env.MSIX_VERSION?.trim() || `${pkg.version.replace(/[-+].*$/, "")}.0`;
@@ -47,10 +51,13 @@ if (!process.env.MSIX_IDENTITY_NAME) log("identité de test (MSIX_IDENTITY_NAME 
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(path.join(layout, "Assets"), { recursive: true });
 
-// The app, as the install command ships it, minus what only that install uses.
-log("copie de l'application");
-fs.cpSync(stage, path.join(layout, "app"), { recursive: true });
-for (const f of [".env", path.join("scripts", "uninstall-windows.ps1")]) fs.rmSync(path.join(layout, "app", f), { force: true });
+// The app, as the install command ships it. app.version names the folder it is unpacked into: a new build, even with
+// the same version number, gets a fresh folder.
+fs.copyFileSync(zip, path.join(layout, "app.zip"));
+fs.copyFileSync(path.join(root, "packaging", "windows", "unpack.mjs"), path.join(layout, "unpack.mjs"));
+const zipHash = fs.readFileSync(`${zip}.sha256`, "utf8").trim().split(/\s+/)[0].slice(0, 10);
+fs.writeFileSync(path.join(layout, "app.version"), `${version}-${zipHash}\n`);
+log(`application : app.zip (${(fs.statSync(zip).size / 1024 / 1024).toFixed(1)} Mo)`);
 
 // Node.js: the official binary running this script (GitHub's setup-node installs it from nodejs.org).
 const nodeExe = process.env.MSIX_NODE?.trim() || process.execPath;
@@ -65,7 +72,7 @@ const csc = path.join(process.env.SystemRoot ?? "C:\\Windows", "Microsoft.NET", 
 if (!fs.existsSync(csc)) fail(`compilateur C# introuvable (${csc})`);
 const built = spawnSync(
   csc,
-  ["/nologo", "/target:winexe", "/optimize+", `/win32icon:${path.join(root, "scripts", "career-os.ico")}`, "/reference:System.Windows.Forms.dll", `/out:${path.join(layout, "CareerOS.exe")}`, path.join(root, "packaging", "windows", "CareerOS.cs")],
+  ["/nologo", "/target:winexe", "/optimize+", `/win32icon:${path.join(root, "scripts", "career-os.ico")}`, "/reference:System.Windows.Forms.dll", "/reference:System.Drawing.dll", `/out:${path.join(layout, "CareerOS.exe")}`, path.join(root, "packaging", "windows", "CareerOS.cs")],
   { stdio: "inherit" },
 );
 if (built.status !== 0) fail("le lanceur CareerOS.exe n'a pas compilé");
@@ -89,7 +96,7 @@ manifest = manifest.replace(/<!--[\s\S]*?-->\s*/, "");
 fs.writeFileSync(path.join(layout, "AppxManifest.xml"), manifest);
 log(`version ${version}, identité ${identity.IDENTITY_NAME}`);
 
-// Longest path once installed (C:\Program Files\WindowsApps\<name>_<version>_x64__<hash>\…), for information.
+// Longest path once unpacked (C:\Users\<name>\AppData\Local\CareerOS-Store\<version>-<hash>\…), for information.
 let longest = "";
 (function walk(dir) {
   for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -97,9 +104,8 @@ let longest = "";
     if (p.length > longest.length) longest = p;
     if (e.isDirectory()) walk(p);
   }
-})(layout);
-const installed = 30 + identity.IDENTITY_NAME.length + version.length + 20 + path.relative(layout, longest).length;
-log(`chemin le plus long une fois installé : ~${installed} caractères`);
+})(stage);
+log(`chemin le plus long une fois décompressé : ~${60 + version.length + 11 + path.relative(stage, longest).length} caractères (nom d'utilisateur de 15 lettres)`);
 
 // makeappx: newest Windows SDK found.
 const kits = path.join(process.env["ProgramFiles(x86)"] ?? "C:\\Program Files (x86)", "Windows Kits", "10", "bin");
