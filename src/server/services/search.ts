@@ -1,12 +1,12 @@
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { db } from "@/server/db";
-import { contacts, documents, housingListings, interviews, moves, opportunities, organizations, pipelineStages, timelineEvents } from "@/server/db/schema";
+import { contacts, cvVariants, documents, housingListings, interviews, moves, opportunities, organizations, pipelineStages, timelineEvents } from "@/server/db/schema";
 import { normalizedContains } from "@/server/db/sql-helpers";
 import { INTERVIEW_KIND_LABEL } from "@/lib/constants";
 import { normalizeText } from "@/lib/text";
 
 export interface SearchHit {
-  type: "opportunity" | "organization" | "contact" | "document" | "interview" | "event" | "move" | "listing";
+  type: "opportunity" | "organization" | "contact" | "document" | "interview" | "event" | "move" | "listing" | "cv";
   id: string;
   title: string;
   subtitle: string | null;
@@ -29,7 +29,7 @@ function score(text: string | null | undefined, q: string): number {
 export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> {
   const q = query.trim();
   if (q.length < 1) return [];
-  const [opps, orgs, people, docs, ivs, events, moveRows, listingRows] = await Promise.all([
+  const [opps, orgs, people, docs, ivs, events, moveRows, listingRows, cvRows] = await Promise.all([
     db
       .select({ id: opportunities.id, title: opportunities.title, org: organizations.name, stage: pipelineStages.label, type: opportunities.type })
       .from(opportunities)
@@ -105,6 +105,11 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
         ),
       )
       .limit(limit),
+    db
+      .select({ id: cvVariants.id, name: cvVariants.name, lang: cvVariants.lang })
+      .from(cvVariants)
+      .where(sql`(${normalizedContains(cvVariants.name, q)} or ${normalizedContains(sql`'cv ' || ${cvVariants.name}`, q)})`)
+      .limit(limit),
   ]);
 
   const hits: SearchHit[] = [
@@ -164,6 +169,14 @@ export async function searchAll(query: string, limit = 8): Promise<SearchHit[]> 
       subtitle: ["Logement", l.district ?? l.address, l.moveTitle].filter(Boolean).join(" · "),
       href: `/moves/${l.moveId}?tab=housing&listing=${l.id}`,
       score: Math.max(score(l.title, q), score(l.district, q)) + 2,
+    })),
+    ...cvRows.map((c) => ({
+      type: "cv" as const,
+      id: c.id,
+      title: c.name,
+      subtitle: `CV · ${c.lang.toUpperCase()}`,
+      href: `/cv?variant=${c.id}`,
+      score: score(c.name, q) + 3,
     })),
   ];
   return hits.sort((a, b) => b.score - a.score).slice(0, limit * 4);
