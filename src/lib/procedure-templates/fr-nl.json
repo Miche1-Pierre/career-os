@@ -1,0 +1,521 @@
+{
+  "key": "FR-NL",
+  "from": "FR",
+  "to": "NL",
+  "title": "France → Pays-Bas (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "stage",
+      "title": "Vérifier le cadre de votre stage",
+      "category": "OTHER",
+      "summary": "Un étudiant de l'EEE n'a pas besoin de permis de travail pour un stage aux Pays-Bas. L'indemnité de stage n'est pas obligatoire, sauf convention collective (CAO), mais elle a des effets sur vos assurances et sur votre couverture santé.",
+      "appliesIf": "stage aux Pays-Bas",
+      "when": null,
+      "officialUrl": "https://business.gov.nl/regulation/work-placement-interns/",
+      "steps": [
+        {
+          "title": "Faire établir une convention de stage",
+          "detail": "Selon le portail officiel des entreprises néerlandaises, l'entreprise doit fournir une convention de stage (stageovereenkomst) qui précise les activités, les horaires et l'indemnité. Gardez aussi la convention signée avec votre école.",
+          "officialUrl": "https://business.gov.nl/regulation/work-placement-interns/",
+          "requiredDocuments": ["Convention de stage signée"]
+        },
+        {
+          "title": "Vérifier qu'aucun permis de travail n'est nécessaire",
+          "detail": "Un étudiant d'un pays de l'EEE n'a pas besoin de permis de travail (TWV) pour un stage. Des accords clairs entre l'entreprise, vous et votre école restent nécessaires.",
+          "officialUrl": "https://business.gov.nl/regulation/work-placement-interns/"
+        },
+        {
+          "title": "Contrôler l'indemnité de stage",
+          "detail": "L'indemnité n'est pas obligatoire, sauf si la convention collective (CAO) de l'entreprise la prévoit. Si vous faites un travail ordinaire, axé sur la production plutôt que sur l'apprentissage, vous avez droit au salaire minimum légal.",
+          "officialUrl": "https://business.gov.nl/regulation/work-placement-interns/"
+        },
+        {
+          "title": "Comprendre l'effet de l'indemnité sur vos assurances",
+          "detail": "Avec une indemnité de stage, le stagiaire est assuré au titre de la loi sur les indemnités de maladie (ZW) et de la Wajong, sans maintien de salaire en cas de maladie. Selon la SVB, un étudiant de l'UE en stage rémunéré qui relève d'au moins une assurance salariés est assuré à la Wlz, et doit donc souscrire une assurance santé néerlandaise (voir la démarche sur l'assurance santé). Vérifiez votre situation auprès de l'entreprise ou de l'UWV.",
+          "officialUrl": "https://www.svb.nl/en/the-wlz-scheme/insurance-under-the-wlz-scheme/you-are-a-student-or-doing-an-internship"
+        },
+        {
+          "title": "Vérifier votre couverture côté France",
+          "detail": "Pour un stage effectué dans le cadre d'études en France, la couverture accidents du travail française n'est plus assurée si la gratification dépasse 15 % du plafond horaire de la Sécurité sociale. La législation du pays d'accueil peut aussi vous considérer comme salarié et vous affilier à son régime.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        },
+        {
+          "title": "Connaître la règle fiscale des stagiaires",
+          "detail": "Selon la convention fiscale franco-néerlandaise (article 21), la rémunération d'un stagiaire venu aux Pays-Bas à seule fin de se former n'y est pas imposable si l'emploi est directement lié à sa formation et ne dépasse pas 183 jours par année d'imposition.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/pays-bas/pays-bas_modifiee_cml_20190805.pdf"
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "La CEAM permet la prise en charge des soins médicalement nécessaires pendant un séjour temporaire. Elle ne sert plus si vous relevez du régime néerlandais, par exemple en emploi chez un employeur néerlandais.",
+      "appliesIf": "tant que vous restez affilié à l'Assurance Maladie française, par exemple en stage d'études non rémunéré (à vérifier selon votre situation)",
+      "when": -20,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Ameli conseille de la demander au moins 15 jours avant le départ, sur votre compte ameli, au 36 46 ou auprès de votre caisse. Elle est valable 2 ans au maximum, sans dépasser la durée de vos droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Utiliser le certificat provisoire si le départ est proche",
+          "detail": "Si vous partez dans moins de 15 jours, votre caisse vous délivre un certificat provisoire de remplacement valable 3 mois, qui s'utilise comme la CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Vérifier que la CEAM convient à votre séjour",
+          "detail": "La CEAM couvre les soins médicalement nécessaires, mais pas les soins privés, les frais de secours et de rapatriement ni les soins programmés. Si vous allez vivre dans un autre pays européen, service-public.fr renvoie au formulaire S1.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34441"
+        },
+        {
+          "title": "Étudiant : vérifier l'effet d'une activité professionnelle",
+          "detail": "Si vous exercez une activité professionnelle dans le pays où vous poursuivez vos études, vous êtes affilié au régime local de sécurité sociale et n'êtes plus affilié au régime français.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/etudes-etranger"
+        }
+      ]
+    },
+    {
+      "key": "logement",
+      "title": "Signer le bail et vérifier la caution",
+      "category": "OTHER",
+      "summary": "Les baux conclus depuis le 1er juillet 2023 doivent être écrits et la caution est limitée à deux mois de loyer de base. Le logement est rare et la demande forte : organisez votre recherche à l'avance.",
+      "appliesIf": "location d'un logement aux Pays-Bas",
+      "when": null,
+      "officialUrl": "https://www.government.nl/topics/housing/rented-housing/step-by-step-plan-for-tenants",
+      "steps": [
+        {
+          "title": "Obtenir un bail écrit",
+          "detail": "Pour un bail daté du 1er juillet 2023 ou après, le contrat doit être écrit ; un accord oral doit être confirmé par écrit par le bailleur. Celui-ci doit aussi vous informer par écrit des différents types de bail et des protections associées.",
+          "officialUrl": "https://www.government.nl/topics/housing/rented-housing/step-by-step-plan-for-tenants",
+          "requiredDocuments": ["Contrat de bail (huurcontract)"]
+        },
+        {
+          "title": "Vérifier le montant de la caution",
+          "detail": "Pour ces baux, la caution ne peut pas dépasser deux mois de loyer de base.",
+          "officialUrl": "https://www.government.nl/topics/housing/rented-housing/step-by-step-plan-for-tenants"
+        },
+        {
+          "title": "Vérifier que le loyer est justifié",
+          "detail": "Le Rent Check de la Huurcommissie compare le loyer à la qualité du logement. Si vous payez trop, demandez une baisse au bailleur, puis saisissez la Huurcommissie en cas de désaccord.",
+          "officialUrl": "https://www.government.nl/topics/housing/rented-housing/step-by-step-plan-for-tenants"
+        },
+        {
+          "title": "Vérifier la durée du bail",
+          "detail": "Depuis le 1er juillet 2024, le bail à durée indéterminée est la norme. Un bail temporaire de 2 ans au maximum n'est possible que pour certains publics, par exemple les étudiants qui doivent louer ailleurs pour leurs études.",
+          "officialUrl": "https://www.volkshuisvestingnederland.nl/onderwerpen/huren-en-wonen/huurbescherming-en-huurcontracten/vaste-huurcontracten-de-norm"
+        },
+        {
+          "title": "Vérifier que vous pourrez vous inscrire à cette adresse",
+          "detail": "La commune demande une preuve d'adresse pour l'inscription. À Amsterdam par exemple : le bail original en cours, ou un formulaire de consentement signé par l'occupant principal avec la copie de sa pièce d'identité.",
+          "officialUrl": "https://sdg.government.nl/government-services-in-the-netherlands/registering-with-the-municipality-in-the-netherlands/municipality-amsterdam",
+          "requiredDocuments": [
+            "Bail original en cours",
+            "Ou formulaire de consentement de l'occupant principal, avec la copie de sa pièce d'identité"
+          ]
+        },
+        {
+          "title": "Se méfier des annonces frauduleuses",
+          "detail": "Selon l'ambassade de France aux Pays-Bas, des annonces de logement trompeuses ou frauduleuses sont régulièrement signalées sur internet.",
+          "officialUrl": "https://nl.diplomatie.gouv.fr/fr/vivre-ou-venir-aux-pays-bas/sinstaller-aux-pays-bas"
+        }
+      ]
+    },
+    {
+      "key": "brp",
+      "title": "S'inscrire à la commune (BRP) et obtenir le BSN",
+      "category": "RESIDENCE",
+      "summary": "Si vous vivez aux Pays-Bas plus de 4 mois, vous devez vous inscrire en personne dans le registre des données personnelles (BRP) de votre commune (gemeente), dans les 5 jours suivant l'arrivée. L'inscription est gratuite et vous donne votre numéro de citoyen (BSN).",
+      "appliesIf": "séjour de plus de 4 mois",
+      "when": 5,
+      "officialUrl": "https://www.netherlandsworldwide.nl/personal-records-database-brp/when-register",
+      "steps": [
+        {
+          "title": "Savoir qu'aucun titre de séjour n'est nécessaire",
+          "detail": "En tant que citoyen de l'UE, vous n'avez pas besoin de titre de séjour ni de vous déclarer à l'IND. Votre passeport ou votre carte d'identité prouve la régularité de votre séjour.",
+          "officialUrl": "https://www.government.nl/topics/immigration-to-the-netherlands/question-and-answer/as-an-eu-citizen-how-can-i-stay-in-the-netherlands-for-longer-than-three-months"
+        },
+        {
+          "title": "Commander votre acte de naissance",
+          "detail": "La demande est gratuite, en ligne sur service-public.fr ou auprès de la mairie du lieu de naissance. Pour une naissance à l'étranger, elle se fait auprès du Service central d'état civil de Nantes. Méfiez-vous des sites qui la font payer.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1427"
+        },
+        {
+          "title": "Vérifier la forme de l'acte acceptée par la commune",
+          "detail": "Les actes d'état civil n'ont pas à être légalisés pour servir dans un autre pays de l'UE. Un formulaire type multilingue doit parfois y être joint : demandez à votre commune.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/legalisation/foreign-documents/france"
+        },
+        {
+          "title": "Prendre rendez-vous à la commune",
+          "detail": "L'inscription se fait en personne, et dans la plupart des cas sur rendez-vous. Contactez la commune bien à l'avance, car les délais d'attente peuvent être longs, et demandez-lui la liste des documents à apporter.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/personal-records-database-brp/when-register"
+        },
+        {
+          "title": "Apporter les pièces demandées",
+          "detail": "Exemple d'Amsterdam : apportez les originaux de votre acte de naissance (en néerlandais, anglais, français ou allemand, sinon traduit par un traducteur juré) et une preuve d'adresse. L'inscription est gratuite, mais les frais de traduction ou de légalisation restent à votre charge.",
+          "officialUrl": "https://sdg.government.nl/government-services-in-the-netherlands/registering-with-the-municipality-in-the-netherlands/municipality-amsterdam",
+          "requiredDocuments": [
+            "Passeport ou carte d'identité en cours de validité",
+            "Acte de naissance (original)",
+            "Bail original, ou consentement de l'occupant principal avec la copie de sa pièce d'identité"
+          ]
+        },
+        {
+          "title": "Récupérer votre BSN",
+          "detail": "Le BSN vous est attribué lors de l'inscription au BRP. Il vous sert pour tous vos contacts avec l'administration néerlandaise, y compris pour les impôts.",
+          "officialUrl": "https://sdg.government.nl/government-services-in-the-netherlands/registering-with-the-municipality-in-the-netherlands"
+        }
+      ]
+    },
+    {
+      "key": "rni",
+      "title": "S'inscrire au RNI pour un séjour de moins de 4 mois",
+      "category": "RESIDENCE",
+      "summary": "Si vous restez moins de 4 mois aux Pays-Bas, ou si vous vivez hors des Pays-Bas, vous pouvez vous inscrire comme non-résident (RNI) dans l'une des 19 communes qui ont un guichet RNI. Vous recevez aussi un BSN.",
+      "appliesIf": "séjour de moins de 4 mois, ou travail aux Pays-Bas en résidant hors des Pays-Bas",
+      "when": null,
+      "officialUrl": "https://www.netherlandsworldwide.nl/non-residents-records-database/register",
+      "steps": [
+        {
+          "title": "Choisir un guichet RNI et prendre rendez-vous",
+          "detail": "Les ressortissants de l'UE peuvent choisir n'importe lequel des 19 guichets RNI, par exemple à Amsterdam, Rotterdam, La Haye, Utrecht ou Groningue. Le rendez-vous se prend directement auprès de la commune.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/bsn/how-to-get"
+        },
+        {
+          "title": "Remplir le formulaire en ligne (facultatif)",
+          "detail": "Pour gagner du temps, remplissez d'abord le formulaire RNI en ligne : vous recevez un QR code personnel à présenter au guichet.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/non-residents-records-database/register"
+        },
+        {
+          "title": "Se présenter en personne au guichet",
+          "detail": "L'inscription se fait en personne pour vérifier votre identité. Vous repartez avec un récapitulatif de vos données dans le RNI et une lettre indiquant votre BSN.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/non-residents-records-database/register",
+          "requiredDocuments": ["Passeport ou carte d'identité en cours de validité"]
+        }
+      ]
+    },
+    {
+      "key": "zorgverzekering",
+      "title": "Souscrire l'assurance santé néerlandaise (zorgverzekering)",
+      "category": "HEALTH",
+      "summary": "Si vous venez vivre ou travailler aux Pays-Bas, vous devez souscrire une assurance santé néerlandaise au plus tôt, et au plus tard 4 mois après l'arrivée, même si vous êtes déjà assuré dans un autre pays. Des exceptions existent (employeur établi hors des Pays-Bas, certains étudiants et stagiaires) : en cas de doute, la SVB tranche.",
+      "appliesIf": "emploi aux Pays-Bas, ou stage rémunéré qui vous assure aux assurances salariés (à vérifier)",
+      "when": 120,
+      "officialUrl": "https://www.government.nl/documents/question-and-answer/health-insurance/when-do-i-need-to-take-out-health-insurance-if-i-come-to-live-in-the-netherlands",
+      "steps": [
+        {
+          "title": "Emploi : vous devez vous assurer aux Pays-Bas",
+          "detail": "Si vous venez travailler aux Pays-Bas, souscrivez une assurance néerlandaise même si vous avez déjà une assurance dans un autre pays. La seule exception citée est un employeur établi hors des Pays-Bas : la SVB renseigne sur ce cas.",
+          "officialUrl": "https://www.government.nl/documents/question-and-answer/health-insurance/when-do-i-need-to-take-out-health-insurance-if-i-come-to-live-in-the-netherlands"
+        },
+        {
+          "title": "Stage : vérifier si l'obligation vous concerne",
+          "detail": "Un étudiant venu uniquement pour ses études n'est normalement pas assuré à la Wlz et n'a en général pas à souscrire. Depuis le 1er septembre 2025, un étudiant de l'UE en stage rémunéré est assuré à la Wlz s'il relève d'au moins une assurance salariés, comme l'assurance maladie : demandez à l'entreprise ou à l'UWV.",
+          "officialUrl": "https://www.svb.nl/en/the-wlz-scheme/insurance-under-the-wlz-scheme/you-are-a-student-or-doing-an-internship"
+        },
+        {
+          "title": "Demander l'avis de la SVB en cas de doute",
+          "detail": "Si la SVB constate que vous êtes assuré à la Wlz, vous devez souscrire une assurance santé néerlandaise. La demande se fait en ligne sur My SVB ou par formulaire papier, avec des justificatifs ; le traitement peut prendre jusqu'à 8 semaines. Si vous avez reçu une lettre du CAK, envoyez la demande immédiatement.",
+          "officialUrl": "https://www.svb.nl/en/the-wlz-scheme/assessment-of-your-wlz-insurance-position/apply-for-an-assessment-of-your-wlz-insurance-position"
+        },
+        {
+          "title": "Souscrire l'assurance de base dans les 4 mois",
+          "detail": "La couverture doit partir de votre arrivée. Si vous souscrivez après 4 mois, l'assurance n'est pas rétroactive : les primes ne courent qu'à partir du début du contrat et les soins reçus avant ne sont pas remboursés. Attendre trop longtemps peut aussi entraîner une amende.",
+          "officialUrl": "https://www.government.nl/documents/question-and-answer/health-insurance/when-do-i-need-to-take-out-health-insurance-if-i-come-to-live-in-the-netherlands"
+        },
+        {
+          "title": "Connaître la franchise (eigen risico)",
+          "detail": "À partir de 18 ans, une franchise obligatoire s'applique : 385 € en 2026, 400 € à partir de 2027. Les soins du médecin généraliste (huisarts), y compris le poste de garde (huisartsenpost), n'y sont pas soumis.",
+          "officialUrl": "https://www.rijksoverheid.nl/onderwerpen/zorgverzekering/vraag-en-antwoord/eigen-risico-zorgverzekering"
+        },
+        {
+          "title": "Vérifier votre droit à l'allocation santé (zorgtoeslag)",
+          "detail": "Cette aide aux primes est réservée aux personnes de 18 ans ou plus qui ont une assurance santé néerlandaise, sous d'autres conditions. Son montant dépend notamment de vos revenus.",
+          "officialUrl": "https://www.government.nl/themes/family-health-and-care/health-insurance/applying-for-healthcare-benefit"
+        },
+        {
+          "title": "Faire la demande sur Mijn toeslagen",
+          "detail": "La demande se fait en ligne sur Mijn toeslagen (en néerlandais), avec DigiD et votre BSN. Vous pouvez demander l'allocation d'une année jusqu'au 31 décembre de l'année suivante.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/bldcontenten/belastingdienst/individuals/benefits/how_do_benefits_work/i_want_to_apply_for_a_benefit/i_want_to_apply_for_a_benefit"
+        },
+        {
+          "title": "Répondre sans attendre à une lettre du CAK",
+          "detail": "Si le CAK vous écrit parce que vous n'êtes pas assuré, vous avez 3 mois pour souscrire une assurance ou montrer que vous n'y êtes pas obligé. Sinon, vous recevez une amende.",
+          "officialUrl": "https://www.rijksoverheid.nl/onderwerpen/zorgverzekering/vraag-en-antwoord/wat-gebeurt-er-als-ik-niet-verzekerd-ben-voor-de-zorgverzekering"
+        },
+        {
+          "title": "Déclarer votre départ à la CPAM si vous relevez du régime néerlandais",
+          "detail": "Envoyez à votre caisse la déclaration de transfert de résidence hors de France dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM. L'adhésion à la Caisse des Français de l'étranger reste facultative, en plus du régime néerlandais.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": [
+            "Déclaration de transfert de résidence hors de France",
+            "Carte Vitale",
+            "Carte européenne d'assurance maladie"
+          ]
+        }
+      ]
+    },
+    {
+      "key": "digid",
+      "title": "Demander votre DigiD",
+      "category": "OTHER",
+      "summary": "DigiD est votre identifiant pour les services en ligne de l'administration néerlandaise, notamment la Belastingdienst, Mijn toeslagen et la SVB. Il faut un BSN et une adresse enregistrée dans votre commune.",
+      "appliesIf": "après votre inscription à la commune (BRP)",
+      "when": null,
+      "officialUrl": "https://www.digid.nl/en/apply-and-activate/apply-digid",
+      "steps": [
+        {
+          "title": "Faire la demande en ligne",
+          "detail": "Il vous faut votre BSN, une adresse d'inscription dans une commune néerlandaise et un téléphone mobile. Retenez le nom d'utilisateur et le mot de passe choisis : ils servent à l'activation.",
+          "officialUrl": "https://www.digid.nl/en/apply-and-activate/apply-digid"
+        },
+        {
+          "title": "Activer DigiD avec le code reçu par courrier",
+          "detail": "Le code d'activation est envoyé par la poste à votre adresse enregistrée dans le BRP. digid.nl annonce un délai de 3 jours ouvrables, et au maximum 5 jours ouvrables selon votre région.",
+          "officialUrl": "https://www.digid.nl/en/apply-and-activate/apply-digid"
+        },
+        {
+          "title": "Utiliser DigiD pour vos démarches",
+          "detail": "La Belastingdienst indique que DigiD est nécessaire pour déclarer vos revenus en ligne et pour certaines demandes, comme les allocations.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/immigration-checklist-what-do-i-need-to-know"
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Organiser votre compte bancaire",
+      "category": "BANK",
+      "summary": "Un compte français en euros permet en principe les virements et prélèvements SEPA. Pour ouvrir un compte néerlandais, le BSN est indispensable selon l'ambassade de France.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/payments-transfers-cheques/index_fr.htm",
+      "steps": [
+        {
+          "title": "Vérifier si votre compte français peut servir",
+          "detail": "Pour un virement ou un prélèvement SEPA, votre compte ne peut pas être refusé au motif qu'il est situé dans un autre pays de l'UE. Cette règle s'applique si l'autre partie accepte ces opérations depuis des comptes nationaux.",
+          "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/payments-transfers-cheques/index_fr.htm"
+        },
+        {
+          "title": "Ouvrir un compte néerlandais si nécessaire",
+          "detail": "Le BSN est indispensable pour ouvrir un compte bancaire aux Pays-Bas : attendez donc votre inscription à la commune.",
+          "officialUrl": "https://nl.diplomatie.gouv.fr/fr/vivre-ou-venir-aux-pays-bas/sinstaller-aux-pays-bas",
+          "requiredDocuments": ["BSN"]
+        },
+        {
+          "title": "Demander un compte de paiement de base en cas de refus",
+          "detail": "Si vous résidez légalement dans l'UE, vous avez droit à un compte de paiement de base. La banque ne peut pas refuser au motif que vous ne résidez pas dans son pays. Des frais annuels, qui doivent rester raisonnables, peuvent s'appliquer.",
+          "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/bank-accounts-eu/index_fr.htm"
+        },
+        {
+          "title": "Communiquer votre numéro de compte à la Belastingdienst",
+          "detail": "L'administration fiscale a besoin de votre numéro de compte pour vous verser les remboursements d'impôt. Le formulaire existe en néerlandais seulement.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/immigration-checklist-what-do-i-need-to-know"
+        }
+      ]
+    },
+    {
+      "key": "residence-fiscale",
+      "title": "Clarifier votre résidence fiscale",
+      "category": "TAX",
+      "summary": "Dès votre installation aux Pays-Bas, vous y devenez contribuable résident. La France peut aussi vous considérer comme résident : en cas de conflit, la convention fiscale franco-néerlandaise tranche.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/immigration-checklist-what-do-i-need-to-know",
+      "steps": [
+        {
+          "title": "Vérifier les critères du domicile fiscal français",
+          "detail": "Un seul critère suffit pour être domicilié fiscalement en France : foyer ou lieu de séjour principal, activité professionnelle principale, ou centre des intérêts économiques.",
+          "officialUrl": "https://www.impots.gouv.fr/resident-de-france"
+        },
+        {
+          "title": "Savoir que vous devenez résident fiscal néerlandais",
+          "detail": "Selon la Belastingdienst, vous devenez contribuable résident dès votre installation aux Pays-Bas. Vos revenus étrangers n'y sont pas automatiquement imposés.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/immigration-checklist-what-do-i-need-to-know"
+        },
+        {
+          "title": "Appliquer les critères de la convention en cas de double résidence",
+          "detail": "La convention retient d'abord l'État où vous avez un foyer d'habitation permanent. Si vous en avez un dans les deux pays, elle retient le centre de vos intérêts vitaux, puis le lieu de séjour habituel, puis la nationalité.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/pays-bas/pays-bas_modifiee_cml_20190805.pdf"
+        },
+        {
+          "title": "Signaler votre nouvelle adresse aux impôts français",
+          "detail": "Indiquez votre nouvelle adresse à votre dernier centre des finances publiques depuis votre espace particulier sur impots.gouv.fr.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer"
+        }
+      ]
+    },
+    {
+      "key": "declaration-revenus",
+      "title": "Déclarer vos revenus aux Pays-Bas et en France",
+      "category": "TAX",
+      "summary": "Selon la convention franco-néerlandaise, un salaire est en principe imposable dans l'État où l'emploi est exercé. Aux Pays-Bas, l'employeur retient l'impôt sur la paie et l'année d'arrivée se déclare avec le formulaire M.",
+      "appliesIf": "revenus perçus pour un travail aux Pays-Bas",
+      "when": null,
+      "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/pays-bas/pays-bas_modifiee_cml_20190805.pdf",
+      "steps": [
+        {
+          "title": "Remplir la fiche de données pour les retenues sur salaire",
+          "detail": "Ce formulaire donne à votre employeur les informations nécessaires pour retenir les impôts sur salaire. Indiquez si la réduction d'impôt sur salaire (loonheffingskorting) doit être appliquée : un seul employeur ou organisme à la fois peut l'appliquer.",
+          "officialUrl": "https://belastingdienst.nl/wps/wcm/connect/bldcontenten/themaoverstijgend/applications_and_forms/model-statement-data-payroll-taxes"
+        },
+        {
+          "title": "Vérifier où votre salaire est imposable",
+          "detail": "Un salaire est imposable dans l'État où l'emploi est exercé. Il reste imposable seulement en France si vous séjournez au plus 183 jours aux Pays-Bas pendant l'année fiscale, que votre employeur n'est pas résident des Pays-Bas et que votre rémunération n'est pas à la charge d'un établissement qu'il y possède. Pour un stage, voir aussi la règle des stagiaires.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/pays-bas/pays-bas_modifiee_cml_20190805.pdf"
+        },
+        {
+          "title": "Déclarer l'année d'arrivée avec le formulaire M",
+          "detail": "L'année de votre arrivée se déclare uniquement avec le formulaire M, en néerlandais, en ligne sur Mijn Belastingdienst avec DigiD ou sur papier. Vous recevez un courrier à ce sujet à votre adresse néerlandaise si vos données sont exactes dans le BRP.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/tax-return-abroad/year-movement-netherlands"
+        },
+        {
+          "title": "Déclarer en France les revenus de l'année du départ",
+          "detail": "La déclaration de l'année du départ est obligatoire. Les revenus de source étrangère se déclarent sur le formulaire 2047.",
+          "officialUrl": "https://www.impots.gouv.fr/particulier/questions/je-pars-vivre-letranger-quelles-demarches-dois-je-accomplir-dois-je-cloturer"
+        },
+        {
+          "title": "Comprendre l'élimination de la double imposition",
+          "detail": "Pour un résident de France, les revenus imposables aux Pays-Bas selon la convention sont exonérés d'impôt français. La France peut toutefois en tenir compte pour calculer le taux d'imposition de vos autres revenus.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/pays-bas/pays-bas_modifiee_cml_20190805.pdf"
+        }
+      ]
+    },
+    {
+      "key": "regime-30",
+      "title": "Vérifier si vous pouvez bénéficier du régime des 30 %",
+      "category": "TAX",
+      "summary": "Avec le régime des expatriés (30 % facility), l'employeur peut vous verser sans impôt jusqu'à 30 % de votre salaire, indemnité comprise. Il est réservé aux salariés recrutés à l'étranger qui ont une expertise spécifique.",
+      "appliesIf": "emploi salarié chez un employeur aux Pays-Bas, avec recrutement depuis l'étranger et salaire au-dessus du seuil",
+      "when": null,
+      "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility",
+      "steps": [
+        {
+          "title": "Vérifier la condition de salaire",
+          "detail": "Le régime suppose un emploi salarié. En 2026, l'expertise spécifique est reconnue si votre salaire annuel, sans l'indemnité non imposable, dépasse 48 013 € (36 497 € si vous avez moins de 30 ans et un master néerlandais ou équivalent).",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility"
+        },
+        {
+          "title": "Vérifier la condition de recrutement à l'étranger",
+          "detail": "Vous devez avoir vécu à plus de 150 km à vol d'oiseau de la frontière néerlandaise pendant plus de 16 des 24 mois précédant votre premier jour de travail aux Pays-Bas. La Belastingdienst cite des parties de la France parmi les zones exclues : vérifiez votre lieu de résidence.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility"
+        },
+        {
+          "title": "Faire la demande avec votre employeur",
+          "detail": "Remplissez le formulaire de demande avec votre employeur. La Belastingdienst répond dans les 8 semaines ; la décision vaut 5 ans au maximum, moins si vous avez déjà travaillé ou vécu aux Pays-Bas.",
+          "officialUrl": "https://www.belastingdienst.nl/wps/wcm/connect/en/individuals/content/coming-to-work-in-the-netherlands-30-percent-facility"
+        }
+      ]
+    },
+    {
+      "key": "transport",
+      "title": "Payer les transports en commun",
+      "category": "TRANSPORT",
+      "summary": "Dans les trains NS, vous pouvez valider à l'entrée et à la sortie avec une carte bancaire sans contact, une carte de crédit ou un téléphone. L'OV-chipkaart est progressivement remplacée par une nouvelle carte, l'OV-pas.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.ns.nl/en/travel/check-in-check-out/debit-card",
+      "steps": [
+        {
+          "title": "Utiliser votre carte bancaire pour les trajets occasionnels",
+          "detail": "NS permet de valider à l'entrée et à la sortie avec une carte bancaire ou de crédit sans contact, ou avec un téléphone. NS présente cette solution comme adaptée si vous prenez le train de temps en temps.",
+          "officialUrl": "https://www.ns.nl/en/travel/check-in-check-out/debit-card"
+        },
+        {
+          "title": "Préparer le passage à l'OV-pas",
+          "detail": "L'OV-chipkaart est retirée progressivement après près de 15 ans et remplacée par l'OV-pas. Consultez NS pour savoir comment l'obtenir et quand changer de carte.",
+          "officialUrl": "https://www.ns.nl/en/travel/check-in-check-out/ov-pas"
+        }
+      ]
+    },
+    {
+      "key": "registre-francais",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Facultative mais fortement recommandée pour une installation de plus de 6 mois, l'inscription est gratuite et valable 5 ans. Elle facilite les démarches consulaires et permet d'être joint en cas d'urgence.",
+      "appliesIf": "facultatif",
+      "when": null,
+      "officialUrl": "https://nl.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne sur service-public.fr",
+          "detail": "Faites la démarche en ligne avec les pièces scannées. Le consulat général de France à Amsterdam vous contacte ensuite pour valider l'inscription ; vos attestations sont alors disponibles dans votre espace service-public.fr.",
+          "officialUrl": "https://nl.diplomatie.gouv.fr/fr/registre/inscription-au-registre",
+          "requiredDocuments": [
+            "Carte nationale d'identité ou passeport français en cours de validité",
+            "Justificatif de résidence aux Pays-Bas",
+            "Photo d'identité récente"
+          ]
+        },
+        {
+          "title": "Choisir où voter (facultatif)",
+          "detail": "Pendant l'inscription, vous pouvez indiquer que vous souhaitez voter aux élections françaises depuis l'étranger. Vous pourrez modifier ce choix plus tard.",
+          "officialUrl": "https://nl.diplomatie.gouv.fr/fr/registre/inscription-au-registre"
+        },
+        {
+          "title": "Renouveler l'inscription avant son expiration",
+          "detail": "L'inscription est valable 5 ans. Vous recevez un rappel 3 mois avant son expiration.",
+          "officialUrl": "https://nl.diplomatie.gouv.fr/fr/registre/inscription-au-registre"
+        }
+      ]
+    },
+    {
+      "key": "depart",
+      "title": "Se désinscrire de la commune avant de partir",
+      "category": "RESIDENCE",
+      "summary": "En quittant les Pays-Bas, déclarez votre départ à votre commune, au plus tôt 5 jours avant le départ et au plus tard le jour du départ. Vos données passent alors au RNI et votre BSN reste valable.",
+      "appliesIf": "départ des Pays-Bas pour plus de 8 mois sur une année",
+      "when": null,
+      "officialUrl": "https://www.netherlandsworldwide.nl/personal-records-database-brp/how-deregister-brp",
+      "steps": [
+        {
+          "title": "Déclarer votre départ à la commune",
+          "detail": "La démarche se fait entre 5 jours avant le départ et le jour du départ. Elle varie selon les communes et se fait en personne si toutes les personnes de votre adresse ne partent pas avec vous.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/personal-records-database-brp/how-deregister-brp"
+        },
+        {
+          "title": "Demander une preuve de radiation si besoin",
+          "detail": "Une attestation internationale de radiation peut vous être utile pour vous inscrire ailleurs. Elle n'est délivrée que si la date de radiation est la même que la date de votre départ.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/personal-records-database-brp/how-deregister-brp"
+        },
+        {
+          "title": "Récupérer la caution",
+          "detail": "En fin de bail, la caution doit en principe être rendue dans les 14 jours. Si vous devez encore de l'argent au bailleur, il peut le déduire mais doit rendre le reste dans les 30 jours.",
+          "officialUrl": "https://www.government.nl/topics/housing/rented-housing/step-by-step-plan-for-tenants"
+        },
+        {
+          "title": "Résilier l'assurance santé néerlandaise",
+          "detail": "Prévenez votre assureur de votre date de départ et suivez sa procédure de résiliation.",
+          "officialUrl": null
+        },
+        {
+          "title": "Déclarer l'année du départ aux Pays-Bas",
+          "detail": "L'année du départ se déclare aussi avec le formulaire M. Vous recevez un courrier à votre adresse à l'étranger si vos données sont exactes dans le RNI ; la déclaration en ligne demande DigiD ou un moyen d'identification européen reconnu.",
+          "officialUrl": "https://www.netherlandsworldwide.nl/tax-return-abroad/year-movement-abroad"
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie au retour",
+          "detail": "Si vous avez relevé du régime néerlandais, prévenez-le de votre départ, puis envoyez à votre CPAM le formulaire S1106 de demande d'ouverture des droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger"
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Stage et assurance santé : selon la SVB, depuis le 1er septembre 2025, un étudiant de l'UE en stage rémunéré doit une assurance santé néerlandaise s'il relève d'au moins une assurance salariés. Savoir si la CEAM suffit dépend donc de l'indemnité et de votre statut : interrogez l'entreprise ou l'UWV, ou demandez une évaluation à la SVB, avant le départ.",
+    "Inscription à la commune : netherlandsworldwide.nl indique qu'un rendez-vous est nécessaire dans la plupart des cas, alors qu'Amsterdam indique qu'on peut se présenter sans rendez-vous dans un bureau municipal (sauf à Weesp). Les pièces demandées et les langues acceptées pour l'acte de naissance varient aussi selon la commune.",
+    "Seuils de durée : l'inscription au BRP vise les séjours de plus de 4 mois. Par ailleurs, l'IND fixe des conditions pour séjourner plus de 3 mois en tant que citoyen de l'UE (travail, ressources suffisantes ou études), sans démarche auprès de l'IND.",
+    "Les règles de stage citées viennent d'une page de business.gov.nl vérifiée par l'administration en février 2021. Un projet de loi prévoit une indemnité de stage obligatoire pour les étudiants des établissements néerlandais (MBO, HBO, WO), sans date d'entrée en vigueur connue.",
+    "Fiscalité : la résidence fiscale s'apprécie au cas par cas. La convention citée est celle du 16 mars 1973, dans la version consolidée avec la convention multilatérale (CML) publiée sur impots.gouv.fr. La règle des stagiaires (article 21) a des conditions précises : faites confirmer votre cas par la Belastingdienst ou par votre centre des finances publiques.",
+    "Montants relevés le 23/11/2026 et susceptibles de changer : franchise santé (385 € en 2026, 400 € annoncés pour 2027), seuils du régime des 30 % (la page consultée ne donne que les seuils 2024 à 2026), plafonds de la zorgtoeslag (non repris ici).",
+    "CEAM : ameli conseille de la demander au moins 15 jours avant le départ, service-public.fr indique 20 jours. Elle couvre un séjour temporaire, pas une installation durable.",
+    "Baux : les règles sur les baux temporaires ont changé le 1er juillet 2024 et peuvent encore évoluer. Pour une chambre en colocation ou une location courte, vérifiez le type de contrat avant de signer.",
+    "Transports : NS est la compagnie ferroviaire nationale. Les réseaux urbains (bus, tram, métro) ont leurs propres titres et abonnements, et le remplacement de l'OV-chipkaart par l'OV-pas est en cours : vérifiez auprès de l'opérateur local.",
+    "Permis de conduire : selon l'ambassade de France, un permis français au nouveau format (délivré après le 18 janvier 2013) reste utilisable jusqu'à la fin de sa validité, et un ancien permis rose pendant deux ans après l'installation. Le RDW détaille les règles néerlandaises.",
+    "Résiliation de l'assurance santé néerlandaise au départ : aucune page officielle décrivant la démarche n'a été trouvée ; suivez les instructions de votre assureur.",
+    "Frontaliers : si vous vivez en France ou en Belgique et travaillez aux Pays-Bas, vous relevez du RNI et d'autres règles de sécurité sociale et d'impôt, que ce modèle ne couvre pas.",
+    "Certaines pages n'ont pas pu être lues automatiquement (amsterdam.nl, gvb.nl) : les informations sur Amsterdam viennent de sa fiche sur le portail national sdg.government.nl."
+  ]
+}

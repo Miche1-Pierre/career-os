@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Download, Home, LayoutGrid, List as ListIcon, Map as MapIcon, Plus, Star } from "lucide-react";
+import { Download, Home, LayoutGrid, List as ListIcon, Map as MapIcon, Plus, Share2, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,9 @@ import { normalizeText } from "@/lib/text";
 import { cn } from "@/lib/utils";
 import { FIT_ORDER, money, savingsTone, signedMoney, STATUS_BADGE } from "./format";
 import { HousingMap } from "./housing-map";
+import { PlacesPanel } from "./places-panel";
+import { ShareDialog } from "./share-dialog";
+import { Approx } from "@/components/app/approx";
 
 type Scope = "open" | "all" | "closed";
 
@@ -20,6 +23,7 @@ export function HousingView({ move, onOpenListing, onAdd }: { move: MoveView; on
   const [view, setView] = useState<"list" | "board" | "map">("list");
   const [scope, setScope] = useState<Scope>("open");
   const [q, setQ] = useState("");
+  const [sharing, setSharing] = useState(false);
   const cur = move.currency;
 
   const rows = useMemo(() => {
@@ -74,6 +78,9 @@ export function HousingView({ move, onOpenListing, onAdd }: { move: MoveView; on
               <Download /> Excel
             </a>
           </Button>
+          <Button variant="outline" size="sm" onClick={() => setSharing(true)}>
+            <Share2 /> Partager
+          </Button>
           <Button variant="highlight" size="sm" onClick={onAdd}>
             <Plus /> Ajouter
           </Button>
@@ -83,10 +90,14 @@ export function HousingView({ move, onOpenListing, onAdd }: { move: MoveView; on
       {view === "list" ? (
         <ListingTable rows={rows} currency={cur} onOpen={onOpenListing} />
       ) : view === "map" ? (
-        <HousingMap move={move} listings={rows} onOpen={onOpenListing} />
+        <div className="space-y-3">
+          <PlacesPanel move={move} />
+          <HousingMap move={move} listings={rows} onOpen={onOpenListing} />
+        </div>
       ) : (
         <Board listings={move.listings} currency={cur} onOpen={onOpenListing} showClosed={scope !== "open"} />
       )}
+      <ShareDialog moveId={move.id} open={sharing} onOpenChange={setSharing} />
     </div>
   );
 }
@@ -133,14 +144,19 @@ function ListingTable({ rows, currency, onOpen }: { rows: ListingView[]; currenc
               </td>
               <td className="px-3 py-2.5 text-right tabular-nums">
                 <div className="font-medium">{money(l.total, currency)}</div>
+                <Approx amount={l.total} currency={currency} className="block" />
                 {l.total !== null && l.rent !== null && !l.allInclusive && l.charges !== null && <div className="text-xs text-muted-foreground">{`${l.rent} + ${l.charges}`}</div>}
                 {l.allInclusive && <div className="text-xs text-muted-foreground">tout compris</div>}
               </td>
-              <td className={cn("px-3 py-2.5 text-right font-medium tabular-nums", savingsTone(l.budget?.savings))}>{l.budget ? signedMoney(l.budget.savings, currency) : "–"}</td>
+              <td className={cn("px-3 py-2.5 text-right font-medium tabular-nums", savingsTone(l.budget?.savings))}>
+                {l.budget ? signedMoney(l.budget.savings, currency) : "–"}
+                <Approx amount={l.budget?.savings} currency={currency} signed className="block" />
+              </td>
               <td className="px-3 py-2.5 text-right tabular-nums">
                 {l.commuteKm !== null ? (
                   <>
                     <div>{`${l.walkMin} min`}</div>
+                    {l.trips.length > 0 && <div className="text-xs text-violet-700 dark:text-violet-300">{l.trips.map((t) => `${t.label} ${t.walkMin} min`).join(" · ")}</div>}
                     <div className="text-xs text-muted-foreground">{`${l.distanceEstimated && l.lat === null ? "≈" : ""}${l.commuteKm} km${l.budget?.transport ? " · transports" : " · à pied"}`}</div>
                   </>
                 ) : (

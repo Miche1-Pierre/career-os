@@ -36,3 +36,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 - **@huggingface/transformers** and **onnxruntime-node** (local dictation): Apache License 2.0 / MIT. The Whisper model
   (`Xenova/whisper-small`, downloaded on first use) is released under the MIT License by OpenAI.
 - **OpenStreetMap** map tiles: © OpenStreetMap contributors (ODbL), shown with attribution on the map.
+- **Photon** (komoot, place suggestions while typing, queried through `/api/places/search`): open source geocoder
+  (Apache License 2.0); its data is © OpenStreetMap contributors (ODbL), credited under the suggestion list.
+- **ECB euro reference rates** (indicative currency conversions): published by the European Central Bank, reused
+  with attribution ("taux BCE").

@@ -13,6 +13,7 @@ import { computeBudget, oneOffTotal, type BudgetPlan } from "@/lib/relocation";
 import type { MoveView } from "@/server/services/moves";
 import { cn } from "@/lib/utils";
 import { money, savingsTone, signedMoney } from "./format";
+import { Approx } from "@/components/app/approx";
 
 const uid = () => Math.random().toString(36).slice(2, 10);
 
@@ -185,7 +186,10 @@ export function BudgetView({ move }: { move: MoveView }) {
           </dl>
           <div className="flex items-baseline justify-between border-t border-border pt-3">
             <span className="heading-sm">Épargne chaque mois</span>
-            <span className={cn("heading-xl tabular-nums", savingsTone(result.savings))}>{signedMoney(result.savings, cur)}</span>
+            <span className="text-right">
+              <span className={cn("heading-xl tabular-nums", savingsTone(result.savings))}>{signedMoney(result.savings, cur)}</span>
+              <Approx amount={result.savings} currency={cur} signed className="block" />
+            </span>
           </div>
           {result.savingsVsTarget !== null && (
             <p className="text-xs text-muted-foreground">
@@ -194,7 +198,7 @@ export function BudgetView({ move }: { move: MoveView }) {
             </p>
           )}
           <div className="rounded-xl bg-muted-background p-3 text-xs text-muted-foreground">
-            Argent à prévoir avant d’emménager : <span className="font-medium text-foreground">{money(upfront, cur)}</span>
+            Argent à prévoir avant d’emménager : <span className="font-medium text-foreground">{money(upfront, cur)}</span> <Approx amount={upfront} currency={cur} />
             <br />
             premier mois {money(housing, cur)}
             {deposit ? ` + garantie ${money(deposit, cur)}` : selected ? " + garantie (inconnue)" : ""}

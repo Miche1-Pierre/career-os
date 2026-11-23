@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { PlaceInput } from "@/components/app/place-input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -98,6 +99,7 @@ export function ListingFormDialog({
   moveId,
   listing,
   currency,
+  near,
   onSaved,
 }: {
   open: boolean;
@@ -105,12 +107,14 @@ export function ListingFormDialog({
   moveId: string;
   listing?: HousingListing | null;
   currency: string;
+  /** Bias for the address suggestions (the workplace). */
+  near?: { lat: number; lng: number } | null;
   onSaved?: (id: string) => void;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-        <ListingFormBody key={listing?.id ?? "new"} onOpenChange={onOpenChange} moveId={moveId} listing={listing} currency={currency} onSaved={onSaved} />
+        <ListingFormBody key={listing?.id ?? "new"} onOpenChange={onOpenChange} moveId={moveId} listing={listing} currency={currency} near={near} onSaved={onSaved} />
       </DialogContent>
     </Dialog>
   );
@@ -121,16 +125,20 @@ function ListingFormBody({
   moveId,
   listing,
   currency,
+  near,
   onSaved,
 }: {
   onOpenChange: (open: boolean) => void;
   moveId: string;
   listing?: HousingListing | null;
   currency: string;
+  near?: { lat: number; lng: number } | null;
   onSaved?: (id: string) => void;
 }) {
   const { run, pending } = useAction();
   const [f, setF] = useState<FormState>(() => (listing ? fromListing(listing) : empty));
+  /** Coordinates of a picked address suggestion (typed addresses are located by the server). */
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setF((s) => ({ ...s, [key]: value }));
   const setContact = (key: keyof ListingContacts, value: string) => setF((s) => ({ ...s, contacts: { ...s.contacts, [key]: value || null } }));
 
@@ -140,6 +148,7 @@ function ListingFormBody({
       url: f.url.trim() || null,
       type: f.type || null,
       address: f.address.trim() || null,
+      ...(coords ? { lat: coords.lat, lng: coords.lng } : {}),
       district: f.district.trim() || null,
       distanceKm: f.distanceKm,
       distanceEstimated: f.distanceKm !== null,
@@ -278,8 +287,18 @@ function ListingFormBody({
           <section className="space-y-3">
             <h3 className="heading-sm text-foreground">Emplacement</h3>
             <div className="grid gap-3 sm:grid-cols-3">
-              <FormField label="Adresse" htmlFor="l-addr" className="sm:col-span-2" hint="Localisée automatiquement pour calculer le trajet.">
-                <Input id="l-addr" value={f.address} onChange={(e) => set("address", e.target.value)} placeholder="Rue Jourdan 155, 1060 Saint-Gilles" />
+              <FormField label="Adresse" htmlFor="l-addr" className="sm:col-span-2" hint="Choisis une suggestion pour placer l'annonce sur la carte.">
+                <PlaceInput
+                  id="l-addr"
+                  value={f.address}
+                  near={near}
+                  onChange={(v) => {
+                    set("address", v);
+                    setCoords(null);
+                  }}
+                  onSelect={(p) => setCoords({ lat: p.lat, lng: p.lng })}
+                  placeholder="Rue Jourdan 155, 1060 Saint-Gilles"
+                />
               </FormField>
               <FormField label="Quartier" htmlFor="l-dist">
                 <Input id="l-dist" value={f.district} onChange={(e) => set("district", e.target.value)} />

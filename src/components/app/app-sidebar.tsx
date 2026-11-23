@@ -99,33 +99,24 @@ export function AppSidebar() {
   ];
   if (badges.inbox > 0) apply.push({ href: "/inbox", label: "À trier", icon: Inbox, badge: badges.inbox });
   return (
-    <Sidebar collapsible="icon" variant="sidebar">
-      <SidebarHeader className="gap-2">
-        <Link href="/today" className="flex items-center gap-2.5 rounded-lg px-1.5 py-1.5 transition-colors hover:bg-hover">
-          {collapsed ? <CareerOsGlyph className="size-6" /> : <CareerOsMark className="h-[20px]" />}
-          {!collapsed && (
-            <span className="flex min-w-0 flex-col gap-0.5 leading-none">
-              <span className="heading-sm text-foreground">Career OS</span>
-              <span className="truncate text-xs text-faint">Pilotage de carrière</span>
-            </span>
-          )}
-        </Link>
-        {collapsed ? (
+    <Sidebar collapsible="icon" variant="floating" className="macos-sidebar">
+      <SidebarHeader className={cn("gap-1 pt-3 pb-1", collapsed ? "items-center px-2" : "px-3")}>
+        <div className={cn("flex items-center gap-2", collapsed && "flex-col")}>
+          <Link href="/today" className="flex min-w-0 flex-1 items-center gap-2 rounded-md px-1 py-1 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
+            {collapsed ? <CareerOsGlyph className="size-5" /> : <CareerOsMark className="h-[18px]" />}
+            {!collapsed && <span className="truncate text-[13px] font-semibold text-foreground">Career OS</span>}
+          </Link>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="highlight" size="icon-sm" onClick={() => openImport()} aria-label="Import rapide">
+              <Button variant="highlight" size="icon-xs" className="size-6 shrink-0 rounded-full" onClick={() => openImport()} aria-label="Import rapide">
                 <Plus />
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="right">Import rapide (I)</TooltipContent>
+            <TooltipContent side="right">
+              Import rapide <Kbd className="ml-1">I</Kbd>
+            </TooltipContent>
           </Tooltip>
-        ) : (
-          <Button variant="highlight" onClick={() => openImport()} className="w-full justify-start gap-2">
-            <Plus />
-            Import rapide
-            <Kbd className="ml-auto border-transparent bg-white/20 text-white shadow-none dark:bg-white/20">I</Kbd>
-          </Button>
-        )}
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavGroup

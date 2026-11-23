@@ -782,3 +782,81 @@
 .dark .osm-tiles {
   filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
 }
+
+/*
+ * macOS-style sidebar: a floating translucent panel (blurred, hairline edge, soft shadow), 28 px rows with rounded
+ * grey selection, accent-tinted icons, small sentence-case section titles and plain unread counts. Unlayered so it
+ * wins over the shadcn utilities, and scoped to `.macos-sidebar`.
+ */
+.macos-sidebar {
+  --mac-panel: color-mix(in oklab, var(--color-stone-200) 62%, transparent);
+  --mac-edge: rgb(0 0 0 / 0.1);
+  --mac-hover: rgb(0 0 0 / 0.045);
+  --mac-selected: rgb(0 0 0 / 0.085);
+}
+.dark .macos-sidebar {
+  --mac-panel: color-mix(in oklab, var(--color-stone-800) 72%, transparent);
+  --mac-edge: rgb(255 255 255 / 0.1);
+  --mac-hover: rgb(255 255 255 / 0.06);
+  --mac-selected: rgb(255 255 255 / 0.12);
+}
+.macos-sidebar [data-slot="sidebar-inner"] {
+  border-radius: 14px;
+  background: var(--mac-panel);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  box-shadow:
+    0 0 0 0.5px var(--mac-edge),
+    0 1px 2px rgb(0 0 0 / 0.04),
+    0 12px 32px -16px rgb(0 0 0 / 0.22);
+}
+.macos-sidebar [data-slot="sidebar-group"] {
+  padding: 2px 8px;
+}
+.macos-sidebar [data-slot="sidebar-group-label"] {
+  height: 26px;
+  padding: 8px 8px 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted-foreground);
+}
+.macos-sidebar [data-slot="sidebar-menu"] {
+  gap: 1px;
+}
+.macos-sidebar [data-slot="sidebar-menu-button"] {
+  height: 28px;
+  gap: 8px;
+  padding-inline: 8px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 450;
+  color: var(--foreground);
+}
+.macos-sidebar [data-slot="sidebar-menu-button"] svg {
+  color: var(--color-highlight);
+}
+.macos-sidebar [data-slot="sidebar-menu-button"]:hover {
+  background: var(--mac-hover);
+}
+.macos-sidebar [data-slot="sidebar-menu-button"][data-active="true"] {
+  background: var(--mac-selected);
+  font-weight: 550;
+}
+.macos-sidebar [data-slot="sidebar-menu-button"][data-active="true"] svg {
+  color: var(--color-highlight);
+}
+.macos-sidebar [data-slot="sidebar-menu-badge"] {
+  top: 4px;
+  right: 8px;
+  height: 20px;
+  border: 0;
+  background: none;
+  font-size: 12px;
+  font-weight: 450;
+  color: var(--muted-foreground);
+}
+.macos-sidebar [data-slot="sidebar-menu-button"][data-size] + [data-slot="sidebar-menu-badge"] {
+  top: 4px;
+}

@@ -50,6 +50,13 @@
       "when": 1795424863324,
       "tag": "0006_cv_style",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1795426086868,
+      "tag": "0007_places_share",
+      "breakpoints": true
     }
   ]
 }

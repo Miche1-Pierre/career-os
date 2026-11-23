@@ -4,7 +4,7 @@
  */
 import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/server/db";
-import { housingListings, moves, opportunities, organizations, type HousingListing, type ListingHistoryEntry, type Move } from "@/server/db/schema";
+import { housingListings, moves, opportunities, organizations, type HousingListing, type ListingHistoryEntry, type Move, type MovePlace } from "@/server/db/schema";
 import {
   computeBudget,
   distanceKm,
@@ -19,6 +19,8 @@ import {
   moveInputSchema,
   movePatchSchema,
   normalizeBudget,
+  placeInputSchema,
+  placeTrips,
   walkMinutes,
   type BudgetPlan,
   type BudgetResult,
@@ -28,12 +30,15 @@ import {
   type ListingPatch,
   type ListingStatus,
   type MoveInput,
+  type PlaceInput,
+  type PlaceTrip,
 } from "@/lib/relocation";
 import { badRequest, notFound, type Ctx } from "@/server/context";
 import { moveFromOffer, parseOffer } from "@/lib/offer";
 import { logAudit } from "./audit";
 import { getSettings } from "./settings";
 import { geocode } from "./geocode";
+import { countryInfo } from "@/lib/countries";
 
 // ---------------------------------------------------------------------------
 // Views
@@ -47,6 +52,8 @@ export interface ListingView extends HousingListing {
   fit: FitLevel;
   budget: BudgetResult | null;
   open: boolean;
+  /** Walking distance to each place of the move (when the listing is located). */
+  trips: PlaceTrip[];
 }
 
 export interface MoveSummary {
@@ -93,6 +100,7 @@ export function enrichListings(move: Move, plan: BudgetPlan, rows: HousingListin
       fit: fitLevel(issues),
       budget: total !== null ? computeBudget(plan, total, commuteKm) : null,
       open: LISTING_STATUS_META[r.status].open,
+      trips: placeTrips(r, move.places ?? []),
     };
   });
 }
@@ -185,7 +193,8 @@ export async function createMove(raw: MoveInput, ctx: Ctx) {
     .insert(moves)
     .values({
       ...input,
-      currency: input.currency ?? settings.general.currency ?? "EUR",
+      // The destination's currency when the country is known (Suisse → CHF), else the user's.
+      currency: input.currency ?? countryInfo(input.country)?.currency ?? settings.general.currency ?? "EUR",
       budget,
       ...(await locateWork(input)),
     })
@@ -253,6 +262,36 @@ export async function updateMove(id: string, raw: Partial<MoveInput>, ctx: Ctx) 
 
 export async function updateBudget(id: string, plan: Partial<BudgetPlan>, ctx: Ctx) {
   return updateMove(id, { budget: plan }, ctx);
+}
+
+const MAX_PLACES = 20;
+
+/**
+ * Adds a place to the move (club, station, school…). Located with OpenStreetMap unless coordinates are given; an
+ * address that cannot be found is refused (a place without coordinates would not show anywhere).
+ */
+export async function addPlace(moveId: string, raw: PlaceInput, ctx: Ctx): Promise<MovePlace> {
+  const input = placeInputSchema.parse(raw);
+  const [move] = await db.select().from(moves).where(and(eq(moves.id, moveId), isNull(moves.deletedAt)));
+  if (!move) throw notFound("Move");
+  const places = move.places ?? [];
+  if (places.length >= MAX_PLACES) throw badRequest(`${MAX_PLACES} lieux au maximum`);
+  const hit = input.lat != null && input.lng != null ? { lat: input.lat, lng: input.lng } : await geocode(input.address, move.city, move.country);
+  if (!hit) throw badRequest("Adresse introuvable sur OpenStreetMap : précise la rue, le numéro et le code postal.");
+  const place: MovePlace = { id: crypto.randomUUID(), label: input.label, address: input.address, lat: hit.lat, lng: hit.lng };
+  await db.update(moves).set({ places: [...places, place] }).where(eq(moves.id, moveId));
+  await logAudit(db, { entityType: "move", entityId: moveId, action: "UPDATE", summary: `Lieu ajouté : ${place.label}` }, ctx);
+  return place;
+}
+
+export async function removePlace(moveId: string, placeId: string, ctx: Ctx) {
+  const [move] = await db.select().from(moves).where(and(eq(moves.id, moveId), isNull(moves.deletedAt)));
+  if (!move) throw notFound("Move");
+  const place = (move.places ?? []).find((p) => p.id === placeId);
+  if (!place) throw notFound("Place");
+  await db.update(moves).set({ places: move.places.filter((p) => p.id !== placeId) }).where(eq(moves.id, moveId));
+  await logAudit(db, { entityType: "move", entityId: moveId, action: "UPDATE", summary: `Lieu retiré : ${place.label}` }, ctx);
+  return { removed: true };
 }
 
 export async function archiveMove(id: string, archived: boolean, ctx: Ctx) {

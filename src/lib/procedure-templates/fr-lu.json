@@ -1,0 +1,483 @@
+{
+  "key": "FR-LU",
+  "from": "FR",
+  "to": "LU",
+  "title": "France → Luxembourg (stage ou emploi)",
+  "checkedAt": "2026-11-23",
+  "procedures": [
+    {
+      "key": "stage",
+      "title": "Vérifier votre convention de stage",
+      "category": "OTHER",
+      "summary": "Au Luxembourg, tout stage doit faire l'objet d'une convention de stage. La durée maximale, l'indemnité minimale et la protection sociale dépendent du type de stage : stage obligatoire prévu par votre établissement ou stage pratique volontaire.",
+      "appliesIf": "stage chez un patron de stage au Luxembourg",
+      "when": null,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html",
+      "steps": [
+        {
+          "title": "Identifier le type de stage",
+          "detail": "Le stage obligatoire fait partie intégrante de votre formation (par exemple un stage prescrit en Bachelor ou en Master). Le stage pratique volontaire est ouvert aux élèves et étudiants inscrits, et aux titulaires de certains diplômes (fin du secondaire, BTS, Bachelor) si tout le stage se situe dans les 12 mois qui suivent la fin de la dernière inscription. Un stage pratique ne peut pas dépasser 6 mois sur une période de 24 mois chez un même patron de stage.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html"
+        },
+        {
+          "title": "Contrôler les mentions obligatoires de la convention",
+          "detail": "La convention est signée par le patron de stage, le stagiaire et, le cas échéant, l'établissement d'enseignement. Elle précise notamment les activités confiées, les dates de début et de fin, la durée hebdomadaire maximale de présence, l'indemnité, le tuteur, la protection sociale (dont l'assurance accident) et les modalités de résiliation.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html",
+          "requiredDocuments": ["Convention de stage signée"]
+        },
+        {
+          "title": "Vérifier l'indemnité minimale",
+          "detail": "Moins de 4 semaines : indemnité facultative. Stage obligatoire de 4 semaines et plus : 30 % du salaire social minimum (SSM) pour salariés non qualifiés. Stage pratique : 40 % du SSM non qualifié de 4 à 12 semaines incluses, 75 % de plus de 12 à 26 semaines incluses. En stage pratique, si vous avez un BTS ou un Bachelor, la référence est le SSM pour salarié qualifié.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html"
+        },
+        {
+          "title": "Demander l'exonération avant le stage si votre école interdit l'indemnité",
+          "detail": "Pour un stage obligatoire, le patron de stage n'a pas à vous indemniser seulement si l'établissement interdit expressément l'indemnisation et en fait une condition de reconnaissance du stage. Envoyez la demande d'attestation et la convention (en PDF) à stage@mt.etat.lu avant le début du stage.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html",
+          "requiredDocuments": ["Convention de stage (PDF)", "Demande d'attestation d'exonération d'indemnisation"]
+        },
+        {
+          "title": "Stage prévu par votre école : vérifier la déclaration au CCSS",
+          "detail": "Selon le CCSS, un étudiant domicilié au Luxembourg qui fait un stage prescrit par un établissement étranger n'est pas déclaré : il est couvert par l'assurance accident scolaire. La convention doit être contresignée par l'établissement.",
+          "officialUrl": "https://ccss.public.lu/fr/glossaire/stages-cadres-etudes/stagiaires-declarer.html"
+        },
+        {
+          "title": "Stage de votre propre initiative : vérifier l'affiliation",
+          "detail": "Un stage de formation fait de votre propre initiative, rémunéré ou non, est déclaré à tous les risques de la sécurité sociale. S'il ne dépasse pas 3 mois par année civile (plusieurs stages cumulés compris), seules les cotisations accident et santé au travail sont dues.",
+          "officialUrl": "https://ccss.public.lu/fr/glossaire/stages-autres-regimes-scolaires/stages-non-regime-scolaire.html"
+        },
+        {
+          "title": "Vérifier la retenue d'impôt sur l'indemnité",
+          "detail": "Pour un stagiaire résident en stage pratique, l'employeur applique la retenue d'impôt. Un stagiaire résident en stage obligatoire en est dispensé, sur demande de l'employeur au bureau RTS. Vous pouvez régulariser en fin d'année par un décompte annuel ou une déclaration d'impôt.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/contrat-jeunes-actifs/convention-stage.html"
+        }
+      ]
+    },
+    {
+      "key": "contrat-travail",
+      "title": "Vérifier votre contrat de travail et la visite médicale d'embauche",
+      "category": "OTHER",
+      "summary": "Un contrat à durée déterminée (CDD) doit préciser par écrit son objet et sa durée : sans écrit précisant la durée déterminée, il est présumé conclu pour une durée indéterminée. Le contrat signé sert aussi de justificatif pour l'enregistrement à la commune.",
+      "appliesIf": "emploi salarié chez un employeur luxembourgeois",
+      "when": null,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/types-contrat-travail/contrat-duree-determinee.html",
+      "steps": [
+        {
+          "title": "Contrôler les mentions du CDD",
+          "detail": "En plus des mentions de tout contrat de travail, le CDD indique l'objet et le motif du recours au CDD, la date d'échéance (ou la durée minimale), la durée de la période d'essai éventuelle et, le cas échéant, une clause de renouvellement. Sa durée maximale est de 24 mois, renouvellements compris.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/types-contrat-travail/contrat-duree-determinee.html",
+          "requiredDocuments": ["Contrat de travail daté et signé par les 2 parties"]
+        },
+        {
+          "title": "Savoir qu'un CDD ne se rompt pas avant son terme",
+          "detail": "Hors période d'essai, faute grave ou commun accord constaté par écrit, aucune des deux parties ne peut mettre fin au CDD avant la date prévue.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/types-contrat-travail/contrat-duree-determinee.html"
+        },
+        {
+          "title": "Passer la visite médicale d'embauche",
+          "detail": "L'employeur demande l'examen auprès du service de santé au travail. Il a lieu au plus tard 2 mois après l'entrée en service, et avant l'entrée en service pour un travail de nuit ou un poste à risque.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/visite-medicale/visites-medicales/visite-medicale-embauche.html"
+        }
+      ]
+    },
+    {
+      "key": "ceam",
+      "title": "Commander la carte européenne d'assurance maladie",
+      "category": "HEALTH",
+      "summary": "Tant que vous restez affilié à l'Assurance Maladie française (stage d'études par exemple), la CEAM permet la prise en charge des soins devenus nécessaires pendant le séjour au Luxembourg, selon les règles luxembourgeoises.",
+      "appliesIf": "tant que vous restez affilié à l'Assurance Maladie française (à vérifier selon votre statut)",
+      "when": -20,
+      "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger",
+      "steps": [
+        {
+          "title": "Commander la carte sur votre compte ameli",
+          "detail": "Ameli conseille de la demander au moins 15 jours avant le départ, en ligne, au 36 46 ou en point d'accueil. Elle est valable 2 ans au maximum, sans dépasser la durée de vos droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Utiliser le certificat provisoire si le départ est proche",
+          "detail": "Si vous partez dans moins de 15 jours, votre caisse vous délivre un certificat provisoire de remplacement valable 3 mois.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/vacances-etranger"
+        },
+        {
+          "title": "Vérifier que la CEAM convient à votre séjour",
+          "detail": "La CEAM sert aux séjours temporaires. Si vous allez vivre dans un autre pays européen, service-public.fr indique qu'il faut utiliser le formulaire S1 pour vous inscrire auprès du système de soins du nouveau pays de résidence.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F34441"
+        },
+        {
+          "title": "Si vous êtes étudiant, lire la fiche stage du CLEISS",
+          "detail": "Le CLEISS conseille de demander la CEAM avant un stage d'études. Si la gratification dépasse 15 % du plafond horaire de la Sécurité sociale, la couverture française des accidents du travail ne s'applique pas, et selon la durée et la rémunération le pays d'accueil peut vous considérer comme salarié.",
+          "officialUrl": "https://www.cleiss.fr/particuliers/partir/stage/ue-eee-suisse.html"
+        },
+        {
+          "title": "Savoir qu'un emploi sur place vous fait changer de régime",
+          "detail": "Si vous exercez une activité professionnelle dans le pays où vous poursuivez vos études, vous êtes affilié au régime local de sécurité sociale et n'êtes plus affilié au régime français.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/etudes-etranger"
+        }
+      ]
+    },
+    {
+      "key": "commune",
+      "title": "Déclarer votre arrivée et vous enregistrer à la commune",
+      "category": "RESIDENCE",
+      "summary": "Pour un séjour de plus de 3 mois, un citoyen de l'UE déclare son arrivée à la commune de résidence puis y remplit une déclaration d'enregistrement dans les 3 mois. La Ville de Luxembourg demande de déclarer l'arrivée dans les huit jours.",
+      "appliesIf": "séjour de plus de 3 mois avec résidence au Luxembourg",
+      "when": 8,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/immigration/vivre/non-luxembourg/immigration/union-euro/travail/sejour-travail.html",
+      "steps": [
+        {
+          "title": "Déclarer votre arrivée au bureau de la population",
+          "detail": "En arrivant de l'étranger, déclarez votre résidence habituelle au bureau de la population de votre commune. La Ville de Luxembourg fixe un délai de huit jours après l'arrivée. Vérifiez les pièces demandées par votre commune.",
+          "officialUrl": "https://www.vdl.lu/fr/vivre/demarches-administratives/declarer-sa-residence-depart-arrivee-et-changement-de-residence",
+          "requiredDocuments": [
+            "Carte d'identité ou passeport en cours de validité",
+            "Preuve de résidence : contrat de bail, facture d'électricité, d'eau ou de téléphone fixe de moins de 3 mois",
+            "À défaut, certificat d'hébergement signé par le propriétaire ou le locataire",
+            "Le cas échéant, actes d'état civil (mariage, naissance des enfants)"
+          ]
+        },
+        {
+          "title": "Remplir la déclaration d'enregistrement",
+          "detail": "Dans les 3 mois suivant l'arrivée, remplissez auprès de la commune de résidence la déclaration d'enregistrement de citoyen de l'Union, dans votre catégorie : salarié, indépendant, inactif, étudiant ou membre de famille.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/immigration/vivre/non-luxembourg/immigration/union-euro/travail/sejour-travail.html",
+          "requiredDocuments": [
+            "Formulaire de déclaration d'enregistrement d'un citoyen de l'Union",
+            "Copie de la carte d'identité ou du passeport valable",
+            "Salarié : contrat de travail conforme au droit luxembourgeois, daté et signé par les 2 parties, ou promesse d'embauche datée et signée",
+            "Inactif : justificatif de ressources suffisantes et d'une assurance maladie couvrant tous les risques au Luxembourg"
+          ]
+        },
+        {
+          "title": "Stagiaire : vérifier votre catégorie avec la commune",
+          "detail": "Le formulaire ne prévoit pas de catégorie stagiaire. La catégorie salarié suppose un contrat de travail (une activité accessoire de moins de 10 heures par semaine ne suffit pas) et la catégorie étudiant une inscription dans un établissement agréé au Luxembourg. Sinon, la catégorie inactif demande des ressources suffisantes et une assurance maladie couvrant tous les risques au Luxembourg.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/immigration/vivre/non-luxembourg/immigration/union-euro/travail/sejour-travail.html"
+        },
+        {
+          "title": "Recevoir l'attestation d'enregistrement",
+          "detail": "Elle vous est remise immédiatement lors de la déclaration. Elle indique vos nom, prénoms et adresse, la date et le numéro de l'enregistrement, et sa durée de validité n'est pas limitée.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/immigration/vivre/non-luxembourg/immigration/union-euro/travail/sejour-travail.html"
+        },
+        {
+          "title": "Faire traduire les documents si besoin",
+          "detail": "Les documents qui ne sont pas en français, en allemand ou en anglais doivent être accompagnés d'une traduction conforme par un traducteur assermenté. La commune peut demander des pièces supplémentaires : renseignez-vous avant d'y aller.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/citoyennete/changement-adresse/depart-arrivee-commune.html"
+        },
+        {
+          "title": "Activer MyGuichet.lu avec votre identité numérique française",
+          "detail": "MyGuichet.lu accepte les moyens d'identification eIDAS de plusieurs pays, dont la France. Il faut un numéro d'identification national luxembourgeois à 13 chiffres (matricule) ; sans ce numéro, une procédure d'immatriculation eIDAS permet de le demander en ligne.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/support/aide/myguichet/enregistrement/eidas.html"
+        }
+      ]
+    },
+    {
+      "key": "bail",
+      "title": "Signer le bail et verser la garantie locative",
+      "category": "OTHER",
+      "summary": "Au Luxembourg, le bail d'habitation doit être écrit. La garantie locative ne peut pas dépasser 2 mois de loyer et les frais d'une agence immobilière sont partagés par moitié entre propriétaire et locataire.",
+      "appliesIf": "location d'un logement au Luxembourg",
+      "when": 0,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html",
+      "steps": [
+        {
+          "title": "Vérifier le contrat écrit",
+          "detail": "Le bail doit être écrit, sous peine de nullité, en autant d'exemplaires que de parties. Il indique notamment l'identité des parties, la date de début et la durée, les pièces louées, l'adresse, le loyer hors charges et les éventuelles avances sur charges.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html"
+        },
+        {
+          "title": "Choisir une durée adaptée à votre séjour",
+          "detail": "Un bail à durée déterminée est reconduit tacitement à son terme. Le locataire qui résilie seul doit respecter le terme prévu au contrat. Le préavis est de 3 mois, sauf clause prévoyant un délai plus long.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/resiliation-bail.html"
+        },
+        {
+          "title": "Verser la garantie locative",
+          "detail": "Elle ne peut pas dépasser 2 mois de loyer et peut prendre 5 formes, dont la garantie bancaire. Si une garantie est versée, l'état des lieux d'entrée doit être signé au plus tard le jour de l'entrée dans les lieux.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html",
+          "requiredDocuments": ["Contrat de bail signé", "État des lieux d'entrée"]
+        },
+        {
+          "title": "Partager les frais d'agence",
+          "detail": "Si un agent immobilier ou un autre tiers intervient, ses frais et honoraires sont partagés par moitié entre le propriétaire et le locataire.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html"
+        },
+        {
+          "title": "En colocation, signer le pacte de colocation",
+          "detail": "Il est établi par écrit et signé par tous les colocataires au plus tard à la date de signature du bail. Un colocataire qui part avant le terme prévient le propriétaire et les autres colocataires 3 mois à l'avance, par lettre recommandée avec avis de réception, et cherche un remplaçant (ou prouve une recherche active).",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html"
+        }
+      ]
+    },
+    {
+      "key": "affiliation-ccss",
+      "title": "Être affilié à la sécurité sociale luxembourgeoise",
+      "category": "HEALTH",
+      "summary": "Un salarié est déclaré par son employeur au Centre commun de la sécurité sociale (CCSS). Pour le secteur privé, l'assurance maladie est gérée par la Caisse nationale de santé (CNS).",
+      "appliesIf": "emploi salarié, ou stage déclaré au CCSS par l'employeur",
+      "when": null,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/sante/affiliation-securite-sociale/salarie-independant-famille/affiliation-resident.html",
+      "steps": [
+        {
+          "title": "Vérifier la déclaration d'entrée faite par l'employeur",
+          "detail": "C'est l'employeur qui déclare votre entrée au CCSS : les déclarations d'entrée et de sortie doivent parvenir au CCSS dans les 8 jours suivant l'événement.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/travail/conditions-travail/types-contrat-travail/declaration-ccss-amendes.html"
+        },
+        {
+          "title": "Recevoir la carte de sécurité sociale",
+          "detail": "Gratuite, elle est éditée lors de l'affiliation et envoyée par la poste à votre adresse de résidence officielle, dans un délai de 3 semaines après la déclaration d'entrée. Sa face européenne sert de carte européenne d'assurance maladie.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/sante/affiliation-securite-sociale/salarie-independant-famille/carte-securite-sociale-resident.html"
+        },
+        {
+          "title": "Enregistrer votre compte bancaire auprès de la CNS",
+          "detail": "Les remboursements se font par virement. Vos coordonnées bancaires s'enregistrent une fois via MyGuichet.lu (demande de changement de compte bancaire auprès d'une caisse de maladie).",
+          "officialUrl": "https://cns.public.lu/fr/assure/remboursements/demarches-frequentes/remboursement-en-pratique.html"
+        },
+        {
+          "title": "Demander à votre médecin s'il utilise le PID",
+          "detail": "Avec le paiement immédiat direct (PID), le médecin reçoit directement de la CNS la part prise en charge et vous ne payez que votre participation personnelle. Il n'existe pas de liste publique des médecins équipés.",
+          "officialUrl": "https://cns.public.lu/fr/assure/remboursements/paiements/paiement-immediat-direct.html"
+        },
+        {
+          "title": "Sinon, envoyer vos factures à la CNS",
+          "detail": "Envoyez par courrier les originaux des factures et mémoires d'honoraires acquittés, dans les deux ans suivant le paiement. Chaque document porte le numéro d'identification à 13 chiffres de la personne soignée ; gardez une copie.",
+          "officialUrl": "https://cns.public.lu/fr/assure/remboursements/demarches-frequentes/remboursement-en-pratique.html"
+        },
+        {
+          "title": "Déclarer votre transfert de résidence à la CPAM",
+          "detail": "Si vous partez travailler à l'étranger, envoyez la déclaration de transfert de résidence hors de France dans le mois qui suit la fin de votre résidence en France, et rendez votre carte Vitale et votre CEAM.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": ["Déclaration de transfert de résidence hors de France", "Carte Vitale", "Carte européenne d'assurance maladie française"]
+        }
+      ]
+    },
+    {
+      "key": "fiche-impot",
+      "title": "Obtenir votre fiche de retenue d'impôt luxembourgeoise",
+      "category": "TAX",
+      "summary": "Au Luxembourg, l'impôt sur le salaire est retenu à la source selon la fiche de retenue d'impôt. Pour un salarié qui commence à travailler, l'Administration des contributions directes (ACD) l'émet automatiquement après l'affiliation au CCSS.",
+      "appliesIf": "salaire ou indemnité de stage versés par un employeur luxembourgeois",
+      "when": null,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/fiscalite/declaration-impot-decompte/fiche-retenue-impot/demander-modifier-fiche-impot.html",
+      "steps": [
+        {
+          "title": "Attendre l'émission automatique de la fiche",
+          "detail": "Elle arrive en moyenne dans les 30 jours ouvrables qui suivent l'affiliation au CCSS. L'employeur en reçoit une version électronique de l'ACD.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/fiscalite/declaration-impot-decompte/fiche-retenue-impot/demander-modifier-fiche-impot.html"
+        },
+        {
+          "title": "Relancer le bureau RTS si elle n'arrive pas",
+          "detail": "Sans fiche dans les 30 jours ouvrables qui suivent votre premier jour de travail, contactez le bureau RTS compétent et prévenez votre employeur. Sans fiche, la retenue est calculée en classe d'impôt 1 sans pouvoir être inférieure à 33 %, puis corrigée une fois la fiche remise ou en fin d'année.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/fiscalite/declaration-impot-decompte/fiche-retenue-impot/demander-modifier-fiche-impot.html"
+        },
+        {
+          "title": "Activer eDelivery sur MyGuichet.lu (facultatif)",
+          "detail": "Abonnez-vous aux courriers de l'ACD pour recevoir la fiche dans votre espace privé. Seuls les documents envoyés après l'abonnement y sont disponibles.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/fiscalite/declaration-impot-decompte/fiche-retenue-impot/demander-modifier-fiche-impot.html"
+        },
+        {
+          "title": "Régulariser l'année suivante si besoin",
+          "detail": "Le décompte annuel (modèle 163) permet de régulariser les retenues à la source ; la demande se dépose au bureau RTS au plus tard le 31 décembre de l'année qui suit. Si vous n'avez été résident qu'une partie de l'année, des règles particulières s'appliquent.",
+          "officialUrl": "https://impotsdirects.public.lu/fr/az/d/decompte.html"
+        },
+        {
+          "title": "Déclaration d'impôt : pas d'assistant en ligne l'année du changement de pays",
+          "detail": "Si vous déposez une déclaration d'impôt (modèle 100), obligatoire ou sur demande, elle se dépose au plus tard le 31 décembre de l'année qui suit. L'assistant électronique de MyGuichet.lu ne peut pas être utilisé si vous avez changé de pays de résidence au cours de l'année d'imposition.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/fiscalite/declaration-impot-decompte/activite-professionnelle/declaration-revenus/declaration-impot-electronique.html"
+        }
+      ]
+    },
+    {
+      "key": "residence-fiscale",
+      "title": "Clarifier votre résidence fiscale entre la France et le Luxembourg",
+      "category": "TAX",
+      "summary": "La France et le Luxembourg peuvent chacun vous considérer comme résident fiscal. La convention fiscale franco-luxembourgeoise du 20 mars 2018 tranche et fixe où vos salaires sont imposables.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/luxembourg/convention_luxembourg.pdf",
+      "steps": [
+        {
+          "title": "Vérifier les critères du domicile fiscal français",
+          "detail": "Un seul critère suffit pour être domicilié fiscalement en France : foyer ou lieu de séjour principal, activité professionnelle principale, ou centre des intérêts économiques.",
+          "officialUrl": "https://www.impots.gouv.fr/resident-de-france"
+        },
+        {
+          "title": "Appliquer la convention en cas de double résidence",
+          "detail": "Si les deux États vous considèrent comme résident, vous êtes résident de celui où vous disposez d'un foyer d'habitation permanent. Si vous en avez un dans les deux, c'est l'État où se trouve le centre de vos intérêts vitaux.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/luxembourg/convention_luxembourg.pdf"
+        },
+        {
+          "title": "Savoir où votre salaire est imposable",
+          "detail": "Les salaires privés sont imposables dans l'État où s'exerce l'activité. Le salaire d'un travail effectué au Luxembourg y est donc imposable, sauf exception de courte durée (183 jours au plus, employeur non résident du Luxembourg et salaire non supporté par un établissement au Luxembourg, conditions cumulatives).",
+          "officialUrl": "https://bofip.impots.gouv.fr/bofip/6394-PGP.html/identifiant=BOI-INT-CVB-LUX-20-20210223"
+        },
+        {
+          "title": "Si vous restez résident fiscal français, éviter la double imposition",
+          "detail": "Pour un résident de France, les revenus imposables au Luxembourg restent imposables en France, avec un crédit d'impôt sur l'impôt français prévu par l'article 22 de la convention.",
+          "officialUrl": "https://www.impots.gouv.fr/sites/default/files/media/10_conventions/luxembourg/convention_luxembourg.pdf"
+        },
+        {
+          "title": "Joindre le formulaire 2047 si vous restez domicilié en France",
+          "detail": "Si vous êtes domicilié en France et percevez des revenus hors de France, le formulaire 2047 se joint à votre déclaration d'ensemble des revenus.",
+          "officialUrl": "https://www.impots.gouv.fr/formulaire/2047/declaration-des-revenus-encaisses-letranger"
+        }
+      ]
+    },
+    {
+      "key": "banque",
+      "title": "Ouvrir un compte bancaire luxembourgeois si nécessaire",
+      "category": "BANK",
+      "summary": "Un compte français en euros permet en principe les virements et prélèvements SEPA. Ouvrez un compte luxembourgeois si on vous le demande ou si cela simplifie vos paiements.",
+      "appliesIf": "si votre compte français ne suffit pas",
+      "when": null,
+      "officialUrl": "https://www.cssf.lu/fr/comptes-de-paiement/",
+      "steps": [
+        {
+          "title": "Vérifier si votre compte français peut servir",
+          "detail": "Pour un virement ou un prélèvement SEPA, un compte ne peut pas être refusé au seul motif qu'il est situé dans un autre pays de l'UE. Cette règle s'applique si l'autre partie accepte ces opérations depuis des comptes nationaux.",
+          "officialUrl": "https://europa.eu/youreurope/citizens/consumers/financial-products-and-services/payments-transfers-cheques/index_fr.htm"
+        },
+        {
+          "title": "Demander un compte de paiement de base en cas de besoin",
+          "detail": "Tout consommateur résidant légalement dans l'UE y a droit. La Banque et Caisse d'Épargne de l'État, la Banque Raiffeisen, BGL BNP Paribas et POST Luxembourg doivent le proposer. La banque accepte ou refuse au plus tard 10 jours ouvrables après réception d'une demande complète.",
+          "officialUrl": "https://www.cssf.lu/fr/comptes-de-paiement/",
+          "requiredDocuments": ["Carte d'identité ou passeport"]
+        }
+      ]
+    },
+    {
+      "key": "transports",
+      "title": "Utiliser les transports publics gratuits",
+      "category": "TRANSPORT",
+      "summary": "Depuis le 1er mars 2020, bus, trains (sauf 1re classe) et trams sont gratuits sur tout le territoire luxembourgeois, pour les résidents, les frontaliers et les touristes.",
+      "appliesIf": null,
+      "when": null,
+      "officialUrl": "https://transports.public.lu/fr/se-deplacer/transports-publics/mobilite-gratuite.html",
+      "steps": [
+        {
+          "title": "Voyager sans billet en 2e classe au Luxembourg",
+          "detail": "Les trajets nationaux en 2e classe sont gratuits sur les réseaux RGTR, CFL, AVL, Luxtram et TICE. Le voyageur doit avoir une carte d'identité en cours de validité.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-commun/gratuite-transports/circulation-transports-publics.html"
+        },
+        {
+          "title": "Prendre un billet pour sortir du pays",
+          "detail": "La gratuité s'arrête à la frontière : un billet ou un abonnement transfrontalier est nécessaire pour voyager au-delà du territoire luxembourgeois.",
+          "officialUrl": "https://www.mobiliteit.lu/fr/billets/billets-transfrontaliers/"
+        },
+        {
+          "title": "Connaître les exceptions",
+          "detail": "Les trains en 1re classe sont payants à partir de 12 ans. Les gares d'Audun-le-Tiche et de Volmerange-les-Mines (France) et d'Athus (Belgique), exploitées en régime national luxembourgeois, ne demandent pas de billet en 2e classe.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-commun/gratuite-transports/circulation-transports-publics.html"
+        }
+      ]
+    },
+    {
+      "key": "vehicule",
+      "title": "Immatriculer votre véhicule au Luxembourg",
+      "category": "TRANSPORT",
+      "summary": "Si vous vous installez au Luxembourg avec votre véhicule, il doit y être immatriculé dans les 6 mois suivant votre déclaration d'arrivée à la commune.",
+      "appliesIf": "si vous venez avec un véhicule dont vous êtes propriétaire",
+      "when": 180,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-individuels/vehicule-motorise/immatriculer-vehicule/vehicule-demenagement-transfrontalier.html",
+      "steps": [
+        {
+          "title": "Suivre les démarches dans l'ordre",
+          "detail": "Demande d'un numéro d'immatriculation si nécessaire, assurance responsabilité civile, paiement du timbre fiscal, dédouanement du véhicule (vignette 705), puis rendez-vous à la SNCA pour obtenir le certificat d'immatriculation.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-individuels/vehicule-motorise/immatriculer-vehicule/vehicule-demenagement-transfrontalier.html"
+        },
+        {
+          "title": "Vérifier le contrôle technique",
+          "detail": "Au moment de la nouvelle immatriculation, le véhicule doit être en règle en matière de contrôle technique.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-individuels/vehicule-motorise/immatriculer-vehicule/vehicule-demenagement-transfrontalier.html"
+        },
+        {
+          "title": "Transcrire votre permis de conduire (facultatif)",
+          "detail": "Toute personne qui s'installe au Luxembourg peut faire transcrire son permis étranger. Cela simplifie les démarches en cas de perte, de vol ou de renouvellement.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/transport/transports-individuels/vehicule-motorise/immatriculer-vehicule/vehicule-demenagement-transfrontalier.html"
+        }
+      ]
+    },
+    {
+      "key": "registre-francais",
+      "title": "S'inscrire au registre des Français établis hors de France",
+      "category": "OTHER",
+      "summary": "Facultative mais fortement recommandée, l'inscription est gratuite et valable 5 ans. Elle facilite les démarches consulaires et permet au consulat de vous contacter en cas d'urgence.",
+      "appliesIf": "facultatif",
+      "when": null,
+      "officialUrl": "https://lu.diplomatie.gouv.fr/registre/inscription-au-registre",
+      "steps": [
+        {
+          "title": "S'inscrire en ligne sur service-public.fr",
+          "detail": "Faites la démarche en ligne avec les pièces scannées. Le consulat de rattachement (section consulaire de l'ambassade de France au Luxembourg) vous contacte ensuite pour valider l'inscription.",
+          "officialUrl": "https://www.service-public.gouv.fr/particuliers/vosdroits/F33307",
+          "requiredDocuments": [
+            "Carte nationale d'identité ou passeport français",
+            "Justificatif de résidence au Luxembourg",
+            "Photo d'identité récente"
+          ]
+        },
+        {
+          "title": "Choisir où voter (facultatif)",
+          "detail": "Lors de l'inscription, vous pouvez indiquer que vous souhaitez voter depuis l'étranger. L'inscription se renouvelle tous les cinq ans, avec un rappel trois mois avant l'échéance.",
+          "officialUrl": "https://lu.diplomatie.gouv.fr/registre/inscription-au-registre"
+        }
+      ]
+    },
+    {
+      "key": "depart",
+      "title": "Préparer votre départ du Luxembourg",
+      "category": "RESIDENCE",
+      "summary": "Déclarez votre départ à la commune au plus tard la veille du départ. Pensez aussi au préavis du bail, à la garantie locative, à vos droits au chômage et à votre Assurance Maladie au retour en France.",
+      "appliesIf": "départ définitif du Luxembourg",
+      "when": null,
+      "officialUrl": "https://guichet.public.lu/fr/citoyens/citoyennete/changement-adresse/depart-arrivee-commune.html",
+      "steps": [
+        {
+          "title": "Déclarer votre départ à la commune",
+          "detail": "La déclaration se fait auprès de la commune de résidence au plus tard la veille du départ, et doit être signée. Elle peut aussi se faire en ligne sur MyGuichet.lu (Déclaration de changement de résidence habituelle), avec authentification.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/citoyennete/changement-adresse/depart-arrivee-commune.html"
+        },
+        {
+          "title": "Rendre l'attestation d'enregistrement",
+          "detail": "À la Ville de Luxembourg, un ressortissant étranger qui quitte le pays pour plus de six mois remet son attestation d'enregistrement avant le départ.",
+          "officialUrl": "https://www.vdl.lu/fr/vivre/demarches-administratives/declarer-sa-residence-depart-arrivee-et-changement-de-residence",
+          "requiredDocuments": ["Attestation d'enregistrement"]
+        },
+        {
+          "title": "Résilier le bail à temps",
+          "detail": "Respectez le terme prévu au contrat et le préavis (3 mois, sauf clause prévoyant plus). La résiliation se fait en principe par lettre recommandée avec accusé de réception.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/resiliation-bail.html"
+        },
+        {
+          "title": "Récupérer la garantie locative",
+          "detail": "Si l'état des lieux de sortie est conforme à celui d'entrée, la moitié de la garantie est rendue au plus tard un mois après la remise des clés, le solde après la régularisation des charges.",
+          "officialUrl": "https://guichet.public.lu/fr/citoyens/logement/location/contrat-litige/conclure-contrat-bail-location.html"
+        },
+        {
+          "title": "Demander le document U1 si vous comptez toucher le chômage en France",
+          "detail": "Demandez le document portable U1, qui récapitule vos périodes d'emploi, à l'institution compétente de votre ancien État d'emploi. France Travail en tient compte seulement si vous avez retravaillé en France ensuite.",
+          "officialUrl": "https://www.francetravail.fr/faq/candidat/ma-situation-change/travail-ou-recherche-demploi-a-l/retour-en-france/je-rentre-en-france-apres-avoir.html"
+        },
+        {
+          "title": "Rouvrir vos droits à l'Assurance Maladie au retour",
+          "detail": "Si vous avez relevé du régime luxembourgeois, prévenez la caisse du pays d'accueil de votre départ, puis envoyez à votre CPAM le formulaire S1106 de demande d'ouverture des droits.",
+          "officialUrl": "https://www.ameli.fr/assure/droits-demarches/europe-international/protection-sociale-etranger/travailleur-expatriation-etranger",
+          "requiredDocuments": ["Formulaire S1106"]
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "Délai d'enregistrement : la page guichet.lu sur le séjour des citoyens de l'UE indique 3 mois après l'arrivée, la page sur la déclaration d'arrivée indique 90 jours. Pour la déclaration d'arrivée, guichet.lu dit « dès son arrivée » et la Ville de Luxembourg huit jours. Vérifiez auprès de votre commune.",
+    "Stagiaire : le formulaire d'enregistrement ne prévoit pas de catégorie stagiaire (salarié, indépendant, inactif, étudiant, membre de famille). Les pages consultées ne disent pas si la CEAM est acceptée comme assurance maladie couvrant tous les risques au Luxembourg : demandez à la commune avant d'y aller.",
+    "Couverture santé d'un stagiaire étudiant : selon le CCSS, un étudiant domicilié au Luxembourg en stage prescrit par une école étrangère n'est pas déclaré au CCSS. Savoir si la CEAM suffit, s'il faut un formulaire S1 ou une assurance au Luxembourg dépend de votre situation : demandez à votre CPAM et au CCSS avant le départ.",
+    "Un stage pratique ne peut pas dépasser 6 mois sur 24 mois chez un même patron de stage. Pour une mission de 6 à 12 mois hors stage obligatoire, vérifiez avec l'employeur la forme du contrat (stage obligatoire, CDD).",
+    "Les montants du salaire social minimum (SSM) évoluent avec l'indexation : ils ne sont pas repris ici, consultez guichet.lu au moment de signer la convention.",
+    "Ce modèle vise une installation au Luxembourg. Si vous gardez votre domicile en France (frontalier), les démarches de résidence ne s'appliquent pas et d'autres règles jouent : le salaire reste imposable au Luxembourg si vous travaillez au plus 34 jours par an en France ou dans un pays tiers (avenant du 7 novembre 2022) ; en sécurité sociale, l'accord-cadre vise un télétravail de 25 % à moins de 50 % du temps.",
+    "La convention fiscale du 20 mars 2018 a été modifiée par des avenants (2019, 2022) : vérifiez la version consolidée sur impots.gouv.fr avant de vous y fier.",
+    "Impôts luxembourgeois l'année d'arrivée ou de départ : la loi distingue les périodes de résidence et de non-résidence, et le décompte annuel a des règles particulières pour les résidents d'une partie de l'année. En cas de doute, contactez le bureau RTS ou l'ACD.",
+    "Plusieurs pages officielles consultées sont anciennes et peuvent ne plus être à jour : affiliation d'un salarié résident (2017), déclaration au CCSS et gratuité des transports sur guichet.lu (2020), contrat à durée déterminée (2021).",
+    "Les pages consultées ne mentionnent pas d'obligation générale d'assurance habitation pour le locataire, ni les frais de la déclaration d'enregistrement : vérifiez votre bail et demandez à votre commune.",
+    "Immatriculation du véhicule : la page guichet.lu vise une installation au Luxembourg. Pour un séjour de 6 à 12 mois, vérifiez auprès de la SNCA si l'obligation s'applique à votre cas.",
+    "Le document U1 est délivré par l'institution chômage du dernier pays d'emploi : le service luxembourgeois compétent n'a pas été vérifié sur un site officiel luxembourgeois.",
+    "Le lien sur les prélèvements SEPA renvoie au portail officiel de l'UE (Your Europe), faute de page luxembourgeoise équivalente vérifiée.",
+    "Informations relevées le 23/11/2026 : délais, seuils et procédures peuvent changer."
+  ]
+}

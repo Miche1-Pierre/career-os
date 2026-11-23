@@ -2,7 +2,9 @@
 
 import { USER } from "@/server/context";
 import { runAction } from "@/server/action-utils";
-import type { BudgetPlan, ListingInput, ListingPatch, ListingStatus, MoveInput } from "@/lib/relocation";
+import type { BudgetPlan, ListingInput, ListingPatch, ListingStatus, MoveInput, PlaceInput } from "@/lib/relocation";
+import * as shares from "@/server/services/shares";
+import type { ShareInput } from "@/server/services/shares";
 import * as mv from "@/server/services/moves";
 import * as proc from "@/server/services/procedures";
 
@@ -107,4 +109,27 @@ export async function updateStepAction(stepId: string, patch: Record<string, unk
 
 export async function deleteStepAction(stepId: string) {
   return runAction(async () => proc.deleteStep(stepId));
+}
+
+export async function addPlaceAction(moveId: string, input: PlaceInput) {
+  return runAction(() => mv.addPlace(moveId, input, USER));
+}
+
+export async function removePlaceAction(moveId: string, placeId: string) {
+  return runAction(() => mv.removePlace(moveId, placeId, USER));
+}
+
+export async function listSharesAction(moveId: string) {
+  return runAction(() => shares.listShares(moveId));
+}
+
+export async function createShareAction(moveId: string, input: ShareInput) {
+  return runAction(() => shares.createShare(moveId, input, USER));
+}
+
+export async function revokeShareAction(id: string) {
+  return runAction(async () => {
+    await shares.revokeShare(id, USER);
+    return null;
+  });
 }

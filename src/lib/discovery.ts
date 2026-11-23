@@ -58,6 +58,11 @@ export const DISCOVERY_SOURCES: DiscoverySource[] = [
   { key: "wttj", domain: "JOBS", name: "Welcome to the Jungle", baseUrl: "https://www.welcometothejungle.com", access: "LINK", countries: ["FR", "BE", "ES", "CZ", "SK"], note: "Lien de recherche.", searchUrl: "https://www.welcometothejungle.com/fr/jobs?query={q}" },
   { key: "hellowork", domain: "JOBS", name: "HelloWork", baseUrl: "https://www.hellowork.com", access: "LINK", countries: ["FR"], note: "Lien de recherche.", searchUrl: "https://www.hellowork.com/fr-fr/emploi/recherche.html?k={q}&l={l}" },
   { key: "francetravail", domain: "JOBS", name: "France Travail", baseUrl: "https://candidat.francetravail.fr", access: "LINK", countries: ["FR"], note: "Lien de recherche (une API existe, avec compte développeur).", searchUrl: "https://candidat.francetravail.fr/offres/recherche?motsCles={q}" },
+  { key: "jobat", domain: "JOBS", name: "Jobat", baseUrl: "https://www.jobat.be", access: "LINK", countries: ["BE"], note: "Offres en Belgique : lien de recherche.", site: "jobat.be" },
+  { key: "moovijob", domain: "JOBS", name: "Moovijob", baseUrl: "https://www.moovijob.com", access: "LINK", countries: ["LU"], note: "Offres au Luxembourg : lien de recherche.", site: "moovijob.com" },
+  { key: "jobsch", domain: "JOBS", name: "jobs.ch", baseUrl: "https://www.jobs.ch", access: "LINK", countries: ["CH"], note: "Offres en Suisse : lien de recherche.", site: "jobs.ch" },
+  { key: "stepstone", domain: "JOBS", name: "StepStone", baseUrl: "https://www.stepstone.de", access: "LINK", countries: ["DE"], note: "Offres en Allemagne : lien de recherche.", site: "stepstone.de" },
+  { key: "totaljobs", domain: "JOBS", name: "Totaljobs", baseUrl: "https://www.totaljobs.com", access: "LINK", countries: ["GB"], note: "Offres au Royaume-Uni : lien de recherche.", site: "totaljobs.com" },
   // Housing (Brussels first; the agent covers other cities)
   { key: "claude-housing", domain: "HOUSING", name: "Claude (recherche web)", baseUrl: "https://claude.ai", access: "AGENT", countries: [], note: "Lit les annonces publiques (colivings, agences) et sépare loyer, charges, garantie." },
   { key: "immoweb", domain: "HOUSING", name: "Immoweb", baseUrl: "https://www.immoweb.be", access: "LINK", countries: ["BE"], note: "Anti-robot : ouvre la recherche dans ton navigateur.", site: "immoweb.be" },
@@ -66,6 +71,20 @@ export const DISCOVERY_SOURCES: DiscoverySource[] = [
   { key: "cohabs", domain: "HOUSING", name: "Cohabs", baseUrl: "https://www.cohabs.com", access: "LINK", countries: ["BE", "FR", "US", "LU", "ES"], note: "Coliving meublé, tout compris.", site: "cohabs.com" },
   { key: "ikoab", domain: "HOUSING", name: "Ikoab", baseUrl: "https://www.ikoab.com", access: "LINK", countries: ["BE"], note: "Coliving à Bruxelles.", site: "ikoab.com" },
   { key: "kijiji", domain: "HOUSING", name: "Kijiji", baseUrl: "https://www.kijiji.ca", access: "LINK", countries: ["CA"], note: "Annonces au Canada.", site: "kijiji.ca" },
+  { key: "housinganywhere", domain: "HOUSING", name: "HousingAnywhere", baseUrl: "https://housinganywhere.com", access: "LINK", countries: [], note: "Location meublée moyenne durée (stages, études), surtout en Europe.", site: "housinganywhere.com" },
+  { key: "leboncoin", domain: "HOUSING", name: "Leboncoin", baseUrl: "https://www.leboncoin.fr", access: "LINK", countries: ["FR"], note: "Anti-robot : recherche dans ton navigateur.", site: "leboncoin.fr" },
+  { key: "lacartedescolocs", domain: "HOUSING", name: "La Carte des Colocs", baseUrl: "https://www.lacartedescolocs.fr", access: "LINK", countries: ["FR"], note: "Colocations en France.", site: "lacartedescolocs.fr" },
+  { key: "pap", domain: "HOUSING", name: "PAP", baseUrl: "https://www.pap.fr", access: "LINK", countries: ["FR"], note: "Annonces de particulier à particulier.", site: "pap.fr" },
+  { key: "athome", domain: "HOUSING", name: "atHome", baseUrl: "https://www.athome.lu", access: "LINK", countries: ["LU"], note: "Annonces au Luxembourg.", site: "athome.lu" },
+  { key: "homegate", domain: "HOUSING", name: "Homegate", baseUrl: "https://www.homegate.ch", access: "LINK", countries: ["CH"], note: "Annonces en Suisse.", site: "homegate.ch" },
+  { key: "wgzimmer", domain: "HOUSING", name: "WGZimmer", baseUrl: "https://www.wgzimmer.ch", access: "LINK", countries: ["CH"], note: "Colocations en Suisse.", site: "wgzimmer.ch" },
+  { key: "pararius", domain: "HOUSING", name: "Pararius", baseUrl: "https://www.pararius.com", access: "LINK", countries: ["NL"], note: "Locations aux Pays-Bas (en anglais).", site: "pararius.com" },
+  { key: "kamernet", domain: "HOUSING", name: "Kamernet", baseUrl: "https://kamernet.nl", access: "LINK", countries: ["NL"], note: "Chambres et studios aux Pays-Bas.", site: "kamernet.nl" },
+  { key: "wggesucht", domain: "HOUSING", name: "WG-Gesucht", baseUrl: "https://www.wg-gesucht.de", access: "LINK", countries: ["DE"], note: "Colocations en Allemagne.", site: "wg-gesucht.de" },
+  { key: "immoscout24", domain: "HOUSING", name: "ImmoScout24", baseUrl: "https://www.immobilienscout24.de", access: "LINK", countries: ["DE"], note: "Anti-robot : recherche dans ton navigateur.", site: "immobilienscout24.de" },
+  { key: "spareroom", domain: "HOUSING", name: "SpareRoom", baseUrl: "https://www.spareroom.co.uk", access: "LINK", countries: ["GB"], note: "Colocations au Royaume-Uni.", site: "spareroom.co.uk" },
+  { key: "rightmove", domain: "HOUSING", name: "Rightmove", baseUrl: "https://www.rightmove.co.uk", access: "LINK", countries: ["GB"], note: "Locations au Royaume-Uni.", site: "rightmove.co.uk" },
+  { key: "idealista", domain: "HOUSING", name: "Idealista", baseUrl: "https://www.idealista.com", access: "LINK", countries: ["ES", "PT", "IT"], note: "Espagne, Portugal, Italie.", site: "idealista.com" },
 ];
 
 export function sourceByKey(key: string) {
@@ -120,10 +139,79 @@ export const housingCriteriaSchema = z.object({
 export type HousingCriteria = z.infer<typeof housingCriteriaSchema>;
 
 export const savedSearchInputSchema = z.discriminatedUnion("domain", [
-  z.object({ domain: z.literal("JOBS"), name: z.string().trim().min(1).max(200), criteria: jobsCriteriaSchema, sources: z.array(z.string()).max(30).optional(), useAgent: z.boolean().default(false), schedule: z.enum(SCHEDULES).default("OFF") }),
-  z.object({ domain: z.literal("HOUSING"), name: z.string().trim().min(1).max(200), moveId: z.string().uuid(), criteria: housingCriteriaSchema, sources: z.array(z.string()).max(30).optional(), useAgent: z.boolean().default(true), schedule: z.enum(SCHEDULES).default("OFF") }),
+  z.object({ domain: z.literal("JOBS"), name: z.string().trim().max(200).nullish(), criteria: jobsCriteriaSchema, sources: z.array(z.string()).max(30).optional(), useAgent: z.boolean().default(false), schedule: z.enum(SCHEDULES).default("OFF") }),
+  z.object({ domain: z.literal("HOUSING"), name: z.string().trim().max(200).nullish(), moveId: z.string().uuid(), criteria: housingCriteriaSchema, sources: z.array(z.string()).max(30).optional(), useAgent: z.boolean().default(true), schedule: z.enum(SCHEDULES).default("OFF") }),
 ]);
 export type SavedSearchInput = z.input<typeof savedSearchInputSchema>;
+
+const HOUSING_SHORT: Record<(typeof HOUSING_TYPES_SEARCH)[number], string> = { ROOM_COLIVING: "Coliving", ROOM_FLATSHARE: "Coloc", STUDIO: "Studio", APARTMENT: "Appartement" };
+
+/**
+ * Name of a search derived from its filters, so the user never has to type one:
+ * "AI engineer, full-stack · Bruxelles, Paris" or "Coloc, studio · Bruxelles · max 800 €". Pure.
+ */
+export function searchName(input: { domain: "JOBS"; criteria: Pick<JobsCriteria, "keywords" | "locations" | "remoteOk" | "companies"> } | { domain: "HOUSING"; criteria: Pick<HousingCriteria, "city" | "types" | "maxTotalMonthly" | "currency"> }): string {
+  const cut = (items: string[], n: number) => (items.length > n ? `${items.slice(0, n).join(", ")} +${items.length - n}` : items.join(", "));
+  if (input.domain === "JOBS") {
+    const c = input.criteria;
+    const where = c.locations.length ? cut(c.locations, 2) : c.remoteOk ? "télétravail" : null;
+    const followed = !c.keywords.length && c.companies.length ? cut(c.companies.map((x) => x.name), 2) : null;
+    return [c.keywords.length ? cut(c.keywords, 3) : followed ?? "Offres", where].filter(Boolean).join(" · ").slice(0, 200);
+  }
+  const c = input.criteria;
+  const types = c.types.length && c.types.length < HOUSING_TYPES_SEARCH.length ? c.types.map((t) => HOUSING_SHORT[t]) : ["Logement"];
+  const kinds = types.map((t, i) => (i ? t.toLowerCase() : t)).join(", ");
+  let max: string | null = null;
+  if (c.maxTotalMonthly) {
+    try {
+      max = `max ${new Intl.NumberFormat("fr-FR", { style: "currency", currency: c.currency || "EUR", maximumFractionDigits: 0 }).format(c.maxTotalMonthly)}`;
+    } catch {
+      max = `max ${c.maxTotalMonthly} ${c.currency}`;
+    }
+  }
+  return [kinds, c.city, max].filter(Boolean).join(" · ").slice(0, 200);
+}
+
+const BOARD_PATTERNS: { ats: Ats; re: RegExp }[] = [
+  { ats: "greenhouse", re: /(?:boards|job-boards)(?:\.eu)?\.greenhouse\.io\/(?:embed\/job_board(?:\/js)?\?(?:[^"'\s]*&)?for=)?([A-Za-z0-9._-]+)/gi },
+  { ats: "greenhouse", re: /boards-api(?:\.eu)?\.greenhouse\.io\/v1\/boards\/([A-Za-z0-9._-]+)/gi },
+  { ats: "lever", re: /(?:jobs|api)(?:\.eu)?\.lever\.co\/(?:v0\/postings\/)?([A-Za-z0-9._-]+)/gi },
+  { ats: "ashby", re: /jobs\.ashbyhq\.com\/([A-Za-z0-9._%-]+)/gi },
+  { ats: "ashby", re: /api\.ashbyhq\.com\/posting-api\/job-board\/([A-Za-z0-9._-]+)/gi },
+];
+const NOT_A_SLUG = new Set(["embed", "v0", "v1", "api", "js", "static", "assets", "jobs", "postings", "posting-api", "favicon.ico"]);
+
+/** Greenhouse / Lever / Ashby boards referenced by a careers URL or by the HTML of a careers page. Pure. */
+export function findBoards(text: string): { ats: Ats; slug: string }[] {
+  const out: { ats: Ats; slug: string }[] = [];
+  for (const { ats, re } of BOARD_PATTERNS) {
+    for (const m of text.matchAll(re)) {
+      const slug = decodeURIComponent(m[1]).replace(/[^A-Za-z0-9._-]/g, "");
+      if (!slug || NOT_A_SLUG.has(slug.toLowerCase()) || out.some((b) => b.ats === ats && b.slug.toLowerCase() === slug.toLowerCase())) continue;
+      out.push({ ats, slug });
+    }
+  }
+  return out;
+}
+
+/** Company name from a careers page title ("Jobs at Mistral AI", "Careers | Doctolib", "Alan - Jobs"). Pure. */
+export function companyFromTitle(title: string | null | undefined): string | null {
+  if (!title) return null;
+  let t = title.replace(/\s+/g, " ").trim();
+  t = t.replace(/^(?:current\s+)?(?:job\s+openings|jobs|careers|offres d['’]emploi|carrières|recrutement)\s+(?:at|chez|@|-|\||:)\s+/i, "");
+  t = t.split(/\s+[|·–—-]\s+/).find((part) => !/^(?:jobs?|careers?|carrières|join us|work with us|offres|recrutement|home|accueil)$/i.test(part.trim())) ?? t;
+  t = t.replace(/\s+(?:jobs|careers|carrières)$/i, "").trim();
+  return t && t.length <= 80 ? t : null;
+}
+
+/** "mistral-ai" → "Mistral Ai" (a starting point the user can correct). */
+export function prettySlug(slug: string): string {
+  return slug
+    .split(/[-_.]+/)
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(" ");
+}
 
 // ---------------------------------------------------------------------------
 // Job results (connectors and agent)

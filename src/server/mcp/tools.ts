@@ -62,8 +62,9 @@ import { listTags } from "@/server/services/tags";
 import { getCalendarEvents } from "@/server/services/calendar";
 import { getAnalytics, SEGMENTS, type SegmentKey } from "@/server/services/analytics";
 import { db } from "@/server/db";
-import { budgetPlanSchema, listingInputSchema, LISTING_STATUSES, moveInputSchema, movePatchSchema, type MoveInput } from "@/lib/relocation";
+import { budgetPlanSchema, listingInputSchema, LISTING_STATUSES, moveInputSchema, movePatchSchema, placeInputSchema, type MoveInput } from "@/lib/relocation";
 import {
+  addPlace,
   createMove,
   createMoveFromOpportunity,
   draftListingMessage,
@@ -705,7 +706,7 @@ export const TOOLS: McpTool[] = [
     title: "Create a saved search",
     description:
       "Save a job or housing search. JOBS criteria: keywords[], excludeKeywords[], locations[], countries[] (ISO), remoteOk, companies[{name, ats: greenhouse|lever|ashby, slug}], maxAgeDays. HOUSING criteria (moveId required): city, country, maxTotalMonthly, currency, furnished REQUIRED|PREFERRED|ANY, types[ROOM_COLIVING|ROOM_FLATSHARE|STUDIO|APARTMENT], from, to, near, notes. useAgent = let Claude search the web too (costs quota). schedule OFF|DAILY|WEEKLY.",
-    input: z.object({ domain: z.enum(["JOBS", "HOUSING"]), name: z.string(), moveId: z.string().uuid().optional(), criteria: z.record(z.string(), z.unknown()), sources: z.array(z.string()).optional(), useAgent: z.boolean().optional(), schedule: z.enum(["OFF", "DAILY", "WEEKLY"]).optional() }),
+    input: z.object({ domain: z.enum(["JOBS", "HOUSING"]), name: z.string().optional().describe("Optional: derived from the criteria when omitted"), moveId: z.string().uuid().optional(), criteria: z.record(z.string(), z.unknown()), sources: z.array(z.string()).optional(), useAgent: z.boolean().optional(), schedule: z.enum(["OFF", "DAILY", "WEEKLY"]).optional() }),
     handler: async (input, ctx) => {
       const row = await createSearch(input, ctx);
       return { id: row.id, url: `${appUrl()}/searches` };
@@ -822,6 +823,17 @@ export const TOOLS: McpTool[] = [
     handler: async ({ moveId, ...patch }, ctx) => {
       const m = await updateMove(moveId, patch, ctx);
       return { id: m.id, url: moveUrl(m.id) };
+    },
+  }),
+  tool({
+    name: "add_move_place",
+    title: "Add an important place to a move",
+    description:
+      "Add a place that matters besides the workplace (sports club, station, school, family…) to a move. It is located with OpenStreetMap, shown on the housing map, and every located listing gets its walking time to it. Use the exact address given by the user or an official page.",
+    input: placeInputSchema.extend({ moveId: z.string().uuid() }),
+    handler: async ({ moveId, ...place }, ctx) => {
+      const p = await addPlace(moveId, place, ctx);
+      return { id: p.id, label: p.label, lat: p.lat, lng: p.lng, url: `${moveUrl(moveId)}?tab=housing` };
     },
   }),
   tool({

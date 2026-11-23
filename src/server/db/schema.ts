@@ -581,6 +581,8 @@ export const moves = pgTable(
     workLng: doublePrecision("work_lng"),
     status: text("status").$type<MoveStatus>().notNull().default("PLANNING"),
     budget: jsonObject<Partial<BudgetPlan>>("budget"),
+    /** Places that matter besides the workplace (sports club, station, school…), geocoded, shown on the map. */
+    places: jsonList<MovePlace>("places"),
     notes: text("notes"),
     isDemo: isDemo(),
     createdAt: createdAt(),
@@ -590,6 +592,14 @@ export const moves = pgTable(
   },
   (t) => [index("moves_opportunity_idx").on(t.opportunityId)],
 );
+
+export interface MovePlace {
+  id: string;
+  label: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
 
 export interface ListingHistoryEntry {
   at: string;
@@ -650,6 +660,31 @@ export const housingListings = pgTable(
   },
   (t) => [index("housing_move_idx").on(t.moveId, t.status), index("housing_url_idx").on(t.url)],
 );
+
+/**
+ * Read-only links to a move's housing shortlist (spec v2 § 4.3, P6), e.g. for the family. The token is the only key:
+ * random, revocable, optionally expiring. Never exported (a new link is made after a restore).
+ */
+export const shareLinks = pgTable(
+  "share_links",
+  {
+    id: pk(),
+    moveId: uuid("move_id")
+      .notNull()
+      .references(() => moves.id, { onDelete: "cascade" }),
+    token: text("token").notNull(),
+    label: text("label"),
+    /** Show the estimated monthly savings (reveals the income indirectly). */
+    showSavings: boolean("show_savings").notNull().default(false),
+    expiresAt: ts("expires_at"),
+    revokedAt: ts("revoked_at"),
+    lastViewedAt: ts("last_viewed_at"),
+    viewCount: integer("view_count").notNull().default(0),
+    createdAt: createdAt(),
+  },
+  (t) => [uniqueIndex("share_links_token_uq").on(t.token), index("share_links_move_idx").on(t.moveId)],
+);
+export type ShareLink = typeof shareLinks.$inferSelect;
 
 // ---------------------------------------------------------------------------
 // Administrative procedures of a move (spec v2, P3)
