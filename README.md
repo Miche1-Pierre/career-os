@@ -21,9 +21,16 @@ Mono-utilisateur, local, vos données restent chez vous (PostgreSQL + dossiers s
 
 ### Avec Claude Code (recommandé)
 
-1. Téléchargez le projet : `git clone https://github.com/Miche1-Pierre/career-os.git` (ou le ZIP depuis GitHub).
-2. Ouvrez le dossier avec [Claude Code](https://claude.com/claude-code) : `cd career-os` puis `claude`.
-3. Dites-lui **« installe Career OS »**.
+Le plus simple : dans [Claude Code](https://claude.com/claude-code) (onglet Code de l'application Claude, ou `claude`
+dans un terminal), ouvert sur n'importe quel dossier, écrivez :
+
+> Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os
+
+Ou, si vous avez déjà le projet : `git clone https://github.com/Miche1-Pierre/career-os.git` (ou le ZIP), puis
+`cd career-os`, `claude`, et dites **« installe Career OS »**.
+
+> **Claude Code :** pour installer Career OS, récupérez ce dépôt s'il n'est pas déjà sur le disque, puis suivez
+> [`.claude/skills/career-setup/SKILL.md`](.claude/skills/career-setup/SKILL.md) depuis la racine du dépôt.
 
 Claude suit la procédure [`career-setup`](.claude/skills/career-setup/SKILL.md) :
 - il vous demande votre nom, votre e-mail, ce que vous cherchez et où ranger vos données ;
