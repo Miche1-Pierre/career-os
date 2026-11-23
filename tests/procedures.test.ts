@@ -155,12 +155,12 @@ describe("procedures (database)", () => {
     expect(item).toMatchObject({ href: `/moves/${moveId}?tab=procedures`, subtitle: "Stage · Bruxelles" });
 
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(3);
+    expect(file.schemaVersion).toBe(4);
     expect(file.counts.procedures).toBeGreaterThan(0);
     expect(file.counts.procedureSteps).toBeGreaterThan(0);
     // A v2 export (before procedures) still imports.
     const v2 = parseExport({ app: "career-os", schemaVersion: 2, exportedAt: "2026-11-01T00:00:00Z", counts: {}, data: { moves: [] } });
-    expect(v2.schemaVersion).toBe(3);
+    expect(v2.schemaVersion).toBe(4);
     expect(v2.data.procedures).toEqual([]);
   });
 });

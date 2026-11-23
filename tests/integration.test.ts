@@ -259,7 +259,7 @@ describe("rules engine", () => {
 describe("export / import", () => {
   it("round-trips all data through the versioned JSON format", async () => {
     const file = await exportAll();
-    expect(file.schemaVersion).toBe(3);
+    expect(file.schemaVersion).toBe(4);
     expect(file.counts.moves).toBe(0);
     expect(file.counts.opportunities).toBeGreaterThan(0);
     const serialized = JSON.parse(JSON.stringify(file));
