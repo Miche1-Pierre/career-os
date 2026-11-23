@@ -735,6 +735,11 @@
     /* Reserve the scrollbar width so pages don't shift sideways when one scrolls and the next doesn't. */
     scrollbar-gutter: stable;
   }
+  /* Menus, lists and dialogs lock the page scroll and add a right margin as wide as the scrollbar: the gutter is
+     already reserved above, so that margin only shifted the whole page sideways. */
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
   body {
     @apply bg-background text-foreground;
     text-rendering: optimizeLegibility;
