@@ -51,3 +51,4 @@ next-env.d.ts
 
 # Personal seed data (never commit)
 /seed/personal/
+/release/

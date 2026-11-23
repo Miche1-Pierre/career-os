@@ -1,0 +1,83 @@
+# Builds the prebuilt Windows app downloaded by site/install.ps1 and publishes it as the latest GitHub release.
+# Run it from the Actions tab (Run workflow) or push a tag vX.Y.Z. The release tag is the package.json version.
+name: Windows release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24.22.3"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build (self-contained server)
+        run: npm run build
+        env:
+          NEXT_OUTPUT: standalone
+          NEXT_TELEMETRY_DISABLED: "1"
+
+      - name: Bundle runtime scripts
+        run: node scripts/build-scripts.mjs
+
+      - name: Package
+        run: node scripts/package-windows.mjs
+
+      - name: Smoke test (database, migrations, server)
+        shell: pwsh
+        run: |
+          $stage = Resolve-Path release/career-os
+          $data = Join-Path $env:RUNNER_TEMP 'career-os-data'
+          @(
+            'APP_PORT=3999', 'APP_BIND=127.0.0.1', 'APP_URL=http://localhost:3999',
+            "CAREER_OS_DB_DIR=$($data -replace '\\','/')/db", 'DB_PORT=5499',
+            'DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5499/postgres', 'DATABASE_POOL_SIZE=1',
+            "DOCUMENTS_ROOT=$($data -replace '\\','/')/documents", "APP_DATA_DIR=$($data -replace '\\','/')/app",
+            "BACKUPS_DIR=$($data -replace '\\','/')/backups", 'AI_PROVIDER=none'
+          ) | Set-Content (Join-Path $stage '.env')
+          $p = Start-Process node -ArgumentList 'scripts/start-local.mjs' -WorkingDirectory $stage -PassThru
+          $ok = $false
+          for ($i = 0; $i -lt 90; $i++) {
+            try { if ((Invoke-WebRequest -UseBasicParsing http://localhost:3999/api/health).StatusCode -eq 200) { $ok = $true; break } } catch { }
+            Start-Sleep -Seconds 2
+          }
+          $welcome = (Invoke-WebRequest -UseBasicParsing http://localhost:3999/welcome).StatusCode
+          Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
+          Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+          Remove-Item (Join-Path $stage '.env') -Force
+          if (-not $ok -or $welcome -ne 200) { throw "smoke test failed (health $ok, welcome $welcome)" }
+          # Repack without the .env and the test data written next to the app.
+          node scripts/package-windows.mjs
+
+      - name: Publish release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $tag = "v$version"
+          $files = 'release/career-os-windows-x64.zip', 'release/career-os-windows-x64.zip.sha256'
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag @files --clobber
+          } else {
+            gh release create $tag @files --target $env:GITHUB_SHA --title "Career OS $version" --notes "Installation sur Windows : https://get-career-os.vercel.app" --latest
+          }

@@ -78,6 +78,20 @@ export function claudeKeyEnv(): Record<string, string | undefined> | undefined {
   return { ANTHROPIC_API_KEY: key, CLAUDE_CODE_OAUTH_TOKEN: undefined, CLAUDE_CONFIG_DIR: claudeApiConfigDir() };
 }
 
+/** Message shown wherever the assistant is needed but no key was pasted yet (Windows install). */
+export const NEEDS_KEY_MESSAGE = "Pour activer l'assistant, colle ta clé Claude dans Paramètres → IA.";
+
+/**
+ * Installs made with the Windows command ship their own Claude Code, logged in to no account (CLAUDE_REQUIRES_KEY=true):
+ * the assistant needs a pasted key, unless this computer also has Claude Code logged in with a subscription.
+ */
+export function claudeNeedsKey(): boolean {
+  if (process.env.CLAUDE_REQUIRES_KEY?.trim() !== "true") return false;
+  if (claudeKeyEnv() || process.env.CLAUDE_CODE_OAUTH_TOKEN?.trim()) return false;
+  const home = process.env.USERPROFILE || process.env.HOME || "";
+  return !(home && fs.existsSync(path.join(home, ".claude", ".credentials.json")));
+}
+
 /** Configuration folder of the Claude Code runs made with the API key (sessions, caches), next to the app data. */
 export function claudeApiConfigDir() {
   const dir = path.join(storageConfig.dataDir, "claude-api");

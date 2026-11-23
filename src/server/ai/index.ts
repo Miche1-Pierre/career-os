@@ -10,7 +10,7 @@ import { claudeVersion, resolveClaudeBin, runClaude } from "../../../bridge/clau
 import { AppError } from "@/server/context";
 import { getSettings } from "@/server/services/settings";
 import { toStructuredOutputSchema } from "./json-schema";
-import { anthropicKey, apiKeyState, claudeKeyEnv, explainClaudeError, storedAnthropicKey } from "./credentials";
+import { anthropicKey, apiKeyState, claudeKeyEnv, claudeNeedsKey, explainClaudeError, NEEDS_KEY_MESSAGE, storedAnthropicKey } from "./credentials";
 
 export interface StructuredRequest<T> {
   task: string;
@@ -123,6 +123,7 @@ const claudeCodeProvider: Provider = {
           setup: inDocker() ? "Rebuild the image with INSTALL_CLAUDE_CLI=true, or use the host bridge (npm run bridge)." : "Demande à Claude « installe Claude Code pour Career OS », ou lance : npm i -g @anthropic-ai/claude-code",
         };
       }
+      if (claudeNeedsKey()) return { provider: "claude-code", available: false, mode, model, detail: "Claude n'est pas encore connecté.", setup: NEEDS_KEY_MESSAGE };
       const key = claudeKeyEnv()?.ANTHROPIC_API_KEY;
       if (key) return { provider: "claude-code", available: true, mode, model, detail: `Clé API Claude · Claude Code ${version}`, setup: null };
       if (inDocker() && !env("CLAUDE_CODE_OAUTH_TOKEN") && !env("ANTHROPIC_API_KEY")) {
@@ -153,6 +154,7 @@ const claudeCodeProvider: Provider = {
     return { provider: "claude-code", available: false, mode: null, model, detail: "Claude Code is not configured.", setup: "Set CLAUDE_CODE_OAUTH_TOKEN (claude setup-token) or CLAUDE_BRIDGE_URL in .env." };
   },
   async call(input) {
+    if (claudeNeedsKey()) throw new AppError("UNAVAILABLE", NEEDS_KEY_MESSAGE);
     const mode = claudeMode();
     const model = input.model || env("AI_MODEL") || "opus";
     const fallbackModel = model === "opus" ? "sonnet" : null;
