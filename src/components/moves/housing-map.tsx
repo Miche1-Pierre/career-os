@@ -70,7 +70,8 @@ export function HousingMap({ move, listings, onOpen }: { move: MoveView; listing
   const located = listings.filter((l) => l.lat !== null).length;
   return (
     <div className="space-y-2">
-      <div ref={ref} className="h-[520px] w-full overflow-hidden rounded-2xl border border-border" />
+      {/* isolate: Leaflet panes use z-index up to 1000; keep them inside the map so sheets and dialogs stay on top. */}
+      <div ref={ref} className="relative isolate z-0 h-[520px] w-full overflow-hidden rounded-2xl border border-border" />
       <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
         <span>
           {located}/{listings.length} annonces localisées

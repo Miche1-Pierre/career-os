@@ -18,6 +18,8 @@ export const LOGO_MAX_BYTES = 256 * 1024;
 const LOGO_MIN_BYTES = 32;
 const HIT_TTL_MS = 30 * 24 * 3600_000;
 const MISS_TTL_MS = 3 * 24 * 3600_000;
+/** A blurry icon (under SHARP_PX) is looked up again after this delay, in case a sharper one appears. */
+const SMALL_TTL_MS = 3 * 24 * 3600_000;
 const TIMEOUT_MS = 5_000;
 const MAX_REDIRECTS = 3;
 
@@ -275,9 +277,10 @@ export async function getLogo(host: string, deps: LogoDeps = defaultDeps): Promi
 async function resolveLogo(host: string, deps: LogoDeps): Promise<Logo | null> {
   const files = cachePaths(host);
   const now = deps.now();
-  const imageFresh = await fresh(files.image, HIT_TTL_MS, now);
-  const cached = imageFresh === null ? null : await readCached(files.image);
-  if (imageFresh && cached) return cached;
+  const cached = (await fresh(files.image, HIT_TTL_MS, now)) === null ? null : await readCached(files.image);
+  const cachedWidth = cached ? imageWidth(cached) : 0;
+  const small = cachedWidth > 0 && cachedWidth < SHARP_PX;
+  if (cached && (await fresh(files.image, small ? SMALL_TTL_MS : HIT_TTL_MS, now))) return cached;
   if (!cached && (await fresh(files.miss, MISS_TTL_MS, now))) return null;
 
   // First sharp icon wins; otherwise keep the largest one found.
@@ -305,11 +308,17 @@ async function resolveLogo(host: string, deps: LogoDeps): Promise<Logo | null> {
       if (found) break;
     }
   }
+  // `found` is assigned inside `consider`: widen it back for the checks below.
+  const best = found as Logo | null;
+  const better = !!best && (!cached || imageWidth(best) === 0 || imageWidth(best) >= cachedWidth);
   try {
     await fs.mkdir(files.dir, { recursive: true });
-    if (found) {
-      await writeAtomic(files.image, found.body);
+    if (best && better) {
+      await writeAtomic(files.image, best.body);
       await fs.rm(files.miss, { force: true });
+    } else if (cached && small) {
+      // Nothing sharper: keep the small icon, look again after SMALL_TTL_MS.
+      await fs.utimes(files.image, new Date(now), new Date(now));
     } else if (cached) {
       // Keep serving the stale logo; retry after the miss TTL.
       await fs.utimes(files.image, new Date(now - HIT_TTL_MS + MISS_TTL_MS), new Date(now - HIT_TTL_MS + MISS_TTL_MS));
@@ -319,7 +328,7 @@ async function resolveLogo(host: string, deps: LogoDeps): Promise<Logo | null> {
   } catch {
     // Cache is best effort (read-only data dir…).
   }
-  return found ?? cached;
+  return better ? best : (cached ?? best);
 }
 
 async function readCached(file: string): Promise<Logo | null> {
