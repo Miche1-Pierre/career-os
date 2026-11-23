@@ -777,3 +777,8 @@
 @utility composer-halo {
   background: linear-gradient(115deg, oklch(70.7% 0.165 254.624), oklch(70.2% 0.183 293.541) 45%, oklch(74.6% 0.16 232.661) 75%, oklch(70.7% 0.165 254.624));
 }
+
+/* Dark theme: darken the OpenStreetMap tiles (no official dark tiles). */
+.dark .osm-tiles {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
