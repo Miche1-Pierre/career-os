@@ -45,6 +45,12 @@ jobs:
       - name: Package
         run: node scripts/package-windows.mjs
 
+      - name: Check the archive extracts for a normal user (no links)
+        shell: pwsh
+        run: |
+          $links = & "$env:SystemRoot\System32\tar.exe" -tvf release/career-os-windows-x64.zip | Where-Object { $_ -match '^l' }
+          if ($links) { $links | Select-Object -First 10; throw "the archive contains links, which Windows cannot extract without admin rights" }
+
       - name: Smoke test (database, migrations, server)
         shell: pwsh
         run: |
