@@ -103,8 +103,17 @@ Copy `.env.example` to `.env`, then set (forward slashes in paths, also on Windo
 
 ## 6. Connect Claude Code to the app (MCP)
 
-`.mcp.json` points to `http://localhost:3000/api/mcp`. If `APP_PORT` is not 3000, update that URL. Then tell the user:
-« tape `/mcp` et reconnecte `career-os` » so the Career OS tools appear in this conversation.
+`.mcp.json` (shared, versioned) points to `http://localhost:3000/api/mcp`. **Never edit it.** If `APP_PORT` is not 3000,
+add a server of the same name for this machine and this folder only; the local scope wins over `.mcp.json`:
+
+```
+claude mcp add --scope local --transport http career-os http://localhost:<APP_PORT>/api/mcp
+claude mcp get career-os   # expect "Scope: Local config" and "✔ Connected"
+```
+
+The app must be running for the check. Then tell the user: « tape `/mcp` et reconnecte `career-os` ». A session that
+was already open may keep the old address: if the tools are still missing, a new session picks the setting up.
+Undo with `claude mcp remove career-os -s local`.
 
 ## 7. Desktop shortcut (Windows, ask first)
 
@@ -124,6 +133,9 @@ target `powershell.exe`, arguments `-NoProfile -ExecutionPolicy Bypass -WindowSt
 
 - Update: as above; migrations apply by themselves at start.
 - App does not start: check `.env` paths exist, ports, `node -v`; local mode: is another « Career OS » window open?
+- Career OS tools missing in Claude Code while the app answers: the app runs on a port other than the MCP address
+  (`claude mcp get career-os`); fix it with the local override of section 6, never by editing `.mcp.json`.
+- Port changed: update `APP_PORT`/`APP_URL` in `.env`, the local MCP override (section 6), and the desktop shortcut.
 - Move the data: stop the app, copy `<HOME>` elsewhere, update the paths in `.env`, start.
 
 ## Persistence rules (do not break them)
