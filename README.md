@@ -242,3 +242,8 @@ bridge/             bridge hôte Claude Code (option A)
 drizzle/            migrations SQL
 tests/              tests Vitest
 ```
+
+## Licence
+
+[MIT](LICENSE). Les éléments repris de tiers et leurs licences sont listés dans
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
