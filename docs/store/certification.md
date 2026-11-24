@@ -26,7 +26,7 @@ The UI is in French.
 Partner Center → **Fonctionnalités restreintes** (demandé à la soumission) :
 
 ```text
-Career OS is a desktop application packaged with its own Node.js runtime. At launch, CareerOS.exe starts Node.js child processes: a local web server and a local database listening on 127.0.0.1 only, which serve the app's interface in the user's browser. It reads and writes the user's documents, database and backups in Documents\CareerOS, and can start the optional Claude Code command-line program installed separately by the user. These are standard Win32 desktop behaviors that require running as a full-trust desktop application.
+Career OS is a desktop application packaged with its own Node.js runtime. At launch, CareerOS.exe starts Node.js child processes: a local web server and a local database listening on 127.0.0.1 only, which serve the app's interface in the user's browser. It reads and writes the user's documents, database and backups in Documents\CareerOS, and can start the optional Claude Code command-line program installed separately by the user. When the user clicks "Installer Claude Code", it opens Windows Package Manager (winget install Anthropic.ClaudeCode) in a visible console. It needs no administrator rights, installs no service or driver, and sends no data to the developer. These are standard Win32 desktop behaviors that require running as a full-trust desktop application.
 ```
 
 ## Questionnaire d'âge (IARC)
