@@ -179,7 +179,61 @@ export async function getMove(id: string): Promise<MoveView> {
   return toView(row.move, listings, row.opportunityTitle, row.organizationName, await todayISOForUser());
 }
 
-async function locateWork(values: { workAddress?: string | null; workLat?: number | null; workLng?: number | null; city?: string | null; country?: string | null }) {
+export interface ListingLine {
+  id: string;
+  url: string | null;
+  title: string;
+  status: ListingStatus;
+  total: number | null;
+  commuteKm: number | null;
+  walkMin: number | null;
+  /** What is left each month with this listing (budget plan of the move). */
+  savings: number | null;
+  availableFrom: string | null;
+  minLeaseMonths: number | null;
+  furnished: string;
+  pick: string | null;
+  /** Points to check or blocking (dates, lease, furnished, budget…). */
+  issues: string[];
+}
+
+/**
+ * The listings of a move, one short line each, a page at a time: what an assistant reads before adding listings
+ * (getMove returns every detail and gets too large past a few dozen listings).
+ */
+export async function listListingLines(moveId: string, options: { status?: "open" | "excluded" | "all"; offset?: number; limit?: number } = {}) {
+  const m = await getMove(moveId);
+  const status = options.status ?? "all";
+  const rows = m.listings.filter((l) => status === "all" || (status === "open" ? l.open : l.status === "EXCLUDED"));
+  const offset = Math.max(0, options.offset ?? 0);
+  const limit = Math.min(100, Math.max(1, options.limit ?? 50));
+  const page = rows.slice(offset, offset + limit);
+  return {
+    move: { id: m.id, title: m.title, arrivalDate: m.arrivalDate, departureDate: m.departureDate, housingTarget: m.budgetPlan.housingTarget ?? null },
+    count: rows.length,
+    offset,
+    nextOffset: offset + page.length < rows.length ? offset + page.length : null,
+    listings: page.map(
+      (l): ListingLine => ({
+        id: l.id,
+        url: l.url,
+        title: l.title,
+        status: l.status,
+        total: l.total,
+        commuteKm: l.commuteKm !== null ? Math.round(l.commuteKm * 10) / 10 : null,
+        walkMin: l.walkMin,
+        savings: l.budget?.savings ?? null,
+        availableFrom: l.availableFrom,
+        minLeaseMonths: l.minLeaseMonths,
+        furnished: l.furnished,
+        pick: l.pick,
+        issues: l.issues.map((i) => i.label),
+      }),
+    ),
+  };
+}
+
+async function locateWork(values:{ workAddress?: string | null; workLat?: number | null; workLng?: number | null; city?: string | null; country?: string | null }) {
   if (!values.workAddress || (values.workLat !== null && values.workLat !== undefined)) return {};
   const hit = await geocode(values.workAddress, values.city, values.country);
   return hit ? { workLat: hit.lat, workLng: hit.lng } : {};
@@ -340,11 +394,106 @@ export async function getListing(id: string) {
   return row;
 }
 
+const FIELD_LABEL: Partial<Record<keyof ListingPatch, string>> = {
+  title: "titre",
+  type: "type",
+  address: "adresse",
+  district: "quartier",
+  rent: "loyer",
+  charges: "charges",
+  chargesInclude: "ce que couvrent les charges",
+  allInclusive: "tout compris",
+  deposit: "garantie",
+  depositText: "garantie",
+  fees: "frais",
+  availableFrom: "disponibilité",
+  availableText: "disponibilité",
+  minLeaseMonths: "bail minimum",
+  leaseText: "bail",
+  furnished: "meublé",
+  roomSizeM2: "surface",
+  privateBathroom: "salle de bain",
+  housemates: "colocataires",
+  housemateProfile: "colocataires",
+  contacts: "contacts",
+  photos: "photos",
+  sources: "sources",
+  notes: "notes",
+  status: "statut",
+  excludedReason: "raison",
+  pick: "mon top",
+  rating: "note",
+  familyApproved: "avis de la famille",
+  visitDate: "visite",
+  visitTime: "visite",
+  lat: "position",
+  lng: "position",
+  distanceKm: "distance",
+};
+
+const empty = (v: unknown) => v === null || v === undefined || v === "" || v === false || (Array.isArray(v) && v.length === 0);
+const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+
 /**
- * Creates a listing, or updates the existing one when the same URL is already tracked in this move (dedup).
- * Returns { listing, created }.
+ * What a new reading of a listing changes on the one already tracked under the same URL. The facts from the listing
+ * (rent, charges, dates, address…) are refreshed; what belongs to the user is kept: the title they know it by, its
+ * status once reviewed, « Mon top », rating, family opinion and visits (filled only when still empty). Notes are
+ * appended, contacts / provenance merged, sources and photos added. `overwrite` restores a plain replacement.
  */
-export async function upsertListing(raw: ListingInput, ctx: Ctx) {
+export function mergeListingUpdate(before: HousingListing, input: ListingPatch, options: { overwrite?: boolean; today?: string } = {}) {
+  const given = Object.fromEntries(Object.entries(input).filter(([, v]) => v !== undefined)) as ListingPatch;
+  if (options.overwrite) {
+    const updated = Object.keys(given).filter((k) => !same(given[k as keyof ListingPatch], before[k as keyof HousingListing]));
+    return { patch: given, updated, kept: [] as string[] };
+  }
+  // A new reading that does not know a value (null) never erases the one already known.
+  const patch = Object.fromEntries(Object.entries(given).filter(([, v]) => v !== null)) as ListingPatch;
+  const kept: string[] = [];
+  const keep = (key: keyof ListingPatch) => {
+    if (patch[key] !== undefined && !same(patch[key], before[key as keyof HousingListing])) kept.push(key);
+    delete patch[key];
+  };
+
+  if (patch.title !== undefined) keep("title");
+  if (patch.status !== undefined && before.status !== "NEW") {
+    keep("status");
+    if (patch.excludedReason !== undefined) keep("excludedReason");
+  }
+  for (const key of ["pick", "rating", "familyApproved", "visitDate", "visitTime"] as const) {
+    if (patch[key] !== undefined && !empty(before[key])) keep(key);
+  }
+  if (patch.notes !== undefined) {
+    const next = patch.notes?.trim() ?? "";
+    const prev = before.notes?.trim() ?? "";
+    if (!next || prev.includes(next)) delete patch.notes;
+    else if (prev && !next.includes(prev)) patch.notes = `${prev}\n\nMise à jour du ${options.today ?? new Date().toISOString().slice(0, 10)} : ${next}`.slice(0, 10_000);
+  }
+  if (patch.contacts) patch.contacts = { ...before.contacts, ...Object.fromEntries(Object.entries(patch.contacts).filter(([, v]) => !empty(v))) };
+  if (patch.provenance) patch.provenance = { ...(before.provenance ?? {}), ...patch.provenance };
+  if (patch.sources) {
+    const urls = new Set(before.sources.map((s) => s.url));
+    patch.sources = [...before.sources, ...patch.sources.filter((s) => !urls.has(s.url))].slice(0, 10);
+  }
+  if (patch.photos) patch.photos = [...new Set([...before.photos, ...patch.photos])].slice(0, 20);
+
+  const updated = Object.keys(patch).filter((k) => k !== "provenance" && !same(patch[k as keyof ListingPatch], before[k as keyof HousingListing]));
+  for (const k of Object.keys(patch) as (keyof ListingPatch)[]) {
+    if (k !== "provenance" && same(patch[k], before[k as keyof HousingListing])) delete patch[k];
+  }
+  return { patch, updated, kept };
+}
+
+/** The listing fields of an input, without the move it belongs to. */
+export const withoutMove = (input: Partial<ListingInput>): ListingPatch => Object.fromEntries(Object.entries(input).filter(([k]) => k !== "moveId"));
+
+const fieldList = (keys: string[]) => [...new Set(keys.map((k) => FIELD_LABEL[k as keyof ListingPatch] ?? k))].join(", ");
+
+/**
+ * Creates a listing, or completes the existing one when the same URL is already tracked in this move (dedup, see
+ * mergeListingUpdate; `overwrite: true` replaces instead). Returns { listing, created, updated, kept }: the fields
+ * changed and the user's fields left as they were.
+ */
+export async function upsertListing(raw: ListingInput, ctx: Ctx, options: { overwrite?: boolean } = {}) {
   const input = listingInputSchema.parse(raw);
   const [move] = await db.select().from(moves).where(and(eq(moves.id, input.moveId), isNull(moves.deletedAt)));
   if (!move) throw notFound("Move");
@@ -354,10 +503,7 @@ export async function upsertListing(raw: ListingInput, ctx: Ctx) {
       .select()
       .from(housingListings)
       .where(and(eq(housingListings.moveId, input.moveId), eq(housingListings.url, url), isNull(housingListings.deletedAt)));
-    if (dup) {
-      const listing = await updateListing(dup.id, { ...input, moveId: undefined, url } as ListingPatch, ctx);
-      return { listing, created: false };
-    }
+    if (dup) return completeListing(dup, { ...withoutMove(input), url }, ctx, options);
   }
   const sources = input.sources?.length ? input.sources : url ? [{ name: new URL(url).hostname.replace(/^www\./, ""), url }] : [];
   const [row] = await db
@@ -372,15 +518,25 @@ export async function upsertListing(raw: ListingInput, ctx: Ctx) {
     })
     .returning();
   await logAudit(db, { entityType: "listing", entityId: row.id, action: "CREATE", summary: row.title }, ctx);
-  return { listing: row, created: true };
+  return { listing: row, created: true, updated: [] as string[], kept: [] as string[] };
 }
 
-export async function updateListing(id: string, raw: ListingPatch, ctx: Ctx) {
+/** A listing already tracked, read again (same URL, or targeted by id by the assistant): see mergeListingUpdate. */
+export async function completeListing(before: HousingListing, input: ListingPatch, ctx: Ctx, options: { overwrite?: boolean } = {}) {
+  const { patch, updated, kept } = mergeListingUpdate(before, input, { overwrite: options.overwrite, today: await todayISOForUser() });
+  if (!updated.length) return { listing: before, created: false, updated, kept };
+  const who = ctx.actor === "USER" ? "" : ` par ${ctx.actor === "CLAUDE" ? "Claude" : ctx.actor.toLowerCase()}`;
+  const listing = await updateListing(before.id, patch, ctx, `Mis à jour${who} : ${fieldList(updated)}`);
+  return { listing, created: false, updated, kept };
+}
+
+export async function updateListing(id: string, raw: ListingPatch, ctx: Ctx, note?: string) {
   const patch = listingPatchSchema.parse(raw);
   const before = await getListing(id);
   const values: Partial<typeof housingListings.$inferInsert> = { ...patch };
   if (patch.url !== undefined) values.url = canonicalUrl(patch.url);
   const history = [...before.history];
+  if (note) history.push(historyEntry(note, ctx));
   if (patch.status && patch.status !== before.status) {
     history.push(historyEntry(`${LISTING_STATUS_META[before.status].label} → ${LISTING_STATUS_META[patch.status].label}${patch.excludedReason ? ` (${patch.excludedReason})` : ""}`, ctx));
     if (patch.status === "CONTACTED" && !before.contactedAt) values.contactedAt = new Date().toISOString().slice(0, 10);
