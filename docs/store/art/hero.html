@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- Microsoft Store « 16:9 Super hero art » (3840 × 2160). No product title allowed: screens + brand glows only.
+     The left third stays calm because the Store lays its own title and buttons over it. Rendered by scripts/store-art.mjs. -->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body { margin: 0; width: 3840px; height: 2160px; overflow: hidden; }
+      body { background: #f7f8fb; position: relative; }
+      .glow { position: absolute; border-radius: 50%; filter: blur(260px); }
+      .g1 { width: 1900px; height: 1900px; left: -500px; top: -700px; background: #9db6ff; opacity: 0.55; }
+      .g2 { width: 1500px; height: 1500px; right: -300px; top: -400px; background: #f99bc3; opacity: 0.4; }
+      .g3 { width: 2000px; height: 1500px; left: 1000px; bottom: -900px; background: #ffd38a; opacity: 0.45; }
+      .g4 { width: 1400px; height: 1400px; right: -200px; bottom: -600px; background: #9fd6b4; opacity: 0.45; }
+      .win {
+        position: absolute;
+        border-radius: 40px;
+        overflow: hidden;
+        background: #fff;
+        border: 2px solid #e6e8ee;
+        box-shadow: 0 2px 4px rgb(16 24 40 / 0.05), 0 80px 180px -60px rgb(16 24 40 / 0.35);
+      }
+      .win img { display: block; width: 100%; }
+      /* hides the app name next to the sidebar logo (the hero art must not show the product title) */
+      .win .mask { position: absolute; left: 4.7%; top: 1%; width: 8.6%; height: 5.3%; background: rgb(252 250 248); }
+      /* back window: the applications board, higher and to the right */
+      .back { width: 1900px; left: 1780px; top: 170px; transform: rotate(3deg); opacity: 0.96; }
+      /* front window: the « Aujourd'hui » page, the hero */
+      .front { width: 2300px; left: 1240px; top: 700px; transform: rotate(-3deg); }
+    </style>
+  </head>
+  <body>
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+    <div class="glow g3"></div>
+    <div class="glow g4"></div>
+    <div class="win back"><img src="../../../site/screens/board.webp" alt="" /><div class="mask"></div></div>
+    <div class="win front"><img src="../../../site/screens/today.webp" alt="" /><div class="mask"></div></div>
+  </body>
+</html>

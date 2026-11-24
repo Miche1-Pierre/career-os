@@ -52,3 +52,6 @@ next-env.d.ts
 # Personal seed data (never commit)
 /seed/personal/
 /release/
+
+# Microsoft Store trailer video (23 MB, kept locally, uploaded to Partner Center)
+/docs/store/trailer/*.mp4
