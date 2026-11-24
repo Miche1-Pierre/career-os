@@ -17,7 +17,19 @@ import {
   whatsappLink,
   type BudgetPlan,
 } from "@/lib/relocation";
-import { createMoveFromOpportunity, draftListingMessage, exportListingsCsv, getMove, setListingStatus, updateBudget, updateListing, updateMove, upsertListing } from "@/server/services/moves";
+import {
+  createMove,
+  createMoveFromOpportunity,
+  draftListingMessage,
+  exportListingsCsv,
+  getMove,
+  listListingLines,
+  setListingStatus,
+  updateBudget,
+  updateListing,
+  updateMove,
+  upsertListing,
+} from "@/server/services/moves";
 import { createOpportunity, changeStatus } from "@/server/services/opportunities";
 import { getCalendarEvents } from "@/server/services/calendar";
 import { handleMcpPayload } from "@/server/mcp/server";
@@ -191,6 +203,7 @@ describe("moves and housing (database)", () => {
     expect(call.result.isError).toBeFalsy();
     expect(JSON.parse(call.result.content[0].text).created).toBe(true);
   });
+
 });
 
 describe("geocoding queries", () => {
@@ -210,5 +223,107 @@ describe("relocation data in backups", () => {
     expect(file.schemaVersion).toBe(EXPORT_SCHEMA_VERSION);
     expect(file.counts.moves).toBe(1);
     expect(file.counts.housingListings).toBe(3);
+  });
+});
+
+describe("listings read again by an assistant (database)", () => {
+  beforeAll(async () => {
+    useTempStorage();
+    await createTestDb();
+  });
+
+  it("completes a listing read again without replacing the user's choices", async () => {
+    const own = await createMove({ title: "Second move", city: "Bruxelles", arrivalDate: "2027-01-04", departureDate: "2027-07-02" }, USER);
+    const url = "https://www.immoweb.be/fr/annonce/rez-de-chaussee/a-louer/bruxelles/1040/21887154";
+    const first = await upsertListing({ moveId: own.id, title: "Colonies, maison Atrébates", url, rent: 760, charges: 0, allInclusive: true, privateBathroom: true, notes: "Salle de bain privée, jardin.", contacts: { phone: "+33 7 57 90 70 92" } }, USER);
+    await setListingStatus(first.listing.id, "SHORTLISTED", USER);
+    await updateListing(first.listing.id, { pick: "YES", visitDate: "2026-12-20" }, USER);
+
+    // The in-app assistant reads the same ad again (24/11/2026): new facts, its own title, notes and status.
+    const again = await upsertListing(
+      { moveId: own.id, title: "Coliving quartier européen - Immoweb 21887154", url, rent: 730, charges: null, status: "NEW", pick: "NO", notes: "Chambre 6 à 730 €.", contacts: { email: "colonies.leads@gmail.com" } },
+      CLAUDE,
+    );
+    expect(again.created).toBe(false);
+    expect(again.listing.id).toBe(first.listing.id);
+    expect(again.listing.title).toBe("Colonies, maison Atrébates");
+    expect(again.listing.status).toBe("VISIT_PLANNED"); // the user's visit moved it on; the assistant's NEW is ignored
+    expect(again.listing.pick).toBe("YES");
+    expect(again.listing.visitDate).toBe("2026-12-20");
+    expect(again.listing.rent).toBe(730);
+    expect(again.listing.charges).toBe(0); // « unknown » never erases a known value
+    expect(again.listing.contacts).toEqual({ phone: "+33 7 57 90 70 92", email: "colonies.leads@gmail.com" });
+    expect(again.listing.notes).toMatch(/^Salle de bain privée, jardin\.\n\nMise à jour du \d{4}-\d{2}-\d{2} : Chambre 6 à 730 €\.$/);
+    expect(again.updated.sort()).toEqual(["contacts", "notes", "rent"]);
+    expect(again.kept.sort()).toEqual(["pick", "status", "title"]);
+    expect(again.listing.history.at(-1)?.text).toBe("Mis à jour par Claude : loyer, contacts, notes");
+
+    // Reading the same ad once more changes nothing (notes are not appended twice).
+    const third = await upsertListing({ moveId: own.id, title: "x", url, rent: 730, notes: "Chambre 6 à 730 €." }, CLAUDE);
+    expect(third.updated).toEqual([]);
+    expect(third.listing.notes).toBe(again.listing.notes);
+
+    // The user asked to replace: overwrite.
+    const replaced = await upsertListing({ moveId: own.id, title: "Atrébates (chambre 6)", url, notes: "Seulement la chambre 6." }, CLAUDE, { overwrite: true });
+    expect(replaced.listing.title).toBe("Atrébates (chambre 6)");
+    expect(replaced.listing.notes).toBe("Seulement la chambre 6.");
+
+    // A listing never reviewed (NEW) takes the status of the new reading.
+    const lease = await upsertListing({ moveId: own.id, title: "Studio César Franck", url: "https://www.immoweb.be/fr/annonce/studio/a-louer/ixelles/1050/21885412", rent: 650 }, CLAUDE);
+    const excluded = await upsertListing({ moveId: own.id, title: "Studio", url: lease.listing.url!, minLeaseMonths: 36, status: "EXCLUDED", excludedReason: "Bail de 3 ans minimum." }, CLAUDE);
+    expect(excluded.listing.status).toBe("EXCLUDED");
+    expect(excluded.listing.excludedReason).toBe("Bail de 3 ans minimum.");
+    expect(excluded.listing.title).toBe("Studio César Franck");
+  });
+
+  it("lists a move's listings one short line each, a page at a time (MCP list_listings)", async () => {
+    const own = await createMove({ title: "Busy move", city: "Bruxelles" }, USER);
+    const notes = "Longue description de l'annonce. ".repeat(60);
+    for (let i = 0; i < 60; i++) {
+      await upsertListing({ moveId: own.id, title: `Chambre ${i}`, url: `https://example.org/annonce/${i}`, rent: 600 + i, charges: 100, notes, chargesInclude: ["eau", "électricité", "internet"], status: i < 5 ? "EXCLUDED" : undefined, excludedReason: i < 5 ? "Bail d'un an" : undefined }, USER);
+    }
+    const page = await listListingLines(own.id);
+    expect(page.count).toBe(60);
+    expect(page.listings).toHaveLength(50);
+    expect(page.nextOffset).toBe(50);
+    expect(page.listings[0]).toMatchObject({ title: "Chambre 0", url: "https://example.org/annonce/0", total: 700, status: "EXCLUDED" });
+    expect(JSON.stringify(page).length).toBeLessThan(20_000);
+    expect((await listListingLines(own.id, { offset: 50 })).listings).toHaveLength(10);
+    expect((await listListingLines(own.id, { status: "excluded" })).count).toBe(5);
+    expect((await listListingLines(own.id, { status: "open" })).count).toBe(55);
+
+    const list = (await handleMcpPayload({ jsonrpc: "2.0", id: 3, method: "tools/list", params: {} })) as { result: { tools: { name: string }[] } };
+    expect(list.result.tools.map((t) => t.name)).toEqual(expect.arrayContaining(["list_listings", "get_listing"]));
+    const call = (await handleMcpPayload({ jsonrpc: "2.0", id: 4, method: "tools/call", params: { name: "list_listings", arguments: { moveId: own.id, limit: 10 } } })) as {
+      result: { content: { text: string }[]; isError?: boolean };
+    };
+    expect(call.result.isError).toBeFalsy();
+    const body = JSON.parse(call.result.content[0].text) as { count: number; listings: { id: string; link: string }[]; nextOffset: number };
+    expect(body.count).toBe(60);
+    expect(body.listings).toHaveLength(10);
+    expect(body.nextOffset).toBe(10);
+    expect(body.listings[0].link).toContain(`/moves/${own.id}?tab=housing&listing=${body.listings[0].id}`);
+
+    const upsert = (await handleMcpPayload({
+      jsonrpc: "2.0",
+      id: 5,
+      method: "tools/call",
+      params: { name: "upsert_housing_listing", arguments: { moveId: own.id, title: "Autre titre", url: "https://example.org/annonce/7", rent: 650, status: "SHORTLISTED" } },
+    })) as { result: { content: { text: string }[] } };
+    const r = JSON.parse(upsert.result.content[0].text) as { created: boolean; updated: string[]; kept: string[]; title: string };
+    expect(r).toMatchObject({ created: false, title: "Chambre 7" });
+    expect(r.updated).toEqual(expect.arrayContaining(["rent", "status"]));
+    expect(r.kept).toEqual(["title"]);
+
+    // A listing the user pointed at (listingId): the fields given apply, e.g. a visit moved to another day.
+    const seven = page.listings.find((l) => l.title === "Chambre 7")!;
+    for (const visitDate of ["2026-12-12", "2026-12-15"]) {
+      await handleMcpPayload({ jsonrpc: "2.0", id: 6, method: "tools/call", params: { name: "upsert_housing_listing", arguments: { moveId: own.id, listingId: seven.id, title: "Chambre 7", visitDate } } });
+    }
+    const lines = await listListingLines(own.id, { status: "open" });
+    expect(lines.listings.find((l) => l.id === seven.id)?.status).toBe("VISIT_PLANNED");
+    const { getListing } = await import("@/server/services/moves");
+    expect((await getListing(seven.id)).visitDate).toBe("2026-12-15");
+    expect(lines.listings[0].savings).not.toBeNull();
   });
 });

@@ -67,15 +67,17 @@ import {
   addPlace,
   createMove,
   createMoveFromOpportunity,
+  completeListing,
   draftListingMessage,
   getListing,
   getMove,
+  listListingLines,
   listMoves,
   setListingStatus,
   updateBudget,
-  updateListing,
   updateMove,
   upsertListing,
+  withoutMove,
 } from "@/server/services/moves";
 
 export interface McpTool {
@@ -785,7 +787,7 @@ export const TOOLS: McpTool[] = [
     name: "get_move",
     title: "Installation project details",
     description:
-      "One move with its budget plan and every housing listing: total monthly cost, commute (km, walking minutes), fit issues (dates, lease, furnished, budget, suspicious price) and the monthly savings if that listing is chosen.",
+      "One move with its budget plan and every housing listing in full: total monthly cost, commute (km, walking minutes), fit issues (dates, lease, furnished, budget, suspicious price) and the monthly savings if that listing is chosen. Large once a move has a few dozen listings: to see which listings are already tracked, use list_listings; to read one, get_listing.",
     input: z.object({ moveId: z.string().uuid() }),
     readOnly: true,
     handler: async ({ moveId }) => {
@@ -795,6 +797,34 @@ export const TOOLS: McpTool[] = [
         listings: m.listings.map((l) => ({ ...l, history: undefined, provenance: undefined })),
         url: moveUrl(m.id),
       };
+    },
+  }),
+  tool({
+    name: "list_listings",
+    title: "Housing listings of a move (one line each)",
+    description:
+      "The housing listings of a move, one short line each (id, url, title, status, total per month, commute, monthly savings if chosen, availability, minimum lease, furnished, « Mon top », points to check), a page at a time. Call it before adding listings to see which URLs are already tracked; get_listing reads one in full.",
+    input: z.object({
+      moveId: z.string().uuid(),
+      status: z.enum(["open", "excluded", "all"]).optional().describe("open = still considered, excluded = set aside; default all"),
+      offset: z.number().int().min(0).optional(),
+      limit: z.number().int().min(1).max(100).optional().describe("Default 50"),
+    }),
+    readOnly: true,
+    handler: async ({ moveId, ...options }) => {
+      const r = await listListingLines(moveId, options);
+      return { ...r, listings: r.listings.map((l) => ({ ...l, link: listingUrl(moveId, l.id) })), url: `${moveUrl(moveId)}?tab=housing` };
+    },
+  }),
+  tool({
+    name: "get_listing",
+    title: "One housing listing in full",
+    description: "Every field of one tracked listing (rent, charges, deposit, lease, contacts, notes, status, recent history): read it before completing or correcting it.",
+    input: z.object({ listingId: z.string().uuid() }),
+    readOnly: true,
+    handler: async ({ listingId }) => {
+      const l = await getListing(listingId);
+      return { ...l, provenance: undefined, history: l.history.slice(-5), url: listingUrl(l.moveId, l.id) };
     },
   }),
   tool({
@@ -851,15 +881,16 @@ export const TOOLS: McpTool[] = [
     name: "upsert_housing_listing",
     title: "Add or update a housing listing",
     description:
-      "Add a housing listing to a move, or update it when the same URL is already tracked (dedup). Read the FULL listing first: separate rent, charges (and what they cover), deposit, fees, availability, minimum lease, furnished, room size, housemates and contacts (app/site, email, phone, WhatsApp). The price shown on search pages is often the rent alone. Unknown = omit. Fill provenance per field (EXTRACTED + short quote, or INFERRED). Never pay, apply or send anything.",
-    input: listingInputSchema.extend({ listingId: z.string().uuid().optional().describe("Update this listing instead of matching by URL") }),
-    handler: async ({ listingId, ...input }, ctx) => {
-      if (listingId) {
-        const l = await updateListing(listingId, { ...input, moveId: undefined } as Parameters<typeof updateListing>[1], ctx);
-        return { id: l.id, created: false, url: listingUrl(l.moveId, l.id) };
-      }
-      const r = await upsertListing(input, ctx);
-      return { id: r.listing.id, created: r.created, url: listingUrl(r.listing.moveId, r.listing.id) };
+      "Add a housing listing to a move, or complete it when the same URL is already tracked (dedup). Read the FULL listing first: separate rent, charges (and what they cover), deposit, fees, availability, minimum lease, furnished, room size, housemates and contacts (app/site, email, phone, WhatsApp). The price shown on search pages is often the rent alone. Unknown = omit. Fill provenance per field (EXTRACTED + short quote, or INFERRED). Never pay, apply or send anything. On a listing already tracked, the facts are refreshed but the user's choices stay: the title, the status once reviewed, « Mon top », rating, family opinion and visits are kept; notes are appended, contacts merged. The result says created (new or not), updated (fields changed) and kept (user's fields left as they were): report from it. overwrite: true replaces instead, only when the user asks to. With listingId (a listing the user pointed at), the fields given are applied as they are.",
+    input: listingInputSchema.extend({
+      listingId: z.string().uuid().optional().describe("Change this listing directly (a visit, a corrected price…): the fields given replace the current ones"),
+      overwrite: z.boolean().optional().describe("Replace the title, notes, status… of an existing listing (only when the user asked)"),
+    }),
+    handler: async ({ listingId, overwrite, ...input }, ctx) => {
+      const r = listingId
+        ? await completeListing(await getListing(listingId), withoutMove(input), ctx, { overwrite: true })
+        : await upsertListing(input, ctx, { overwrite });
+      return { id: r.listing.id, created: r.created, updated: r.updated, kept: r.kept, title: r.listing.title, url: listingUrl(r.listing.moveId, r.listing.id) };
     },
   }),
   tool({
@@ -894,4 +925,4 @@ Conventions:
 - Never send emails or messages yourself: draft them (render_email_template) for the user.
 - Always give the user the record url returned by the tools.
 - Matching analyses are descriptive; the user decides whether to apply.
-- Relocation: a « move » is the installation project after an offer (housing, budget). For housing listings, read the full listing and split rent / charges / deposit / lease; dedup is by URL. Never contact landlords or pay anything: draft messages (draft_listing_message) for the user.`;
+- Relocation: a « move » is the installation project after an offer (housing, budget). For housing listings, read the full listing and split rent / charges / deposit / lease; dedup is by URL. Before adding listings to a move, list_listings shows the ones already tracked (get_move is large); adding a tracked URL again completes it without replacing the user's title, status, notes or visits. Never contact landlords or pay anything: draft messages (draft_listing_message) for the user.`;
