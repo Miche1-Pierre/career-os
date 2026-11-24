@@ -51,6 +51,8 @@ export const aiSettingsSchema = z.object({
   model: z.string().max(100).default(""),
   effort: z.enum(["", "low", "medium", "high", "xhigh", "max"]).default(""),
   outputLanguage: z.enum(["fr", "en", "auto"]).default("fr"),
+  /** Model of the in-app chat: "" = CHAT_MODEL or Sonnet (faster, uses less quota); "opus" is more careful on long tasks. */
+  chatModel: z.enum(["", "sonnet", "opus"]).default(""),
   /** Analyze captures automatically after Quick Import. */
   autoAnalyzeCaptures: z.boolean().default(true),
 });
