@@ -182,8 +182,9 @@ function mcpEndpoint(requestOrigin: string, mode: "cli" | "bridge") {
   return `${requestOrigin.replace(/\/$/, "")}/api/mcp`;
 }
 
-function chatModel() {
-  return process.env.CHAT_MODEL?.trim() || "sonnet";
+/** Settings → IA → « Assistant du chat », then CHAT_MODEL, then Sonnet. */
+async function chatModel() {
+  return (await getSettings()).ai.chatModel || process.env.CHAT_MODEL?.trim() || "sonnet";
 }
 
 export async function startChat(raw: unknown, requestOrigin: string, signal?: AbortSignal): Promise<ReadableStream<Uint8Array>> {
@@ -263,7 +264,7 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
       };
 
       emit({ type: "thread", threadId });
-      const options = { system, prompt, mcpUrl, mcpHeaders, model: chatModel(), sessionId };
+      const options = { system, prompt, mcpUrl, mcpHeaders, model: await chatModel(), sessionId };
       const keyEnv = claudeKeyEnv();
       let final: Record<string, unknown> | null = null;
       const capture = (event: Record<string, unknown>) => {

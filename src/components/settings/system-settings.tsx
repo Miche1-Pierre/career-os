@@ -61,7 +61,7 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
             <FlaskConical /> Tester
           </Button>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <FormField label="Modèle (remplacement)" hint="Vide = AI_MODEL du fichier .env (opus, sonnet, haiku ou un identifiant complet)">
             <Input value={v.model} onChange={(e) => setV({ ...v, model: e.target.value.trim() })} placeholder="opus" />
           </FormField>
@@ -76,6 +76,17 @@ export function AiSettings({ value, status, prompts, appUrl }: { value: AppSetti
                     {e === "default" ? "Par défaut" : e}
                   </SelectItem>
                 ))}
+              </SelectContent>
+            </Select>
+          </FormField>
+          <FormField label="Assistant du chat" hint="Le plus soigneux est plus fiable sur les longues demandes, mais consomme davantage de ton quota ou de ta clé.">
+            <Select value={v.chatModel || "default"} onValueChange={(m) => setV({ ...v, chatModel: (m === "default" ? "" : m) as AppSettings["ai"]["chatModel"] })}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="default">Rapide (par défaut)</SelectItem>
+                <SelectItem value="opus">Le plus soigneux</SelectItem>
               </SelectContent>
             </Select>
           </FormField>

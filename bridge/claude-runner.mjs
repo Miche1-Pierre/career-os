@@ -69,7 +69,14 @@ export function runClaude(options) {
     };
     const child = spawn(/*turbopackIgnore: true*/ bin ?? resolveClaudeBin(), args, {
       cwd,
-      env: { ...process.env, ...env, CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1", DISABLE_AUTOUPDATER: "1" },
+      env: {
+        ...process.env,
+        ...env,
+        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: "1",
+        DISABLE_AUTOUPDATER: "1",
+        // Room for a large Career OS answer (a move with many listings) instead of the default 25 000 tokens.
+        MAX_MCP_OUTPUT_TOKENS: process.env.MAX_MCP_OUTPUT_TOKENS || "50000",
+      },
       stdio: ["pipe", "pipe", "pipe"],
       windowsHide: true,
     });
@@ -186,7 +193,8 @@ export function claudeVersion(bin) {
  * @returns {{ done: Promise<void>, cancel: () => void }}
  */
 export function streamClaude(options, onEvent) {
-  const { system, prompt, mcpUrl, mcpHeaders, model, sessionId, maxTurns = 40, timeoutMs = 600_000, bin, env, webTools = true } = options;
+  // Long requests (« ajoute ces 17 annonces ») need many tool calls: 80 turns, 15 minutes.
+  const { system, prompt, mcpUrl, mcpHeaders, model, sessionId, maxTurns = 80, timeoutMs = 900_000, bin, env, webTools = true } = options;
   const cwd = path.join(workDir(), "chat");
   fs.mkdirSync(cwd, { recursive: true });
   const systemFile = path.join(cwd, `system-${crypto.randomUUID()}.txt`);
