@@ -9,6 +9,8 @@ sont dans ce dossier. Il reste les étapes que seul le titulaire du compte peut 
 | [`fiche.md`](fiche.md) | Textes de la fiche du Store, à copier-coller |
 | [`certification.md`](certification.md) | Notes pour les testeurs de Microsoft, justification `runFullTrust`, questionnaire d'âge, déclaration IA |
 | [`images/`](images) | 10 captures (1920 × 1200, données d'exemple) et le logo 300 × 300 |
+| [`images/`](images) (logos de la fiche) | Box art 1:1 `box-art-2160.png`, Poster art 2:3 `poster-art-1440x2160.png`, Super hero art 16:9 `hero-art-3840x2160.png` (sans le nom de l'app : obligatoire pour afficher la bande-annonce en haut de la fiche). Refaits par `node scripts/store-art.mjs` à partir de [`art/`](art) |
+| [`trailer/`](trailer) | Miniature de la bande-annonce (1920 × 1080) et sous-titres `.vtt`. La vidéo (`career-os-trailer-1080p.mp4`, 42 s, 23 Mo) reste hors du dépôt : elle est envoyée directement dans Partner Center |
 | Page de confidentialité | https://get-career-os.vercel.app/confidentialite |
 
 ## 1. Ouvrir le compte développeur (gratuit pour un particulier)
