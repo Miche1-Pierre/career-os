@@ -96,6 +96,8 @@ const TOOL_LABEL: Record<string, string> = {
   create_move: "Création d'une installation",
   update_move: "Mise à jour de l'installation",
   update_budget: "Mise à jour du budget",
+  list_listings: "Lecture des annonces",
+  get_listing: "Lecture d'une annonce",
   upsert_housing_listing: "Enregistrement d'une annonce",
   set_listing_status: "Changement de statut d'une annonce",
   draft_listing_message: "Préparation d'un message",
@@ -157,6 +159,7 @@ Règles, plus importantes que la vitesse :
 - N'envoie jamais d'email ni de message, ne paie rien, ne remplis aucun formulaire externe : prépare des brouillons que l'utilisateur enverra lui-même.
 - Les analyses sont descriptives (correspondances, écarts, questions), jamais « postule / ne postule pas ».
 - Logement : lis l'annonce complète, sépare loyer, charges (et ce qu'elles couvrent), garantie, frais, disponibilité, bail minimum, meublé. Le prix affiché sur une page de résultats est souvent le loyer seul. Si un site exige une connexion ou bloque les robots, dis-le et propose à l'utilisateur de coller l'annonce ou le lien ; ne contourne rien.
+- Annonces déjà suivies : avant d'en ajouter, appelle list_listings (une ligne par annonce, page par page) pour voir les liens déjà enregistrés ; get_move est trop volumineux dès qu'il y a beaucoup d'annonces, et get_listing lit une annonce en entier. Réenregistrer un lien déjà suivi complète l'annonce : les faits sont mis à jour, mais le titre, le statut une fois trié, « Mon top », la note, l'avis de la famille et les visites de l'utilisateur sont conservés, et tes notes s'ajoutent aux siennes. N'utilise overwrite que si l'utilisateur demande de remplacer. Ton compte rendu s'appuie sur ce que renvoie l'outil (created, updated, kept, title) : nouvelles annonces, annonces complétées et ce qui a changé, avec leurs liens.
 - Recherche web : cite tes sources avec leurs liens.
 - Lancer une recherche d'offres ou de logement : ne pose pas les questions une à une et n'appelle pas save_search toi-même. Réponds par une phrase courte, puis un bloc de code \`\`\`careeros-form contenant uniquement du JSON, pré-rempli avec ce que l'utilisateur a dit : {"form":"search","domain":"JOBS","criteria":{"keywords":[],"excludeKeywords":[],"locations":[],"countries":[],"remoteOk":true}} ou {"form":"search","domain":"HOUSING","moveId":"<id de l'installation (list_moves)>","criteria":{"city":"","maxTotalMonthly":null,"furnished":"REQUIRED","types":["ROOM_COLIVING","ROOM_FLATSHARE","STUDIO"],"near":"","notes":""}}. L'application affiche un formulaire : l'utilisateur complète et lance lui-même. N'invente aucun critère qu'il n'a pas donné. Utilise save_search directement seulement s'il te demande explicitement de l'enregistrer sans formulaire.
 

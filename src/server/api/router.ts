@@ -338,7 +338,15 @@ route("GET", "/moves/:id/listings.csv", async ({ params }) => {
   const file = await moves.exportListingsCsv(params.id);
   return new Response(file.content, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename*=UTF-8''${encodeURIComponent(file.fileName)}` } });
 }, "Housing shortlist for Excel");
-route("POST", "/moves/:id/listings", async ({ params, json, ctx }) => moves.upsertListing({ ...(await json<Record<string, unknown>>()), moveId: params.id } as never, ctx), "Create or update (dedup by URL)");
+route(
+  "POST",
+  "/moves/:id/listings",
+  async ({ params, json, ctx }) => {
+    const body = await json<Record<string, unknown>>();
+    return moves.upsertListing({ ...body, moveId: params.id } as never, ctx, { overwrite: body.overwrite === true });
+  },
+  "Create, or complete the listing already tracked under the same URL (the user's title, status, notes and visits are kept; overwrite: true replaces)",
+);
 route("GET", "/listings/:id", async ({ params }) => moves.getListing(params.id));
 route("PATCH", "/listings/:id", async ({ params, json, ctx }) => moves.updateListing(params.id, await json(), ctx));
 route("DELETE", "/listings/:id", async ({ params, ctx }) => moves.deleteListing(params.id, ctx));
