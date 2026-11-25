@@ -6,13 +6,27 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { PageContainer, PageHeader } from "@/components/app/page-header";
 import { ValueCard } from "@/components/app/sparkle";
+import { SortableHead, useTableSort, type SortColumn } from "@/components/app/sortable-table";
 import type { getAnalytics } from "@/server/services/analytics";
 
 type Analytics = Awaited<ReturnType<typeof getAnalytics>>;
+type Segment = Analytics["segments"][number];
+
+type SegmentColumn = "key" | "applications" | "responses" | "interviews" | "offers" | "responseRate" | "interviewRate" | "avgResponseDays";
+const SEGMENT_COLUMNS: Record<SegmentColumn, SortColumn<Segment>> = {
+  key: { value: (s) => s.key },
+  applications: { value: (s) => s.applications, firstDir: "desc" },
+  responses: { value: (s) => s.responses, firstDir: "desc" },
+  interviews: { value: (s) => s.interviews, firstDir: "desc" },
+  offers: { value: (s) => s.offers, firstDir: "desc" },
+  responseRate: { value: (s) => s.responseRate, firstDir: "desc" },
+  interviewRate: { value: (s) => s.interviewRate, firstDir: "desc" },
+  avgResponseDays: { value: (s) => s.avgResponseDays },
+};
 
 const monthsConfig = {
   applications: { label: "Candidatures envoyées", color: "var(--chart-1)" },
@@ -44,6 +58,8 @@ export function AnalyticsView({ data, family, segments }: { data: Analytics; fam
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
   const o = data.overall;
+  const { rows: segmentRows, sort, onSort } = useTableSort(data.segments, SEGMENT_COLUMNS);
+  const head = { sort, onSort };
   const funnelMax = Math.max(1, o.applications);
   const funnel = [
     { label: "Candidatures envoyées", value: o.applications },
@@ -150,18 +166,28 @@ export function AnalyticsView({ data, family, segments }: { data: Analytics; fam
             <Table>
               <TableHeader>
                 <TableRow className="text-xs">
-                  <TableHead>{data.segmentLabel}</TableHead>
-                  <TableHead className="text-right">Candidatures</TableHead>
-                  <TableHead className="text-right">Réponses</TableHead>
-                  <TableHead className="text-right">Entretiens</TableHead>
-                  <TableHead className="text-right">Offres</TableHead>
-                  <TableHead className="text-right">Taux de réponse</TableHead>
-                  <TableHead className="text-right">Taux d’entretien</TableHead>
-                  <TableHead className="text-right">Délai moyen</TableHead>
+                  <SortableHead column="key" {...head}>
+                    {data.segmentLabel}
+                  </SortableHead>
+                  {(
+                    [
+                      ["applications", "Candidatures"],
+                      ["responses", "Réponses"],
+                      ["interviews", "Entretiens"],
+                      ["offers", "Offres"],
+                      ["responseRate", "Taux de réponse"],
+                      ["interviewRate", "Taux d’entretien"],
+                      ["avgResponseDays", "Délai moyen"],
+                    ] as const
+                  ).map(([column, label]) => (
+                    <SortableHead key={column} column={column} {...head} align="right" className="text-right">
+                      {label}
+                    </SortableHead>
+                  ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.segments.map((s) => (
+                {segmentRows.map((s) => (
                   <TableRow key={s.key}>
                     <TableCell className="font-medium">
                       {s.key}
