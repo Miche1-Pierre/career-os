@@ -41,9 +41,16 @@ Career OS s'ouvre dans ton navigateur habituel et s'arrête tout seul quelques m
 
 ## Nouveautés de cette version
 
+À coller à chaque mise à jour (Partner Center → Fiche du Store → Français → « Nouveautés de cette version »).
+
 ```text
-Première version sur le Microsoft Store.
+• Tri des tableaux : clique sur le titre d'une colonne pour trier tes candidatures, tes logements, tes contacts ou tes statistiques.
+• Ta base est maintenant rangée à l'abri de OneDrive, qui pouvait l'abîmer en la synchronisant. Le déplacement se fait tout seul au premier lancement de cette version.
+• Les sauvegardes contiennent aussi tes conversations avec l'assistant.
+• Petites corrections.
 ```
+
+Version 0.1.7.0 (première version) : « Première version sur le Microsoft Store. »
 
 ## Fonctionnalités du produit (une par ligne, 20 au plus)
 

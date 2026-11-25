@@ -59,9 +59,18 @@ rapport : je corrige et GitHub refait le paquet.
 
 ## 5. Les versions suivantes
 
-Chaque fusion dans `main` refabrique le paquet avec un numéro plus élevé (`0.1.<n° de fabrication>.0`, comme le Store
-l'exige). Pour publier une mise à jour : nouvelle soumission, remplace le paquet, soumets. Le Store met ensuite
-Career OS à jour tout seul chez les utilisateurs.
+Chaque fusion dans `main` qui touche l'app refabrique le paquet avec un numéro plus élevé (`0.1.<n° de fabrication>.0`,
+comme le Store l'exige). Pour publier une mise à jour :
+
+1. Télécharge `career-os-store-x64.msix` depuis la [dernière version](https://github.com/Miche1-Pierre/career-os/releases/latest).
+2. Partner Center → Career OS → **Mettre à jour** (une nouvelle soumission reprend tout de la précédente).
+3. **Paquets** : glisse le nouveau `.msix`, supprime l'ancien de la liste, enregistre.
+4. **Fiche du Store (Français)** : colle les « Nouveautés de cette version » de [`fiche.md`](fiche.md), et recolle la
+   description si elle a changé. Enregistre.
+5. **Options de soumission** : recolle les notes pour la certification et la justification `runFullTrust` de
+   [`certification.md`](certification.md) si elles ont changé.
+6. **Soumettre au Store**. Le Store met ensuite Career OS à jour tout seul chez les utilisateurs (ou tout de suite :
+   Microsoft Store → Bibliothèque → Obtenir les mises à jour).
 
 ## Comment marche la version Store
 
