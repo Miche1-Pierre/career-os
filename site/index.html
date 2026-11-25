@@ -359,10 +359,10 @@
       .appwin .lines i { height: 7px; border-radius: 4px; background: var(--bg-soft); border: 1px solid var(--border); }
       .appwin .lines i:nth-child(2) { width: 70%; }
       .appwin .lines i:nth-child(3) { width: 85%; }
-      .store-btn { display: inline-flex; align-items: center; gap: 12px; height: 60px; padding: 0 24px 0 18px; border-radius: 16px; background: var(--accent); color: #fff; text-decoration: none; box-shadow: 0 14px 30px -12px rgb(47 107 246 / .7); transition: transform .15s, background .15s; }
-      .store-btn:hover { background: var(--accent-strong); }
+      .store-btn { display: inline-flex; align-items: center; gap: 14px; height: 62px; padding: 0 24px 0 18px; border-radius: 14px; background: #111318; color: #fff; text-decoration: none; border: 1px solid rgb(255 255 255 / .14); box-shadow: 0 14px 30px -14px rgb(10 14 30 / .6); transition: transform .15s, background .15s; }
+      .store-btn:hover { background: #000; }
       .store-btn:active { transform: translateY(1px); }
-      .store-btn svg { width: 26px; height: 26px; flex: none; }
+      .store-btn svg { width: 30px; height: 30px; flex: none; }
       .store-btn span { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
       .store-btn small { font-size: 12px; opacity: .85; }
       .store-btn b { font-size: 17px; font-weight: 600; }
@@ -966,7 +966,7 @@
             <article class="start rv">
               <div class="top-viz">
                 <a class="store-btn" href="https://apps.microsoft.com/detail/9NCQ7PFQVM2Q?mode=direct" target="_blank" rel="noopener">
-                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h16l-1.2 11.2a2 2 0 0 1-2 1.8H7.2a2 2 0 0 1-2-1.8z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/></svg>
+                  <svg aria-hidden="true" viewBox="0 0 30 30"><path d="M10.5 9V7.5a4.5 4.5 0 0 1 9 0V9" fill="none" stroke="#fff" stroke-width="2" /><rect x="3" y="9" width="24" height="19" rx="3" fill="#fff" /><rect x="9" y="12.5" width="5.6" height="5.6" fill="#F25022" /><rect x="15.4" y="12.5" width="5.6" height="5.6" fill="#7FBA00" /><rect x="9" y="18.9" width="5.6" height="5.6" fill="#00A4EF" /><rect x="15.4" y="18.9" width="5.6" height="5.6" fill="#FFB900" /></svg>
                   <span><small>Disponible sur le</small><b>Microsoft Store</b></span>
                 </a>
               </div>
@@ -1004,7 +1004,7 @@
             <div>
               <b>Sur Mac, Linux, ou avec Claude Code ?</b> Colle ce message dans Claude (onglet Code) : il installe et règle tout avec toi.
               <div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
-              <p style="margin:12px 0 0"><b>Mettre à jour :</b> le Store s'en charge (avec la commande, relance-la). <b>Désinstaller :</b> Paramètres Windows → Applications → Career OS. Tes documents restent dans Documents/CareerOS.</p>
+              <p style="margin:12px 0 0"><b>Mettre à jour :</b> le Store s'en charge (avec la commande, relance-la). <b>Désinstaller :</b> Paramètres Windows → Applications → Career OS. Tes documents et ta base restent sur ton ordinateur.</p>
             </div>
           </div>
         </div>
@@ -1018,7 +1018,7 @@
             <div>
               <details><summary>C'est vraiment gratuit ?</summary><p>Oui. Career OS ne coûte rien. L'assistant utilise ton abonnement Claude, ou une clé Claude que tu colles dans l'app : dans ce cas, c'est le compte de la clé qui paie ce que Claude consomme.</p></details>
               <details><summary>Faut-il un abonnement Claude ?</summary><p>Pour l'assistant, il faut Claude : un abonnement Pro ou Max, ou simplement une clé Claude. Colle-la au premier lancement, ou plus tard dans Paramètres → IA : l'assistant est prêt aussitôt, sans rien régler d'autre. Sans Claude, l'application fonctionne quand même : tu remplis les fiches toi-même.</p></details>
-              <details><summary>Où sont mes données ?</summary><p>Sur ton ordinateur, dans le dossier Documents/CareerOS : tes documents, tes candidatures et une sauvegarde par jour. Rien n'est envoyé ailleurs, sauf ce que tu demandes à Claude de lire pour te répondre.</p></details>
+              <details><summary>Où sont mes données ?</summary><p>Sur ton ordinateur. Tes documents et une sauvegarde par jour sont dans le dossier Documents/CareerOS. Tes candidatures sont dans une base gardée à part, dans ton dossier utilisateur (.careeros), pour que OneDrive ne l'abîme pas en la synchronisant. Rien n'est envoyé ailleurs, sauf ce que tu demandes à Claude de lire pour te répondre.</p></details>
               <details><summary>Claude peut-il postuler ou envoyer des e-mails à ma place ?</summary><p>Non. Il prépare les brouillons, les recherches et les analyses. C'est toi qui envoies, et il te demande avant toute décision importante.</p></details>
             </div>
             <div>
@@ -1026,7 +1026,7 @@
               <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Sur Windows, installe-le depuis le <a href="https://apps.microsoft.com/detail/9NCQ7PFQVM2Q?mode=direct" target="_blank" rel="noopener">Microsoft Store</a> (ou avec une commande). Sur Mac et Linux, l'installation passe par Claude Code, qui t'indique ensuite comment ouvrir l'application.</p></details>
               <details><summary>Et la commande, elle est sûre ?</summary><p>Elle télécharge Career OS depuis GitHub et Node.js depuis son site officiel, vérifie l'empreinte de chaque fichier, et installe tout dans ton dossier utilisateur, sans droits administrateur ni modification de Windows. Tu peux <a href="/install.ps1" target="_blank" rel="noopener">la lire</a> avant de la lancer.</p></details>
               <details><summary>Comment mettre à jour ?</summary><p>Installé depuis le Microsoft Store, Career OS se met à jour tout seul. Installé avec la commande, relance-la (ou demande à Claude « mets à jour Career OS » si tu l'as installé avec lui). Tes candidatures et tes documents ne bougent pas.</p></details>
-              <details><summary>Et si je change d'ordinateur ?</summary><p>Copie ton dossier CareerOS, installe Career OS sur le nouvel ordinateur, puis remplace son dossier CareerOS par ta copie (application fermée) : tu retrouves tout.</p></details>
+              <details><summary>Et si je change d'ordinateur ?</summary><p>Dans Career OS, va dans Paramètres → Données et sauvegardes → Sauvegarder maintenant. Copie ton dossier Documents/CareerOS sur le nouvel ordinateur (avec OneDrive, il y est déjà), installe Career OS, puis restaure la sauvegarde la plus récente : tu retrouves tes candidatures, tes documents et tes conversations avec l'assistant.</p></details>
             </div>
           </div>
         </div>

@@ -115,7 +115,9 @@ jobs:
           $home_ = Join-Path $env:RUNNER_TEMP 'store-home\CareerOS'
           # The Store installs the app in a folder where nothing can be created: forbid it here too.
           icacls $layout /deny '*S-1-1-0:(CI)(WD,AD,DC)' | Out-Null
+          $local = Join-Path $env:RUNNER_TEMP 'store-local\.careeros'
           $env:CAREER_OS_HOME = $home_
+          $env:CAREER_OS_LOCAL_DIR = $local
           $env:CAREER_OS_NO_BROWSER = '1'
           $env:CAREER_OS_NO_DIALOG = '1'
           $p = Start-Process (Join-Path $layout 'CareerOS.exe') -PassThru
@@ -139,6 +141,9 @@ jobs:
           if (-not $ok -or $welcome -ne 200 -or $beat -ne 204) { throw "Store layout smoke test failed (health $ok, welcome $welcome, beat $beat)" }
           if (-not (Test-Path (Join-Path $home_ 'data\app\.heartbeat'))) { throw 'the heartbeat file was not written' }
           if ($secondCode -ne 0) { throw "a second launch did not exit cleanly ($secondCode)" }
+          # The live database stays on the computer, out of Documents (which OneDrive often syncs).
+          if (-not (Test-Path (Join-Path $local 'db\PG_VERSION'))) { throw "the database is not in $local\db" }
+          if (Test-Path (Join-Path $home_ 'data\db')) { throw 'a database folder was created in Documents\CareerOS' }
 
       - name: Keep the Store package
         uses: actions/upload-artifact@v4

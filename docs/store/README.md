@@ -72,12 +72,18 @@ Career OS à jour tout seul chez les utilisateurs.
   Career OS… » s'affiche quelques secondes pendant que `unpack.mjs` (Node.js, chemins longs gérés) la décompresse dans
   l'espace privé de l'app (`%LOCALAPPDATA%\CareerOS-Store`, supprimé par Windows avec l'app) ; les anciennes versions
   sont effacées.
-- **Données hors du dossier de l'app** : réglages, base, documents et sauvegardes dans `Documents\CareerOS`
-  (`scripts/app-home.mjs`), conservés à la désinstallation.
+- **Données hors du dossier de l'app** (`scripts/app-home.mjs`), conservées à la désinstallation : réglages, documents
+  et sauvegardes dans `Documents\CareerOS` ; la base dans `%USERPROFILE%\.careeros\db`, sur l'ordinateur seulement.
+  Documents est souvent synchronisé par OneDrive (réglage par défaut de nombreux PC Windows 11), ce qui peut abîmer une
+  base ouverte ; et `%LOCALAPPDATA%` ne convient pas : pour une app du Store, Windows y redirige les écritures vers
+  l'espace privé du paquet, supprimé à la désinstallation (vérifié sur la 0.1.7). Les versions jusqu'à 0.1.7 gardaient
+  la base dans `Documents\CareerOS\data\db` : elle est déplacée une fois au lancement (copie, vérification de chaque
+  fichier, puis suppression de l'ancienne ; en cas d'échec rien n'est supprimé et l'app réessaie au lancement suivant).
 - **Arrêt automatique** : sans fenêtre propre, l'app s'arrête 10 minutes après la fermeture du dernier onglet Career OS
   (chaque page se signale toutes les minutes ; base fermée proprement).
-- **Double-clic pendant le démarrage** : un verrou empêche d'ouvrir la base deux fois ; le second lancement attend et
-  affiche l'app.
+- **Double-clic pendant le démarrage** : un verrou (`career-os.lock`, à côté de la base, donc jamais synchronisé vers un
+  autre PC) empêche d'ouvrir la base deux fois ; le second lancement attend et affiche l'app. L'installation par
+  commande utilise le même dossier et le même verrou : les deux ne peuvent pas ouvrir la base en même temps.
 - **Claude Code n'est pas inclus** (logiciel d'Anthropic, non redistribuable). Si l'assistant est voulu, un bouton
   « Installer Claude Code » ouvre l'installateur de Windows (`winget`), qui affiche les conditions d'Anthropic et demande
   l'accord. Tout le reste de l'app marche sans (règle 10.8.3 : un compte particulier ne peut pas exiger de clé

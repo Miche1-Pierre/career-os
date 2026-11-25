@@ -50,14 +50,21 @@ questions, never paste a wall of commands at them. Never invent data. Never prin
   documents/     the app's library: one folder per kind (the app files uploads there too)
     CV/  Cover Letters/  Academic/  Certificates/  Recommendations/  Portfolio/
     Presentations/  Contracts/  Admin/  Other/
-  data/          local mode: db/ (the database) and app/ (cache: logos, dictation model…)
+  data/app/      app files (cache: logos, dictation model…)
   backups/       daily automatic backups (JSON), manual backups
+
+~/.careeros/     local mode only (Windows: %USERPROFILE%\.careeros), NOT under <HOME>
+  db/            the live database
 ```
+
+The database stays out of `<HOME>` on purpose: Documents is often synced (OneDrive "Documents backup" on Windows 11,
+iCloud "Desktop & Documents" on macOS, Dropbox…) and a sync tool can damage a database while it runs. Never put
+`CAREER_OS_DB_DIR` in a synced folder, even if the user picked one for `<HOME>`.
 
 Keep these folder names (they are the app's: Academic = diplômes, relevés, documents d'écoles; Admin = identité,
 logement, démarches). Write `<HOME>/LISEZ-MOI.txt` (or README.txt in English) in 10 lines: what each folder holds,
-that backups are automatic, and « ne supprime pas data/db, c'est ta base ». Copy (never move) the documents the user
-pointed to into the matching folders.
+that backups are automatic, and where the database is (« ~/.careeros/db, ne le supprime pas, c'est ta base »). Copy
+(never move) the documents the user pointed to into the matching folders.
 
 ## 3. Write `.env`
 
@@ -67,7 +74,7 @@ Copy `.env.example` to `.env`, then set (forward slashes in paths, also on Windo
   `AI_OUTPUT_LANGUAGE` (fr / en), `AI_PROVIDER` (`claude-code`, `anthropic` or `none`), `DOCUMENTS_DIR=<HOME>/documents`.
 - **Local mode**:
   ```
-  CAREER_OS_DB_DIR=<HOME>/data/db
+  CAREER_OS_DB_DIR=<USER HOME>/.careeros/db     # e.g. C:/Users/lea/.careeros/db, never under a synced folder
   DB_PORT=5433                      # another free port if 5433 is taken
   DATABASE_URL=postgres://postgres:postgres@127.0.0.1:<DB_PORT>/postgres
   DATABASE_POOL_SIZE=1
@@ -75,6 +82,9 @@ Copy `.env.example` to `.env`, then set (forward slashes in paths, also on Windo
   APP_DATA_DIR=<HOME>/data/app
   BACKUPS_DIR=<HOME>/backups
   ```
+  An existing install whose `.env` has `CAREER_OS_DB_DIR=<HOME>/data/db`: set the new `CAREER_OS_DB_DIR` and
+  `CAREER_OS_DB_PREVIOUS_DIR=<HOME>/data/db`; the next `npm run local` moves the database once (copy, check of every
+  file, then deletion of the old folder; nothing is deleted if anything fails). Never move it by hand while it runs.
 - **Docker mode**: keep `CAREER_OS_DB_DIR` empty; set a random `POSTGRES_PASSWORD` and the matching `DATABASE_URL`;
   the database lives in the `postgres_data` volume (persistent), documents in `DOCUMENTS_DIR` (mounted).
 - Claude API key: never ask for it in the chat and never write it in `.env`; the user pastes it in the app (see 1.6).
@@ -130,7 +140,7 @@ target `powershell.exe`, arguments `-NoProfile -ExecutionPolicy Bypass -WindowSt
 ## 8. Wrap up (short)
 
 - Adresse : `<APP_URL>` · données : `<HOME>` · démarrer : le raccourci (ou `npm run local` / `docker compose up -d`).
-- Persistance : la base est `<HOME>/data/db` (local) ou le volume Docker `postgres_data`; une sauvegarde JSON complète
+- Persistance : la base est `~/.careeros/db` (local, hors de Documents) ou le volume Docker `postgres_data`; une sauvegarde JSON complète
   est écrite chaque jour dans `<HOME>/backups` (Paramètres → Données pour en faire une à la main ou restaurer).
 - Mise à jour : `git pull`, `npm ci`, `npm run build:local`, relancer (Docker : `docker compose up -d --build`).
 - Premiers pas : « Ajoute cette offre : … », « Qu'est-ce que je dois faire aujourd'hui ? », la page Rechercher.
@@ -146,7 +156,7 @@ target `powershell.exe`, arguments `-NoProfile -ExecutionPolicy Bypass -WindowSt
 
 ## Persistence rules (do not break them)
 
-- Local mode: **one process owns `<HOME>/data/db`** (the local database server started by `npm run local`). Never open,
+- Local mode: **one process owns `~/.careeros/db`** (the local database server started by `npm run local`, which holds `~/.careeros/career-os.lock`). Never open,
   copy, zip or delete that folder while the app runs; scripts reach the data through the API or the database port.
 - Docker: never run `docker compose down -v` (it deletes the database volume).
 - Never put personal data in the repository folder (it is a public project); everything personal lives in `<HOME>`.

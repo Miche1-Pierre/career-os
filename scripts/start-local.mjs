@@ -13,7 +13,11 @@
  * when present, with no build step and no node_modules to install.
  *
  * CAREER_OS_HOME (Microsoft Store install, whose app folder is read-only): the settings live in
- * <home>\data\app\settings.env, written at the first launch, instead of a `.env` next to the app.
+ * <home>\data\app\settings.env, written at the first launch, instead of a `.env` next to the app. Its database lives
+ * on this computer, in %USERPROFILE%\.careeros\db (CAREER_OS_LOCAL_DIR), not in Documents (see app-home.mjs).
+ *
+ * CAREER_OS_DB_PREVIOUS_DIR (install command; <home>\data\db for the Store): where the database lived before. It is
+ * moved once to CAREER_OS_DB_DIR, Career OS closed, before the database opens.
  */
 import fs from "node:fs";
 import http from "node:http";
@@ -21,7 +25,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { startLocalDb } from "./local-db.mjs";
-import { ensureFreePorts, parseEnv, prepareHome, settingsFile } from "./app-home.mjs";
+import { ensureFreePorts, localDir, lockFile, moveDatabase, parseEnv, prepareHome, readLock, settingsFile } from "./app-home.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 process.chdir(root);
@@ -84,57 +88,87 @@ if (open && (!home || homeUrl()) && (await healthy())) {
   process.exit(0);
 }
 
-// Store install: one process owns the database folder. A second launch while the first one is still starting waits
-// for it and shows it. Only the lock holder writes the settings and checks the ports, so two launches never race.
-let lockFile = null;
+// Where the local database lives, and where it lived before (moved once, below).
+const local = home ? localDir() : null;
+const envDir = (name) => (process.env[name]?.trim() ? path.resolve(process.env[name]) : null);
+let dbDir = home ? path.join(local, "db") : envDir("CAREER_OS_DB_DIR");
+const previousDbDir = home ? path.join(home, "data", "db") : envDir("CAREER_OS_DB_PREVIOUS_DIR");
+
+// One process owns the database folder, whichever install starts it (the Store app and the install command use the
+// same one). A second launch while the first one is still starting waits for it and shows it. Only the lock holder
+// writes the settings, checks the ports and moves the database, so two launches never race.
+let lockPath = null;
 process.on("exit", () => {
-  if (lockFile) fs.rmSync(lockFile, { force: true });
+  if (lockPath) fs.rmSync(lockPath, { force: true });
 });
-if (home) {
-  const lockPath = path.join(home, "data", "app", "career-os.lock");
-  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
-  const alive = (pid) => {
-    try {
-      process.kill(pid, 0);
-      return true;
-    } catch (error) {
-      return error?.code === "EPERM";
+const alive = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code === "EPERM";
+  }
+};
+/** Another launch owns the database: show it once it answers (at the address its lock gives), then leave. */
+async function showRunning(lock) {
+  log("Career OS démarre déjà : ouverture dès qu'il répond");
+  for (let i = 0; i < 180; i++) {
+    url = (lock && readLock(lock)?.url) || (home && homeUrl()) || url; // the holder may have moved to another port
+    if (await healthy()) {
+      if (open) openBrowser();
+      process.exit(0);
     }
-  };
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  console.error("[career-os] une autre ouverture de Career OS ne répond pas : ferme-la ou redémarre l'ordinateur.");
+  process.exit(1);
+}
+if (dbDir) {
+  if (home) {
+    // Store versions up to 0.1.7 kept their lock in <home>\data\app: one of them may still run on the old database.
+    const legacy = path.join(home, "data", "app", "career-os.lock");
+    const owner = readLock(legacy);
+    const running = Boolean(owner?.pid && owner.pid !== process.pid && alive(owner.pid));
+    if (running && fs.existsSync(previousDbDir)) await showRunning(null);
+    if (owner && !running) fs.rmSync(legacy, { force: true });
+  }
+  const lock = lockFile(dbDir);
+  fs.mkdirSync(path.dirname(lock), { recursive: true });
   for (let attempt = 0; ; attempt++) {
     try {
-      fs.writeFileSync(lockPath, String(process.pid), { flag: "wx" });
-      lockFile = lockPath;
+      fs.writeFileSync(lock, `${process.pid}\n`, { flag: "wx" });
+      lockPath = lock;
       break;
     } catch (error) {
       if (error?.code !== "EEXIST" || attempt > 2) throw error;
-      const owner = Number(fs.readFileSync(lockPath, "utf8"));
-      if (owner && owner !== process.pid && alive(owner)) {
-        log("Career OS démarre déjà : ouverture dès qu'il répond");
-        for (let i = 0; i < 180; i++) {
-          url = homeUrl() ?? url; // the holder may have moved to another port
-          if (await healthy()) {
-            if (open) openBrowser();
-            process.exit(0);
-          }
-          await new Promise((r) => setTimeout(r, 1000));
-        }
-        console.error("[career-os] une autre ouverture de Career OS ne répond pas : ferme-la ou redémarre l'ordinateur.");
-        process.exit(1);
-      }
-      fs.rmSync(lockPath, { force: true }); // left by a run that did not stop cleanly
+      const owner = readLock(lock);
+      if (owner?.pid && owner.pid !== process.pid && alive(owner.pid)) await showRunning(lock);
+      fs.rmSync(lock, { force: true }); // left by a run that did not stop cleanly
     }
   }
-  const values = await ensureFreePorts(home, (await prepareHome(home)).values);
+}
+if (home) {
+  const values = await ensureFreePorts(home, (await prepareHome(home, local)).values, local);
   Object.assign(process.env, values);
   port = values.APP_PORT;
   host = values.APP_BIND;
   url = values.APP_URL;
 }
+if (lockPath) fs.writeFileSync(lockPath, `${process.pid}\n${url}\n`);
+
+// Older installs kept the database in Documents, which OneDrive & co. sync: move it, once, to this computer.
+if (dbDir && previousDbDir) {
+  const moved = moveDatabase({ from: previousDbDir, to: dbDir });
+  if (moved.status === "moved") log(`base déplacée sur cet ordinateur : ${previousDbDir} → ${moved.dir}${moved.detail ? ` (${moved.detail})` : ""}`);
+  else if (moved.status === "kept-both") log(moved.detail);
+  else if (moved.status === "failed") log(`la base n'a pas pu être déplacée (${moved.detail}) : elle reste dans ${moved.dir} cette fois, nouvel essai au prochain lancement`);
+  dbDir = moved.dir;
+  process.env.CAREER_OS_DB_DIR = dbDir;
+}
 
 let db = null;
-if (process.env.CAREER_OS_DB_DIR) {
-  const dir = path.resolve(process.env.CAREER_OS_DB_DIR);
+if (dbDir) {
+  const dir = dbDir;
   const dbPort = Number(process.env.DB_PORT || 5433);
   try {
     db = await startLocalDb({ dir, port: dbPort });
