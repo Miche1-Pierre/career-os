@@ -359,6 +359,22 @@
       .appwin .lines i { height: 7px; border-radius: 4px; background: var(--bg-soft); border: 1px solid var(--border); }
       .appwin .lines i:nth-child(2) { width: 70%; }
       .appwin .lines i:nth-child(3) { width: 85%; }
+      .store-btn { display: inline-flex; align-items: center; gap: 12px; height: 60px; padding: 0 24px 0 18px; border-radius: 16px; background: var(--accent); color: #fff; text-decoration: none; box-shadow: 0 14px 30px -12px rgb(47 107 246 / .7); transition: transform .15s, background .15s; }
+      .store-btn:hover { background: var(--accent-strong); }
+      .store-btn:active { transform: translateY(1px); }
+      .store-btn svg { width: 26px; height: 26px; flex: none; }
+      .store-btn span { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+      .store-btn small { font-size: 12px; opacity: .85; }
+      .store-btn b { font-size: 17px; font-weight: 600; }
+      .storewin { width: 82%; max-width: 270px; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; transform: translateY(26px); }
+      .storewin .bar { display: flex; gap: 5px; padding: 9px 10px; border-bottom: 1px solid var(--border); }
+      .storewin .bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+      .storewin .app { display: flex; align-items: center; gap: 10px; padding: 14px 12px 6px; }
+      .storewin .icon { width: 40px; height: 40px; border-radius: 10px; background: #fff; border: 1px solid var(--border); display: grid; place-items: center; flex: none; }
+      .storewin .icon svg { width: 30px; height: 12px; }
+      .storewin .name { font-size: 13.5px; font-weight: 600; }
+      .storewin .free { font-size: 11.5px; color: var(--fg-muted); }
+      .storewin .get { margin: 8px 12px 40px; height: 30px; border-radius: 8px; background: var(--accent); color: #fff; font-size: 12.5px; font-weight: 600; display: grid; place-items: center; box-shadow: 0 0 0 4px var(--blue-bg); }
       .start .top-viz .shot { width: 88%; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); transform: translateY(30px); }
       .say { display: flex; align-items: center; gap: 10px; padding: 12px 12px 12px 16px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); position: relative; width: 100%; box-shadow: var(--shadow); }
       .say::before { content: ""; position: absolute; inset: -1px; border-radius: 15px; padding: 1px; background: var(--halo); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
@@ -528,7 +544,7 @@
             <a class="pill pill-white" href="#installer">Installer Career OS</a>
             <a class="pill pill-ghost" href="https://github.com/Miche1-Pierre/career-os" rel="noopener"><svg class="gh" aria-hidden="true"><use href="#i-gh" /></svg>Voir le code sur GitHub</a>
           </div>
-          <p class="fine">Gratuit · Windows, Mac et Linux · tes données restent sur ton ordinateur</p>
+          <p class="fine">Gratuit · Windows (Microsoft Store), Mac et Linux · tes données restent sur ton ordinateur</p>
         </div>
         <svg class="waves" viewBox="0 0 1440 230" preserveAspectRatio="none" aria-hidden="true">
           <path d="M0 120 C 240 60 480 70 720 110 S 1200 170 1440 96 V230 H0Z" fill="rgb(255 255 255 / .12)" />
@@ -944,45 +960,51 @@
         <div class="wrap">
           <div class="rv">
             <h2>Prêt ? <em>Commence ici.</em></h2>
-            <p class="lead">Sur Windows, une commande installe tout : pas de droits administrateur, rien à régler. Compte quelques minutes.</p>
+            <p class="lead">Sur Windows, Career OS s'installe depuis le Microsoft Store : un clic, pas de droits administrateur, et il se met à jour tout seul.</p>
           </div>
           <div class="starts">
             <article class="start rv">
-              <div class="top-viz"><div class="appwin" aria-hidden="true"><div class="bar"><i></i><i></i><i></i></div><div class="tabs"><span>Applications installées</span><span class="on">Terminal</span></div><div class="lines"><i></i><i></i><i></i></div></div></div>
+              <div class="top-viz">
+                <a class="store-btn" href="https://apps.microsoft.com/detail/9NCQ7PFQVM2Q?mode=direct" target="_blank" rel="noopener">
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 8h16l-1.2 11.2a2 2 0 0 1-2 1.8H7.2a2 2 0 0 1-2-1.8z"/><path d="M8.5 8V6.5a3.5 3.5 0 0 1 7 0V8"/></svg>
+                  <span><small>Disponible sur le</small><b>Microsoft Store</b></span>
+                </a>
+              </div>
               <div class="body">
                 <small>Étape 1</small>
-                <h3>Ouvre le Terminal</h3>
-                <p>Fais un clic droit sur le bouton Démarrer de Windows, puis choisis « Terminal » (ou « Windows PowerShell »).</p>
+                <h3>Ouvre le Microsoft Store</h3>
+                <p>Clique sur le bouton : la page de Career OS s'ouvre dans le Microsoft Store de ton ordinateur. Tu peux aussi y chercher « Career OS ».</p>
+                <a class="link" href="https://apps.microsoft.com/detail/9NCQ7PFQVM2Q?mode=direct" target="_blank" rel="noopener">Ouvrir la page de Career OS</a>
               </div>
             </article>
             <article class="start rv">
-              <div class="top-viz"><div class="say cmd"><span>irm https://get-career-os.vercel.app/install.ps1 | iex</span><button class="copy" data-copy="irm https://get-career-os.vercel.app/install.ps1 | iex"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div></div>
+              <div class="top-viz"><div class="storewin" aria-hidden="true"><div class="bar"><i></i><i></i><i></i></div><div class="app"><span class="icon"><svg><use href="#logo" /></svg></span><span><span class="name">Career OS</span><br /><span class="free">Gratuit</span></span></div><div class="get">Obtenir</div></div></div>
               <div class="body">
                 <small>Étape 2</small>
-                <h3>Colle cette commande</h3>
-                <p>Copie-la, colle-la dans le Terminal (clic droit), puis appuie sur Entrée. Career OS s'installe et s'ouvre tout seul, avec un raccourci sur ton bureau.</p>
-                <a class="link" href="/install.ps1" target="_blank" rel="noopener">Lire ce que fait la commande</a>
+                <h3>Clique sur « Obtenir »</h3>
+                <p>Le Store installe Career OS. Ouvre-le depuis le menu Démarrer : il s'affiche dans ton navigateur habituel, et s'arrête tout seul quand tu as fini.</p>
               </div>
             </article>
             <article class="start rv">
               <div class="top-viz"><img class="shot" src="/screens/welcome-key.webp" width="543" height="170" loading="lazy" alt="La dernière étape du premier lancement : « Active l'assistant Claude », avec un champ pour coller sa clé." style="transform:none" /></div>
               <div class="body">
                 <small>Étape 3</small>
-                <h3>Colle ta clé Claude</h3>
-                <p>Au premier lancement, présente-toi en quatre écrans, puis colle ta clé Claude : l'assistant est prêt. Pas de clé ? L'app fonctionne quand même.</p>
+                <h3>Active l'assistant</h3>
+                <p>Au premier lancement, présente-toi en quatre écrans. Pour l'assistant, installe Claude Code en un clic depuis l'app, puis colle ta clé Claude. Pas de clé ? L'app fonctionne quand même.</p>
                 <a class="link" href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">Créer une clé Claude</a>
               </div>
             </article>
           </div>
           <div class="extra rv">
             <div>
-              <b>Sur Mac, Linux, ou avec Claude Code ?</b> Colle ce message dans Claude (onglet Code) : il installe et règle tout avec toi.
-              <div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
+              <b>Sans le Microsoft Store ?</b> Ouvre le Terminal (clic droit sur le bouton Démarrer, puis « Terminal »), colle cette commande et appuie sur Entrée. Elle installe tout, Claude Code compris, avec un raccourci sur ton bureau.
+              <div class="say cmd"><span>irm https://get-career-os.vercel.app/install.ps1 | iex</span><button class="copy" data-copy="irm https://get-career-os.vercel.app/install.ps1 | iex"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
+              <p style="margin:12px 0 0"><a class="link" href="/install.ps1" target="_blank" rel="noopener">Lire ce que fait la commande</a></p>
             </div>
             <div>
-              <b>Mettre à jour :</b> relance la même commande, tes données sont conservées.<br />
-              <b>Désinstaller :</b> Paramètres Windows → Applications → Career OS. Tes documents restent dans Documents/CareerOS.
-              <p style="margin:12px 0 0"><b>Bientôt sur le Microsoft Store</b>, pour installer en un clic.</p>
+              <b>Sur Mac, Linux, ou avec Claude Code ?</b> Colle ce message dans Claude (onglet Code) : il installe et règle tout avec toi.
+              <div class="say"><span>Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os</span><button class="copy" data-copy="Installe Career OS pour moi : https://github.com/Miche1-Pierre/career-os"><svg class="ic"><use href="#i-copy" /></svg><svg class="ok"><use href="#i-ok" /></svg><span class="lbl">Copier</span></button></div>
+              <p style="margin:12px 0 0"><b>Mettre à jour :</b> le Store s'en charge (avec la commande, relance-la). <b>Désinstaller :</b> Paramètres Windows → Applications → Career OS. Tes documents restent dans Documents/CareerOS.</p>
             </div>
           </div>
         </div>
@@ -1001,10 +1023,10 @@
             </div>
             <div>
               <details><summary>Et si Claude se trompe ?</summary><p>Il ne remplit un champ que s'il trouve l'information dans l'annonce, et il montre la phrase d'où elle vient. Ce qui manque reste vide, et tu vérifies avant d'enregistrer.</p></details>
-              <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Sur Windows, une commande suffit. Sur Mac et Linux, l'installation passe par Claude Code, qui t'indique ensuite comment ouvrir l'application.</p></details>
-              <details><summary>La commande est-elle sûre ?</summary><p>Elle télécharge Career OS depuis GitHub et Node.js depuis son site officiel, vérifie l'empreinte de chaque fichier, et installe tout dans ton dossier utilisateur, sans droits administrateur ni modification de Windows. Tu peux <a href="/install.ps1" target="_blank" rel="noopener">la lire</a> avant de la lancer.</p></details>
-              <details><summary>Comment mettre à jour ?</summary><p>Relance la commande d'installation (ou demande à Claude « mets à jour Career OS » si tu l'as installé avec lui). Tes candidatures et tes documents ne bougent pas.</p></details>
-              <details><summary>Et si je change d'ordinateur ?</summary><p>Copie ton dossier CareerOS sur le nouvel ordinateur, puis demande à Claude d'installer Career OS en lui indiquant ce dossier : tu retrouves tout.</p></details>
+              <details><summary>Ça marche sur Mac ?</summary><p>Oui, sur Windows, Mac et Linux. Sur Windows, installe-le depuis le <a href="https://apps.microsoft.com/detail/9NCQ7PFQVM2Q?mode=direct" target="_blank" rel="noopener">Microsoft Store</a> (ou avec une commande). Sur Mac et Linux, l'installation passe par Claude Code, qui t'indique ensuite comment ouvrir l'application.</p></details>
+              <details><summary>Et la commande, elle est sûre ?</summary><p>Elle télécharge Career OS depuis GitHub et Node.js depuis son site officiel, vérifie l'empreinte de chaque fichier, et installe tout dans ton dossier utilisateur, sans droits administrateur ni modification de Windows. Tu peux <a href="/install.ps1" target="_blank" rel="noopener">la lire</a> avant de la lancer.</p></details>
+              <details><summary>Comment mettre à jour ?</summary><p>Installé depuis le Microsoft Store, Career OS se met à jour tout seul. Installé avec la commande, relance-la (ou demande à Claude « mets à jour Career OS » si tu l'as installé avec lui). Tes candidatures et tes documents ne bougent pas.</p></details>
+              <details><summary>Et si je change d'ordinateur ?</summary><p>Copie ton dossier CareerOS, installe Career OS sur le nouvel ordinateur, puis remplace son dossier CareerOS par ta copie (application fermée) : tu retrouves tout.</p></details>
             </div>
           </div>
         </div>
