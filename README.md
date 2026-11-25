@@ -21,7 +21,17 @@ Mono-utilisateur, local, vos données restent chez vous (PostgreSQL + dossiers s
 
 ## Installer
 
-### Sur Windows, en une commande (sans Claude Code)
+### Sur Windows, depuis le Microsoft Store
+
+**[Career OS sur le Microsoft Store](https://apps.microsoft.com/detail/9NCQ7PFQVM2Q)** : « Obtenir », puis ouvrir
+Career OS depuis le menu Démarrer. Le Store le met à jour tout seul. Lanceur sans console, dossier de l'app en lecture
+seule, données dans `Documents\CareerOS`, arrêt automatique après la fermeture du dernier onglet. Claude Code n'est pas
+inclus : un bouton de l'app l'installe (`winget`) si l'assistant est voulu. Fiche et réponses pour la certification :
+[docs/store](docs/store/README.md).
+
+En ligne de commande : `winget install --id 9NCQ7PFQVM2Q --source msstore`.
+
+### Sur Windows, en une commande (sans le Store)
 
 Dans le Terminal (clic droit sur Démarrer → Terminal) :
 
@@ -34,11 +44,7 @@ Le script ([site/install.ps1](site/install.ps1)) télécharge Node.js (nodejs.or
 vérifie leurs empreintes, installe Claude Code (npm) pour l'assistant, crée `Documents\CareerOS`, les raccourcis et
 l'entrée de désinstallation, puis ouvre l'app. Tout va dans `%LOCALAPPDATA%\CareerOS`, sans droits administrateur.
 L'assistant s'active en collant une clé API Claude au premier lancement (ou dans Paramètres → IA). Relancer la commande
-met à jour.
-
-**Microsoft Store** (en préparation) : le même workflow fabrique aussi un paquet MSIX (lanceur sans console, dossier de
-l'app en lecture seule, données dans `Documents\CareerOS`, arrêt automatique après la fermeture du dernier onglet).
-Soumission, fiche et réponses pour la certification : [docs/store](docs/store/README.md).
+met à jour. Le même workflow fabrique aussi le paquet MSIX du Microsoft Store.
 
 ### Avec Claude Code (Mac, Linux, ou pour tout régler avec Claude)
 
