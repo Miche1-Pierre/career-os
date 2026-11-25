@@ -20,6 +20,7 @@ import { Counter } from "@/components/app/sparkle";
 import { OrgAvatar } from "@/components/app/org-avatar";
 import { MultiSelect } from "@/components/app/multi-select";
 import { EmptyState } from "@/components/app/empty-state";
+import { SortableHead, useTableSort, type SortColumn } from "@/components/app/sortable-table";
 import { useAppData } from "@/components/app/app-data";
 import { useQuickImport } from "@/components/app/quick-import";
 import { hasActiveFilters, type ListFilters } from "@/lib/filters";
@@ -36,10 +37,10 @@ import {
   REMOTE_LABEL,
   sourceLabel,
 } from "@/lib/constants";
-import { diffDays, formatISODate } from "@/lib/dates";
+import { diffDays, formatISODate, type ISODate } from "@/lib/dates";
 import type { OpportunityListItem } from "@/server/services/opportunities";
 import { cn } from "@/lib/utils";
-import { applicationsHref, defaultSort, relativeDayFr, sameFilters, type ApplicationsLayout, type SavedViewRef } from "./applications-params";
+import { applicationsHref, defaultSort, nextActionOf, relativeDayFr, sameFilters, type ApplicationsLayout, type SavedViewRef } from "./applications-params";
 import { NextActionChip, StageChip, TagChips } from "./chips";
 import { KanbanBoard } from "./kanban-board";
 import { ViewsMenu } from "./views-menu";
@@ -265,27 +266,56 @@ export function ApplicationsList({
       ) : isBoard ? (
         <KanbanBoard rows={rows} />
       ) : (
-        <ApplicationsTable rows={rows} />
+        // A new sort chosen in the menu replaces the column sort.
+        <ApplicationsTable key={filters.sort ?? ""} rows={rows} />
       )}
     </PageContainer>
   );
 }
 
-function ApplicationsTable({ rows }: { rows: OpportunityListItem[] }) {
+type ApplicationColumn = "title" | "stage" | "next" | "applied" | "place" | "source";
+
+function applicationColumns(today: ISODate): Record<ApplicationColumn, SortColumn<OpportunityListItem>> {
+  return {
+    title: { value: (r) => r.title },
+    stage: { value: (r) => STAGE_CATEGORIES.indexOf(r.stage.category) * 1000 + r.stage.position },
+    next: { value: (r) => nextActionOf(r, today, "fr")?.date },
+    applied: { value: (r) => r.appliedAt, firstDir: "desc" },
+    place: { value: (r) => [r.locationCity, r.locationCountry].filter(Boolean).join(", ") },
+    source: { value: (r) => sourceLabel(r.source) },
+  };
+}
+
+function ApplicationsTable({ rows: input }: { rows: OpportunityListItem[] }) {
   const router = useRouter();
   const { today, dateLocale } = useAppData();
+  const columns = useMemo(() => applicationColumns(today), [today]);
+  const { rows, sort, onSort } = useTableSort(input, columns);
+  const head = { sort, onSort };
   return (
     <>
       <div className="hidden md:block">
         <Table className="table-fixed">
           <TableHeader>
             <TableRow>
-              <TableHead className="pl-3">Candidature</TableHead>
-              <TableHead className="w-32 lg:w-40">Statut</TableHead>
-              <TableHead className="w-40 lg:w-52">Prochaine action</TableHead>
-              <TableHead className="hidden w-28 lg:table-cell">Envoyée</TableHead>
-              <TableHead className="hidden w-44 xl:table-cell">Lieu</TableHead>
-              <TableHead className="hidden w-36 2xl:table-cell">Source</TableHead>
+              <SortableHead column="title" {...head} className="pl-3">
+                Candidature
+              </SortableHead>
+              <SortableHead column="stage" {...head} className="w-32 lg:w-40">
+                Statut
+              </SortableHead>
+              <SortableHead column="next" {...head} className="w-40 lg:w-52">
+                Prochaine action
+              </SortableHead>
+              <SortableHead column="applied" {...head} className="hidden w-28 lg:table-cell">
+                Envoyée
+              </SortableHead>
+              <SortableHead column="place" {...head} className="hidden w-44 xl:table-cell">
+                Lieu
+              </SortableHead>
+              <SortableHead column="source" {...head} className="hidden w-36 2xl:table-cell">
+                Source
+              </SortableHead>
               <TableHead className="hidden w-44 2xl:table-cell">Tags</TableHead>
             </TableRow>
           </TableHeader>

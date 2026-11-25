@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { EmptyState } from "@/components/app/empty-state";
-import { BOARD_STATUSES, LISTING_STATUS_META, type ListingStatus } from "@/lib/relocation";
+import { BOARD_STATUSES, LISTING_STATUSES, LISTING_STATUS_META, type ListingStatus } from "@/lib/relocation";
 import type { ListingView, MoveView } from "@/server/services/moves";
 import { normalizeText } from "@/lib/text";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,8 @@ import { HousingMap } from "./housing-map";
 import { PlacesPanel } from "./places-panel";
 import { ShareDialog } from "./share-dialog";
 import { Approx } from "@/components/app/approx";
+import { SortButton, useTableSort, type SortColumn } from "@/components/app/sortable-table";
+import { ariaSort } from "@/lib/table-sort";
 
 type Scope = "open" | "all" | "closed";
 
@@ -116,19 +118,39 @@ function IssueChips({ l, max = 2 }: { l: ListingView; max?: number }) {
   );
 }
 
-function ListingTable({ rows, currency, onOpen }: { rows: ListingView[]; currency: string; onOpen: (id: string) => void }) {
+const STATUS_RANK = Object.fromEntries(LISTING_STATUSES.map((s, i) => [s, i])) as Record<ListingStatus, number>;
+
+type ListingColumn = "title" | "total" | "savings" | "commute" | "lease" | "status";
+const LISTING_COLUMNS: Record<ListingColumn, SortColumn<ListingView>> = {
+  title: { value: (l) => l.title },
+  total: { value: (l) => l.total },
+  savings: { value: (l) => l.budget?.savings, firstDir: "desc" },
+  commute: { value: (l) => l.walkMin },
+  lease: { value: (l) => l.availableFrom },
+  status: { value: (l) => STATUS_RANK[l.status] },
+};
+
+function ListingTable({ rows: input, currency, onOpen }: { rows: ListingView[]; currency: string; onOpen: (id: string) => void }) {
+  const { rows, sort, onSort } = useTableSort(input, LISTING_COLUMNS);
   if (!rows.length) return <p className="py-8 text-center text-sm text-muted-foreground">Rien ici.</p>;
+  const head = (column: ListingColumn, label: string, right = false) => (
+    <th className={cn("px-3 py-2 font-medium", right && "text-right")} aria-sort={ariaSort(sort, column)}>
+      <SortButton column={column} sort={sort} onSort={onSort} align={right ? "right" : "left"}>
+        {label}
+      </SortButton>
+    </th>
+  );
   return (
     <div className="overflow-x-auto rounded-2xl border border-border bg-background">
       <table className="w-full min-w-[820px] text-sm">
         <thead>
           <tr className="border-b border-separator text-left text-xs text-muted-foreground">
-            <th className="px-3 py-2 font-medium">Annonce</th>
-            <th className="px-3 py-2 text-right font-medium">Total / mois</th>
-            <th className="px-3 py-2 text-right font-medium">Épargne</th>
-            <th className="px-3 py-2 text-right font-medium">Trajet</th>
-            <th className="px-3 py-2 font-medium">Bail</th>
-            <th className="px-3 py-2 font-medium">Statut</th>
+            {head("title", "Annonce")}
+            {head("total", "Total / mois", true)}
+            {head("savings", "Épargne", true)}
+            {head("commute", "Trajet", true)}
+            {head("lease", "Bail et dispo")}
+            {head("status", "Statut")}
           </tr>
         </thead>
         <tbody>

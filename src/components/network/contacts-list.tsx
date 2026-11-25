@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { Mail, Plus, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
+import { SortableHead, useTableSort, type SortColumn } from "@/components/app/sortable-table";
 import { PageContainer, PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
 import { Counter } from "@/components/app/sparkle";
@@ -18,6 +19,16 @@ import { formatISODate } from "@/lib/dates";
 import { initials, normalizeText } from "@/lib/text";
 import type { ContactListItem } from "@/server/services/contacts";
 import { ContactDialog } from "./contact-form";
+
+type ContactColumn = "name" | "organization" | "relationship" | "email" | "opportunities" | "lastContact";
+const CONTACT_COLUMNS: Record<ContactColumn, SortColumn<ContactListItem>> = {
+  name: { value: (c) => c.fullName },
+  organization: { value: (c) => c.organizationName },
+  relationship: { value: (c) => (c.relationship ? RELATIONSHIP_LABEL[c.relationship] : null) },
+  email: { value: (c) => c.email },
+  opportunities: { value: (c) => c.opportunityCount, firstDir: "desc" },
+  lastContact: { value: (c) => c.lastContactAt, firstDir: "desc" },
+};
 
 export function ContactsList({ rows, openNew }: { rows: ContactListItem[]; openNew?: boolean }) {
   const router = useRouter();
@@ -33,6 +44,8 @@ export function ContactsList({ rows, openNew }: { rows: ContactListItem[]; openN
         (!relationships.length || (r.relationship && relationships.includes(r.relationship))),
     );
   }, [rows, q, relationships]);
+  const { rows: sorted, sort, onSort } = useTableSort(filtered, CONTACT_COLUMNS);
+  const head = { sort, onSort };
   return (
     <PageContainer>
       <PageHeader
@@ -62,16 +75,28 @@ export function ContactsList({ rows, openNew }: { rows: ContactListItem[]; openN
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-3">Nom</TableHead>
-                <TableHead className="hidden @xl:table-cell">Organisation</TableHead>
-                <TableHead className="hidden @3xl:table-cell">Relation</TableHead>
-                <TableHead className="hidden @5xl:table-cell">E-mail</TableHead>
-                <TableHead className="text-right">Candidatures</TableHead>
-                <TableHead className="hidden @5xl:table-cell">Dernier contact</TableHead>
+                <SortableHead column="name" {...head} className="pl-3">
+                  Nom
+                </SortableHead>
+                <SortableHead column="organization" {...head} className="hidden @xl:table-cell">
+                  Organisation
+                </SortableHead>
+                <SortableHead column="relationship" {...head} className="hidden @3xl:table-cell">
+                  Relation
+                </SortableHead>
+                <SortableHead column="email" {...head} className="hidden @5xl:table-cell">
+                  E-mail
+                </SortableHead>
+                <SortableHead column="opportunities" {...head} align="right" className="text-right">
+                  Candidatures
+                </SortableHead>
+                <SortableHead column="lastContact" {...head} className="hidden @5xl:table-cell">
+                  Dernier contact
+                </SortableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((c) => (
+              {sorted.map((c) => (
                 <TableRow key={c.id} className="cursor-pointer" onClick={() => router.push(`/contacts/${c.id}`)}>
                   <TableCell className="h-16 pl-3">
                     <div className="flex min-w-0 items-center gap-3 max-w-[min(22rem,calc(100cqw-140px))] @xl:max-w-[min(22rem,calc(100cqw-320px))] @3xl:max-w-[min(22rem,calc(100cqw-480px))] @5xl:max-w-[min(22rem,calc(100cqw-880px))]">
