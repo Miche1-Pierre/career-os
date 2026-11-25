@@ -454,4 +454,5 @@ export const CONFIDENCES = ["HIGH", "MEDIUM", "LOW"] as const;
 export type Confidence = (typeof CONFIDENCES)[number];
 
 export const APP_NAME = "Career OS";
-export const EXPORT_SCHEMA_VERSION = 5;
+/** v6: the assistant's conversations (chatThreads, chatMessages) are exported too. */
+export const EXPORT_SCHEMA_VERSION = 6;

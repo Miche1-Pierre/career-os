@@ -1,7 +1,8 @@
 ﻿<#
   Career OS : désinstallation (installation faite avec la commande du site).
   Supprime l'application, Node.js et Claude Code installés pour elle, les raccourcis et l'entrée dans
-  « Applications installées ». Tes données (Documents\CareerOS : documents, base, sauvegardes) sont conservées.
+  « Applications installées ». Tes données sont conservées : Documents\CareerOS (documents, sauvegardes) et
+  %USERPROFILE%\.careeros (ta base).
 #>
 $ErrorActionPreference = 'Stop'
 $App = Split-Path -Parent $PSScriptRoot
@@ -18,10 +19,12 @@ function Get-EnvValue([string]$Name, [string]$Default) {
 
 $Url = Get-EnvValue 'APP_URL' 'http://localhost:3000'
 $Data = Split-Path -Parent (Get-EnvValue 'BACKUPS_DIR' (Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'CareerOS\backups'))
+$Db = (Get-EnvValue 'CAREER_OS_DB_DIR' (Join-Path $env:USERPROFILE '.careeros\db')) -replace '/', '\'
 
 Write-Host ''
 Write-Host '  Désinstaller Career OS' -ForegroundColor Cyan
-Write-Host "  Tes données restent dans : $Data"
+Write-Host "  Tes documents et sauvegardes restent dans : $Data"
+Write-Host "  Ta base reste dans : $Db"
 Write-Host ''
 
 try {
@@ -41,8 +44,7 @@ Remove-Item -LiteralPath (Join-Path $desktop 'Career OS.lnk') -Force -ErrorActio
 Remove-Item -LiteralPath (Join-Path $programs 'Career OS') -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -LiteralPath 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\CareerOS' -Recurse -Force -ErrorAction SilentlyContinue
 # Node.js handles the deep library paths that Remove-Item (PowerShell 5) cannot delete.
-$node = Join-Path $Base 'node
-ode.exe'
+$node = Join-Path $Base 'node\node.exe'
 if (Test-Path $node) {
   foreach ($dir in 'app', 'claude') {
     & $node -e "require('fs').rmSync(process.argv[1], { recursive: true, force: true, maxRetries: 5 })" (Join-Path $Base $dir)
@@ -55,5 +57,6 @@ if (Test-Path $Base) {
 } else {
   Write-Host '  Career OS est désinstallé.' -ForegroundColor Green
 }
-Write-Host "  Tes documents, ta base et tes sauvegardes sont toujours dans : $Data"
+Write-Host "  Tes documents et sauvegardes sont toujours dans : $Data"
+Write-Host "  Ta base est toujours dans : $Db"
 Read-Host '  Appuie sur Entrée pour fermer'
