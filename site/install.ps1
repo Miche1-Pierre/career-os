@@ -6,7 +6,8 @@
 #   1. télécharge Node.js (site officiel nodejs.org) et vérifie son empreinte ;
 #   2. télécharge Career OS déjà compilé (GitHub, Miche1-Pierre/career-os) et vérifie son empreinte ;
 #   3. installe Claude Code (paquet officiel d'Anthropic sur npm), utilisé par l'assistant de l'app ;
-#   4. crée tes dossiers dans Documents\CareerOS (documents, base, sauvegardes) ;
+#   4. crée tes dossiers : Documents\CareerOS (documents, sauvegardes) et %USERPROFILE%\.careeros (ta base, gardée
+#      sur cet ordinateur : OneDrive synchronise souvent Documents, ce qui peut abîmer une base pendant qu'elle tourne) ;
 #   5. crée les raccourcis « Career OS » (bureau et menu Démarrer) et l'entrée de désinstallation ;
 #   6. ouvre Career OS dans ton navigateur.
 #
@@ -22,6 +23,8 @@
   $Repo = 'Miche1-Pierre/career-os'
   $Base = if ($env:CAREER_OS_INSTALL_DIR) { $env:CAREER_OS_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'CareerOS' }
   $DataRoot = if ($env:CAREER_OS_DATA_DIR) { $env:CAREER_OS_DATA_DIR } else { Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'CareerOS' }
+  # The live database stays on this computer, out of Documents (same folder as the Microsoft Store app, see app-home.mjs).
+  $LocalRoot = if ($env:CAREER_OS_LOCAL_DIR) { $env:CAREER_OS_LOCAL_DIR } else { Join-Path $env:USERPROFILE '.careeros' }
   $Bundle = if ($env:CAREER_OS_BUNDLE) { $env:CAREER_OS_BUNDLE } else { "https://github.com/$Repo/releases/latest/download/career-os-windows-x64.zip" }
   $AppDir = Join-Path $Base 'app'
   $NodeDir = Join-Path $Base 'node'
@@ -101,6 +104,7 @@
     Write-Host '  Career OS : installation' -ForegroundColor Cyan
     Say "Application : $Base"
     Say "Tes données : $DataRoot"
+    Say "Ta base : $(Join-Path $LocalRoot 'db')"
 
     if (-not [Environment]::Is64BitOperatingSystem) { throw 'Career OS a besoin de Windows 64 bits.' }
 
@@ -169,30 +173,52 @@
     Step 4 'Tes dossiers'
     $folders = 'Academic', 'Admin', 'CV', 'Certificates', 'Contracts', 'Cover Letters', 'Other', 'Portfolio', 'Presentations', 'Recommendations'
     foreach ($f in $folders) { New-Item -ItemType Directory -Force -Path (Join-Path $DataRoot "documents\$f") | Out-Null }
-    New-Item -ItemType Directory -Force -Path (Join-Path $DataRoot 'data\db'), (Join-Path $DataRoot 'data\app'), (Join-Path $DataRoot 'backups') | Out-Null
-    $readme = Join-Path $DataRoot 'LISEZ-MOI.txt'
-    if (-not (Test-Path $readme)) {
-      @(
-        'Career OS : tes données',
-        '',
-        'documents\  tes CV, lettres, diplômes, contrats… rangés par type (Career OS y range aussi ce que tu ajoutes).',
-        'data\db\    ta base (candidatures, entretiens, logements…). Ne supprime pas ce dossier.',
-        'data\app\   réglages et fichiers de l''application (dont ta clé Claude si tu l''as collée).',
-        'backups\    une sauvegarde complète automatique chaque jour (les 14 dernières).',
-        '',
-        'Changer d''ordinateur : copie ce dossier CareerOS, installe Career OS sur le nouvel ordinateur,',
-        'puis remplace son dossier CareerOS par ta copie (application fermée).'
-      ) | Set-Content -LiteralPath $readme -Encoding UTF8
-    }
+    New-Item -ItemType Directory -Force -Path (Join-Path $DataRoot 'data\app'), (Join-Path $DataRoot 'backups'), $LocalRoot | Out-Null
+    # Same texts as scripts/app-home.mjs (Microsoft Store app), rewritten at each install.
+    $dbPath = Join-Path $LocalRoot 'db'
+    @(
+      'Career OS : tes données',
+      '',
+      'documents\  tes CV, lettres, diplômes, contrats… rangés par type (Career OS y range aussi ce que tu ajoutes).',
+      'data\app\   réglages et fichiers de l''application (dont ta clé Claude si tu l''as collée).',
+      'backups\    une sauvegarde complète automatique chaque jour (les 14 dernières).',
+      '',
+      "Ta base (candidatures, entretiens, logements…) est dans $dbPath, sur cet ordinateur seulement :",
+      'un dossier synchronisé, comme Documents avec OneDrive, pourrait l''abîmer pendant qu''elle tourne.',
+      '',
+      "Désinstaller Career OS ne supprime ni ce dossier ni $LocalRoot.",
+      '',
+      'Changer d''ordinateur :',
+      '1. Dans Career OS : Paramètres > Données et sauvegardes > Sauvegarder maintenant.',
+      '2. Copie ce dossier CareerOS dans les Documents du nouvel ordinateur (avec OneDrive, il y est déjà).',
+      '3. Installe Career OS sur le nouvel ordinateur, puis Paramètres > Données et sauvegardes > Restaurer la',
+      '   sauvegarde la plus récente : tes candidatures, tes documents et tes conversations avec l''assistant reviennent.'
+    ) | Set-Content -LiteralPath (Join-Path $DataRoot 'LISEZ-MOI.txt') -Encoding UTF8
+    @(
+      'Career OS : ta base de données',
+      '',
+      'db\  tes candidatures, entretiens, logements… Ne supprime pas ce dossier.',
+      '',
+      'Elle reste sur cet ordinateur exprès, hors de Documents : OneDrive ou un autre outil de synchronisation pourrait',
+      'l''abîmer pendant qu''elle tourne. Ne la déplace pas dans un dossier synchronisé.',
+      "Tes documents et tes sauvegardes quotidiennes sont dans $DataRoot (voir son LISEZ-MOI.txt).",
+      'Désinstaller Career OS ne supprime pas ce dossier.'
+    ) | Set-Content -LiteralPath (Join-Path $LocalRoot 'LISEZ-MOI.txt') -Encoding UTF8
     Say 'prêts' 'Green'
 
     Step 5 'Réglages et raccourcis'
     $appPort = if ($previous['APP_PORT']) { [int]$previous['APP_PORT'] } else { Find-Port 3000 3099 }
     $dbPort = if ($previous['DB_PORT'] -and $previous['CAREER_OS_DB_DIR']) { [int]$previous['DB_PORT'] } else { Find-Port 5433 5499 }
     $slash = { param($p) $p -replace '\\', '/' }
+    $dbDir = & $slash $dbPath
+    # Where the database lived until now (Documents\CareerOS\data\db for older installs): start-local.mjs moves it,
+    # once, to $dbDir at the next start, after checking every file.
+    $oldDbDir = & $slash (Join-Path $DataRoot 'data\db')
+    if ($previous['CAREER_OS_DB_PREVIOUS_DIR']) { $oldDbDir = $previous['CAREER_OS_DB_PREVIOUS_DIR'] }
+    if ($previous['CAREER_OS_DB_DIR'] -and $previous['CAREER_OS_DB_DIR'] -ne $dbDir) { $oldDbDir = $previous['CAREER_OS_DB_DIR'] }
     $settings = [ordered]@{
       APP_PORT = "$appPort"; APP_BIND = '127.0.0.1'; APP_URL = "http://localhost:$appPort"
-      CAREER_OS_DB_DIR = (& $slash (Join-Path $DataRoot 'data\db')); DB_PORT = "$dbPort"
+      CAREER_OS_DB_DIR = $dbDir; CAREER_OS_DB_PREVIOUS_DIR = $oldDbDir; DB_PORT = "$dbPort"
       DATABASE_URL = "postgres://postgres:postgres@127.0.0.1:$dbPort/postgres"; DATABASE_POOL_SIZE = '1'
       DOCUMENTS_DIR = (& $slash (Join-Path $DataRoot 'documents')); DOCUMENTS_ROOT = (& $slash (Join-Path $DataRoot 'documents'))
       APP_DATA_DIR = (& $slash (Join-Path $DataRoot 'data\app')); BACKUPS_DIR = (& $slash (Join-Path $DataRoot 'backups'))

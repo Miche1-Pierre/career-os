@@ -7,7 +7,8 @@ This folder is used in three ways. Figure out which one the user wants:
 
 0. **Installing Career OS** (fresh download, no `.env`, app not answering, or « installe / configure Career OS »):
    follow the skill `career-setup` (asks who the user is, Docker or local mode, folders, `.env`, build, profile, CV,
-   shortcut). Personal data always lives outside the repository (`~/Documents/CareerOS` by default).
+   shortcut). Personal data always lives outside the repository (`~/Documents/CareerOS` by default); the live local
+   database in `~/.careeros/db`, never in Documents or another synced folder (OneDrive can damage it).
 
 1. **Operating Career OS** (most conversations): the user pastes a job posting, an email, notes, asks what to do
    today, wants a follow-up drafted… → use the `career-os` MCP tools. Do **not** edit code or query the database

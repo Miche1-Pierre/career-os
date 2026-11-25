@@ -5,7 +5,8 @@
 // Package layout: CareerOS.exe, node\node.exe, app.zip (the prebuilt app), app.version.
 // The app ships as an archive because MSIX refuses file names with brackets, which the app's pages use ([id]…).
 // Each new version is unpacked once into %LOCALAPPDATA%\CareerOS-Store\<version> (the package's private storage:
-// Windows removes it with the app). The user's data and settings live in Documents\CareerOS (CAREER_OS_HOME).
+// Windows removes it with the app). The user's documents, settings and backups live in Documents\CareerOS
+// (CAREER_OS_HOME); the live database in %USERPROFILE%\.careeros, out of reach of OneDrive (scripts/app-home.mjs).
 // start-local.mjs stops the app once no Career OS page has been open for a while (--idle-exit).
 using System;
 using System.Collections.Generic;

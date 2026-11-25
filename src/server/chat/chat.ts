@@ -175,6 +175,9 @@ Réponse :
 
 const running = new Map<string, () => void>();
 
+/** What Claude Code answers when asked to resume a session this computer does not have. */
+const UNKNOWN_SESSION = /no conversation found/i;
+
 function mcpEndpoint(requestOrigin: string, mode: "cli" | "bridge") {
   const forced = process.env.CHAT_MCP_URL?.trim();
   if (forced) return forced;
@@ -271,44 +274,57 @@ export async function startChat(raw: unknown, requestOrigin: string, signal?: Ab
         if (event.type === "done" || event.type === "error") final = event;
         else onEvent(event);
       };
-      try {
-        if (mode === "cli") {
-          const run = streamClaude({ ...options, env: keyEnv }, capture);
-          running.set(threadId, run.cancel);
-          signal?.addEventListener("abort", run.cancel);
-          await run.done;
-        } else {
-          const ac = new AbortController();
-          running.set(threadId, () => ac.abort());
-          signal?.addEventListener("abort", () => ac.abort());
-          const url = (process.env.CLAUDE_BRIDGE_URL ?? "").replace(/\/$/, "");
-          const res = await fetch(`${url}/v1/chat`, {
-            method: "POST",
-            headers: { "content-type": "application/json", authorization: `Bearer ${process.env.CLAUDE_BRIDGE_TOKEN ?? ""}` },
-            body: JSON.stringify({ ...options, apiKey: keyEnv?.ANTHROPIC_API_KEY }),
-            signal: ac.signal,
-          });
-          if (!res.ok || !res.body) {
-            const body = (await res.json().catch(() => ({}))) as { error?: string };
-            throw new Error(body.error ?? `Bridge error ${res.status} (is the bridge up to date? restart it)`);
-          }
-          const reader = res.body.getReader();
-          const decoder = new TextDecoder();
-          let buf = "";
-          for (;;) {
-            const { value, done } = await reader.read();
-            if (done) break;
-            buf += decoder.decode(value, { stream: true });
-            let nl;
-            while ((nl = buf.indexOf("\n")) >= 0) {
-              const line = buf.slice(0, nl).trim();
-              buf = buf.slice(nl + 1);
-              if (line) capture(JSON.parse(line) as Record<string, unknown>);
+      const ask = async (resume: string | null) => {
+        final = null;
+        const turn = { ...options, sessionId: resume };
+        try {
+          if (mode === "cli") {
+            const run = streamClaude({ ...turn, env: keyEnv }, capture);
+            running.set(threadId, run.cancel);
+            signal?.addEventListener("abort", run.cancel);
+            await run.done;
+          } else {
+            const ac = new AbortController();
+            running.set(threadId, () => ac.abort());
+            signal?.addEventListener("abort", () => ac.abort());
+            const url = (process.env.CLAUDE_BRIDGE_URL ?? "").replace(/\/$/, "");
+            const res = await fetch(`${url}/v1/chat`, {
+              method: "POST",
+              headers: { "content-type": "application/json", authorization: `Bearer ${process.env.CLAUDE_BRIDGE_TOKEN ?? ""}` },
+              body: JSON.stringify({ ...turn, apiKey: keyEnv?.ANTHROPIC_API_KEY }),
+              signal: ac.signal,
+            });
+            if (!res.ok || !res.body) {
+              const body = (await res.json().catch(() => ({}))) as { error?: string };
+              throw new Error(body.error ?? `Bridge error ${res.status} (is the bridge up to date? restart it)`);
+            }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = "";
+            for (;;) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              let nl;
+              while ((nl = buf.indexOf("\n")) >= 0) {
+                const line = buf.slice(0, nl).trim();
+                buf = buf.slice(nl + 1);
+                if (line) capture(JSON.parse(line) as Record<string, unknown>);
+              }
             }
           }
+        } catch (error) {
+          final = { type: "error", message: error instanceof Error ? error.message : String(error) };
         }
-      } catch (error) {
-        final = { type: "error", message: error instanceof Error ? error.message : String(error) };
+      };
+      await ask(sessionId);
+      // The Claude session of a conversation restored from a backup stays on the computer it ran on (and Claude Code
+      // clears old sessions): rather than failing, carry on in a new session. The thread keeps its messages; Claude
+      // starts again from this one.
+      const first = final as Record<string, unknown> | null;
+      if (sessionId && first?.type === "error" && UNKNOWN_SESSION.test(String(first.message ?? "")) && !signal?.aborted) {
+        latestSession = null;
+        await ask(null);
       }
       const f = (final ?? { type: "error", message: "Pas de réponse de Claude Code" }) as Record<string, unknown>;
       if (typeof f.sessionId === "string") latestSession = f.sessionId;

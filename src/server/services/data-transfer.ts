@@ -38,8 +38,16 @@ const TABLES: [string, Table][] = [
   ["researchRuns", s.researchRuns],
   ["cvEntries", s.cvEntries],
   ["cvVariants", s.cvVariants],
+  ["chatThreads", s.chatThreads],
+  ["chatMessages", s.chatMessages],
   // share_links are deliberately left out: a link is a secret, a new one is made after a restore.
 ];
+
+/**
+ * Tables that exports made before schema v6 never carried although the app already had them (the conversations with
+ * the assistant): such a file says nothing about them, so restoring it ("replace") keeps the ones already here.
+ */
+const KEPT_WHEN_ABSENT = new Set(["chatThreads", "chatMessages"]);
 
 export interface ExportFile {
   app: string;
@@ -105,6 +113,9 @@ function upgradeExport(file: ExportFile): ExportFile {
     file.data.cvVariants ??= [];
     file.schemaVersion = 5;
   }
+  // v5 → v6: the assistant's conversations (chatThreads, chatMessages) added. Left absent, not emptied: see
+  // KEPT_WHEN_ABSENT.
+  if (file.schemaVersion === 5) file.schemaVersion = 6;
   return file;
 }
 
@@ -122,7 +133,10 @@ export async function importAll(raw: unknown, mode: "replace" | "merge", ctx: Ct
   const counts: Record<string, number> = {};
   await db.transaction(async (tx) => {
     if (mode === "replace") {
-      for (const [, table] of [...TABLES].reverse()) await tx.delete(table as never);
+      for (const [name, table] of [...TABLES].reverse()) {
+        if (KEPT_WHEN_ABSENT.has(name) && !Array.isArray(file.data[name])) continue;
+        await tx.delete(table as never);
+      }
     }
     for (const [name, table] of TABLES) {
       const rows = reviveRows(table, file.data[name] ?? []);

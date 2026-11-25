@@ -33,7 +33,7 @@ Avec l'assistant (facultatif)
 
 Tes données restent chez toi
 • Pas de compte à créer, pas de publicité, pas de mesure d'audience.
-• Tout est enregistré dans Documents\CareerOS, avec une sauvegarde automatique chaque jour. Désinstaller l'app ne supprime pas ce dossier.
+• Tout est enregistré sur ton ordinateur : tes documents et une sauvegarde automatique par jour dans Documents\CareerOS, ta base à l'abri de OneDrive. Désinstaller l'app ne supprime rien.
 • Gratuit et open source (licence MIT).
 
 Career OS s'ouvre dans ton navigateur habituel et s'arrête tout seul quelques minutes après la fermeture de son dernier onglet.

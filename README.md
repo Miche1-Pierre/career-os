@@ -25,7 +25,8 @@ Mono-utilisateur, local, vos données restent chez vous (PostgreSQL + dossiers s
 
 **[Career OS sur le Microsoft Store](https://apps.microsoft.com/detail/9NCQ7PFQVM2Q)** : « Obtenir », puis ouvrir
 Career OS depuis le menu Démarrer. Le Store le met à jour tout seul. Lanceur sans console, dossier de l'app en lecture
-seule, données dans `Documents\CareerOS`, arrêt automatique après la fermeture du dernier onglet. Claude Code n'est pas
+seule, documents et sauvegardes dans `Documents\CareerOS`, base dans `%USERPROFILE%\.careeros` (hors OneDrive), arrêt
+automatique après la fermeture du dernier onglet. Claude Code n'est pas
 inclus : un bouton de l'app l'installe (`winget`) si l'assistant est voulu. Fiche et réponses pour la certification :
 [docs/store](docs/store/README.md).
 
@@ -41,8 +42,9 @@ irm https://get-career-os.vercel.app/install.ps1 | iex
 
 Le script ([site/install.ps1](site/install.ps1)) télécharge Node.js (nodejs.org) et la version compilée de Career OS
 (dernière release GitHub, construite par [.github/workflows/release-windows.yml](.github/workflows/release-windows.yml)),
-vérifie leurs empreintes, installe Claude Code (npm) pour l'assistant, crée `Documents\CareerOS`, les raccourcis et
-l'entrée de désinstallation, puis ouvre l'app. Tout va dans `%LOCALAPPDATA%\CareerOS`, sans droits administrateur.
+vérifie leurs empreintes, installe Claude Code (npm) pour l'assistant, crée `Documents\CareerOS` et
+`%USERPROFILE%\.careeros` (la base), les raccourcis et l'entrée de désinstallation, puis ouvre l'app. L'application va
+dans `%LOCALAPPDATA%\CareerOS`, sans droits administrateur.
 L'assistant s'active en collant une clé API Claude au premier lancement (ou dans Paramètres → IA). Relancer la commande
 met à jour. Le même workflow fabrique aussi le paquet MSIX du Microsoft Store.
 
@@ -105,10 +107,22 @@ de renseigner votre profil et, si vous le souhaitez, de charger des données de 
 
 ### Où sont mes données ?
 
-Tout ce qui vous concerne reste chez vous, hors du dossier du projet (par défaut `Documents/CareerOS`) :
+Tout ce qui vous concerne reste chez vous, hors du dossier du projet. Par défaut, dans `Documents/CareerOS` :
 - `documents/` : vos fichiers (CV, lettres, diplômes…) ;
-- `data/` : la base en mode local ;
+- `data/app/` : réglages et fichiers de l'application ;
 - `backups/` : une sauvegarde JSON complète chaque jour.
+
+En mode local, la base est dans `~/.careeros/db` (Windows : `%USERPROFILE%\.careeros\db`), **hors de Documents** :
+OneDrive (« sauvegarde de Documents », réglage par défaut de nombreux PC Windows 11), iCloud ou Dropbox synchronisent
+souvent ce dossier, et un outil de synchronisation qui verrouille, met « en ligne seulement » ou fusionne les centaines
+de petits fichiers d'une base ouverte peut l'abîmer. Les documents et les sauvegardes, eux, gagnent à être synchronisés.
+Les installations plus anciennes (base dans `Documents\CareerOS\data\db`) la déplacent seules au lancement suivant,
+après avoir vérifié chaque fichier copié.
+
+Changer d'ordinateur : *Paramètres → Données et sauvegardes → Sauvegarder maintenant*, copiez `Documents/CareerOS` sur
+le nouvel ordinateur, installez Career OS puis restaurez la dernière sauvegarde : candidatures, documents et
+conversations avec l'assistant reviennent (une conversation reprise sur le nouvel ordinateur repart d'une nouvelle
+session Claude, ses messages restent affichés).
 
 En Docker, la base vit dans le volume `postgres_data`. Mettre à jour le code ne touche jamais à ces dossiers.
 
@@ -215,7 +229,9 @@ candidature reste consultable même si vous modifiez ou supprimez le fichier d'o
 
   ou `scripts\backup.ps1` (Windows) / `scripts/backup.sh`. Restauration : `scripts\restore.ps1 backups\<fichier>.dump`
   (remplace la base actuelle, demande confirmation).
-- Pensez à inclure `documents/`, `data/` et `backups/` dans votre sauvegarde habituelle (OneDrive, disque externe…).
+- Pensez à inclure `documents/`, `data/app/` et `backups/` dans votre sauvegarde habituelle (OneDrive, disque
+  externe…). Pas le dossier de la base (`~/.careeros/db`) : synchronisé pendant qu'elle tourne, il peut s'abîmer ; les
+  sauvegardes de `backups/` suffisent à la retrouver.
 
 ## Déploiement sur un VPS (HTTPS)
 
