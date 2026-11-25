@@ -10,6 +10,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Table, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageContainer, PageHeader } from "@/components/app/page-header";
 import { EmptyState } from "@/components/app/empty-state";
+import { SortableHead, useTableSort, type SortColumn } from "@/components/app/sortable-table";
 import { StageBadge, TagList } from "@/components/app/badges";
 import { Counter } from "@/components/app/sparkle";
 import { OrgAvatar } from "@/components/app/org-avatar";
@@ -29,6 +30,23 @@ const matches = (r: Row, n: string) => normalizeText(`${r.name} ${r.industry ?? 
 function place(r: Pick<Row, "city" | "country">) {
   return [r.city, r.country].filter(Boolean).join(", ");
 }
+
+type Group = OrganizationGroup<Row>;
+type OrgColumn = "name" | "industry" | "location" | "opportunities" | "contacts" | "activity";
+const sum = (g: Group, pick: (m: Row) => number) => g.members.reduce((a, m) => a + pick(m), 0);
+function lastActivity(g: Group): number | null {
+  const times = g.members.flatMap((m) => (m.lastActivityAt ? [new Date(m.lastActivityAt).getTime()] : []));
+  return times.length ? Math.max(...times) : null;
+}
+// Brand rows sort on their totals (all sites together), like what the row shows.
+const ORG_COLUMNS: Record<OrgColumn, SortColumn<Group>> = {
+  name: { value: (g) => g.name },
+  industry: { value: (g) => g.members.find((m) => m.industry)?.industry },
+  location: { value: (g) => (g.members.length > 1 ? locationsLabel(g.members).label : place(g.members[0])) },
+  opportunities: { value: (g) => sum(g, (m) => m.activeOpportunityCount) * 1e4 + sum(g, (m) => m.opportunityCount), firstDir: "desc" },
+  contacts: { value: (g) => sum(g, (m) => m.contactCount), firstDir: "desc" },
+  activity: { value: (g) => lastActivity(g), firstDir: "desc" },
+};
 
 function Dash() {
   return <span className="text-faint">—</span>;
@@ -80,6 +98,8 @@ export function OrganizationsList({
       return next;
     });
   const searching = !!normalizeText(q);
+  const { rows: sorted, sort, onSort } = useTableSort(filtered, ORG_COLUMNS);
+  const head = { sort, onSort };
 
   return (
     <PageContainer>
@@ -116,16 +136,28 @@ export function OrganizationsList({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-3">Nom</TableHead>
-                <TableHead className="hidden @3xl:table-cell">{institution ? "Type" : "Secteur"}</TableHead>
-                <TableHead className="hidden @xl:table-cell">Localisation</TableHead>
-                <TableHead className="text-right">{institution ? "Formations" : "Candidatures"}</TableHead>
-                <TableHead className="hidden text-right @5xl:table-cell">Contacts</TableHead>
+                <SortableHead column="name" {...head} className="pl-3">
+                  Nom
+                </SortableHead>
+                <SortableHead column="industry" {...head} className="hidden @3xl:table-cell">
+                  {institution ? "Type" : "Secteur"}
+                </SortableHead>
+                <SortableHead column="location" {...head} className="hidden @xl:table-cell">
+                  Localisation
+                </SortableHead>
+                <SortableHead column="opportunities" {...head} align="right" className="text-right">
+                  {institution ? "Formations" : "Candidatures"}
+                </SortableHead>
+                <SortableHead column="contacts" {...head} align="right" className="hidden text-right @5xl:table-cell">
+                  Contacts
+                </SortableHead>
                 <TableHead className="hidden @6xl:table-cell">Tags</TableHead>
-                <TableHead className="hidden @5xl:table-cell">Activité</TableHead>
+                <SortableHead column="activity" {...head} className="hidden @5xl:table-cell">
+                  Activité
+                </SortableHead>
               </TableRow>
             </TableHeader>
-            {filtered.map((g) =>
+            {sorted.map((g) =>
               g.members.length > 1 ? (
                 <BrandRows key={g.key} group={g} base={base} open={searching || open.has(g.key)} onOpenChange={(v) => toggle(g.key, v)} oppsByOrg={oppsByOrg} institution={institution} />
               ) : (
