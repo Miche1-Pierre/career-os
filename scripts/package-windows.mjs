@@ -92,7 +92,8 @@ if (leftover) {
   process.exit(1);
 }
 
-const version = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
+// The release workflow numbers each build (CAREER_OS_VERSION); a local build keeps the package.json version.
+const version = process.env.CAREER_OS_VERSION?.trim() || JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
 fs.writeFileSync(path.join(stage, "VERSION"), `${version}\n`);
 
 // Windows' own tar (bsdtar) writes zip archives; another tar on the PATH (Git Bash's) does not.
